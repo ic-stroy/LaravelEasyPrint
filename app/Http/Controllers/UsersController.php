@@ -15,7 +15,7 @@ class UsersController extends Controller
     public function index()
     {
         $users = User::orderBy('created_at', 'desc')->get();
-        return view('user.index', [
+        return view('admin.user.index', [
             'users' => $users
         ]);
     }
@@ -25,7 +25,7 @@ class UsersController extends Controller
      */
     public function create()
     {
-        return view('user.create');
+        return view('admin.user.create');
     }
 
     /**
@@ -66,7 +66,7 @@ class UsersController extends Controller
         $model->personal_info_id = $personal_info->id;
         $model->save();
 
-        return redirect()->route('user.index')->with('status', __('Successfully created'));
+        return redirect()->route('admin.user.index')->with('status', __('Successfully created'));
     }
 
     /**
@@ -75,7 +75,7 @@ class UsersController extends Controller
     public function show(string $id)
     {
         $model = User::find($id);
-        return view('user.show', [
+        return view('admin.user.show', [
             'model' => $model
         ]);
     }
@@ -86,7 +86,7 @@ class UsersController extends Controller
     public function edit(string $id)
     {
         $user = User::find($id);
-        return view('user.edit', [
+        return view('admin.user.edit', [
             'user' => $user
         ]);
     }
