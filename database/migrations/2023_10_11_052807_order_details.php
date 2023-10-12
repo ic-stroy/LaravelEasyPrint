@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('order_id')->nullable();
             $table->integer('warehouse_id')->nullable();
-            $table->integer('quentity');
+            $table->integer('quantity');
             $table->string('coupon')->nullable();
             $table->string('coupon_type')->nullable();
             $table->double('price')->nullable();

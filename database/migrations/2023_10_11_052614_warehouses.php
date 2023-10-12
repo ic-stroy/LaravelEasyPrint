@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('product_id')->nullable();
             $table->integer('color_id')->nullable();
             $table->integer('size_id')->nullable();
-            $table->integer('quentity')->nullable();
+            $table->integer('quantity')->nullable();
             $table->double('price')->nullable();
             $table->string('image')->nullable();
             $table->integer('status')->nullable();

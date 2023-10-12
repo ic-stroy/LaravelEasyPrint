@@ -5,8 +5,7 @@
 @endphp
 <head>
     <meta charset="utf-8" />
-    {{-- <title>{{ $title ?? translate('Pitac') }}</title> --}}
-    <title>{{ $title ?? 'Admin EasyGo' }}</title>
+    <title>{{ $title ?? 'Easy sprint' }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
     <meta content="Coderthemes" name="author" />
@@ -58,7 +57,6 @@
                         <form class="app-search">
                             <div class="app-search-box">
                                 <div class="input-group">
-                                    {{-- <input type="text" class="form-control" placeholder="{{ translate('Search...') }}" id="top-search"> --}}
                                     <input type="text" class="form-control" placeholder="Search..." id="top-search">
                                     <button class="btn input-group-text" type="submit">
                                         <i class="fe-search"></i>
@@ -67,41 +65,41 @@
                                 <div class="dropdown-menu dropdown-lg" id="search-dropdown">
                                     <!-- item-->
                                     <div class="dropdown-header noti-title">
-                                        <h5 class="text-overflow mb-2">{{translate('Found 22 results')}}</h5>
+                                        <h5 class="text-overflow mb-2">{{__('Found 22 results')}}</h5>
                                     </div>
 
                                     <!-- item-->
                                     <a href="javascript:void(0);" class="dropdown-item notify-item">
                                         <i class="fe-home me-1"></i>
-                                        <span>{{translate('Analytics Report')}}</span>
+                                        <span>{{__('Analytics Report')}}</span>
                                     </a>
 
                                     <!-- item-->
                                     <a href="javascript:void(0);" class="dropdown-item notify-item">
                                         <i class="fe-aperture me-1"></i>
-                                        <span>{{translate('How can I help you?')}}</span>
+                                        <span>{{__('How can I help you?')}}</span>
                                     </a>
 
                                     <!-- item-->
                                     <a href="javascript:void(0);" class="dropdown-item notify-item">
                                         <i class="fe-settings me-1"></i>
-                                        <span>{{translate('User profile settings')}}</span>
+                                        <span>{{__('User profile settings')}}</span>
                                     </a>
 
                                     <!-- item-->
                                     <div class="dropdown-header noti-title">
-                                        <h6 class="text-overflow mb-2 text-uppercase">{{translate('Users')}}</h6>
+                                        <h6 class="text-overflow mb-2 text-uppercase">{{__('Users')}}</h6>
                                     </div>
 
                                     <div class="notification-list">
                                         <!-- item-->
                                         <a href="javascript:void(0);" class="dropdown-item notify-item">
                                             <div class="d-flex align-items-start">
-                                                <img class="d-flex me-2 rounded-circle" src="{{ asset('assets/images/users/user-2.jpg') }}"
+                                                <img class="d-flex me-2 rounded-circle" src="{{ asset('assets/images/user/user-2.jpg') }}"
                                                      alt="Generic placeholder image" height="32">
                                                 <div class="w-100">
                                                     <h5 class="m-0 font-14">Erwin E. Brown</h5>
-                                                    <span class="font-12 mb-0">{{translate('UI Designer')}}</span>
+                                                    <span class="font-12 mb-0">{{__('UI Designer')}}</span>
                                                 </div>
                                             </div>
                                         </a>
@@ -109,11 +107,11 @@
                                         <!-- item-->
                                         <a href="javascript:void(0);" class="dropdown-item notify-item">
                                             <div class="d-flex align-items-start">
-                                                <img class="d-flex me-2 rounded-circle" src="{{ asset('assets/images/users/user-5.jpg') }}"
+                                                <img class="d-flex me-2 rounded-circle" src="{{ asset('assets/images/user/user-5.jpg') }}"
                                                      alt="Generic placeholder image" height="32">
                                                 <div class="w-100">
                                                     <h5 class="m-0 font-14">Jacob Deo</h5>
-                                                    <span class="font-12 mb-0">{{translate('Developer')}}</span>
+                                                    <span class="font-12 mb-0">{{__('Developer')}}</span>
                                                 </div>
                                             </div>
                                         </a>
@@ -125,61 +123,52 @@
                     </li>
                     <li class="">
                         <div>
-                            @php
-                                if (session()->has('locale')) {
-                                    $locale = session('locale');
-                                } else {
-                                    $locale = env('DEFAULT_LANGUAGE', 'ru');
-                                }
-                                // $locale=app()->getLocale()?? env('DEFAULT_LANGUAGE');
-                            @endphp
+
                             <div class="align-items-stretch d-flex dropdown" id="lang-change">
                                 <a class="buttonUzbDropDownHeader dropdown-toggle" type="button" id="dropdownMenuButton" role="button"
                                    data-toggle="dropdown" aria-haspopup="false" aria-expanded="false" href="javascript:void(0);">
-                                    @switch($locale)
-                                        @case('uz')
-                                        <img class="notifRegion2" id="selected_language"
-                                             src="{{ asset('/assets/images/language/region.png') }}" alt="region">
-                                        @break
+{{--                                    @switch($locale)--}}
+{{--                                        @case('uz')--}}
+{{--                                        <img class="notifRegion2" id="selected_language"--}}
+{{--                                             src="{{ asset('/assets/images/language/region.png') }}" alt="region">--}}
+{{--                                        @break--}}
 
-                                        @case('en')
-                                        <img class="notifRegion2" id="selected_language"
-                                             src="{{ asset('/assets/images/language/GB.png') }}" alt="region">
-                                        @break
+{{--                                        @case('en')--}}
+{{--                                        <img class="notifRegion2" id="selected_language"--}}
+{{--                                             src="{{ asset('/assets/images/language/GB.png') }}" alt="region">--}}
+{{--                                        @break--}}
 
-                                        @case('ru')
-                                        <img class="notifRegion2" id="selected_language"
-                                             src="{{ asset('/assets/images/language/RU.png') }}" alt="region">
-                                        @break
-                                    @endswitch
+{{--                                        @case('ru')--}}
+{{--                                        <img class="notifRegion2" id="selected_language"--}}
+{{--                                             src="{{ asset('/assets/images/language/RU.png') }}" alt="region">--}}
+{{--                                        @break--}}
+{{--                                    @endswitch--}}
                                 </a>
                                 <div id="language_flag" class="language_flag display-none"
                                      style="border: none; background-color: transparent;" aria-labelledby="dropdownMenuButton">
                                     <div class="up-arrow"></div>
                                     <div class="dropdownMenyApplyUzbFlag">
-                                        @foreach (\App\Models\Language::all() as $key => $language)
-                                            <a href="javascript:void(0)" data-flag="{{ $language->code??'' }}"
-                                               class="dropdown-item dropdown-item dropdownLanguageItem @if ($locale == $language->code??'') active @endif" >
-                                                @switch($language->code)
-                                                    @case('uz')
-                                                    <img class="dropdownRegionBayroq" id="lang_uz" style="margin-right: 8px;" src="{{asset('/assets/images/language/region.png')}}" alt="region">
-                                                    {{ $language->name??'' }}
-                                                    @break
+{{--                                            <a href="javascript:void(0)" data-flag=""--}}
+{{--                                               class="dropdown-item dropdown-item dropdownLanguageItem @if ($locale == $language->code??'') active @endif" >--}}
+{{--                                                @switch($language->code)--}}
+{{--                                                    @case('uz')--}}
+{{--                                                    <img class="dropdownRegionBayroq" id="lang_uz" style="margin-right: 8px;" src="{{asset('/assets/images/language/region.png')}}" alt="region">--}}
+{{--                                                    {{ $language->name??'' }}--}}
+{{--                                                    @break--}}
 
-                                                    @case('ru')
-                                                    <img class="dropdownRegionBayroq" id="lang_ru" style="margin-right: 8px;"
-                                                         src="{{ asset('/assets/images/language/RU.png') }}" alt="region">
-                                                    {{ $language->name??'' }}
-                                                    @break
+{{--                                                    @case('ru')--}}
+{{--                                                    <img class="dropdownRegionBayroq" id="lang_ru" style="margin-right: 8px;"--}}
+{{--                                                         src="{{ asset('/assets/images/language/RU.png') }}" alt="region">--}}
+{{--                                                    {{ $language->name??'' }}--}}
+{{--                                                    @break--}}
 
-                                                    @case('en')
-                                                    <img class="dropdownRegionBayroq" id="lang_en" style="margin-right: 8px;"
-                                                         src="{{ asset('/assets/images/language/GB.png') }}" alt="region">
-                                                    {{ $language->name??'' }}
-                                                    @break
-                                                @endswitch
-                                            </a>
-                                        @endforeach
+{{--                                                    @case('en')--}}
+{{--                                                    <img class="dropdownRegionBayroq" id="lang_en" style="margin-right: 8px;"--}}
+{{--                                                         src="{{ asset('/assets/images/language/GB.png') }}" alt="region">--}}
+{{--                                                    {{ $language->name??'' }}--}}
+{{--                                                    @break--}}
+{{--                                                @endswitch--}}
+{{--                                            </a>--}}
                                     </div>
                                 </div>
                             </div>
@@ -212,9 +201,9 @@
                                 <h5 class="m-0">
                                     <span class="float-end">
                                         <a href="" class="text-dark">
-                                            <small>{{translate('Clear All')}}</small>
+                                            <small>{{__('Clear All')}}</small>
                                         </a>
-                                    </span>{{translate('Notification')}}
+                                    </span>{{__('Notification')}}
                                 </h5>
                             </div>
 
@@ -223,12 +212,12 @@
                                 <!-- item-->
                                 <a href="javascript:void(0);" class="dropdown-item notify-item active">
                                     <div class="notify-icon">
-                                        <img src="{{ asset('assets/images/users/user-1.jpg') }}" class="img-fluid rounded-circle"
+                                        <img src="{{ asset('assets/images/user/user-1.jpg') }}" class="img-fluid rounded-circle"
                                              alt="" />
                                     </div>
                                     <p class="notify-details">Cristina Pride</p>
                                     <p class="text-muted mb-0 user-msg">
-                                        <small>{{translate('Hi, How are you? What about our next meeting')}}</small>
+                                        <small>{{__('Hi, How are you? What about our next meeting')}}</small>
                                     </p>
                                 </a>
 
@@ -237,20 +226,20 @@
                                     <div class="notify-icon bg-primary">
                                         <i class="mdi mdi-comment-account-outline"></i>
                                     </div>
-                                    <p class="notify-details">{{translate('Caleb Flakelar commented on Admin')}}
-                                        <small class="text-muted">{{translate('1 min ago')}}</small>
+                                    <p class="notify-details">{{__('Caleb Flakelar commented on Admin')}}
+                                        <small class="text-muted">{{__('1 min ago')}}</small>
                                     </p>
                                 </a>
 
                                 <!-- item-->
                                 <a href="javascript:void(0);" class="dropdown-item notify-item">
                                     <div class="notify-icon">
-                                        <img src="{{ asset('assets/images/users/user-4.jpg') }}" class="img-fluid rounded-circle"
+                                        <img src="{{ asset('assets/images/user/user-4.jpg') }}" class="img-fluid rounded-circle"
                                              alt="" />
                                     </div>
                                     <p class="notify-details">Karen Robinson</p>
                                     <p class="text-muted mb-0 user-msg">
-                                        <small>{{ translate('Wow ! this admin looks good and awesome design')}}</small>
+                                        <small>{{ __('Wow ! this admin looks good and awesome design')}}</small>
                                     </p>
                                 </a>
 
@@ -259,8 +248,8 @@
                                     <div class="notify-icon bg-warning">
                                         <i class="mdi mdi-account-plus"></i>
                                     </div>
-                                    <p class="notify-details">{{ translate('New user registered.')}}
-                                        <small class="text-muted">{{ translate('5 hours ago')}}</small>
+                                    <p class="notify-details">{{ __('New user registered.')}}
+                                        <small class="text-muted">{{ __('5 hours ago')}}</small>
                                     </p>
                                 </a>
 
@@ -269,8 +258,8 @@
                                     <div class="notify-icon bg-info">
                                         <i class="mdi mdi-comment-account-outline"></i>
                                     </div>
-                                    <p class="notify-details">{{ translate('Caleb Flakelar commented on Admin')}}
-                                        <small class="text-muted">{{ translate('4 days ago')}}</small>
+                                    <p class="notify-details">{{ __('Caleb Flakelar commented on Admin')}}
+                                        <small class="text-muted">{{ __('4 days ago')}}</small>
                                     </p>
                                 </a>
 
@@ -279,9 +268,9 @@
                                     <div class="notify-icon bg-secondary">
                                         <i class="mdi mdi-heart"></i>
                                     </div>
-                                    <p class="notify-details">Carlos Crouch {{ translate('liked')}}
+                                    <p class="notify-details">Carlos Crouch {{ __('liked')}}
                                         <b>Admin</b>
-                                        <small class="text-muted">{{ translate('13 days ago')}}</small>
+                                        <small class="text-muted">{{ __('13 days ago')}}</small>
                                     </p>
                                 </a>
                             </div>
@@ -289,63 +278,12 @@
                             <!-- All-->
                             <a href="javascript:void(0);"
                                class="dropdown-item text-center text-primary notify-item notify-all">
-                                {{ translate('View all')}}
+                                {{ __('View all')}}
                                 <i class="fe-arrow-right"></i>
                             </a>
 
                         </div>
                     </li>
-
-{{--                    <li class="dropdown notification-list topbar-dropdown">--}}
-{{--                        <a class="nav-link dropdown-toggle nav-user me-0 waves-effect waves-light"--}}
-{{--                           data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false"--}}
-{{--                           aria-expanded="false">--}}
-{{--                            @if(isset($current_user->personalInfo))--}}
-{{--                                @php--}}
-{{--                                    $sms_avatar = storage_path('app/public/user/'.$current_user->personalInfo->avatar??'no');--}}
-{{--                                @endphp--}}
-{{--                                @if(file_exists($sms_avatar))--}}
-{{--                                    <img class="rounded-circle" src="{{asset('storage/user/'.$current_user->personalInfo->avatar)}}" alt="">--}}
-{{--                                @else--}}
-{{--                                    <img class="rounded-circle" src="{{asset('assets/images/man.jpg')}}" alt="">--}}
-{{--                                @endif--}}
-{{--                                <span class="pro-user-name ms-1">--}}
-{{--                                {{$current_user->personalInfo->first_name??''}} <i class="mdi mdi-chevron-down"></i>--}}
-{{--                            </span>--}}
-{{--                            @endif--}}
-{{--                        </a>--}}
-
-{{--                        <div class="dropdown-menu dropdown-menu-end profile-dropdown ">--}}
-{{--                            <!-- item-->--}}
-{{--                            <div class="dropdown-header noti-title">--}}
-{{--                                <h6 class="text-overflow m-0">{{ translate('Welcome !')}}</h6>--}}
-{{--                            </div>--}}
-
-{{--                            <!-- item-->--}}
-{{--                            <a href="{{route('account')}}" class="dropdown-item notify-item">--}}
-{{--                                <i class="fe-user"></i>--}}
-{{--                                <span>{{translate('My Account')}}</span>--}}
-{{--                            </a>--}}
-
-{{--                            <!-- item-->--}}
-{{--                            <a href="auth-lock-screen.html" class="dropdown-item notify-item">--}}
-{{--                                <i class="fe-lock"></i>--}}
-{{--                                <span>{{ translate('Lock Screen')}}</span>--}}
-{{--                            </a>--}}
-
-{{--                            <div class="dropdown-divider"></div>--}}
-
-{{--                            <!-- item-->--}}
-{{--                            <form action="{{route('logout')}}" method="POST">--}}
-{{--                                @csrf--}}
-{{--                                @method("POST")--}}
-{{--                                <button class="dropdown-item notify-item" type="submit">--}}
-{{--                                    <i class="fe-log-out"></i>--}}
-{{--                                    <span>{{translate('Logout')}}</span>--}}
-{{--                                </button>--}}
-{{--                            </form>--}}
-{{--                        </div>--}}
-{{--                    </li>--}}
 
                     <li class="dropdown notification-list">
                         <a href="javascript:void(0);" class="nav-link right-bar-toggle waves-effect waves-light">
@@ -378,38 +316,38 @@
 
                 <!-- User box -->
                 <div class="user-box text-center">
-                    @if(isset($current_user->personalInfo))
-                        @php
-                        if(!isset($current_user->personalInfo->avatar)){
-                            $current_user->personalInfo->avatar = 'no';
-                        }
-                            $sms_avatar = storage_path('app/public/user/'.$current_user->personalInfo->avatar);
-                        @endphp
-                        @if(file_exists($sms_avatar))
-                            <img class="rounded-circle img-thumbnail avatar-md" src="{{asset('storage/user/'.$current_user->personalInfo->avatar)}}" alt="">
-                        @else
+{{--                    @if(isset($current_user->personalInfo))--}}
+{{--                        @php--}}
+{{--                        if(!isset($current_user->personalInfo->avatar)){--}}
+{{--                            $current_user->personalInfo->avatar = 'no';--}}
+{{--                        }--}}
+{{--                            $sms_avatar = storage_path('app/public/user/'.$current_user->personalInfo->avatar);--}}
+{{--                        @endphp--}}
+{{--                        @if(file_exists($sms_avatar))--}}
+{{--                            <img class="rounded-circle img-thumbnail avatar-md" src="{{asset('storage/user/'.$current_user->personalInfo->avatar)}}" alt="">--}}
+{{--                        @else--}}
                             <img class="rounded-circle img-thumbnail avatar-md" src="{{asset('assets/images/man.jpg')}}" alt="">
-                        @endif
-                    @endif
+{{--                        @endif--}}
+{{--                    @endif--}}
                     <div class="dropdown">
                         <a href="#" class="user-name dropdown-toggle h5 mt-2 mb-1 d-block"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            @if(isset($current_user) && isset($current_user->personalInfo))
-                                {{$current_user?$current_user->personalInfo->first_name:''}} {{$current_user?$current_user->personalInfo->last_name:''}}
-                            @endif
+{{--                            @if(isset($current_user) && isset($current_user->personalInfo))--}}
+{{--                                {{$current_user?$current_user->personalInfo->first_name:''}} {{$current_user?$current_user->personalInfo->last_name:''}}--}}
+{{--                            @endif--}}
                         </a>
                         <div class="dropdown-menu user-pro-dropdown">
 
                             <!-- item-->
                             <a href="javascript:void(0);" class="dropdown-item notify-item">
                                 <i class="fe-user me-1"></i>
-                                <span>{{ translate('My Account')}}</span>
+                                <span>{{ __('My Account')}}</span>
                             </a>
 
                             <!-- item-->
                             <a href="javascript:void(0);" class="dropdown-item notify-item">
                                 <i class="fe-settings me-1"></i>
-                                <span>{{translate('Settings')}}</span>
+                                <span>{{__('Settings')}}</span>
                             </a>
 
                             <!-- item-->
@@ -419,14 +357,14 @@
                             </a>
 
                             <!-- item-->
-                            <form action="{{route('logout')}}" method="POST">
-                                @csrf
-                                @method("POST")
-                                <button class="dropdown-item notify-item" type="submit">
-                                    <i class="fe-log-out me-1"></i>
-                                    <span>{{translate('Logout')}}</span>
-                                </button>
-                            </form>
+{{--                            <form action="{{route('logout')}}" method="POST">--}}
+{{--                                @csrf--}}
+{{--                                @method("POST")--}}
+{{--                                <button class="dropdown-item notify-item" type="submit">--}}
+{{--                                    <i class="fe-log-out me-1"></i>--}}
+{{--                                    <span>{{__('Logout')}}</span>--}}
+{{--                                </button>--}}
+{{--                            </form>--}}
                         </div>
                     </div>
 
@@ -442,32 +380,32 @@
                             <div class="dropdown-menu dropdown-menu-center profile-dropdown ">
                                 <!-- item-->
                                 <div class="dropdown-header noti-title">
-                                    <h6 class="text-overflow m-0">{{ translate('Welcome !')}}</h6>
+                                    <h6 class="text-overflow m-0">{{ __('Welcome !')}}</h6>
                                 </div>
 
                                 <!-- item-->
-                                <a href="{{route('account')}}" class="dropdown-item notify-item">
-                                    <i class="fe-user"></i>
-                                    <span>{{translate('My Account')}}</span>
-                                </a>
+{{--                                <a href="{{route('account')}}" class="dropdown-item notify-item">--}}
+{{--                                    <i class="fe-user"></i>--}}
+{{--                                    <span>{{__('My Account')}}</span>--}}
+{{--                                </a>--}}
 
                                 <!-- item-->
                                 <a href="auth-lock-screen.html" class="dropdown-item notify-item">
                                     <i class="fe-lock"></i>
-                                    <span>{{ translate('Lock Screen')}}</span>
+                                    <span>{{ __('Lock Screen')}}</span>
                                 </a>
 
                                 <div class="dropdown-divider"></div>
 
                                 <!-- item-->
-                                <form action="{{route('logout')}}" method="POST">
-                                    @csrf
-                                    @method("POST")
-                                    <button class="dropdown-item notify-item" type="submit">
-                                        <i class="fe-log-out"></i>
-                                        <span>{{translate('Logout')}}</span>
-                                    </button>
-                                </form>
+{{--                                <form action="{{route('logout')}}" method="POST">--}}
+{{--                                    @csrf--}}
+{{--                                    @method("POST")--}}
+{{--                                    <button class="dropdown-item notify-item" type="submit">--}}
+{{--                                        <i class="fe-log-out"></i>--}}
+{{--                                        <span>{{__('Logout')}}</span>--}}
+{{--                                    </button>--}}
+{{--                                </form>--}}
                             </div>
                         </li>
                         <li class="list-inline-item">
@@ -484,175 +422,16 @@
                             <a href="{{route('dashboard')}}">
                             <i class="mdi mdi-home-outline"></i>
                                  <span class="badge bg-success rounded-pill float-end">9+</span>
-                                <span> {{translate('Home')}} </span>
+                                <span> {{__('Home')}} </span>
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('order.index') }}">
-                                <i class="mdi mdi-order-bool-ascending"></i>
-                                <!-- <span class="badge bg-success rounded-pill float-end">9+</span> -->
-                                {{-- <span> Order </span> --}}
-                                <span> {{ translate('Order') }} </span>
-                            </a>
-                        </li>
-                        {{-- <li>
-                            <a href="{{ route('offer.index') }}">
-                                <i class="mdi mdi-offer"></i>
-                                <span> {{ translate('Offer') }} </span>
-                            </a>
-                        </li> --}}
-                        <li>
-                            <a href="{{ route('users.index') }}">
+                            <a href="{{ route('user.index') }}">
                                 <i class="mdi mdi-account-star-outline"></i>
-                                <span> {{ translate('Users') }} </span>
-                            </a>
-                        </li>
-                        {{-- <li>
-                            <a href="{{ route('client.index') }}">
-                                <i class="mdi mdi-account-star-outline"></i>
-                                <span> {{ translate('Client') }} </span>
+                                <span> {{ __('Users') }} </span>
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('driver.index') }}">
-                                <i class="mdi mdi-taxi"></i>
-                                <span> {{ translate('Driver') }} </span>
-                            </a>
-                        </li> --}}
-                        <li>
-                            <a href="{{route('user.index')}}">
-                                <i class="mdi mdi-account-multiple-plus-outline"></i>
-                                {{-- <span class="badge bg-success rounded-pill float-end">9+</span> --}}
-                                <span> {{ translate('Employees') }} </span>
-                            </a>
-                        </li>
-                        {{-- <li>
-                            <a href="{{route('role.index')}}">
-                                <i class="mdi mdi-account-multiple-plus-outline"></i>
-                                <span> Role </span>
-                            </a>
-                        </li> --}}
-                        <li>
-                            <a href="#cars" data-bs-toggle="collapse">
-                                <i class="mdi mdi-car-outline"></i>
-                                <span> {{translate('Cars')}} </span>
-                                <span class="menu-arrow"></span>
-                            </a>
-                            <div class="collapse" id="cars">
-                                <ul class="nav-second-level">
-                                    <li>
-                                        <a href="{{route('cars.index')}}">{{translate('Cars')}}</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{route('carList.index')}}">{{translate('Cars list')}}</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{route('carTypes.index')}}">{{translate('Car Types')}}</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{route('colorList.index')}}">{{translate('Cars\' Color')}}</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{route('classList.index')}}">{{translate('Class list')}}</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li>
-                            <a href="{{route('mediaHistory.index')}}">
-                                <i class="mdi mdi-video-outline"></i>
-                                {{-- <span class="badge bg-success rounded-pill float-end">9+</span> --}}
-                                <span> {{translate('Media history') }} </span>
-                            </a>
-                        </li>
-
-{{--                        <li>--}}
-{{--                            <a href="{{route('option.index')}}">--}}
-{{--                                <i class="mdi mdi-file-outline"></i>--}}
-{{--                                --}}{{-- <span class="badge bg-success rounded-pill float-end">9+</span> --}}
-{{--                                <span> {{translate('Option') }} </span>--}}
-{{--                            </a>--}}
-{{--                        </li>--}}
-{{--                        <li>--}}
-{{--                            <a href="{{route('complain.index')}}">--}}
-{{--                                <i class="mdi mdi-alert-circle-outline"></i>--}}
-{{--                                <span> {{translate('Complain reason') }} </span>--}}
-{{--                            </a>--}}
-{{--                        </li>--}}
-                        <li>
-                            <a href="{{route('users.complain')}}">
-                                <i class="mdi mdi-alert-circle-outline"></i>
-                                <span> {{translate("Users' complain") }} </span>
-                            </a>
-                        </li>
-                        {{-- <li class="menu-title mt-2">Apps</li>
-
-                        <li>
-
-                        {{-- <li>
-                            <a href="apps-calendar.html">
-                                <i class="mdi mdi-calendar-blank-outline"></i>
-                                <span> Calendar </span>
-                            </a>
-                        </li> --}}
-
-                        {{-- <li>
-                            <a href="{{ route('settings.index') }}">
-                                <i class="mdi mdi-calendar-blank-outline"></i>
-                                <span> Settings </span>
-                            </a>
-                        </li> --}}
-                        <li>
-                            <a href="#settings" data-bs-toggle="collapse">
-                                <i class="fe-settings noti-icon"></i>
-
-                                <span> {{translate('Settings')}} </span>
-                                <span class="menu-arrow"></span>
-                            </a>
-                            <div class="collapse" id="settings">
-                                <ul class="nav-second-level">
-                                    <li>
-                                        <a href="{{route('language.index')}}"> {{translate('Language')}}  </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{route('table.index')}}"> {{translate('Table translations')}}  </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{route('coupon.index')}}">{{translate('Coupon')}}</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{route('role.index')}}">{{translate('Role')}}</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        {{-- <li class="menu-title mt-2">Apps</li>
-
-
-                        <li>
-                            <a href="apps-chat.html">
-                                <i class="mdi mdi-forum-outline"></i>
-                                <span> Chat </span>
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="#email" data-bs-toggle="collapse">
-                                <i class="mdi mdi-email-outline"></i>
-                                <span> Email </span>
-                                <span class="menu-arrow"></span>
-                            </a>
-                            <div class="collapse" id="email">
-                                <ul class="nav-second-level">
-                                    <li>
-                                        <a href="email-inbox.html">Inbox</a>
-                                    </li>
-                                    <li>
-                                        <a href="email-templates.html">Email Templates</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li> --}}
                     </ul>
 
                 </div>
@@ -698,13 +477,6 @@
                             </script>
                             {{-- &copy; Adminto theme by <a href="">Coderthemes</a> --}}
                         </div>
-                        {{-- <div class="col-md-6">
-                            <div class="text-md-end footer-links d-none d-sm-block">
-                                <a href="javascript:void(0);">About Us</a>
-                                <a href="javascript:void(0);">Help</a>
-                                <a href="javascript:void(0);">Contact Us</a>
-                            </div>
-                        </div> --}}
                     </div>
                 </div>
             </footer>
@@ -717,17 +489,17 @@
                     <div class="modal-body">
                         <div class="text-center">
                             <i class="dripicons-warning h1 text-warning"></i>
-                            <h4 class="mt-2">{{translate('Logout')}}</h4>
-                            <p class="mt-3">{{translate('Confirm to logout')}}</p>
+                            <h4 class="mt-2">{{__('Logout')}}</h4>
+                            <p class="mt-3">{{__('Confirm to logout')}}</p>
                             <div class="d-flex justify-content-around">
-                                <button type="button" class="btn btn-danger my-2" data-bs-dismiss="modal">{{translate('No')}}</button>
-                                <form action="{{route('logout')}}" method="POST">
-                                    @csrf
-                                    @method("POST")
-                                    <button type="submit" class="btn btn-warning my-2" data-bs-dismiss="modal">
-                                        {{translate('Yes')}}
-                                    </button>
-                                </form>
+                                <button type="button" class="btn btn-danger my-2" data-bs-dismiss="modal">{{__('No')}}</button>
+{{--                                <form action="{{route('logout')}}" method="POST">--}}
+{{--                                    @csrf--}}
+{{--                                    @method("POST")--}}
+{{--                                    <button type="submit" class="btn btn-warning my-2" data-bs-dismiss="modal">--}}
+{{--                                        {{__('Yes')}}--}}
+{{--                                    </button>--}}
+{{--                                </form>--}}
                             </div>
                         </div>
                     </div>
@@ -749,7 +521,7 @@
                 <a href="javascript:void(0);" class="right-bar-toggle float-end">
                     <i class="mdi mdi-close"></i>
                 </a>
-                <h4 class="font-16 m-0 text-white">{{ translate('Theme Customizer')}}</h4>
+                <h4 class="font-16 m-0 text-white">{{ __('Theme Customizer')}}</h4>
             </div>
             <!-- Tab panes -->
             <div class="tab-content pt-0">
@@ -757,125 +529,111 @@
                 <div class="tab-pane active" id="settings-tab" role="tabpanel">
 
                     <div class="p-3">
-{{--                        <div class="alert alert-warning" role="alert">--}}
-{{--                            <strong>{{ translate('Customize')}}</strong>{{ translate('the overall color scheme, Layout, etc.')}}--}}
-{{--                        </div>--}}
-                        <h6 class="fw-medium font-14 mt-4 mb-2 pb-1">{{ translate('Color Scheme')}}</h6>
+                        <h6 class="fw-medium font-14 mt-4 mb-2 pb-1">{{ __('Color Scheme')}}</h6>
                         <div class="form-check form-switch mb-1">
                             <input type="checkbox" class="form-check-input" name="layout-color" value="light"
                                 id="light-mode-check" />
-                            <label class="form-check-label" for="light-mode-check">{{ translate('Light Mode')}}</label>
+                            <label class="form-check-label" for="light-mode-check">{{ __('Light Mode')}}</label>
                         </div>
 
                         <div class="form-check form-switch mb-1">
                             <input type="checkbox" class="form-check-input" name="layout-color" value="dark"
                                 id="dark-mode-check" checked/>
-                            <label class="form-check-label" for="dark-mode-check">{{ translate('Dark Mode')}}</label>
+                            <label class="form-check-label" for="dark-mode-check">{{ __('Dark Mode')}}</label>
                         </div>
 
                         <!-- Width -->
-                        <h6 class="fw-medium font-14 mt-4 mb-2 pb-1">{{ translate('Width')}}</h6>
+                        <h6 class="fw-medium font-14 mt-4 mb-2 pb-1">{{ __('Width')}}</h6>
                         <div class="form-check form-switch mb-1">
                             <input type="checkbox" class="form-check-input" name="layout-size" value="fluid"
                                 id="fluid" checked />
-                            <label class="form-check-label" for="fluid-check">{{ translate('Fluid')}}</label>
+                            <label class="form-check-label" for="fluid-check">{{ __('Fluid')}}</label>
                         </div>
                         <div class="form-check form-switch mb-1">
                             <input type="checkbox" class="form-check-input" name="layout-size" value="boxed"
                                 id="boxed" />
-                            <label class="form-check-label" for="boxed-check">{{ translate('Boxed')}}</label>
+                            <label class="form-check-label" for="boxed-check">{{ __('Boxed')}}</label>
                         </div>
 
                         <!-- Menu positions -->
-                        <h6 class="fw-medium font-14 mt-4 mb-2 pb-1">{{ translate('Menus (Leftsidebar and Topbar) Positon')}}</h6>
+                        <h6 class="fw-medium font-14 mt-4 mb-2 pb-1">{{ __('Menus (Leftsidebar and Topbar) Positon')}}</h6>
 
                         <div class="form-check form-switch mb-1">
                             <input type="checkbox" class="form-check-input" name="leftbar-position" value="fixed"
                                 id="fixed-check" checked />
-                            <label class="form-check-label" for="fixed-check">{{ translate('Fixed')}}</label>
+                            <label class="form-check-label" for="fixed-check">{{ __('Fixed')}}</label>
                         </div>
 
                         <div class="form-check form-switch mb-1">
                             <input type="checkbox" class="form-check-input" name="leftbar-position"
                                 value="scrollable" id="scrollable-check" />
-                            <label class="form-check-label" for="scrollable-check">{{ translate('Scrollable')}}</label>
+                            <label class="form-check-label" for="scrollable-check">{{ __('Scrollable')}}</label>
                         </div>
 
                         <!-- Left Sidebar-->
-                        <h6 class="fw-medium font-14 mt-4 mb-2 pb-1">{{ translate('Left Sidebar Color')}}</h6>
+                        <h6 class="fw-medium font-14 mt-4 mb-2 pb-1">{{ __('Left Sidebar Color')}}</h6>
 
                         <div class="form-check form-switch mb-1">
                             <input type="checkbox" class="form-check-input" name="leftbar-color" value="light"
                                 id="light" />
-                            <label class="form-check-label" for="light-check">{{ translate('Light')}}</label>
+                            <label class="form-check-label" for="light-check">{{ __('Light')}}</label>
                         </div>
 
                         <div class="form-check form-switch mb-1">
                             <input type="checkbox" class="form-check-input" name="leftbar-color" value="dark"
                                 id="dark" checked />
-                            <label class="form-check-label" for="dark-check">{{ translate('Dark')}}</label>
+                            <label class="form-check-label" for="dark-check">{{ __('Dark')}}</label>
                         </div>
 
                         <div class="form-check form-switch mb-1">
                             <input type="checkbox" class="form-check-input" name="leftbar-color" value="brand"
                                 id="brand" />
-                            <label class="form-check-label" for="brand-check">{{ translate('Brand')}}</label>
+                            <label class="form-check-label" for="brand-check">{{ __('Brand')}}</label>
                         </div>
 
                         <div class="form-check form-switch mb-3">
                             <input type="checkbox" class="form-check-input" name="leftbar-color" value="gradient"
                                 id="gradient" />
-                            <label class="form-check-label" for="gradient-check">{{ translate('Gradient')}}</label>
+                            <label class="form-check-label" for="gradient-check">{{ __('Gradient')}}</label>
                         </div>
 
                         <!-- size -->
-                        <h6 class="fw-medium font-14 mt-4 mb-2 pb-1">{{ translate('Left Sidebar Size')}}</h6>
+                        <h6 class="fw-medium font-14 mt-4 mb-2 pb-1">{{ __('Left Sidebar Size')}}</h6>
 
                         <div class="form-check form-switch mb-1">
                             <input type="checkbox" class="form-check-input" name="leftbar-size" value="default"
                                 id="default-size-check" checked />
-                            <label class="form-check-label" for="default-size-check">{{ translate('Default')}}</label>
+                            <label class="form-check-label" for="default-size-check">{{ __('Default')}}</label>
                         </div>
 
                         <div class="form-check form-switch mb-1">
                             <input type="checkbox" class="form-check-input" name="leftbar-size" value="condensed"
                                 id="condensed-check" />
-                            <label class="form-check-label" for="condensed-check">{{ translate('Condensed')}} <small>{{ translate('(Extra Small size)')}}</small></label>
+                            <label class="form-check-label" for="condensed-check">{{ __('Condensed')}} <small>{{ __('(Extra Small size)')}}</small></label>
                         </div>
 
                         <div class="form-check form-switch mb-1">
                             <input type="checkbox" class="form-check-input" name="leftbar-size" value="compact"
                                 id="compact-check" />
-                            <label class="form-check-label" for="compact-check">{{ translate('Compact')}} <small>{{ translate('(Small size)')}}</small></label>
+                            <label class="form-check-label" for="compact-check">{{ __('Compact')}} <small>{{ __('(Small size)')}}</small></label>
                         </div>
-
-                        <!-- User info -->
-{{--                        <h6 class="fw-medium font-14 mt-4 mb-2 pb-1">{{ translate('Sidebar User Info')}}</h6>--}}
-
-{{--                        <div class="form-check form-switch mb-1">--}}
-{{--                            <input type="checkbox" class="form-check-input" name="sidebar-user" value="true"--}}
-{{--                                id="sidebaruser-check" />--}}
-{{--                            <label class="form-check-label" for="sidebaruser-check">{{ translate('Enable')}}</label>--}}
-{{--                        </div>--}}
-
-
                         <!-- Topbar -->
-                        <h6 class="fw-medium font-14 mt-4 mb-2 pb-1">{{ translate('Topbar')}}</h6>
+                        <h6 class="fw-medium font-14 mt-4 mb-2 pb-1">{{ __('Topbar')}}</h6>
 
                         <div class="form-check form-switch mb-1">
                             <input type="checkbox" class="form-check-input" name="topbar-color" value="dark"
                                 id="darktopbar-check" checked />
-                            <label class="form-check-label" for="darktopbar-check">{{ translate('Dark')}}</label>
+                            <label class="form-check-label" for="darktopbar-check">{{ __('Dark')}}</label>
                         </div>
 
                         <div class="form-check form-switch mb-1">
                             <input type="checkbox" class="form-check-input" name="topbar-color" value="light"
                                 id="lighttopbar-check" />
-                            <label class="form-check-label" for="lighttopbar-check">{{ translate('Light')}}</label>
+                            <label class="form-check-label" for="lighttopbar-check">{{ __('Light')}}</label>
                         </div>
 
                         <div class="d-grid mt-4">
-                            <button class="btn btn-primary" id="resetBtn">{{ translate('Reset to Default')}}</button>
+                            <button class="btn btn-primary" id="resetBtn">{{ __('Reset to Default')}}</button>
                             {{-- <a href="https://1.envato.market/admintoadmin" class="btn btn-danger mt-3" target="_blank"><i class="mdi mdi-basket me-1"></i> Purchase Now</a> --}}
                         </div>
 
@@ -896,16 +654,14 @@
                 <div class="modal-body">
                     <div class="text-center">
                         <i class="dripicons-warning h1 text-warning"></i>
-                        <h4 class="mt-2">{{ translate('Are you sure delete this data')}}</h4>
-                        {{-- <h4 class="mt-2">{{ translate('Are you sure delete this data') }}</h4> --}}
-                        {{-- <p class="mt-3">Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam.</p> --}}
+                        <h4 class="mt-2">{{ __('Are you sure delete this data')}}</h4>
                         <form style="display: inline-block;" action="" method="POST">
                             @csrf
                             @method('DELETE')
-                            <button type="button" class="btn btn-danger my-2" data-bs-dismiss="modal"> {{ translate('No')}}</button>
-                            {{-- <button type="button" class="btn btn-danger my-2" data-bs-dismiss="modal">{{ translate('No') }}</button> --}}
-                            <button type="submit" class="btn btn-success my-2"> {{ translate('Yes')}} </button>
-                            {{-- <button type="submit" class="btn btn-warning my-2">{{ translate('Yes') }}</button> --}}
+                            <button type="button" class="btn btn-danger my-2" data-bs-dismiss="modal"> {{ __('No')}}</button>
+                            {{-- <button type="button" class="btn btn-danger my-2" data-bs-dismiss="modal">{{ __('No') }}</button> --}}
+                            <button type="submit" class="btn btn-success my-2"> {{ __('Yes')}} </button>
+                            {{-- <button type="submit" class="btn btn-warning my-2">{{ __('Yes') }}</button> --}}
                         </form>
                         {{-- <button type="button" class="btn btn-warning my-2" data-bs-dismiss="modal">Continue</button> --}}
                     </div>
@@ -927,8 +683,8 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ translate('Close') }}</button>
-                    <button type="button" class="btn btn-primary">{{ translate('Save changes') }}</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ __('Close') }}</button>
+                    <button type="button" class="btn btn-primary">{{ __('Save changes') }}</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -947,8 +703,8 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ translate('Close') }}</button>
-                    <button type="button" class="btn btn-primary">{{ translate('Save changes') }}</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ __('Close') }}</button>
+                    <button type="button" class="btn btn-primary">{{ __('Save changes') }}</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -1092,23 +848,6 @@
             body_layout.setAttribute('data-leftbar-size', localStorage.getItem('leftbar_size'))
         }
 
-//Sidebar User Info
-//         let sidebaruser_check = document.getElementById('sidebaruser-check')
-//         sidebaruser_check.addEventListener('click', function (){
-//             if(sidebaruser_check.checked == true){
-//                 localStorage.setItem('sidebar_user', true)
-//             }else{
-//                 localStorage.removeItem('sidebar_user')
-//             }
-//         })
-//         if(localStorage.getItem('sidebar_user') == undefined || localStorage.getItem('sidebar_user') == null){
-//             if(body_layout.hasAttribute('data-sidebar-user')){
-//                 body_layout.removeAttribute('data-sidebar-user')
-//             }
-//         }else{
-//             body_layout.setAttribute('data-sidebar-user', true)
-//         }
-
 //Topbar color
         let darktopbar_check = document.getElementById('darktopbar-check')
         let lighttopbar_check = document.getElementById('lighttopbar-check')
@@ -1149,111 +888,6 @@
         })
 
     </script>
-    <script>
-        "use strict";
-        let offers_on_hold = {name:"{{translate('Offers on hold')}}", count:"{{$offers_active_count??0}}"}
-        let orders_active = {name:"{{translate('Orders active')}}", count:"{{$order_active??0}}"}
-        let completed_orders = {name:"{{translate('Completed orders')}}", count:"{{$order_completed??0}}"}
-        let order_cancelled = {name:"{{translate('Cancelled orders')}}", count:"{{$order_cancelled??0}}"}
-        let monthly_orders_count = {!! $monthly_orders_count??0 !!}
-        let monthly_offers_count = {!! $monthly_offers_count??0 !!}
-        let order_created = "{{translate('Order created')}}"
-        let offer_created = "{{translate('Offer created')}}"
-        const month_names = ["","January","February","March","April","May","June","July",
-            "August","September","October","November","December"];
-        !function(e){
-            function a(){
-                this.$realData=[]
-            }
-            a.prototype.createBarChart=function(e,a,r,t,o,i){
-                Morris.Bar({
-                    element:e,data:a,xkey:r,ykeys:t,labels:o,hideHover:"auto",resize:!0,gridLineColor:"rgba(173, 181, 189, 0.1)",barSizeRatio:.2,dataLabels:!1,barColors:i
-                })
-            },
-                a.prototype.createLineChart=function(e,a,r,xs,t,o,i,n,s,l){
-                    Morris.Line(
-                        {
-                            element:e,
-                            data:a,
-                            xkey:r,
-                            parseTime: false,
-                            ykeys:t,
-                            xLabelFormat: xs,
-                            xLabels: "month",
-                            labels:o,
-                            fillOpacity:i,
-                            pointFillColors:n,
-                            pointStrokeColors:s,
-                            behaveLikeLine:!0,
-                            gridLineColor:"rgba(173, 181, 189, 0.1)",
-                            hideHover:"auto",
-                            resize:!0,
-                            pointSize:0,
-                            dataLabels:!1,
-                            lineColors:l})
-                },
-                a.prototype.createDonutChart=function(e,a,r)
-                {
-                    Morris.Donut({element:e,data:a,resize:!0,colors:r,backgroundColor:"transparent"})
-                },
-                a.prototype.init=function(){
-                e("#morris-bar-example").empty(),
-                        e("#morris-line-example").empty(),
-                        e("#morris-donut-example").empty();
-                    // this.createBarChart(
-                    //     "morris-bar-example",
-                    //     [
-                    //         {y:"2010",a:75},
-                    //         {y:"2011",a:42},
-                    //         {y:"2012",a:75},
-                    //         {y:"2013",a:38},
-                    //         {y:"2014",a:19},
-                    //         {y:"2015",a:93}
-                    //     ],
-                    //     "y",
-                    //     ["a"],
-                    //     ["Statistics"],
-                    //     ["#188ae2"]
-                    // );
-                    this.createLineChart(
-                        "morris-line-example",
-                        [
-                            {y:monthly_orders_count.seven_month.month,a:parseInt(monthly_orders_count.seven_month.counts),b:parseInt(monthly_offers_count.seven_month.counts)},
-                            {y:monthly_orders_count.six_month.month,a:parseInt(monthly_orders_count.six_month.counts),b:parseInt(monthly_offers_count.six_month.counts)},
-                            {y:monthly_orders_count.five_month.month,a:parseInt(monthly_orders_count.five_month.counts),b:parseInt(monthly_offers_count.five_month.counts)},
-                            {y:monthly_orders_count.four_month.month,a:parseInt(monthly_orders_count.four_month.counts),b:parseInt(monthly_offers_count.four_month.counts)},
-                            {y:monthly_orders_count.three_month.month,a:parseInt(monthly_orders_count.three_month.counts),b:parseInt(monthly_offers_count.three_month.counts)},
-                            {y:monthly_orders_count.two_month.month,a:parseInt(monthly_orders_count.two_month.counts),b:parseInt(monthly_offers_count.two_month.counts)},
-                            {y:monthly_orders_count.one_month.month,a:parseInt(monthly_orders_count.one_month.counts),b:parseInt(monthly_offers_count.one_month.counts)},
-                            {y:monthly_orders_count.this_month.month,a:parseInt(monthly_orders_count.this_month.counts),b:parseInt(monthly_offers_count.this_month.counts)}],
-                            "y",
-                        function (x) {
-                            var index = parseInt(x.src.y);
-                            return month_names[index];
-                        },
-                        ["a","b"],
-                        [order_created, offer_created],
-                        ["0.9"],
-                        ["#ffffff"],
-                        ["#999999"],
-                        ["#10c469","#188ae2"]
-                    );
-                    this.createDonutChart(
-                        "morris-donut-example",
-                        [
-                            {label:offers_on_hold.name, value:offers_on_hold.count},
-                            {label:orders_active.name, value:orders_active.count},
-                            {label:completed_orders.name, value:completed_orders.count},
-                            {label:order_cancelled.name, value:order_cancelled.count}
-                        ],
-                        ["#FF6C37","#10C469","#00ADD7","#FF0000"]
-                    )
-                },
-                e.Dashboard1=new a,
-                e.Dashboard1.Constructor=a
-        }(window.jQuery),function(a){a.Dashboard1.init(),window.addEventListener("adminto.setBoxed",function(e){a.Dashboard1.init()}),window.addEventListener("adminto.setFluid",function(e){a.Dashboard1.init()})}(window.jQuery);
-
-    </script>
 
     <!-- Datatables init -->
     <script src="{{ asset('assets/js/pages/datatables.init.js') }}"></script>
@@ -1263,6 +897,7 @@
 
     <script>
         $(document).on('click', '.delete-datas', function(e) {
+            console.log('good')
             var url = $(this).attr('data-url')
             $('#warning-alert-modal').find('form').attr('action', url)
         })
@@ -1281,7 +916,7 @@
             if(sessionSuccess){
                 toastr.success(sessionSuccess)
             }
-            let language = '{{ $locale }}'
+            {{--let language = '{{ $locale }}'--}}
             let uz = `{{ asset('/assets/images/language/region.png') }}`
             let ru = `{{ asset('/assets/images/language/RU.png') }}`
             let en = `{{ asset('/assets/images/language/GB.png') }}`
@@ -1303,12 +938,12 @@
                                 $('#selected_language').attr('src', ru)
                                 break;
                         }
-                        $.post('{{ route('language.change') }}', {
-                            _token: '{{ csrf_token() }}',
-                            locale: locale
-                        }, function(data) {
-                            location.reload();
-                        });
+                        {{--$.post('{{ route('language.change') }}', {--}}
+                        {{--    _token: '{{ csrf_token() }}',--}}
+                        {{--    locale: locale--}}
+                        {{--}, function(data) {--}}
+                        {{--    location.reload();--}}
+                        {{--});--}}
 
                     });
                 });
@@ -1320,379 +955,6 @@
             $('#warning-alert-modal').find('form').attr('action', url)
         })
 
-        $(document).on('click', '.confirm-driver', function(e) {
-            $('#standard-modal .modal-body').html(' ')
-            $('#standard-modal .modal-footer').remove()
-            @if(isset($personalInfo))
-                @if(!is_array($personalInfo->passport_images))
-                    @php
-                        $passport_images = json_decode($personalInfo->passport_images);
-                    @endphp
-                @endif
-            @endif
-            var id = $(this).attr('data-id')
-
-            $('#standard-modal .modal-body').html(`
-                <form action="{{ route('users.confirm-driver') }}" class="parsley-examples" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    @method('POST')
-                    <input type="hidden" class="form-control" name="user_id" value="` + id + `"/>
-                    <h4>{{ translate('Passport information') }}</h4>
-                    <div class="row">
-                        @if(isset($passport_images))
-                            @foreach($passport_images as $passport_image)
-                                @php
-                                  $passport_img_exist = storage_path('app/public/passport-images/'.$passport_image);
-                                @endphp
-                                <div class="mb-3 col-md-6">
-                                    @if(isset($passport_image) && file_exists($passport_img_exist))
-                                        <img src="{{'http://api.easygo.uz/storage/passport-images/'.$car_->reg_certificate_image}}" alt="" height="94">
-                                    @else
-                                        <img src="http://admin.easygo.uz/icon/no_photo.jpg" alt="" height="94">
-                                    @endif
-                                </div>
-                            @endforeach
-                        @endif
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label">{{ translate('Serial number') }}</label>
-                            <input type="text" class="form-control" name="passport_serial_number" value="{{$personalInfo->passport_serial_number??''}}"/>
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label">{{ translate('Images') }}</label>
-                            <input type="file" class="form-control" name="passport_images[]" multiple/>
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label">{{ translate('Issued by') }}</label>
-                            <input type="date" class="form-control" name="passport_issued_by" value="{{$personalInfo->passport_issued_by??''}}"/>
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label">{{ translate('Expired date') }}</label>
-                            <input type="date" class="form-control" name="passport_expired_date" value="{{$personalInfo->passport_expired_date??''}}"/>
-                        </div>
-                    </div>
-                    @if(isset($cars))
-                        @foreach($cars as $car)
-                        <h4>{{ translate("Technical certificate") }}</h4>
-                        <div class="row">
-                            @php
-                                $reg_certificate_image = storage_path('app/public/cars/'.$car->reg_certificate_image??'no');
-                                $reg_certificate_image_back = storage_path('app/public/cars/'.$car->reg_certificate_image_back??'no');
-                            @endphp
-                            <div class="mb-3 col-md-6 text-center">
-                                @if(isset($car) && isset($car->reg_certificate_image))
-                                    @if(file_exists($reg_certificate_image))
-                                        <img src="{{asset('storage/cars/'.$car->reg_certificate_image)}}" alt="" height="94">
-                                    @else
-                                        @if(get_headers('http://api.easygo.uz/storage/cars/'.$car->reg_certificate_image)[0] == "HTTP/1.1 200 OK")
-                                            <img src="{{'http://api.easygo.uz/storage/cars/'.$car->reg_certificate_image}}" alt="" height="94">
-                                        @else
-                                            <img src="http://admin.easygo.uz/icon/no_photo.jpg" alt="" height="94">
-                                        @endif
-                                    @endif
-                                @else
-                                    <img src="http://admin.easygo.uz/icon/no_photo.jpg" alt="" height="94">
-                                @endif
-                            </div>
-                            <div class="mb-3 col-md-6 text-center">
-                                @if(isset($car) && isset($car->reg_certificate_image_back))
-                                    @if(file_exists($reg_certificate_image_back))
-                                        <img src="{{asset('storage/cars/'.$car->reg_certificate_image_back)}}" alt="" height="94">
-                                    @else
-                                        @if(get_headers('http://api.easygo.uz/storage/cars/'.$car->reg_certificate_image_back)[0] == "HTTP/1.1 200 OK")
-                                            <img src="{{'http://api.easygo.uz/storage/cars/'.$car->reg_certificate_image_back}}" alt="" height="94">
-                                        @else
-                                            <img src="http://admin.easygo.uz/icon/no_photo.jpg" alt="" height="94">
-                                        @endif
-                                    @endif
-                                @else
-                                    <img src="http://admin.easygo.uz/icon/no_photo.jpg" alt="" height="94">
-                                @endif
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="mb-3 col-md-6">
-                                <label class="form-label">{{ translate('Image') }}</label>
-                                    <input type="file" class="form-control" name="reg_certificate_image"/>
-                                </div>
-                                <div class="mb-3 col-md-6">
-                                    <label class="form-label">{{ translate('The back of the image') }}</label>
-                                    <input type="file" class="form-control" name="reg_certificate_image_back"/>
-                                </div>
-                            </div>
-                            <div class="mb-3 col-md-12">
-                                <label class="form-label">{{ translate('Certificate number') }}</label>
-                                <input type="text" class="form-control" value="{{$car->reg_certificate??''}}" name="reg_certificate"/>
-                            </div>
-                        @endforeach
-                    @endif
-                    @if(isset($driver))
-                        <h4>{{ translate("Driver's license information") }}</h4>
-                        <div class="row">
-                        @php
-                            $license_image_ = storage_path('app/public/certificate/'.$driver->license_image??'no');
-                            $license_image_back_ = storage_path('app/public/certificate/'.$driver->license_image_back??'no');
-                        @endphp
-                            <div class="mb-3 col-md-6 text-center">
-                                @if(isset($driver) && isset($driver->license_image))
-                                    @if(file_exists($license_image_))
-                                        <img src="{{asset('storage/certificate/'.$driver->license_image)}}" alt="" height="94">
-                                    @else
-                                        @if(get_headers('http://api.easygo.uz/storage/certificate/'.$driver->license_image)[0] == "HTTP/1.1 200 OK")
-                                            <img src="{{'http://api.easygo.uz/storage/certificate/'.$driver->license_image}}" alt="" height="94">
-                                        @else
-                                            <img src="http://admin.easygo.uz/icon/no_photo.jpg" alt="" height="94">
-                                        @endif
-                                    @endif
-                                @else
-                                    <img src="http://admin.easygo.uz/icon/no_photo.jpg" alt="" height="94">
-                                @endif
-                            </div>
-                            <div class="mb-3 col-md-6 text-center">
-                                @if(isset($driver) && isset($driver->license_image_back))
-                                    @if(file_exists($license_image_back_))
-                                        <img src="{{asset('storage/certificate/'.$driver->license_image_back)}}" alt="" height="94">
-                                    @else
-                                        @if(get_headers('http://api.easygo.uz/storage/certificate/'.$driver->license_image_back)[0] == "HTTP/1.1 200 OK")
-                                            <img src="{{'http://api.easygo.uz/storage/certificate/'.$driver->license_image_back}}" alt="" height="94">
-                                        @else
-                                            <img src="http://admin.easygo.uz/icon/no_photo.jpg" alt="" height="94">
-                                        @endif
-                                    @endif
-                                @else
-                                <img src="http://admin.easygo.uz/icon/no_photo.jpg" alt="" height="94">
-                             @endif
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="mb-3 col-md-6">
-                                <label class="form-label">{{ translate('License number') }}</label>
-                                <input type="text" class="form-control" name="license_number" value="{{$driver->license_number}}"/>
-                            </div>
-                            <div class="mb-3 col-md-6">
-                                <label class="form-label">{{ translate('License expired date') }}</label>
-                                <input type="date" class="form-control" name="license_expired_date" value="{{explode(" ",$driver->license_expired_date)[0]}}"/>
-                            </div>
-                        </div>
-                        <div class="mb-3 col-md-12">
-                            <label class="form-label">{{ translate('Document status') }}</label>
-                            <select name="doc_status" id="doc_status" class="form-control">
-                              <option {{$driver->doc_status == 1?'selected':''}} value="1" >Not accepted</option>
-                              <option {{$driver->doc_status == 2?'selected':''}} value="2">Accept</option>
-                              <option {{$driver->doc_status == 3?'selected':''}} value="3">Expectations</option>
-                              <option {{$driver->doc_status == 4?'selected':''}} value="4">Canceled</option>
-                            </select>
-                        </div>
-                    @endif
-                    <div>
-                        <button type="submit" class="btn btn-primary waves-effect waves-light" style="float: right;">{{translate('Save')}}</button>
-                    </div>
-                </form>
-            `)
-        })
-        $(document).on('click', '.confirm-driver-admin', function(e) {
-            @if(isset($personalInfo))
-                @if(!is_array($personalInfo->passport_images))
-                    @php
-                        $passport_images = json_decode($personalInfo->passport_images);
-                    @endphp
-                @endif
-            @endif
-            var id = $(this).attr('data-id')
-            $('#standard-modal-admin .modal-body').html(' ')
-            $('#standard-modal-admin .modal-footer').remove()
-            $('#standard-modal-admin .modal-body').html(`
-                <form action="{{ route('users.confirm-driver-by-admin') }}" class="parsley-examples" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    @method('POST')
-                    <input type="hidden" class="form-control" name="user_id" value="` + id + `"/>
-                    <input type="hidden" class="form-control" name="is_admin" value="1"/>
-                    <h4>{{ translate('Passport information') }}</h4>
-                    <div class="row">
-                        @if(isset($passport_images))
-                            @foreach($passport_images as $passport_image)
-                                @php
-                                  $passport_img_exist = storage_path('app/public/passport-images/'.$passport_image);
-                                @endphp
-                                <div class="mb-3 col-md-6">
-                                    @if(isset($passport_image) && file_exists($passport_img_exist))
-                                        <img src="{{'http://api.easygo.uz/storage/passport-images/'.$car_->reg_certificate_image}}" alt="" height="94">
-                                    @else
-                                        <img src="http://admin.easygo.uz/icon/no_photo.jpg" alt="" height="94">
-                                    @endif
-                                </div>
-                            @endforeach
-                        @endif
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label">{{ translate('Serial number') }}</label>
-                            <input type="text" class="form-control" name="passport_serial_number" value="{{$personalInfo->passport_serial_number??''}}"/>
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label">{{ translate('Images') }}</label>
-                            <input type="file" class="form-control" name="passport_images[]" multiple/>
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label">{{ translate('Issued by') }}</label>
-                            <input type="date" class="form-control" name="passport_issued_by" value="{{$personalInfo->passport_issued_by??''}}"/>
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label">{{ translate('Expired date') }}</label>
-                            <input type="date" class="form-control" name="passport_expired_date" value="{{$personalInfo->passport_expired_date??''}}"/>
-                        </div>
-                    </div>
-                @if(isset($cars))
-                    @foreach($cars as $car_)
-                    <h4>{{ translate("Technical certificate") }}</h4>
-                    <div class="row">
-                        @php
-                            $reg_certificate_image_ = storage_path('app/public/cars/'.$car_->reg_certificate_image??'no');
-                            $reg_certificate_image_back_ = storage_path('app/public/cars/'.$car_->reg_certificate_image_back??'no');
-                        @endphp
-                        <div class="mb-3 col-md-6 text-center">
-                            @if(isset($car_) && isset($car_->reg_certificate_image))
-                                @if(file_exists($reg_certificate_image_))
-                                    <img src="{{asset('storage/cars/'.$car_->reg_certificate_image)}}" alt="" height="94">
-                                @else
-                                    @if(get_headers('http://api.easygo.uz/storage/cars/'.$car_->reg_certificate_image)[0] == "HTTP/1.1 200 OK")
-                                        <img src="{{'http://api.easygo.uz/storage/cars/'.$car_->reg_certificate_image}}" alt="" height="94">
-                                    @else
-                                        <img src="http://admin.easygo.uz/icon/no_photo.jpg" alt="" height="94">
-                                    @endif
-                                @endif
-                            @else
-                                <img src="http://admin.easygo.uz/icon/no_photo.jpg" alt="" height="94">
-                            @endif
-                        </div>
-                        <div class="mb-3 col-md-6 text-center">
-                            @if(isset($car_) && isset($car_->reg_certificate_image_back))
-                                @if(file_exists($reg_certificate_image_back_))
-                                    <img src="{{asset('storage/cars/'.$car_->reg_certificate_image_back)}}" alt="" height="94">
-                                @else
-                                    @if(get_headers('http://api.easygo.uz/storage/cars/'.$car_->reg_certificate_image_back)[0] == "HTTP/1.1 200 OK")
-                                        <img src="{{'http://api.easygo.uz/storage/cars/'.$car_->reg_certificate_image_back}}" alt="" height="94">
-                                    @else
-                                        <img src="http://admin.easygo.uz/icon/no_photo.jpg" alt="" height="94">
-                                    @endif
-                                @endif
-                            @else
-                                <img src="http://admin.easygo.uz/icon/no_photo.jpg" alt="" height="94">
-                            @endif
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label">{{ translate('Image') }}</label>
-                            <input type="file" class="form-control" name="reg_certificate_image[]"/>
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label">{{ translate('The back of the image') }}</label>
-                            <input type="file" class="form-control" name="reg_certificate_image_back[]"/>
-                        </div>
-                    </div>
-                    <div class="mb-3 col-md-12">
-                        <label class="form-label">{{ translate('Certificate number') }}</label>
-                        <input type="text" class="form-control" value="{{$car_->reg_certificate??''}}" name="reg_certificate[]"/>
-                    </div>
-                    @endforeach
-                @endif
-                <h4>{{ translate("Driver's license information") }}</h4>
-                @if(isset($driver))
-                    <div class="row">
-                        @php
-                            $license_image_ = storage_path('app/public/certificate/'.$driver->license_image??'no');
-                            $license_image_back_ = storage_path('app/public/certificate/'.$driver->license_image_back??'no');
-                        @endphp
-                        <div class="mb-3 col-md-6 text-center">
-                            @if(isset($driver) && isset($driver->license_image))
-                                @if(file_exists($license_image_))
-                                    <img src="{{asset('storage/certificate/'.$driver->license_image)}}" alt="" height="94">
-                                @else
-                                    @if(get_headers('http://api.easygo.uz/storage/certificate/'.$driver->license_image)[0] == "HTTP/1.1 200 OK")
-                                        <img src="{{'http://api.easygo.uz/storage/certificate/'.$driver->license_image}}" alt="" height="94">
-                                    @else
-                                        <img src="http://admin.easygo.uz/icon/no_photo.jpg" alt="" height="94">
-                                    @endif
-                                @endif
-                            @else
-                                <img src="http://admin.easygo.uz/icon/no_photo.jpg" alt="" height="94">
-                            @endif
-                        </div>
-                        <div class="mb-3 col-md-6 text-center">
-                            @if(isset($driver) && isset($driver->license_image_back))
-                                @if(file_exists($license_image_back_))
-                                    <img src="{{asset('storage/certificate/'.$driver->license_image_back)}}" alt="" height="94">
-                                @else
-                                    @if(get_headers('http://api.easygo.uz/storage/certificate/'.$driver->license_image_back)[0] == "HTTP/1.1 200 OK")
-                                        <img src="{{'http://api.easygo.uz/storage/certificate/'.$driver->license_image_back}}" alt="" height="94">
-                                    @else
-                                        <img src="http://admin.easygo.uz/icon/no_photo.jpg" alt="" height="94">
-                                    @endif
-                                @endif
-                            @else
-                                <img src="http://admin.easygo.uz/icon/no_photo.jpg" alt="" height="94">
-                            @endif
-                        </div>
-                    </div>
-                @endif
-                <div class="row">
-                    <div class="mb-3 col-md-6">
-                        <label class="form-label">{{ translate('Image') }}</label>
-                        <input type="file" class="form-control" name="license_image" multiple/>
-                    </div>
-                    <div class="mb-3 col-md-6">
-                        <label class="form-label">{{ translate('The back of the image') }}</label>
-                        <input type="file" class="form-control" name="license_image_back" multiple/>
-                    </div>
-                </div>
-                @if(isset($driver))
-                    <div class="row">
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label">{{ translate('License number') }}</label>
-                            <input type="text" class="form-control" name="license_number" value="{{$driver->license_number??''}}"/>
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label">{{ translate('License expired date') }}</label>
-                            <input type="date" class="form-control" name="license_expired_date" value="{{explode(" ",$driver->license_expired_date)[0]??''}}"/>
-                        </div>
-                    </div>
-                @else
-                    <div class="row">
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label">{{ translate('License number') }}</label>
-                            <input type="text" class="form-control" name="license_number" value=""/>
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label">{{ translate('License expired date') }}</label>
-                            <input type="date" class="form-control" name="license_expired_date" value=""/>
-                        </div>
-                    </div>
-                @endif
-                @if(isset($driver))
-                    <div class="mb-3 col-md-12">
-                        <label class="form-label">{{ translate('Document status') }}</label>
-                        <select name="doc_status" id="doc_status" class="form-control">
-                          <option {{$driver->doc_status == 1?'selected':''}} value="1">Not accepted</option>
-                          <option {{$driver->doc_status == 2?'selected':''}} value="2">Accept</option>
-                          <option {{$driver->doc_status == 3?'selected':''}} value="3">Expectations</option>
-                          <option {{$driver->doc_status == 4?'selected':''}} value="4">Canceled</option>
-                        </select>
-                    </div>
-                @else
-                    <div class="mb-3 col-md-12">
-                        <label class="form-label">{{ translate('Document status') }}</label>
-                        <select name="doc_status" id="doc_status" class="form-control">
-                          <option value="1">Not accepted</option>
-                          <option value="2">Accept</option>
-                          <option value="3">Expectations</option>
-                          <option value="4">Canceled</option>
-                        </select>
-                    </div>
-                @endif
-                <div>
-                    <button type="submit" class="btn btn-primary waves-effect waves-light" style="float: right;">{{translate('Save')}}</button>
-                </div>
-            </form>
-            `)
-        });
         let dropdownMenuButton = document.getElementById('dropdownMenuButton')
         let language_flag = document.getElementById('language_flag')
         // let wrapper = document.getElementById('wrapper')
