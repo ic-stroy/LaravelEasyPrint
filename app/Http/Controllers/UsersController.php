@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PersonalInfo;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -45,7 +46,7 @@ class UsersController extends Controller
 
         if (isset($file)) {
             $image_name = $random . '' . date('Y-m-dh-i-s') . '.' . $file->extension();
-            $file->storeAs('user/', $image_name);
+            $file->storeAs('public/user/', $image_name);
             $personal_info->avatar = $image_name;
         }
 
@@ -56,17 +57,12 @@ class UsersController extends Controller
         $model = new User();
         $model->email =  $request->email;
         $model->password = Hash::make($request->password);
-        if ($request->role_id =! "0") {
-            $model->role_id = (int)$request->role_id;
-        }
-
-        if ($request->company_id =! "0") {
-            $model->company_id = (int)$request->company_id;
-        }
+        $model->role_id = (int)$request->role_id;
         $model->personal_info_id = $personal_info->id;
+        $model->phone_number = $request->phone_number;
         $model->save();
 
-        return redirect()->route('admin.user.index')->with('status', __('Successfully created'));
+        return redirect()->route('user.index')->with('status', __('Successfully created'));
     }
 
     /**
@@ -97,39 +93,56 @@ class UsersController extends Controller
     public function update(Request $request, string $id)
     {
         $model = User::find($id);
-        $model->first_name = $request->first_name;
-        $model->last_name = $request->last_name;
-        $model->middle_name = $request->middle_name;
+        if(isset($model->personalInfo)){
+            $personal_info = $model->personalInfo;
+            $personal_info->first_name = $request->first_name;
+            $personal_info->last_name = $request->last_name;
+            $personal_info->middle_name = $request->middle_name;
+            $personal_info->phone_number = $request->phone_number;
+            $letters = range('a', 'z');
+            $random_array = [$letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)]];
+            $random = implode("", $random_array);
+            $file = $request->file('avatar');
+            if (isset($file)) {
+                $sms_avatar = storage_path('app/public/user/' . $personal_info->avatar);
+                if (file_exists($sms_avatar)) {
+                    unlink($sms_avatar);
+                }
+                $image_name = $random.''.date('Y-m-dh-i-s').'.'.$file->extension();
+                $file->storeAs('public/user/', $image_name);
+                $personal_info->avatar = $image_name;
+            }
+            $personal_info->gender = $request->gender;
+            $personal_info->birth_date = $request->birth_date;
+            $personal_info->save();
+        }else{
+            $personal_info = new PersonalInfo();
+            $personal_info->first_name = $request->first_name;
+            $personal_info->last_name = $request->last_name;
+            $personal_info->middle_name = $request->middle_name;
+            $personal_info->phone_number = $request->phone_number;
+            $letters = range('a', 'z');
+            $random_array = [$letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)]];
+            $random = implode("", $random_array);
+            $file = $request->file('avatar');
+
+            if (isset($file)) {
+                $image_name = $random . '' . date('Y-m-dh-i-s') . '.' . $file->extension();
+                $file->storeAs('public/user/', $image_name);
+                $personal_info->avatar = $image_name;
+            }
+
+            $personal_info->gender = $request->gender;
+            $personal_info->birth_date = $request->birth_date;
+            $personal_info->save();
+        }
+
+        $model->email =  $request->email;
+        $model->password = Hash::make($request->password);
+        $model->role_id = (int)$request->role_id;
         $model->phone_number = $request->phone_number;
-        $letters = range('a', 'z');
-        $random_array = [$letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)]];
-        $random = implode("", $random_array);
-        $file = $request->file('avatar');
-        if (isset($file)) {
-            $sms_avatar = storage_path('app/public/user/' . $model->avatar);
-            if (file_exists($sms_avatar)) {
-                unlink($sms_avatar);
-            }
-            $image_name = $random.''.date('Y-m-dh-i-s').'.'.$file->extension();
-            $file->storeAs('public/user/', $image_name);
-            $model->avatar = $image_name;
-        }
-
-        $model->gender = $request->gender;
-        $model->birth_date = $request->birth_date;
-
-        $model->email = $request->email;
-        if (isset($request->new_password)) {
-            if ($request->new_password == $request->password_confirmation) {
-                $model->password = Hash::make($request->new_password);
-            }
-        }
-
-        if (isset($request->is_admin) && $request->is_admin =! 0) {
-            $model->is_admin = (int)$request->is_admin;
-        }
+        $model->personal_info_id = $personal_info->id;
         $model->save();
-
         return redirect()->route('user.index')->with('status', __('Successfully updated'));
     }
 

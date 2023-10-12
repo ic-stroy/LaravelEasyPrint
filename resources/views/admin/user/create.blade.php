@@ -57,8 +57,13 @@
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">
-                        <label for="role" class="form-label">{{__('Is admin')}}</label><br>
-                        <input type="checkbox" value="1" name="is_admin">
+                        <label for="role" class="form-label">{{__("Users' role")}}</label><br>
+                        <select id="role_id" class="form-select" name="role_id">
+                            <option value="">{{__('Choose..')}}</option>
+                            <option value="0" {{old('role_id')==0??'selected'}}>{{__('Stuff')}}</option>
+                            <option value="1" {{old('role_id')==1??'selected'}}>{{__('Seller')}}</option>
+                            <option value="2" {{old('role_id')==2??'selected'}}>{{__('User')}}</option>
+                        </select>
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Birth date')}}</label>

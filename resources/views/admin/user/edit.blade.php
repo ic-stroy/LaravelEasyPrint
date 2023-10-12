@@ -24,17 +24,17 @@
                 <div class="row">
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('First name')}}</label>
-                        <input type="text" class="form-control" name="first_name" required value="{{$user->first_name??''}}"/>
+                        <input type="text" class="form-control" name="first_name" required value="{{$user->personalInfo?$user->personalInfo->first_name:''}}"/>
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Last name')}}</label>
-                        <input type="text" class="form-control" name="last_name" value="{{$user->last_name??''}}"/>
+                        <input type="text" class="form-control" name="last_name" value="{{$user->personalInfo?$user->personalInfo->last_name:''}}"/>
                     </div>
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Middle name')}}</label>
-                        <input type="text" class="form-control" name="middle_name" value="{{$user->middle_name??''}}"/>
+                        <input type="text" class="form-control" name="middle_name" value="{{$user->personalInfo?$user->personalInfo->middle_name:''}}"/>
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Phone number')}}</label>
@@ -44,9 +44,9 @@
                 <div class="row">
                     <div class="mb-3 col-6">
                         <div style="text-align: center">
-                            @if(isset($user->avatar))
+                            @if(isset($user->personalInfo->avatar))
                                 @php
-                                    $avatar = storage_path('app/public/user/'.$user->avatar)
+                                    $avatar = storage_path('app/public/user/'.$user->personalInfo->avatar)
                                 @endphp
                             @else
                                 @php
@@ -54,7 +54,7 @@
                                 @endphp
                             @endif
                             @if(file_exists($avatar))
-                                <img src="{{asset('storage/user/'.$user->avatar)}}" alt="" height="94px">
+                                <img src="{{asset('storage/user/'.$user->personalInfo->avatar)}}" alt="" height="94px">
                             @endif
                         </div>
                         <label class="form-label">{{__('Avatar')}}</label>
@@ -64,22 +64,27 @@
                         <label for="gender" class="form-label">{{__('Gender')}}</label>
                         <select id="gender" class="form-select" name="gender">
                             <option value="">{{__('Choose..')}}</option>
-                            <option value="1" @if(isset($user)){{$user->gender==1?'selected':''}}@endif>{{__('Man')}}</option>
-                            <option value="2" @if(isset($user)){{$user->gender==2?'selected':''}}@endif>{{__('Woman')}}</option>
+                            <option value="1" @if(isset($user->personalInfo)){{$user->personalInfo->gender==1?'selected':''}}@endif>{{__('Man')}}</option>
+                            <option value="2" @if(isset($user->personalInfo)){{$user->personalInfo->gender==2?'selected':''}}@endif>{{__('Woman')}}</option>
                         </select>
                     </div>
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">
                         <div class="mb-3 col-6">
-                            <label for="role" class="form-label">{{__('Is admin')}}</label><br>
-                            <input type="checkbox" value="1" name="is_admin" {{$user->is_admin == 1 ? 'checked':''}}>
+                            <label for="role" class="form-label">{{__("Users' role")}}</label><br>
+                            <select id="role_id" class="form-select" name="role_id">
+                                <option value="">{{__('Choose..')}}</option>
+                                <option value="0" {{$user->role_id==0?'selected':''}}>{{__('Stuff')}}</option>
+                                <option value="1" {{$user->role_id==1?'selected':''}}>{{__('Seller')}}</option>
+                                <option value="2" {{$user->role_id==2?'selected':''}}>{{__('User')}}</option>
+                            </select>
                         </div>
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Birth date')}}</label>
                         @php
-                            $birth_date = explode(' ', $user->birth_date??'');
+                            $birth_date = explode(' ', $user->personalInfo->birth_date??'');
                         @endphp
                         <input type="date" class="form-control" name="birth_date" value="{{$birth_date[0]}}"/>
                     </div>
