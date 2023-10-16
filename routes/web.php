@@ -15,9 +15,12 @@ use \App\Http\Controllers\UsersController;
 |
 */
 
-Route::get('/', [HomeController::class, 'index'])->name('dashboard');
-Route::resource('user', UsersController::class);
-
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::group(['middleware'=>'auth'], function(){
+    Route::get('/', [HomeController::class, 'index'])->name('dashboard');
+    Route::resource('user', UsersController::class);
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+});
+
+

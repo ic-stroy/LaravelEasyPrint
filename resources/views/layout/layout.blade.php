@@ -356,15 +356,6 @@
                                 <span>Lock Screen</span>
                             </a>
 
-                            <!-- item-->
-{{--                            <form action="{{route('logout')}}" method="POST">--}}
-{{--                                @csrf--}}
-{{--                                @method("POST")--}}
-{{--                                <button class="dropdown-item notify-item" type="submit">--}}
-{{--                                    <i class="fe-log-out me-1"></i>--}}
-{{--                                    <span>{{__('Logout')}}</span>--}}
-{{--                                </button>--}}
-{{--                            </form>--}}
                         </div>
                     </div>
 
@@ -396,20 +387,10 @@
                                 </a>
 
                                 <div class="dropdown-divider"></div>
-
-                                <!-- item-->
-{{--                                <form action="{{route('logout')}}" method="POST">--}}
-{{--                                    @csrf--}}
-{{--                                    @method("POST")--}}
-{{--                                    <button class="dropdown-item notify-item" type="submit">--}}
-{{--                                        <i class="fe-log-out"></i>--}}
-{{--                                        <span>{{__('Logout')}}</span>--}}
-{{--                                    </button>--}}
-{{--                                </form>--}}
                             </div>
                         </li>
                         <li class="list-inline-item">
-                            <button  type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#logout-alert-modal" style="border: 0px; background-color: transparent; color: #98a6ad">
+                            <button  type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#logout-alert-modal" data-url="{{ route('logout') }}" style="border: 0px; background-color: transparent; color: #98a6ad">
                                 <i class="mdi mdi-power" style="color: red"></i>
                             </button>
                         </li>
@@ -493,13 +474,13 @@
                             <p class="mt-3">{{__('Confirm to logout')}}</p>
                             <div class="d-flex justify-content-around">
                                 <button type="button" class="btn btn-danger my-2" data-bs-dismiss="modal">{{__('No')}}</button>
-{{--                                <form action="{{route('logout')}}" method="POST">--}}
-{{--                                    @csrf--}}
-{{--                                    @method("POST")--}}
-{{--                                    <button type="submit" class="btn btn-warning my-2" data-bs-dismiss="modal">--}}
-{{--                                        {{__('Yes')}}--}}
-{{--                                    </button>--}}
-{{--                                </form>--}}
+                                <form action="{{route('logout')}}" method="POST">
+                                    @csrf
+                                    @method("POST")
+                                    <button type="submit" class="btn btn-warning my-2" data-bs-dismiss="modal">
+                                        {{__('Yes')}}
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
