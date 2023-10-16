@@ -49,6 +49,20 @@
                             </span>
                             @enderror
                             <div class="mb-3">
+                                <div class="form-check d-flex correct_img" style="padding-left:0px;">
+                                    {{-- captcha_img('flat'); --}}
+                                    {!! captcha_img('flat') !!}
+                                    {{-- {!!  !!} --}}
+                                    <input style="border-radius: 8px !important; width:150px; margin-left:20px; height: 37.6px;" class="box_shadow form-control" type="text" name="captcha" id="captcha" required>
+
+                                </div>
+                            </div>
+                            @error('captcha')
+                            <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
+                            <div class="mb-3">
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input box_shadow" id="checkbox-signin" checked>
                                     <label class="form-check-label" for="checkbox-signin">Запомнить меня</label>
