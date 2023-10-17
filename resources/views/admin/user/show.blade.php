@@ -112,10 +112,10 @@
         </div>
         <table id="datatable-buttons" class="table dt-responsive nowrap table_show" style="display:none;">
             <thead>
-            <tr>
-                <th>{{__('Attributes')}}</th>
-                <th>{{__('Informations')}}</th>
-            </tr>
+                <tr>
+                    <th>{{__('Attributes')}}</th>
+                    <th>{{__('Informations')}}</th>
+                </tr>
             </thead>
             <tbody>
             <tr>
