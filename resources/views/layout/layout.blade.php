@@ -413,6 +413,30 @@
                             </a>
                         </li>
                         <li>
+                            <a href="{{ route('color.index') }}">
+                                <i class="mdi mdi-checkbox-blank-circle-outline"></i>
+                                <span> {{ __('Color') }} </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('size.index') }}">
+                                <i class="mdi mdi-account-outline"></i>
+                                <span> {{ __('Sizes') }} </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('category.index') }}">
+                                <i class="mdi mdi-format-list-bulleted"></i>
+                                <span> {{ __('Category') }} </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('subcategory.index') }}">
+                                <i class="mdi mdi-format-list-bulleted"></i>
+                                <span> {{ __('Sub Category') }} </span>
+                            </a>
+                        </li>
+                        <li>
                     </ul>
 
                 </div>

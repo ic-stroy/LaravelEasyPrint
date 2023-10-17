@@ -3,6 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\HomeController;
 use \App\Http\Controllers\UsersController;
+use \App\Http\Controllers\CategoryController;
+use \App\Http\Controllers\SubCategoryController;
+use \App\Http\Controllers\ColorController;
+use \App\Http\Controllers\SizesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,8 +23,12 @@ Auth::routes();
 
 Route::group(['middleware'=>'auth'], function(){
     Route::get('/', [HomeController::class, 'index'])->name('dashboard');
+    Route::resource('color', ColorController::class);
+    Route::resource('size', SizesController::class);
     Route::resource('user', UsersController::class);
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::resource('category', CategoryController::class);
+    Route::resource('subcategory', SubCategoryController::class);
 });
 
 
