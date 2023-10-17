@@ -419,6 +419,12 @@
                             </a>
                         </li>
                         <li>
+                            <a href="{{ route('product.index') }}">
+                                <i class="mdi mdi-basket-outline"></i>
+                                <span> {{ __('Products') }} </span>
+                            </a>
+                        </li>
+                        <li>
                             <a href="{{ route('size.index') }}">
                                 <i class="mdi mdi-account-outline"></i>
                                 <span> {{ __('Sizes') }} </span>
