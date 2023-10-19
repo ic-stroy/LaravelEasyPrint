@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('warehouses', function (Blueprint $table) {
-            $table->dropColumn('image');
+        Schema::create('addresses', function (Blueprint $table) {
+            $table->id();
+            $table->string('name', 100)->nullable();
+            $table->float('longitude')->nullable();
+            $table->float('latitude')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('warehouses', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('addresses');
     }
 };
