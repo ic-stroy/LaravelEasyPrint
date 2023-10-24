@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\HomeController;
+use App\Http\Controllers\Company\CompanyHomeController;
 use \App\Http\Controllers\UsersController;
 use \App\Http\Controllers\CategoryController;
 use \App\Http\Controllers\SubCategoryController;
@@ -25,7 +26,7 @@ use \App\Http\Controllers\CompanyController;
 
 Auth::routes();
 
-// Route::group(['middleware'=>'auth'], function(){
+Route::group(['middleware'=>'authed'], function(){
     Route::get('/', [HomeController::class, 'index'])->name('dashboard');
     Route::resource('color', ColorController::class);
     Route::resource('size', SizesController::class);
@@ -38,18 +39,18 @@ Auth::routes();
     Route::resource('address', AddressController::class);
     Route::resource('role', RoleController::class);
 
-    // Route::group(['prefix' => 'seller'], function () {
-    //     Route::get('/', [HomeController::class, 'index'])->name('dashboard');
-    //     // Route::get('/home', [HomeController::class, 'index'])->name('home');
-    //     Route::resource('color', ColorController::class);
-    //     Route::resource('size', SizesController::class);
-    //     Route::resource('user', UsersController::class);
-    //     Route::resource('product', ProductsController::class);
-    //     Route::resource('category', CategoryController::class);
-    //     Route::resource('subcategory', SubCategoryController::class);
-    // });
+    Route::group(['prefix' => 'company'], function () {
+        Route::get('/', [CompanyHomeController::class, 'index'])->name('company_dashboard');
+        // Route::get('/home', [HomeController::class, 'index'])->name('home');
+        // Route::resource('color', ColorController::class);
+        // Route::resource('size', SizesController::class);
+        // Route::resource('user', UsersController::class);
+        // Route::resource('product', ProductsController::class);
+        // Route::resource('category', CategoryController::class);
+        // Route::resource('subcategory', SubCategoryController::class);
+    });
 
 
-// });
+});
 
 
