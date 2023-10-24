@@ -76,8 +76,8 @@
                         <label for="role" class="form-label">{{__("Select Company")}}</label><br>
                         <select id="role_id" class="form-select" name="company_id">
                             <option value="">{{__('Choose..')}}</option>
-                            @foreach($companies as $company   )
-                                <option value="{{$address->id}}" {{old('address_id')==$address->id??'selected'}}>{{$address->name}}</option>
+                            @foreach($companies as $company)
+                                <option value="{{$company->id}}" {{old('address_id')==$company->id??'selected'}}>{{$company->name}}</option>
                             @endforeach
                         </select>
                     </div>
