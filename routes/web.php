@@ -25,7 +25,7 @@ use \App\Http\Controllers\CompanyController;
 
 Auth::routes();
 
-//Route::group(['middleware'=>'auth'], function(){
+// Route::group(['middleware'=>'auth'], function(){
     Route::get('/', [HomeController::class, 'index'])->name('dashboard');
     Route::resource('color', ColorController::class);
     Route::resource('size', SizesController::class);
@@ -37,6 +37,19 @@ Auth::routes();
     Route::resource('subcategory', SubCategoryController::class);
     Route::resource('address', AddressController::class);
     Route::resource('role', RoleController::class);
-//});
+
+    // Route::group(['prefix' => 'seller'], function () {
+    //     Route::get('/', [HomeController::class, 'index'])->name('dashboard');
+    //     // Route::get('/home', [HomeController::class, 'index'])->name('home');
+    //     Route::resource('color', ColorController::class);
+    //     Route::resource('size', SizesController::class);
+    //     Route::resource('user', UsersController::class);
+    //     Route::resource('product', ProductsController::class);
+    //     Route::resource('category', CategoryController::class);
+    //     Route::resource('subcategory', SubCategoryController::class);
+    // });
+
+
+// });
 
 
