@@ -407,6 +407,24 @@
                             </a>
                         </li>
                         <li>
+                            <a href="{{ route('address.index') }}">
+                                <i class="mdi mdi-file-document-outline"></i>
+                                <span> {{ __('Address') }} </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('company.index') }}">
+                                <i class="mdi mdi-bank-outline"></i>
+                                <span> {{ __('Company') }} </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('role.index') }}">
+                                <i class="mdi mdi-account-check-outline"></i>
+                                <span> {{ __('Role') }} </span>
+                            </a>
+                        </li>
+                        <li>
                             <a href="{{ route('user.index') }}">
                                 <i class="mdi mdi-account-star-outline"></i>
                                 <span> {{ __('Users') }} </span>

@@ -8,6 +8,9 @@ use \App\Http\Controllers\SubCategoryController;
 use \App\Http\Controllers\ColorController;
 use \App\Http\Controllers\SizesController;
 use \App\Http\Controllers\ProductsController;
+use \App\Http\Controllers\AddressController;
+use \App\Http\Controllers\RoleController;
+use \App\Http\Controllers\CompanyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +25,7 @@ use \App\Http\Controllers\ProductsController;
 
 Auth::routes();
 
-Route::group(['middleware'=>'auth'], function(){
+//Route::group(['middleware'=>'auth'], function(){
     Route::get('/', [HomeController::class, 'index'])->name('dashboard');
     Route::resource('color', ColorController::class);
     Route::resource('size', SizesController::class);
@@ -30,7 +33,10 @@ Route::group(['middleware'=>'auth'], function(){
     Route::resource('product', ProductsController::class);
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::resource('category', CategoryController::class);
+    Route::resource('company', CompanyController::class);
     Route::resource('subcategory', SubCategoryController::class);
-});
+    Route::resource('address', AddressController::class);
+    Route::resource('role', RoleController::class);
+//});
 
 

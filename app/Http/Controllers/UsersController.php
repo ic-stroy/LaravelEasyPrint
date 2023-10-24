@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\PersonalInfo;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Role;
+use App\Models\Address;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+
 class UsersController extends Controller
 {
     /**
@@ -26,7 +30,10 @@ class UsersController extends Controller
      */
     public function create()
     {
-        return view('admin.user.create');
+        $companies = Company::all();
+        $addresses = Address::select('id', 'name')->get();
+        $roles = Role::select('id', 'name')->get();
+        return view('admin.user.create', ['roles'=>$roles, 'companies'=>$companies, 'addresses'=>$addresses]);
     }
 
     /**
@@ -51,6 +58,9 @@ class UsersController extends Controller
         $model->role_id = (int)$request->role_id;
         $model->personal_info_id = $personal_info->id;
         $model->phone_number = $request->phone_number;
+        $model->language = 'ru';
+        $model->company_id = $request->company_id;
+        $model->address_id = $request->address_id;
         $model->save();
 
         return redirect()->route('user.index')->with('status', __('Successfully created'));
@@ -95,9 +105,13 @@ class UsersController extends Controller
      */
     public function edit(string $id)
     {
+        $companies = Company::all();
+        $addresses = Address::select('id', 'name')->get();
         $user = User::find($id);
         return view('admin.user.edit', [
-            'user' => $user
+            'user' => $user,
+            'companies'=>$companies,
+            'addresses'=>$addresses
         ]);
     }
 
@@ -134,8 +148,11 @@ class UsersController extends Controller
         $model->email =  $request->email;
         $model->password = Hash::make($request->password);
         $model->role_id = (int)$request->role_id;
-        $model->phone_number = $request->phone_number;
         $model->personal_info_id = $personal_info->id;
+        $model->phone_number = $request->phone_number;
+        $model->language = 'ru';
+        $model->company_id = $request->company_id;
+        $model->address_id = $request->address_id;
         $model->save();
         return redirect()->route('user.index')->with('status', __('Successfully updated'));
     }

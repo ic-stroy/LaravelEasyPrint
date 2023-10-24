@@ -60,14 +60,35 @@
                         <label for="role" class="form-label">{{__("Users' role")}}</label><br>
                         <select id="role_id" class="form-select" name="role_id">
                             <option value="">{{__('Choose..')}}</option>
-                            <option value="0" {{old('role_id')==0??'selected'}}>{{__('Stuff')}}</option>
-                            <option value="1" {{old('role_id')==1??'selected'}}>{{__('Seller')}}</option>
-                            <option value="2" {{old('role_id')==2??'selected'}}>{{__('User')}}</option>
+                            <option value="0" {{old('role_id')==0??'selected'}}>{{__('Super admin')}}</option>
+                            <option value="1" {{old('role_id')==1??'selected'}}>{{__('Admin')}}</option>
+                            <option value="2" {{old('role_id')==2??'selected'}}>{{__('Manager')}}</option>
+                            <option value="3" {{old('role_id')==2??'selected'}}>{{__('User')}}</option>
                         </select>
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Birth date')}}</label>
                         <input type="date" class="form-control" name="birth_date" value="{{old('birth_date')}}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label for="role" class="form-label">{{__("Select Company")}}</label><br>
+                        <select id="role_id" class="form-select" name="company_id">
+                            <option value="">{{__('Choose..')}}</option>
+                            @foreach($companies as $company   )
+                                <option value="{{$address->id}}" {{old('address_id')==$address->id??'selected'}}>{{$address->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label for="address_id" class="form-label">{{__("Select address")}}</label><br>
+                        <select id="address_id" class="form-select" name="address_id">
+                            <option value="">{{__('Choose..')}}</option>
+                            @foreach($addresses as $address)
+                                <option value="{{$address->id}}" {{old('address_id')==$address->id??'selected'}}>{{$address->name}}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
                 <div class="mb-3">
@@ -89,4 +110,5 @@
             </form>
         </div>
     </div>
+
 @endsection

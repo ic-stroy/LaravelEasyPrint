@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id'   // 1.Super admin 2.Admin 3.Manager 4.User
     ];
 
     /**
