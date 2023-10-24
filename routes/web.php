@@ -22,7 +22,7 @@ use \App\Http\Controllers\ProductsController;
 
 Auth::routes();
 
-Route::group(['middleware'=>'auth'], function(){
+// Route::group(['middleware'=>'auth'], function(){
     Route::get('/', [HomeController::class, 'index'])->name('dashboard');
     Route::resource('color', ColorController::class);
     Route::resource('size', SizesController::class);
@@ -31,6 +31,19 @@ Route::group(['middleware'=>'auth'], function(){
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::resource('category', CategoryController::class);
     Route::resource('subcategory', SubCategoryController::class);
-});
+
+    // Route::group(['prefix' => 'seller'], function () {
+    //     Route::get('/', [HomeController::class, 'index'])->name('dashboard');
+    //     // Route::get('/home', [HomeController::class, 'index'])->name('home');
+    //     Route::resource('color', ColorController::class);
+    //     Route::resource('size', SizesController::class);
+    //     Route::resource('user', UsersController::class);
+    //     Route::resource('product', ProductsController::class);
+    //     Route::resource('category', CategoryController::class);
+    //     Route::resource('subcategory', SubCategoryController::class);
+    // });
+
+
+// });
 
 
