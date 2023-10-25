@@ -17,7 +17,7 @@ class AuthMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         $user = Auth::user();
-        dd($user);
+        // dd($user);
 
         if(isset($user->id)){
             if ($user->company_id) {
