@@ -14,6 +14,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>{{__('Name')}}</th>
                         <th>{{__('Delivery price')}}</th>
                         <th>{{__('Address')}}</th>
                         <th>{{__('Updated_at')}}</th>
@@ -39,7 +40,12 @@
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('company.show', $company->id)}}">
-                                    @if(isset($company->address->id)){{ $company->address->name }}@else <div class="no_text"></div> @endif
+                                    @if(isset($company->name)){{ $company->name }}@else <div class="no_text"></div> @endif
+                                </a>
+                            </td>
+                            <td>
+                                <a class="show_page" href="{{route('company.show', $company->id)}}">
+                                    @if(isset($company->address->id)){{ $company->address->region??'' }} {{ $company->address->district??'' }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>
@@ -49,7 +55,7 @@
                             </td>
                             <td class="function_column">
                                 <div class="d-flex justify-content-center">
-                                    <a class="form_functions btn btn-info" href="{{route('company.edit', $company->id)}}"><i class="fe-edit-2"></i></a>
+                                    <a class="form_functions btn btn-info" onclick="editCompany()"><i class="fe-edit-2"></i></a>
                                     <form action="{{route('company.destroy', $company->id)}}" method="POST">
                                         @csrf
                                         @method('DELETE')
@@ -63,5 +69,35 @@
             </table>
         </div>
     </div>
+    <script>
+        let edit_company = document.getElementById('edit_company')
+        function editCompany(){
+            if(localStorage.getItem('district') != undefined && localStorage.getItem('district') != null){
+                localStorage.removeItem('district')
+            }
+            if(localStorage.getItem('region') != undefined && localStorage.getItem('region') != null){
+                localStorage.removeItem('region')
+            }
+            if(localStorage.getItem('address_lat') != undefined && localStorage.getItem('address_lat') != null){
+                localStorage.removeItem('address_lat')
+            }
+            if(localStorage.getItem('address_long') != undefined && localStorage.getItem('address_long') != null){
+                localStorage.removeItem('address_long')
+            }
+            if(localStorage.getItem('company_delivery_price') != undefined && localStorage.getItem('company_delivery_price') != null){
+                localStorage.removeItem('company_delivery_price')
+            }
+            if(localStorage.getItem('company_name') != undefined && localStorage.getItem('company_name') != null){
+                localStorage.removeItem('company_name')
+            }
+            if(localStorage.getItem('region_id') != undefined && localStorage.getItem('region_id') != null){
+                localStorage.removeItem('region_id')
+            }
+            if(localStorage.getItem('district_id') != undefined && localStorage.getItem('district_id') != null) {
+                localStorage.removeItem('district_id')
+            }
 
+            window.open("{{route('company.edit', $company->id)}}")
+        }
+    </script>
 @endsection

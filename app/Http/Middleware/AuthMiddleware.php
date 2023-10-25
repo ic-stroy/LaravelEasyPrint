@@ -18,6 +18,9 @@ class AuthMiddleware
     {
         $user = Auth::user();
 
+        if (isset($user->company_id)) {
+            return redirect()->route('company_dashboard');
+        }
         if(isset($user->id)){
            return $next($request);
         }else{

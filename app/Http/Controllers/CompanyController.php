@@ -21,10 +21,9 @@ class CompanyController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        $addresses = Address::all();
-        return view('admin.company.create', ['addresses'=>$addresses]);
+        return view('admin.company.create');
     }
 
     /**
@@ -33,8 +32,15 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
         $model = new Company();
-        $model->address_id = $request->address_id;
+        $address = new Address();
+        $address->region = $request->region;
+        $address->district = $request->district;
+        $address->latitude = $request->address_lat;
+        $address->longitude = $request->address_long;
+        $address->save();
+        $model->name = $request->name;
         $model->delivery_price = $request->delivery_price;
+        $model->address_id = $address->id;
         $model->save();
         return redirect()->route('company.index')->with('status', __('Successfully created'));
     }
@@ -76,7 +82,9 @@ class CompanyController extends Controller
     public function destroy(string $id)
     {
         $model = Company::find($id);
+        $address = $model->address;
         $model->delete();
+        $address->delete();
         return redirect()->route('company.index')->with('status', __('Successfully deleted'));
     }
 }
