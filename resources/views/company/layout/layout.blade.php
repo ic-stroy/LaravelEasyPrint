@@ -2,7 +2,8 @@
 <html lang="en">
 @php
     $current_user = \Illuminate\Support\Facades\Auth::user();
-    echo $current_user;
+    // dd($current_user);
+    // echo $current_user;
 @endphp
 <head>
     <meta charset="utf-8" />
@@ -328,6 +329,9 @@
 {{--                            <img class="rounded-circle img-thumbnail avatar-md" src="{{asset('storage/user/'.$current_user->personalInfo->avatar)}}" alt="">--}}
 {{--                        @else--}}
                             <img class="rounded-circle img-thumbnail avatar-md" src="{{asset('assets/images/man.jpg')}}" alt="">
+                            <div>
+                                {{-- {{$current_user}} --}}
+                            </div>
 {{--                        @endif--}}
 {{--                    @endif--}}
                     <div class="dropdown">
@@ -407,24 +411,39 @@
                                 <span> {{__('Home')}} </span>
                             </a>
                         </li>
+
                         <li>
-                            <a href="{{ route('address.index') }}">
-                                <i class="mdi mdi-file-document-outline"></i>
-                                <span> {{ __('Address') }} </span>
+                            <a href="#catalog" data-bs-toggle="collapse">
+                                <i class="mdi mdi-car-outline"></i>
+                                <span> {{ __('Catalog') }} </span>
+                                <span class="menu-arrow"></span>
                             </a>
+                            <div class="collapse" id="catalog">
+                                <ul class="nav-second-level">
+                                    <li>
+                                        <a href="{{route('address.index')}}">{{ __('Products') }}</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{route('address.index')}}">{{ __('Category') }}</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{route('address.index')}}">{{ __('Attribute') }}</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{route('address.index')}}">{{ __('Coupon') }}</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{route('address.index')}}">{{ __('Size') }}</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{route('address.index')}}">{{ __('Color') }}</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
-                        <li>
-                            <a href="{{ route('company.index') }}">
-                                <i class="mdi mdi-bank-outline"></i>
-                                <span> {{ __('Company') }} </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('role.index') }}">
-                                <i class="mdi mdi-account-check-outline"></i>
-                                <span> {{ __('Role') }} </span>
-                            </a>
-                        </li>
+
+
+
                         <li>
                             <a href="{{ route('user.index') }}">
                                 <i class="mdi mdi-account-star-outline"></i>
@@ -432,36 +451,25 @@
                             </a>
                         </li>
                         <li>
+                            <a href="{{ route('role.index') }}">
+                                <i class="mdi mdi-account-check-outline"></i>
+                                <span> {{ __('Orders') }} </span>
+                            </a>
+                        </li>
+
+                        <li>
                             <a href="{{ route('color.index') }}">
                                 <i class="mdi mdi-checkbox-blank-circle-outline"></i>
-                                <span> {{ __('Color') }} </span>
+                                <span> {{ __('Personal Information') }} </span>
                             </a>
                         </li>
                         <li>
                             <a href="{{ route('product.index') }}">
-                                <i class="mdi mdi-basket-outline"></i>
-                                <span> {{ __('Products') }} </span>
+                                <i class="mdi mdi-cog"></i>
+                                <span> {{ __('Setting') }} </span>
                             </a>
                         </li>
-                        <li>
-                            <a href="{{ route('size.index') }}">
-                                <i class="mdi mdi-account-outline"></i>
-                                <span> {{ __('Sizes') }} </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('category.index') }}">
-                                <i class="mdi mdi-format-list-bulleted"></i>
-                                <span> {{ __('Category') }} </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('subcategory.index') }}">
-                                <i class="mdi mdi-format-list-bulleted"></i>
-                                <span> {{ __('Sub Category') }} </span>
-                            </a>
-                        </li>
-                        <li>
+
                     </ul>
 
                 </div>

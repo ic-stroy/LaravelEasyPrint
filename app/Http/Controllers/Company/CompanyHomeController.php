@@ -13,7 +13,7 @@ class CompanyHomeController extends Controller
     public function index()
     {
 //        dd('sdasdasw');
-        return view('index');
+        return view('company.index');
     }
 
     /**
