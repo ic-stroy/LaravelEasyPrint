@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\HomeController;
-use App\Http\Controllers\Company\CompanyHomeController;
+use \App\Http\Controllers\Company\CompanyHomeController;
 use \App\Http\Controllers\UsersController;
 use \App\Http\Controllers\CategoryController;
 use \App\Http\Controllers\SubCategoryController;
@@ -38,8 +38,9 @@ Route::group(['middleware'=>'authed'], function(){
     Route::resource('subcategory', SubCategoryController::class);
     Route::resource('address', AddressController::class);
     Route::resource('role', RoleController::class);
-
-    Route::group(['prefix' => 'company'], function () {
+});
+Route::group(['middleware'=>'company_auth'], function (){
+    Route::group(['prefix' => 'companies'], function () {
         Route::get('/', [CompanyHomeController::class, 'index'])->name('company_dashboard');
         // Route::get('/home', [HomeController::class, 'index'])->name('home');
         // Route::resource('color', ColorController::class);
@@ -49,8 +50,6 @@ Route::group(['middleware'=>'authed'], function(){
         // Route::resource('category', CategoryController::class);
         // Route::resource('subcategory', SubCategoryController::class);
     });
-
-
 });
 
 

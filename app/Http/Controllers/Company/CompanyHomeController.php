@@ -12,7 +12,7 @@ class CompanyHomeController extends Controller
      */
     public function index()
     {
-        return 'cfdszds';
+        dd('sdasdasw');
         return view('index');
     }
 
