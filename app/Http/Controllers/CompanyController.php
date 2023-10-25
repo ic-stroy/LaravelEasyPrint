@@ -60,8 +60,7 @@ class CompanyController extends Controller
     public function edit(string $id)
     {
         $company = Company::find($id);
-        $addresses = Address::all();
-        return view('admin.company.edit', ['company'=> $company, 'addresses'=>$addresses]);
+        return view('admin.company.edit', ['company'=> $company]);
     }
 
     /**
@@ -70,8 +69,19 @@ class CompanyController extends Controller
     public function update(Request $request, string $id)
     {
         $model = Company::find($id);
-        $model->address_id = $request->address_id;
+        if(isset($model->address->id)){
+            $address = $model->address;
+        }else{
+            $address = new Address();
+        }
+        $address->region = $request->region;
+        $address->district = $request->district;
+        $address->latitude = $request->address_lat;
+        $address->longitude = $request->address_long;
+        $address->save();
+        $model->name = $request->name;
         $model->delivery_price = $request->delivery_price;
+        $model->address_id = $address->id;
         $model->save();
         return redirect()->route('company.index')->with('status', __('Successfully updated'));
     }

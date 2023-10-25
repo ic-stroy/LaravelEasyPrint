@@ -8,7 +8,7 @@
         <div class="card-body">
             <h4 class="mt-0 header-title">{{__('Company lists')}}</h4>
             <div class="dropdown float-end">
-                <a class="form_functions btn btn-success" href="{{route('company.create')}}">{{__('Create')}}</a>
+                <a class="form_functions btn btn-success" onclick="createCompany()" href="{{route('company.create')}}">{{__('Create')}}</a>
             </div>
             <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap">
                 <thead>
@@ -55,7 +55,7 @@
                             </td>
                             <td class="function_column">
                                 <div class="d-flex justify-content-center">
-                                    <a class="form_functions btn btn-info" onclick="editCompany()"><i class="fe-edit-2"></i></a>
+                                    <a class="form_functions btn btn-info" onclick="editCompany({{$company->id}})"><i class="fe-edit-2"></i></a>
                                     <form action="{{route('company.destroy', $company->id)}}" method="POST">
                                         @csrf
                                         @method('DELETE')
@@ -71,7 +71,15 @@
     </div>
     <script>
         let edit_company = document.getElementById('edit_company')
-        function editCompany(){
+        function createCompany(){
+            refreshData('')
+            window.location.href = "{{route('company.create')}}"
+        }
+        function editCompany(id){
+            refreshData(id)
+            window.location.href = `/company/${id}/edit`
+        }
+        function refreshData() {
             if(localStorage.getItem('district') != undefined && localStorage.getItem('district') != null){
                 localStorage.removeItem('district')
             }
@@ -96,8 +104,7 @@
             if(localStorage.getItem('district_id') != undefined && localStorage.getItem('district_id') != null) {
                 localStorage.removeItem('district_id')
             }
-
-            window.open("{{route('company.edit', $company->id)}}")
         }
+
     </script>
 @endsection
