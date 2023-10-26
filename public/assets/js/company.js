@@ -8,6 +8,7 @@
     let address_long = document.getElementById('address_long')
     let company_name = document.getElementById('company_name')
     let company_delivery_price = document.getElementById('company_delivery_price')
+    let edit_changed = false
 
     let current_region_index = -1
 
@@ -46,7 +47,8 @@
         region_option.text = item.region
         if(localStorage.getItem('region_id') != undefined && localStorage.getItem('region_id') != null && localStorage.getItem('region_id') == index){
             region_option.selected = true
-        }else if(page == true){
+            edit_changed = true
+        }else if(edit_changed == false){
             if(current_region == item.region){
                 region_option.selected = true
                 current_region_index = index
@@ -109,6 +111,9 @@
                 address_long.value = data[region_id.value].cities[district_id.value].long
                 location.reload()
             })
+            if(page == true){
+                lat_lng = [current_latitude != ''?current_latitude:41.32508826970849, current_longitude != ''?current_longitude:69.32866686970848];
+            }
             if(localStorage.getItem('address_lat') != undefined && localStorage.getItem('address_lat') != null &&
                 localStorage.getItem('address_long') != undefined && localStorage.getItem('address_long') != null){
                 lat_lng = [localStorage.getItem('address_lat'), localStorage.getItem('address_long')];
@@ -141,3 +146,4 @@
         }
     })
 })
+    edit_changed = false

@@ -25,9 +25,9 @@
             <p class="text-muted font-14">
                 {{__('Company update')}}
             </p>
-            <form action="{{route('company.store')}}" class="parsley-examples" method="POST">
+            <form action="{{route('company.update', $company->id)}}" class="parsley-examples" method="POST">
                 @csrf
-                @method("POST")
+                @method("PUT")
                 <div class="row">
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Name')}}</label>
