@@ -12,7 +12,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $category = Category::where('parent_id', 0)->orderBy('created_at', 'desc')->get();
+        $category = Category::where('step', 0)->orderBy('created_at', 'desc')->get();
         return view('admin.category.index', ['categories'=> $category]);
     }
 
@@ -32,6 +32,7 @@ class CategoryController extends Controller
         $model = new Category();
         $model->name = $request->name;
         $model->parent_id = 0;
+        $model->step = 0;
         $model->save();
         return redirect()->route('category.index')->with('status', __('Successfully created'));
     }
@@ -41,7 +42,7 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        $model = Category::find($id);
+        $model = Category::where('step', 0)->find($id);
         return view('admin.category.show', ['model'=>$model]);
     }
 
@@ -50,7 +51,7 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        $category = Category::find($id);
+        $category = Category::where('step', 0)->find($id);
         return view('admin.category.edit', ['category'=> $category]);
     }
 
@@ -59,9 +60,9 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $model = Category::find($id);
+        $model = Category::where('step', 0)->find($id);
         $model->name = $request->name;
-        $model->parent_id = 0;
+        $model->step = 0;
         $model->save();
         return redirect()->route('category.index')->with('status', __('Successfully updated'));
     }
@@ -71,7 +72,7 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        $model = Category::find($id);
+        $model = Category::where('step', 0)->find($id);
         $model->delete();
         return redirect()->route('category.index')->with('status', __('Successfully deleted'));
     }

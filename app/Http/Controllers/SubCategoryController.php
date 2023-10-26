@@ -8,12 +8,15 @@ use Illuminate\Http\Request;
 
 class SubCategoryController extends Controller
 {
+    public $types_sex = [
+        'No sex type', 'Unisex', 'Men', 'Women', 'Boys and girls', 'Boys', 'Girls'
+    ];
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $SubCategory = Category::where('parent_id', '!=', 0)->orderBy('created_at', 'desc')->get();
+        $SubCategory = Category::where('step', 1)->orderBy('created_at', 'desc')->get();
         return view('admin.sub-category.index', ['subcategories'=> $SubCategory]);
     }
 
@@ -22,8 +25,8 @@ class SubCategoryController extends Controller
      */
     public function create()
     {
-        $categories = Category::where('parent_id',  0)->get();
-        return view('admin.sub-category.create', ['categories'=>$categories]);
+        $categories = Category::where('step', 0)->get();
+        return view('admin.sub-category.create', ['categories'=>$categories, 'types_sex'=>$this->types_sex]);
     }
 
     /**
@@ -34,6 +37,7 @@ class SubCategoryController extends Controller
         $model = new Category();
         $model->name = $request->name;
         $model->parent_id = $request->category_id;
+        $model->step = 1;
         $model->save();
         return redirect()->route('subcategory.index')->with('status', __('Successfully created'));
     }
@@ -43,7 +47,7 @@ class SubCategoryController extends Controller
      */
     public function show(string $id)
     {
-        $model = Category::where('parent_id', '!=', 0)->find($id);
+        $model = Category::where('step', 1)->find($id);
         return view('admin.sub-category.show', ['model'=>$model]);
     }
 
@@ -52,9 +56,9 @@ class SubCategoryController extends Controller
      */
     public function edit(string $id)
     {
-        $SubCategory = Category::where('parent_id', '!=', 0)->find($id);
-        $categories = Category::where('parent_id', 0)->get();
-        return view('admin.sub-category.edit', ['subcategory'=> $SubCategory, 'categories'=>$categories]);
+        $SubCategory = Category::where('step', 1)->find($id);
+        $categories = Category::where('step', 0)->get();
+        return view('admin.sub-category.edit', ['subcategory'=>$SubCategory, 'types_sex'=>$this->types_sex, 'categories'=>$categories]);
     }
 
     /**
@@ -62,9 +66,10 @@ class SubCategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $model = Category::where('parent_id', '!=', 0)->find($id);
+        $model = Category::where('step', 1)->find($id);
         $model->name = $request->name;
         $model->parent_id = $request->category_id;
+        $model->step = 1;
         $model->save();
         return redirect()->route('subcategory.index')->with('status', __('Successfully updated'));
     }
@@ -74,8 +79,29 @@ class SubCategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        $model = Category::where('parent_id', '!=', 0)->find($id);
+        $model = Category::where('step', 1)->find($id);
         $model->delete();
         return redirect()->route('subcategory.index')->with('status', __('Successfully deleted'));
+    }
+
+    /**
+     * json responses
+     */
+
+    public function getSubcategory($id)
+    {
+        $model = Category::find($id);
+        if(isset($model->subcategory) && count($model->subcategory)>0){
+            return response()->json([
+                'status'=>true,
+                'data'=>$model->subcategory
+            ]);
+        }else{
+            return response()->json([
+                'status'=>false,
+                'data'=>[]
+            ]);
+        }
+
     }
 }

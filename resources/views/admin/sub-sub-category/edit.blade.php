@@ -16,31 +16,29 @@
                 </div>
             @endif
             <p class="text-muted font-14">
-                {{__('Sub category list create')}}
+                {{__('Sub Sub category list edit')}}
             </p>
-            <form action="{{route('subcategory.store')}}" class="parsley-examples" method="POST">
+            <form action="{{route('subsubcategory.update', $subsubcategory->id)}}" class="parsley-examples" method="POST">
                 @csrf
-                @method("POST")
+                @method("PUT")
                 <div class="row">
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Select sex type')}}</label>
-                        <select name="name" class="form-control" required>
-                            @foreach($types_sex as $type_sex)
-                                <option value="{{$type_sex}}">{{$type_sex}}</option>
-                            @endforeach
-                        </select>
+                        <label class="form-label">{{__('Name')}}</label>
+                        <input type="text" class="form-control" name="name" value="{{old('name')}}">
                     </div>
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('category')}}</label>
+                        <label class="form-label">{{__('Sub Category')}}</label>
                         <select name="category_id" class="form-control" required>
-                            @foreach($categories as $category)
-                                <option value="{{$category->id}}">{{$category->name}}</option>
-                            @endforeach
+                            @if(isset($subcategory->category->id))
+                                @foreach($categories as $category)
+                                    <option {{$subcategory->category->id == $category->id?'selected':''}} value="{{$category->id}}">{{$category->name}}</option>
+                                @endforeach
+                            @endif
                         </select>
                     </div>
                 </div>
                 <div>
-                    <button type="submit" class="btn btn-primary waves-effect waves-light">{{__('Create')}}</button>
+                    <button type="submit" class="btn btn-primary waves-effect waves-light">{{__('Update')}}</button>
                     <button type="reset" class="btn btn-secondary waves-effect">{{__('Cancel')}}</button>
                 </div>
             </form>

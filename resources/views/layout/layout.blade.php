@@ -449,18 +449,31 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('category.index') }}">
+                            <a href="#categoryMenus" data-bs-toggle="collapse">
                                 <i class="mdi mdi-format-list-bulleted"></i>
                                 <span> {{ __('Category') }} </span>
+                                <span class="menu-arrow"></span>
                             </a>
+                            <div class="collapse" id="categoryMenus">
+                                <ul class="nav-second-level">
+                                    <li>
+                                        <a href="{{ route('category.index') }}">
+                                            <span> {{ __('Category') }} </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('subcategory.index') }}">
+                                            <span> {{ __('Sub Category') }} </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('subsubcategory.index') }}">
+                                            <span> {{ __('Sub Sub Category') }} </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
-                        <li>
-                            <a href="{{ route('subcategory.index') }}">
-                                <i class="mdi mdi-format-list-bulleted"></i>
-                                <span> {{ __('Sub Category') }} </span>
-                            </a>
-                        </li>
-                        <li>
                     </ul>
 
                 </div>

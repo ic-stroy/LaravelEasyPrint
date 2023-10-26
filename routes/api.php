@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\SubCategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,5 +19,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('subcategory/{id}', [ProductsController::class, 'getSubcategory'])->name('get_subcategory');
+//Route::get('subcategory/{id}', [ProductsController::class, 'getSubcategory'])->name('get_subcategory');
+Route::get('subcategory/{id}', [SubCategoryController::class, 'getSubcategory'])->name('get_subcategory');
 

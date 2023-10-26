@@ -12,7 +12,20 @@ class Category extends Model
 
     public $table = 'categories';
 
+    protected $fillable = [
+      'id',
+      'name',
+      'parent_id',
+      'step',  //0 Category  1 Subcategory  2 SubSubCategory
+    ];
+
+    public function subcategory(){
+        return $this->hasmany(Category::class, 'parent_id', 'id')->where('step', 1);
+    }
     public function category(){
-        return $this->hasOne(Category::class, 'id', 'parent_id');
+        return $this->hasone(Category::class, 'id', 'parent_id')->where('step', 0);
+    }
+    public function subsubcategory(){
+        return $this->hasmany(Category::class, 'parent_id', 'id')->where('step', 2);
     }
 }
