@@ -16,7 +16,10 @@ return new class extends Migration
             $table->string('name', 100)->nullable();
             $table->float('longitude')->nullable();
             $table->float('latitude')->nullable();
+            $table->renameColumn('name', 'region')->nullable();
+            $table->string('district')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -1,4 +1,4 @@
-@extends('layout.layout')
+@extends('company.layout.layout')
 
 @section('title')
     {{-- Your page title --}}
@@ -8,17 +8,19 @@
         <div class="card-body">
             <h4 class="mt-0 header-title">{{__('Products lists')}}</h4>
             <div class="dropdown float-end">
-                <a class="form_functions btn btn-success" href="{{route('product.create')}}">{{__('Create')}}</a>
+                <a class="form_functions btn btn-success" href="{{route('company_product.create')}}">{{__('Create')}}</a>
             </div>
             <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap">
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>{{__('Images')}}</th>
                         <th>{{__('Name')}}</th>
                         <th>{{__('Subcategory')}}</th>
+                        <th>{{__('Color')}}</th>
+                        <th>{{__('Size')}}</th>
                         <th>{{__('Sum')}}</th>
-                        <th>{{__('Images')}}</th>
-                        <th>{{__('Updated_at')}}</th>
+                        <th>{{__('Quentity')}}</th>
                         <th class="text-center">{{__('Functions')}}</th>
                     </tr>
                 </thead>
@@ -32,33 +34,10 @@
                         @endphp
                         <tr>
                             <th scope="row">
-                                <a class="show_page" href="{{route('product.show', $product->id)}}">{{$i}}</a>
+                                <a class="show_page" href="{{route('company_product.show', $product->id)}}">{{$i}}</a>
                             </th>
                             <td>
-                                <a class="show_page" href="{{route('product.show', $product->id)}}">
-                                    @if(isset($product->name))
-                                        @if(strlen($product->name)>34)
-                                            {{ substr($product->name, 0, 34) }}...
-                                        @else
-                                            {{$product->name}}
-                                        @endif
-                                    @else
-                                        <div class="no_text"></div>
-                                    @endif
-                                </a>
-                            </td>
-                            <td>
-                                <a class="show_page" href="{{route('product.show', $product->id)}}">
-                                    @if(isset($product->subCategory->name)){{ $product->subCategory->name }}@else <div class="no_text"></div> @endif
-                                </a>
-                            </td>
-                            <td>
-                                <a class="show_page" href="{{route('product.show', $product->id)}}">
-                                    @if(isset($product->sum)){{ $product->sum }}@else <div class="no_text"></div> @endif
-                                </a>
-                            </td>
-                            <td>
-                                <a class="show_page_color" href="{{route('product.show', $product->id)}}">
+                                <a class="show_page_color" href="{{route('company_product.show', $product->id)}}">
                                     <div class="d-flex">
                                         @if(isset($product->images))
                                             @php
@@ -84,13 +63,46 @@
                                 </a>
                             </td>
                             <td>
-                                <a class="show_page" href="{{route('product.show', $product->id)}}">
-                                    @if(isset($product->updated_at)){{ $product->updated_at }}@else <div class="no_text"></div> @endif
+                                <a class="show_page" href="{{route('company_product.show', $product->id)}}">
+                                    @if(isset($product->name))
+                                        @if(strlen($product->name)>34)
+                                            {{ substr($product->name, 0, 34) }}...
+                                        @else
+                                            {{$product->name}}
+                                        @endif
+                                    @else
+                                        <div class="no_text"></div>
+                                    @endif
+                                </a>
+                            </td>
+                            <td>
+                                <a class="show_page" href="{{route('company_product.show', $product->id)}}">
+                                    @if(isset($product->subCategory->name)){{ $product->subCategory->name }}@else <div class="no_text"></div> @endif
+                                </a>
+                            </td>
+                            <td>
+                                <a class="show_page" href="{{route('company_product.show', $product->id)}}">
+                                    @if(isset($product->subCategory->name)){{ $product->subCategory->name }}@else <div class="no_text"></div> @endif
+                                </a>
+                            </td>
+                            <td>
+                                <a class="show_page" href="{{route('company_product.show', $product->id)}}">
+                                    @if(isset($product->subCategory->name)){{ $product->subCategory->name }}@else <div class="no_text"></div> @endif
+                                </a>
+                            </td>
+                            <td>
+                                <a class="show_page" href="{{route('company_product.show', $product->id)}}">
+                                    @if(isset($product->subCategory->name)){{ $product->subCategory->name }}@else <div class="no_text"></div> @endif
+                                </a>
+                            </td>
+                            <td>
+                                <a class="show_page" href="{{route('company_product.show', $product->id)}}">
+                                    @if(isset($product->sum)){{ $product->sum }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td class="function_column">
                                 <div class="d-flex justify-content-center">
-                                    <a class="form_functions btn btn-info" href="{{route('product.edit', $product->id)}}"><i class="fe-edit-2"></i></a>
+                                    <a class="form_functions btn btn-info" href="{{route('company_product.edit', $product->id)}}"><i class="fe-edit-2"></i></a>
                                     <form action="{{route('product.destroy', $product->id)}}" method="POST">
                                         @csrf
                                         @method('DELETE')
