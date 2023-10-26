@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\HomeController;
 use \App\Http\Controllers\Company\CompanyHomeController;
+use \App\Http\Controllers\Company\CompanyProductsController;
+use \App\Http\Controllers\Company\CompanyUsersController;
 use \App\Http\Controllers\UsersController;
 use \App\Http\Controllers\CategoryController;
 use \App\Http\Controllers\SubCategoryController;
@@ -41,7 +43,24 @@ Route::group(['middleware'=>'authed'], function(){
 });
 Route::group(['middleware'=>'company_auth'], function (){
     Route::group(['prefix' => 'companies'], function () {
+
         Route::get('/', [CompanyHomeController::class, 'index'])->name('company_dashboard');
+
+        Route::group(['prefix' => 'product'], function () {
+            Route::get('/', [CompanyProductsController::class, 'index'])->name('company_product.index');
+            Route::get('/show/{id}', [CompanyProductsController::class, 'show'])->name('company_product.show');
+            Route::get('/edit/{id}', [CompanyProductsController::class, 'edit'])->name('company_product.edit');
+            Route::get('/create', [CompanyProductsController::class, 'create'])->name('company_product.create');
+        });
+        Route::group(['prefix' => 'user'], function () {
+            Route::get('/', [CompanyUsersController::class, 'index'])->name('company_user.index');
+            Route::get('/show/{id}', [CompanyUsersController::class, 'show'])->name('company_user.show');
+            Route::get('/edit/{id}', [CompanyUsersController::class, 'edit'])->name('company_user.edit');
+            Route::get('/create', [CompanyUsersController::class, 'create'])->name('company_user.create');
+        });
+
+        // Route::resource('product', CompanyProductsController::class);
+
         // Route::get('/home', [HomeController::class, 'index'])->name('home');
         // Route::resource('color', ColorController::class);
         // Route::resource('size', SizesController::class);

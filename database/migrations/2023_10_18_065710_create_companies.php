@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('address_id')->unsigned()->nullable();
             $table->double('delivery_price')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
