@@ -39,7 +39,7 @@
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('subsubcategory.show', $subsubcategory->id)}}">
-                                    @if(isset($subsubcategory->category->name)){{ $subsubcategory->category->name }}@else <div class="no_text"></div> @endif
+                                    @if(isset($subsubcategory->sub_category->name)){{ $subsubcategory->sub_category->name }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>

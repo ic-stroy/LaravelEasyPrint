@@ -22,6 +22,9 @@ class Category extends Model
     public function subcategory(){
         return $this->hasmany(Category::class, 'parent_id', 'id')->where('step', 1);
     }
+    public function sub_category(){
+        return $this->hasone(Category::class, 'id', 'parent_id')->where('step', 1);
+    }
     public function category(){
         return $this->hasone(Category::class, 'id', 'parent_id')->where('step', 0);
     }

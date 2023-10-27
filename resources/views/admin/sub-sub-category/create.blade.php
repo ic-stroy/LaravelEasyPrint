@@ -42,7 +42,7 @@
                     </div>
                     <div class="mb-3 col-6 display-none" id="subcategory_exists">
                         <label class="form-label">{{__('Sub category')}}</label>
-                        <select id="subcategory_id" name="category_id" class="form-control" required>
+                        <select id="subcategory_id" name="subcategory_id" class="form-control" required>
 
                         </select>
                     </div>

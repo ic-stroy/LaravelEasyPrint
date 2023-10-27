@@ -57,8 +57,12 @@ class SubSubCategoryController extends Controller
     public function edit(string $id)
     {
         $SubSubCategory = Category::where('step', 2)->find($id);
-        $subcategories = Category::where('step', 1)->get();
-        return view('admin.sub-sub-category.edit', ['subsubcategory'=>$SubSubCategory, 'subcategories'=>$subcategories]);
+        $subcategories = Category::select('parent_id')->where('step', 1)->groupBy('parent_id')->distinct()->get();
+        foreach ($subcategories as $subcategory){
+            $category_ids[] = $subcategory->parent_id;
+        }
+        $categories = Category::whereIn('id', $category_ids)->get();
+        return view('admin.sub-sub-category.edit', ['subsubcategory'=>$SubSubCategory, 'categories'=>$categories]);
     }
 
     /**
@@ -68,7 +72,7 @@ class SubSubCategoryController extends Controller
     {
         $model = Category::where('step', 2)->find($id);
         $model->name = $request->name;
-        $model->parent_id = $request->category_id;
+        $model->parent_id = $request->subcategory_id;
         $model->step = 2;
         $model->save();
         return redirect()->route('subsubcategory.index')->with('status', __('Successfully updated'));
