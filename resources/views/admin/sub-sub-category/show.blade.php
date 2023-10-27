@@ -24,7 +24,11 @@
                     </tr>
                     <tr>
                         <th>{{__('Category')}}</th>
-                        <td>{{$model->category?$model->category->name:''}}</td>
+                        <td>{{isset($model->sub_category->category->name)?$model->sub_category->category->name:''}}</td>
+                    </tr>
+                    <tr>
+                        <th>{{__('Sub category')}}</th>
+                        <td>{{isset($model->sub_category->name)?$model->sub_category->name:''}}</td>
                     </tr>
                     <tr>
                         <th>{{__('Updated at')}}</th>
