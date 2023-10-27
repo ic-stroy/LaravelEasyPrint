@@ -8,6 +8,8 @@
     let address_long = document.getElementById('address_long')
     let company_name = document.getElementById('company_name')
     let company_delivery_price = document.getElementById('company_delivery_price')
+    let first_name = document.getElementById('first_name')
+    let last_name = document.getElementById('last_name')
     let edit_changed = false
 
     let current_region_index = -1
@@ -29,18 +31,38 @@
         address_long.value = localStorage.getItem('address_long')
         document.getElementById('label_longitude').innerText = localStorage.getItem('address_long')
     }
-    if(localStorage.getItem('company_delivery_price') != undefined && localStorage.getItem('company_delivery_price') != null){
-        company_delivery_price.value = localStorage.getItem('company_delivery_price')
+    if(company_delivery_price != undefined && company_delivery_price != null){
+        if(localStorage.getItem('company_delivery_price') != undefined && localStorage.getItem('company_delivery_price') != null){
+            company_delivery_price.value = localStorage.getItem('company_delivery_price')
+        }
+        company_delivery_price.addEventListener('change', function () {
+            localStorage.setItem('company_delivery_price', company_delivery_price.value)
+        })
     }
-    if(localStorage.getItem('company_name') != undefined && localStorage.getItem('company_name') != null){
-        company_name.value = localStorage.getItem('company_name')
+    if(company_name != undefined && company_name != null) {
+        if (localStorage.getItem('company_name') != undefined && localStorage.getItem('company_name') != null) {
+            company_name.value = localStorage.getItem('company_name')
+        }
+        company_name.addEventListener('change', function () {
+            localStorage.setItem('company_name', company_name.value)
+        })
     }
-    company_name.addEventListener('change', function () {
-        localStorage.setItem('company_name', company_name.value)
-    })
-    company_delivery_price.addEventListener('change', function () {
-        localStorage.setItem('company_delivery_price', company_delivery_price.value)
-    })
+    if(first_name != undefined && first_name != null) {
+        if (localStorage.getItem('first_name') != undefined && localStorage.getItem('first_name') != null) {
+            first_name.value = localStorage.getItem('first_name')
+        }
+        first_name.addEventListener('change', function () {
+            localStorage.setItem('first_name', first_name.value)
+        })
+    }
+    if(last_name != undefined && last_name != null) {
+        if (localStorage.getItem('last_name') != undefined && localStorage.getItem('last_name') != null) {
+            last_name.value = localStorage.getItem('last_name')
+        }
+        last_name.addEventListener('change', function () {
+            localStorage.setItem('last_name', last_name.value)
+        })
+    }
     function addOption(item, index){
         let region_option = document.createElement('option')
         region_option.value = index

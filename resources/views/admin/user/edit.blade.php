@@ -4,6 +4,13 @@
     {{-- Your page title --}}
 @endsection
 @section('content')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+    <style>
+        .google_maps{
+            height: 400px;
+            width: 100%;
+        }
+    </style>
     <div class="card">
         <div class="card-body">
             <p class="text-muted font-14">
@@ -29,6 +36,20 @@
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Last name')}}</label>
                         <input type="text" class="form-control" name="last_name" value="{{$user->personalInfo?$user->personalInfo->last_name:''}}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Region')}}</label>
+                        <select name="region_id" class="form-control" id="region_id" required>
+                            <option disabled selected>{{__('Select region')}}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('District')}}</label>
+                        <select name="district_id" class="form-control" id="district_id" required>
+                            <option disabled selected>{{__('Select district')}}</option>
+                        </select>
                     </div>
                 </div>
                 <div class="row">
@@ -71,15 +92,13 @@
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">
-                        <div class="mb-3 col-6">
-                            <label for="role" class="form-label">{{__("Users' role")}}</label><br>
-                            <select id="role_id" class="form-select" name="role_id">
-                                <option value="">{{__('Choose..')}}</option>
-                                <option value="0" {{$user->role_id==0?'selected':''}}>{{__('Stuff')}}</option>
-                                <option value="1" {{$user->role_id==1?'selected':''}}>{{__('Seller')}}</option>
-                                <option value="2" {{$user->role_id==2?'selected':''}}>{{__('User')}}</option>
-                            </select>
-                        </div>
+                        <label for="role" class="form-label">{{__("Users' role")}}</label><br>
+                        <select id="role_id" class="form-select" name="role_id">
+                            <option value="" disabled selected>{{__('Choose..')}}</option>
+                            @foreach($roles as $role)
+                                <option value="{{$role->id}}">{{$role->name}}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Birth date')}}</label>
@@ -105,11 +124,38 @@
                     <label class="form-label">{{__('Password confirmation')}}</label>
                     <input type="password" class="form-control" name="password_confirmation" value=""/>
                 </div>
-                <div>
+                <div class="form-group google-map-lat-lng">
+                    <div>
+                        <label for="map">{{__('Select a location')}}</label>
+                    </div>
+                    <div>
+                        <span>Lat: <b id="label_latitude">{{$user->address->latitude??''}}</b></span>&nbsp;&nbsp;
+                        <span>Lng: <b id="label_longitude">{{$user->address->longitude??''}}</b></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div id="map" class="google_maps"></div>
+                </div>
+                <input type="hidden" name="region" id="region" value="{{$user->address->region??''}}">
+                <input type="hidden" name="district" id="district" value="{{$user->address->district??''}}">
+                <input type="hidden" name="address_lat" id="address_lat" value="{{$user->address->latitude??''}}">
+                <input type="hidden" name="address_long" id="address_long" value="{{$user->address->longitude??''}}">
+                <div class="mt-2">
                     <button type="submit" class="btn btn-primary waves-effect waves-light">{{__('Update')}}</button>
                     <button type="reset" class="btn btn-secondary waves-effect">{{__('Cancel')}}</button>
                 </div>
             </form>
         </div>
     </div>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
+    <script>
+        let page = true
+        let current_region = "{{$user->address->region??''}}"
+        let current_district = "{{$user->address->district??''}}"
+        let current_latitude = "{{$user->address->latitude??''}}"
+        let current_longitude = "{{$user->address->longitude??''}}"
+    </script>
+    <script src="{{asset('assets/js/company.js')}}"></script>
+
 @endsection

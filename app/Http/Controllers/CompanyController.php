@@ -94,7 +94,9 @@ class CompanyController extends Controller
         $model = Company::find($id);
         $address = $model->address;
         $model->delete();
-        $address->delete();
+        if(isset($address->id)){
+            $address->delete();
+        }
         return redirect()->route('company.index')->with('status', __('Successfully deleted'));
     }
 }
