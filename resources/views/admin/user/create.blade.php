@@ -86,7 +86,7 @@
                         <select id="address_id" class="form-select" name="address_id">
                             <option value="">{{__('Choose..')}}</option>
                             @foreach($addresses as $address)
-                                <option value="{{$address->id}}" {{old('address_id')==$address->id??'selected'}}>{{$address->name}}</option>
+                                <option value="{{$address->id}}" {{old('address_id')==$address->id??'selected'}}>{{$address->region ?? " " }} {{$address->district ?? " " }}</option>
                             @endforeach
                         </select>
                     </div>

@@ -31,7 +31,7 @@ class UsersController extends Controller
     public function create()
     {
         $companies = Company::all();
-        $addresses = Address::select('id', 'name')->get();
+        $addresses = Address::select('id', 'district','region')->get();
         $roles = Role::select('id', 'name')->get();
         return view('admin.user.create', ['roles'=>$roles, 'companies'=>$companies, 'addresses'=>$addresses]);
     }
