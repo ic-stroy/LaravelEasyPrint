@@ -42,11 +42,6 @@
                 <div class="mb-3 display-none" id="subcategory_exists">
                     <label class="form-label">{{__('Sub category')}}</label>
                     <select name="subcategory_id" class="form-control" id="subcategory_id" required>
-                        @if(isset($firstcategory->subCategory))
-                            @foreach($firstcategory->subCategory as $subcategory)
-                                <option value="{{$subcategory->id}}">{{$subcategory->name}}</option>
-                            @endforeach
-                        @endif
                     </select>
                 </div>
                 <div class="mb-3">
@@ -86,6 +81,8 @@
             option.value = item.id
             option.text = item.name
             subcategory_id.add(option)
+            <option value="" selected disabled>{{__('Select sub category')}}</option>
+
         }
         category_id.addEventListener('change', function () {
             subcategory_id.innerHTML = ""

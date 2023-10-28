@@ -12,7 +12,6 @@ use \App\Http\Controllers\SubSubCategoryController;
 use \App\Http\Controllers\ColorController;
 use \App\Http\Controllers\SizesController;
 use \App\Http\Controllers\ProductsController;
-use \App\Http\Controllers\AddressController;
 use \App\Http\Controllers\RoleController;
 use \App\Http\Controllers\CompanyController;
 
@@ -40,7 +39,6 @@ Route::group(['middleware'=>'authed'], function(){
     Route::resource('company', CompanyController::class);
     Route::resource('subcategory', SubCategoryController::class);
     Route::resource('subsubcategory', SubSubCategoryController::class);
-    Route::resource('address', AddressController::class);
     Route::resource('role', RoleController::class);
 });
 Route::group(['middleware'=>'company_auth'], function (){

@@ -96,7 +96,7 @@
                         <select id="role_id" class="form-select" name="role_id">
                             <option value="" disabled selected>{{__('Choose..')}}</option>
                             @foreach($roles as $role)
-                                <option value="{{$role->id}}">{{$role->name}}</option>
+                                <option {{$user->role_id == $role->id?'selected':''}} value="{{$role->id}}">{{$role->name}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -122,7 +122,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">{{__('Password confirmation')}}</label>
-                    <input type="password" class="form-control" name="password_confirmation" value=""/>
+                    <input type="password" class="form-control" name="new_password_confirmation" value=""/>
                 </div>
                 <div class="form-group google-map-lat-lng">
                     <div>

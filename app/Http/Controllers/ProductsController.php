@@ -24,7 +24,7 @@ class ProductsController extends Controller
      */
     public function create()
     {
-        $subcategories = Category::where('parent_id', '!=', 0)->get();
+        $subcategories = Category::where('parent_id', 1)->get();
         $categories = Category::where('parent_id', 0)->orderBy('id', 'asc')->get();
         $firstcategory = Category::where('parent_id', 0)->orderBy('id', 'asc')->first();
         $colors = Color::all();

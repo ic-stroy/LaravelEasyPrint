@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
 use App\Models\Company;
 use App\Models\PersonalInfo;
 use Illuminate\Http\Request;
@@ -38,7 +39,7 @@ class UsersController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
         $personal_info = new PersonalInfo();
         $personal_info->first_name = $request->first_name;
@@ -54,7 +55,7 @@ class UsersController extends Controller
         $model = new User();
         $model->email =  $request->email;
         $model->password = Hash::make($request->password);
-        $model->role_id = (int)$request->role_id;
+        $model->role_id = $request->role_id;
         $model->personal_info_id = $personal_info->id;
         $model->phone_number = $request->phone_number;
         $model->language = 'ru';
@@ -125,36 +126,34 @@ class UsersController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UserRequest $request, string $id)
     {
         $model = User::find($id);
         if(isset($model->personalInfo)){
             $personal_info = $model->personalInfo;
-            $personal_info->first_name = $request->first_name;
-            $personal_info->last_name = $request->last_name;
-            $personal_info->middle_name = $request->middle_name;
-            $personal_info->phone_number = $request->phone_number;
-            $file = $request->file('avatar');
-            $this->imageSave($file, $personal_info, 'update');
-            $personal_info->gender = $request->gender;
-            $personal_info->birth_date = $request->birth_date;
-            $personal_info->save();
         }else{
             $personal_info = new PersonalInfo();
-            $personal_info->first_name = $request->first_name;
-            $personal_info->last_name = $request->last_name;
-            $personal_info->middle_name = $request->middle_name;
-            $personal_info->phone_number = $request->phone_number;
-            $file = $request->file('avatar');
-            $this->imageSave($file, $personal_info, 'store');
-            $personal_info->gender = $request->gender;
-            $personal_info->birth_date = $request->birth_date;
-            $personal_info->save();
         }
+        $personal_info->first_name = $request->first_name;
+        $personal_info->last_name = $request->last_name;
+        $personal_info->middle_name = $request->middle_name;
+        $personal_info->phone_number = $request->phone_number;
+        $file = $request->file('avatar');
+        $this->imageSave($file, $personal_info, 'update');
+        $personal_info->gender = $request->gender;
+        $personal_info->birth_date = $request->birth_date;
+        $personal_info->save();
 
         $model->email =  $request->email;
-        $model->password = Hash::make($request->password);
-        $model->role_id = (int)$request->role_id;
+        if (isset($request->new_password) && isset($request->password)) {
+            if(!password_verify($request->password, $model->password)){
+                return redirect()->back()->with('error_status', __('Your password is incorrect'));
+            }
+            if ($request->new_password == $request->new_password_confirmation) {
+                $model->password = Hash::make($request->new_password);
+            }
+        }
+        $model->role_id = $request->role_id;
         $model->personal_info_id = $personal_info->id;
         $model->phone_number = $request->phone_number;
         $model->language = 'ru';
@@ -165,6 +164,7 @@ class UsersController extends Controller
         }else{
             $address = new Address();
         }
+
         $address->region = $request->region;
         $address->district = $request->district;
         $address->latitude = $request->address_lat;

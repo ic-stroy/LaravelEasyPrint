@@ -407,12 +407,6 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('address.index') }}">
-                                <i class="mdi mdi-file-document-outline"></i>
-                                <span> {{ __('Address') }} </span>
-                            </a>
-                        </li>
-                        <li>
                             <a href="{{ route('company.index') }}">
                                 <i class="mdi mdi-bank-outline"></i>
                                 <span> {{ __('Company') }} </span>
@@ -957,6 +951,10 @@
             let sessionSuccess ="{{session('status')}}";
             if(sessionSuccess){
                 toastr.success(sessionSuccess)
+            }
+            let sessionError ="{{session('error_status')}}";
+            if(sessionError){
+                toastr.warning(sessionError)
             }
             {{--let language = '{{ $locale }}'--}}
             let uz = `{{ asset('/assets/images/language/region.png') }}`
