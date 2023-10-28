@@ -31,9 +31,8 @@ class UsersController extends Controller
     public function create()
     {
         $companies = Company::all();
-        $addresses = Address::select('id', 'district','region')->get();
         $roles = Role::select('id', 'name')->get();
-        return view('admin.user.create', ['roles'=>$roles, 'companies'=>$companies, 'addresses'=>$addresses]);
+        return view('admin.user.create', ['roles'=>$roles, 'companies'=>$companies]);
     }
 
     /**
@@ -60,7 +59,15 @@ class UsersController extends Controller
         $model->phone_number = $request->phone_number;
         $model->language = 'ru';
         $model->company_id = $request->company_id;
-        $model->address_id = $request->address_id;
+
+        $address = new Address();
+        $address->region = $request->region;
+        $address->district = $request->district;
+        $address->latitude = $request->address_lat;
+        $address->longitude = $request->address_long;
+        $address->save();
+
+        $model->address_id = $address->id;
         $model->save();
 
         return redirect()->route('user.index')->with('status', __('Successfully created'));
@@ -106,12 +113,12 @@ class UsersController extends Controller
     public function edit(string $id)
     {
         $companies = Company::all();
-        $addresses = Address::select('id', 'name')->get();
         $user = User::find($id);
+        $roles = Role::select('id', 'name')->get();
         return view('admin.user.edit', [
             'user' => $user,
-            'companies'=>$companies,
-            'addresses'=>$addresses
+            'roles' => $roles,
+            'companies'=>$companies
         ]);
     }
 
@@ -152,7 +159,18 @@ class UsersController extends Controller
         $model->phone_number = $request->phone_number;
         $model->language = 'ru';
         $model->company_id = $request->company_id;
-        $model->address_id = $request->address_id;
+
+        if(isset($model->address->id)){
+            $address = $model->address;
+        }else{
+            $address = new Address();
+        }
+        $address->region = $request->region;
+        $address->district = $request->district;
+        $address->latitude = $request->address_lat;
+        $address->longitude = $request->address_long;
+        $address->save();
+        $model->address_id = $address->id;
         $model->save();
         return redirect()->route('user.index')->with('status', __('Successfully updated'));
     }
@@ -202,7 +220,11 @@ class UsersController extends Controller
             unlink($sms_avatar);
         }
 
+        $address = $model->address;
         $model->delete();
+        if(isset($address->id)){
+            $address->delete();
+        }
         return redirect()->route('user.index')->with('status', __('Successfully deleted'));
     }
 

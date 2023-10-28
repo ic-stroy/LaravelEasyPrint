@@ -79,6 +79,7 @@
     <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
     <script>
         let page = false
+        let current_region = ''
     </script>
     <script src="{{asset('assets/js/company.js')}}"></script>
 @endsection
