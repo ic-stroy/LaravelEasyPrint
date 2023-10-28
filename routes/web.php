@@ -5,6 +5,7 @@ use \App\Http\Controllers\HomeController;
 use \App\Http\Controllers\Company\CompanyHomeController;
 use \App\Http\Controllers\Company\CompanyProductsController;
 use \App\Http\Controllers\Company\CompanyUsersController;
+use \App\Http\Controllers\Company\CompanyCouponController;
 use \App\Http\Controllers\UsersController;
 use \App\Http\Controllers\CategoryController;
 use \App\Http\Controllers\SubCategoryController;
@@ -57,6 +58,16 @@ Route::group(['middleware'=>'company_auth'], function (){
             Route::get('/show/{id}', [CompanyUsersController::class, 'show'])->name('company_user.show');
             Route::get('/edit/{id}', [CompanyUsersController::class, 'edit'])->name('company_user.edit');
             Route::get('/create', [CompanyUsersController::class, 'create'])->name('company_user.create');
+        });
+
+
+        Route::group(['prefix' => 'coupon'], function () {
+            Route::get('/', [CompanyCouponController::class, 'index'])->name('company_coupon.index');
+            Route::get('/create', [CompanyCouponController::class, 'create'])->name('company_coupon.create');
+
+            // Route::get('/show/{id}', [CompanyCouponController::class, 'show'])->name('company_user.show');
+            // Route::get('/edit/{id}', [CompanyCouponController::class, 'edit'])->name('company_user.edit');
+            // Route::get('/create', [CompanyCouponController::class, 'create'])->name('company_user.create');
         });
 
         // Route::resource('product', CompanyProductsController::class);

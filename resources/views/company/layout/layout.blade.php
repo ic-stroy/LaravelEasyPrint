@@ -430,7 +430,7 @@
                                         <a href="{{route('address.index')}}">{{ __('Attribute') }}</a>
                                     </li>
                                     <li>
-                                        <a href="{{route('address.index')}}">{{ __('Coupon') }}</a>
+                                        <a href="{{route('company_coupon.index')}}">{{ __('Coupon') }}</a>
                                     </li>
                                     <li>
                                         <a href="{{route('address.index')}}">{{ __('Size') }}</a>
@@ -443,29 +443,11 @@
                         </li>
 
                         <li>
-                            <a href="#user" data-bs-toggle="collapse">
-                                <i class="mdi mdi-account-star-outline"></i>
-                                <span> {{ __('User') }} </span>
-                                <span class="menu-arrow"></span>
-                            </a>
-                            <div class="collapse" id="user">
-                                <ul class="nav-second-level">
-                                    <li>
-                                        <a href="{{route('company_user.index')}}">{{ __('Staff') }}</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{route('company_user.index')}}">{{ __('Client') }}</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-
-                        {{-- <li>
-                            <a href="{{ route('user.index') }}">
+                            <a href="{{ route('company_user.index') }}">
                                 <i class="mdi mdi-account-star-outline"></i>
                                 <span> {{ __('Users') }} </span>
                             </a>
-                        </li> --}}
+                        </li>
                         <li>
                             <a href="{{ route('role.index') }}">
                                 <i class="mdi mdi-account-check-outline"></i>
