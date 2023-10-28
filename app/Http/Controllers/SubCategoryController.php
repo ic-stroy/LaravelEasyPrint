@@ -90,11 +90,11 @@ class SubCategoryController extends Controller
 
     public function getSubcategory($id)
     {
-        $model = Category::find($id);
-        if(isset($model->subcategory) && count($model->subcategory)>0){
+        $model = Category::where('parent_id', $id)->get();
+        if(isset($model) && count($model)>0){
             return response()->json([
                 'status'=>true,
-                'data'=>$model->subcategory
+                'data'=>$model
             ]);
         }else{
             return response()->json([

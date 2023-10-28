@@ -44,6 +44,11 @@
                     <select name="subcategory_id" class="form-control" id="subcategory_id" required>
                     </select>
                 </div>
+                <div class="mb-3 display-none" id="subsubcategory_exists">
+                    <label class="form-label">{{__('Sub category')}}</label>
+                    <select name="subsubcategory_id" class="form-control" id="subsubcategory_id" required>
+                    </select>
+                </div>
                 <div class="mb-3">
                     <label class="form-label">{{__('Sum')}}</label>
                     <input type="number" name="sum" class="form-control" required value="{{old('sum')}}"/>
@@ -70,18 +75,19 @@
         let sizes_leg = document.getElementById('sizes_leg')
 
         let subcategory_exists = document.getElementById('subcategory_exists')
+        let subsubcategory_exists = document.getElementById('subsubcategory_exists')
 
         let sub_category = {}
 
         let category_id = document.getElementById('category_id')
         let subcategory_id = document.getElementById('subcategory_id')
+        let subsubcategory_id = document.getElementById('subsubcategory_id')
 
         function addOption(item, index){
             let option = document.createElement('option')
             option.value = item.id
             option.text = item.name
             subcategory_id.add(option)
-            <option value="" selected disabled>{{__('Select sub category')}}</option>
 
         }
         category_id.addEventListener('change', function () {
@@ -95,12 +101,50 @@
                             if(subcategory_exists.classList.contains('display-none')){
                                 subcategory_exists.classList.remove('display-none')
                             }
+                            if(!subsubcategory_exists.classList.contains('display-none')){
+                                subsubcategory_exists.classList.add('display-none')
+                            }
                         }else{
                             if(!subcategory_exists.classList.contains('display-none')){
                                 subcategory_exists.classList.add('display-none')
                             }
+                            if(!subsubcategory_exists.classList.contains('display-none')){
+                                subsubcategory_exists.classList.add('display-none')
+                            }
                         }
+                        let disabled_option = document.createElement('option')
+                        disabled_option.text = "{{__('Select sub category')}}"
+                        disabled_option.selected = true
+                        disabled_option.disabled = true
+                        subcategory_id.add(disabled_option)
                         data.data.forEach(addOption)
+                    }
+                })
+            })
+        })
+        function addSubOption(item, index){
+            let option = document.createElement('option')
+            option.value = item.id
+            option.text = item.name
+            subsubcategory_id.add(option)
+        }
+        subcategory_id.addEventListener('change', function () {
+            subsubcategory_id.innerHTML = ""
+            $(document).ready(function () {
+                $.ajax({
+                    url:`/../api/subcategory/${subcategory_id.value}`,
+                    type:'GET',
+                    success: function (data) {
+                        if(data.status == true){
+                            if(subsubcategory_exists.classList.contains('display-none')){
+                                subsubcategory_exists.classList.remove('display-none')
+                            }
+                        }else{
+                            if(!subsubcategory_exists.classList.contains('display-none')){
+                                subsubcategory_exists.classList.add('display-none')
+                            }
+                        }
+                        data.data.forEach(addSubOption)
                     }
                 })
             })
