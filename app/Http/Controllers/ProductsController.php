@@ -38,9 +38,14 @@ class ProductsController extends Controller
     {
         $model = new Products();
         $model->name = $request->name;
-        $model->subcategory_id = $request->subcategory_id;
-        $model->sum = $request->sum;
-        $model->company = $request->company;
+        if(isset($request->subsubcategory_id)){
+            $model->category_id = $request->subsubcategory_id;
+        }elseif($request->subcategory_id){
+            $model->category_id = $request->subcategory_id;
+        }else{
+            $model->category_id = $request->category_id;
+        }
+        $model->status = $request->status;
         $images = $request->file('images');
         if(isset($request->images)){
             foreach ($images as $image){

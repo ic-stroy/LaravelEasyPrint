@@ -41,25 +41,26 @@
                 </div>
                 <div class="mb-3 display-none" id="subcategory_exists">
                     <label class="form-label">{{__('Sub category')}}</label>
-                    <select name="subcategory_id" class="form-control" id="subcategory_id" required>
+                    <select name="subcategory_id" class="form-control" id="subcategory_id">
                     </select>
                 </div>
                 <div class="mb-3 display-none" id="subsubcategory_exists">
-                    <label class="form-label">{{__('Sub category')}}</label>
-                    <select name="subsubcategory_id" class="form-control" id="subsubcategory_id" required>
+                    <label class="form-label">{{__('Sub Sub category')}}</label>
+                    <select name="subsubcategory_id" class="form-control" id="subsubcategory_id">
                     </select>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">{{__('Sum')}}</label>
-                    <input type="number" name="sum" class="form-control" required value="{{old('sum')}}"/>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">{{__('Company')}}</label>
-                    <input type="text" name="company" class="form-control" value="{{old('code')}}"/>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">{{__('Images')}}</label>
-                    <input type="file" name="images[]" class="form-control" value="{{old('images')}}" multiple/>
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Status')}}</label>
+                        <select name="status" class="form-control" id="status_id">
+                            <option value="0">{{__('No active')}}</option>
+                            <option value="1">{{__('Active')}}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Images')}}</label>
+                        <input type="file" name="images[]" class="form-control" value="{{old('images')}}" multiple/>
+                    </div>
                 </div>
                 <div>
                     <button type="submit" class="btn btn-primary waves-effect waves-light">{{__('Create')}}</button>
@@ -92,6 +93,7 @@
         }
         category_id.addEventListener('change', function () {
             subcategory_id.innerHTML = ""
+            subsubcategory_id.innerHTML = ""
             $(document).ready(function () {
                 $.ajax({
                     url:`/../api/subcategory/${category_id.value}`,
@@ -144,6 +146,11 @@
                                 subsubcategory_exists.classList.add('display-none')
                             }
                         }
+                        let disabled_sub_option = document.createElement('option')
+                        disabled_sub_option.text = "{{__('Select sub sub category')}}"
+                        disabled_sub_option.selected = true
+                        disabled_sub_option.disabled = true
+                        subsubcategory_id.add(disabled_sub_option)
                         data.data.forEach(addSubOption)
                     }
                 })
