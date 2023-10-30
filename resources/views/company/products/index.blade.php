@@ -28,7 +28,7 @@
                     @php
                         $i = 0
                     @endphp
-                    @foreach($products as $product)
+                    @foreach($warehouses as $product)
                         @php
                             $i++
                         @endphp
@@ -77,27 +77,27 @@
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('company_product.show', $product->id)}}">
-                                    @if(isset($product->subCategory->name)){{ $product->subCategory->name }}@else <div class="no_text"></div> @endif
+                                    @if(isset($product->category_name)){{ $product->category_name }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('company_product.show', $product->id)}}">
-                                    @if(isset($product->subCategory->name)){{ $product->subCategory->name }}@else <div class="no_text"></div> @endif
+                                    @if(isset($product->color_name)){{ $product->color_name }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('company_product.show', $product->id)}}">
-                                    @if(isset($product->subCategory->name)){{ $product->subCategory->name }}@else <div class="no_text"></div> @endif
+                                    @if(isset($product->size_name)){{ $product->size_name }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('company_product.show', $product->id)}}">
-                                    @if(isset($product->subCategory->name)){{ $product->subCategory->name }}@else <div class="no_text"></div> @endif
+                                    @if(isset($product->price)){{ $product->price }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('company_product.show', $product->id)}}">
-                                    @if(isset($product->sum)){{ $product->sum }}@else <div class="no_text"></div> @endif
+                                    @if(isset($product->quantity)){{ $product->quantity }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td class="function_column">

@@ -18,29 +18,46 @@
             <p class="text-muted font-14">
                 {{__('Products list create')}}
             </p>
-            <form action="{{route('product.store')}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
+            <form action="{{route('company_product.store')}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method("POST")
                 <div class="mb-3">
                     <label class="form-label">{{__('Name')}}</label>
                     <input type="text" name="name" class="form-control" required value="{{old('name')}}"/>
                 </div>
-                <div class="mb-3">
+
+                {{-- <div class="mb-3">
                     <label class="form-label">{{__('Category')}}</label>
                     <select name="category_id" class="form-control" id="category_id">
                         @foreach($categories as $category)
                             <option value="{{$category->id}}">{{$category->name}} {{$category->category?$category->category->name:''}}</option>
                         @endforeach
                     </select>
-                </div>
+                </div> --}}
                 <div class="mb-3">
-                    <label class="form-label">{{__('Sub category')}}</label>
-                    <select name="subcategory_id" class="form-control" id="subcategory_id">
-                        @if(isset($firstcategory->subCategory))
-                            @foreach($firstcategory->subCategory as $subcategory)
-                                <option value="{{$subcategory->id}}">{{$subcategory->name}}</option>
+                    <label class="form-label">{{__('Product')}}</label>
+                    <select name="product_id" class="form-control" id="product_id">
+                        @if(isset($products))
+                            @foreach($products as $product)
+                                <option value="{{$product->id}}">{{$product->name}}</option>
                             @endforeach
                         @endif
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{__('Color')}}</label>
+                    <select name="color_id" class="form-control" id="color_id">
+                        @foreach($colors as $color)
+                            <option value="{{$color->id}}"> {{$color->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{__('Size')}}</label>
+                    <select name="size_id" class="form-control" id="size_id">
+                        @foreach($sizes as $size)
+                            <option value="{{$size->id}}"> {{$size->name}}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="mb-3">
@@ -48,13 +65,17 @@
                     <input type="number" name="sum" class="form-control" required value="{{old('sum')}}"/>
                 </div>
                 <div class="mb-3">
+                    <label class="form-label">{{__('Quantity')}}</label>
+                    <input type="number" name="quantity" class="form-control" required value="{{old('quantity')}}"/>
+                </div>
+                {{-- <div class="mb-3">
                     <label class="form-label">{{__('Company')}}</label>
                     <input type="text" name="company" class="form-control" value="{{old('code')}}"/>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">{{__('Images')}}</label>
                     <input type="file" name="images[]" class="form-control" value="{{old('images')}}" multiple/>
-                </div>
+                </div> --}}
                 <div>
                     <button type="submit" class="btn btn-primary waves-effect waves-light">{{__('Create')}}</button>
                     <button type="reset" class="btn btn-secondary waves-effect">{{__('Cancel')}}</button>

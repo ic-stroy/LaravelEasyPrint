@@ -423,21 +423,21 @@
                                     <li>
                                         <a href="{{route('company_product.index')}}">{{ __('Products') }}</a>
                                     </li>
-                                    <li>
+                                    {{-- <li>
                                         <a href="{{route('address.index')}}">{{ __('Category') }}</a>
                                     </li>
                                     <li>
                                         <a href="{{route('address.index')}}">{{ __('Attribute') }}</a>
-                                    </li>
+                                    </li> --}}
                                     <li>
                                         <a href="{{route('company_coupon.index')}}">{{ __('Coupon') }}</a>
                                     </li>
-                                    <li>
+                                    {{-- <li>
                                         <a href="{{route('address.index')}}">{{ __('Size') }}</a>
                                     </li>
                                     <li>
                                         <a href="{{route('address.index')}}">{{ __('Color') }}</a>
-                                    </li>
+                                    </li> --}}
                                 </ul>
                             </div>
                         </li>
