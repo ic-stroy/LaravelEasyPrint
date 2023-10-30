@@ -27,8 +27,8 @@
                         <td>@if(isset($model->subCategory->name)){{ $model->subCategory->name }}@endif</td>
                     </tr>
                     <tr>
-                        <th>{{__('Sum')}}</th>
-                        <td>{{$model->sum??''}}</td>
+                        <th>{{__('Status')}}</th>
+                        <td>{{$model->status == 1?__('Active'):__('No active') }}</td>
                     </tr>
                     <tr>
                         <th>{{__('Company')}}</th>

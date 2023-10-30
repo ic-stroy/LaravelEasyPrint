@@ -16,7 +16,7 @@
                         <th>#</th>
                         <th>{{__('Name')}}</th>
                         <th>{{__('Subcategory')}}</th>
-                        <th>{{__('Sum')}}</th>
+                        <th>{{__('Status')}}</th>
                         <th>{{__('Images')}}</th>
                         <th>{{__('Updated_at')}}</th>
                         <th class="text-center">{{__('Functions')}}</th>
@@ -54,7 +54,7 @@
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('product.show', $product->id)}}">
-                                    @if(isset($product->sum)){{ $product->sum }}@else <div class="no_text"></div> @endif
+                                    {{$product->status == 1?__('Active'):__('No active') }}
                                 </a>
                             </td>
                             <td>
