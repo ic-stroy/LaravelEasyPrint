@@ -31,4 +31,7 @@ class Category extends Model
     public function subsubcategory(){
         return $this->hasmany(Category::class, 'parent_id', 'id')->where('step', 2);
     }
+    public function sub_sub_category(){
+        return $this->hasone(Category::class, 'id', 'parent_id')->where('step', 2);
+    }
 }

@@ -12,10 +12,16 @@ class Products extends Model
 
     public $table = 'products';
 
-    public function subCategory(){
-        return $this->hasOne(Category::class, 'id','category_id');
-    }
     public function category(){
+        return $this->hasOne(Category::class, 'id','category_id')->where('step', 0);
+    }
+    public function subCategory(){
+        return $this->hasOne(Category::class, 'id','category_id')->where('step', 1);
+    }
+    public function subSubCategory(){
+        return $this->hasOne(Category::class, 'id','category_id')->where('step', 2);
+    }
+    public function category_(){
         return $this->hasOne(Category::class, 'parent_id','category_id');
     }
 }
