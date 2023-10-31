@@ -66,6 +66,9 @@ Route::group(['middleware'=>'company_auth'], function (){
         Route::group(['prefix' => 'coupon'], function () {
             Route::get('/', [CompanyCouponController::class, 'index'])->name('company_coupon.index');
             Route::get('/create', [CompanyCouponController::class, 'create'])->name('company_coupon.create');
+            Route::post('/store', [CompanyCouponController::class, 'store'])->name('company_coupon.store');
+            Route::get('/relation', [CompanyCouponController::class, 'relation'])->name('relation');
+
 
             // Route::get('/show/{id}', [CompanyCouponController::class, 'show'])->name('company_user.show');
             // Route::get('/edit/{id}', [CompanyCouponController::class, 'edit'])->name('company_user.edit');

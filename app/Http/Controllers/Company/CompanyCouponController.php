@@ -55,7 +55,33 @@ class CompanyCouponController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request->all());
+        if ($request->relation_type == "product") {
+            
+        }else {
+            # code...
+        }
+        if (condition) {
+            # code...
+        } else {
+            # code...
+        }
+
+
+        $company_id=auth()->user()->company_id;
+        // dd($company_id);
+        $warehouse=Coupon::create([
+            'name'=>$request->name,
+            'color_id'=>$request->color_id,
+            'product_id'=>$request->product_id,
+            'company_id'=>$company_id,
+            'size_id'=>$request->size_id,
+            'price'=>$request->sum,
+            'quantity'=>$request->quantity,
+
+        ]);
+        return redirect()->route('company_coupon.index')->with('status', __('Successfully created'));
+
     }
 
     /**
@@ -80,6 +106,50 @@ class CompanyCouponController extends Controller
     public function update(Request $request, string $id)
     {
         //
+    }
+
+    public function relation(Request $request)
+    {
+        // dd($request->all());
+
+        // return $request->relation;
+
+
+        if ($request->relation == "product") {
+            $id=auth()->user()->company_id;
+            $warehouse_products= DB::table('warehouses')
+            ->where('company_id', $id)
+            ->latest()
+            ->get();
+            // dd($warehouse_products);
+
+
+
+            // $aaa="@foreach($warehouse_products as $warehouse_product)
+            //             <option value='{{$warehouse_product->id}}'>{{$warehouse_product->name}}</option>
+            //       @endforeach";
+
+
+
+            return $warehouse_products;
+        }
+        $categories= DB::table('categories')
+            ->latest()
+            ->get();
+            return $categories;
+        // $model = Category::where('parent_id', $id)->get();
+        // if(isset($model) && count($model)>0){
+        //     return response()->json([
+        //         'status'=>true,
+        //         'data'=>$model
+        //     ]);
+        // }else{
+        //     return response()->json([
+        //         'status'=>false,
+        //         'data'=>[]
+        //     ]);
+        // }
+
     }
 
     /**
