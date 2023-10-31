@@ -20,26 +20,26 @@
                 <tbody>
                     <tr>
                         <th>{{__('Name')}}</th>
-                        <td>{{$model->name??''}}</td>
+                        <td>{{$warehouse->name??''}}</td>
                     </tr>
                     <tr>
                         <th>{{__('Subcategory')}}</th>
-                        <td>@if(isset($model->subCategory->name)){{ $model->subCategory->name }}@endif</td>
+                        <td>@if(isset($warehouse->category_name)){{ $warehouse->category_name }}@endif</td>
                     </tr>
                     <tr>
                         <th>{{__('Sum')}}</th>
-                        <td>{{$model->sum??''}}</td>
+                        <td>{{$warehouse->price??''}}</td>
                     </tr>
                     <tr>
-                        <th>{{__('Company')}}</th>
-                        <td>{{$model->company??''}}</td>
+                        <th>{{__('quantity')}}</th>
+                        <td>{{$warehouse->quantity??''}}</td>
                     </tr>
                     <tr>
                         <th>{{__('image')}}</th>
                         <td>
-                            @if(isset($model->images))
+                            @if(isset($warehouse->images))
                                 @php
-                                    $images = json_decode($model->images);
+                                    $images = json_decode($warehouse->images);
                                     $is_image = 0;
                                 @endphp
                                 <div class="row">
@@ -69,7 +69,7 @@
                     </tr>
                     <tr>
                         <th>{{__('Updated at')}}</th>
-                        <td>{{$model->updated_at??''}}</td>
+                        <td>{{$warehouse->updated_at??''}}</td>
                     </tr>
                 </tbody>
             </table>
