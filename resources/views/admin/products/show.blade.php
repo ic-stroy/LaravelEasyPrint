@@ -4,6 +4,15 @@
     {{-- Your page title --}}
 @endsection
 @section('content')
+    @php
+        if(isset($model->subSubCategory->id)){
+            $current_category = $model->subSubCategory->name;
+        }elseif(isset($model->subCategory->id)){
+            $current_category = $model->subCategory->name;
+        }elseif(isset($model->category->id)){
+            $current_category = $model->category->name;
+        }
+    @endphp
     <div class="card">
         <div class="card-body">
             <h4 class="mt-0 header-title">{{__('Products lists')}}</h4>
@@ -23,16 +32,12 @@
                         <td>{{$model->name??''}}</td>
                     </tr>
                     <tr>
-                        <th>{{__('Subcategory')}}</th>
-                        <td>@if(isset($model->subCategory->name)){{ $model->subCategory->name }}@endif</td>
+                        <th>{{__('Current category')}}</th>
+                        <td>@if(isset($current_category)){{ $current_category }}@endif</td>
                     </tr>
                     <tr>
                         <th>{{__('Status')}}</th>
                         <td>{{$model->status == 1?__('Active'):__('No active') }}</td>
-                    </tr>
-                    <tr>
-                        <th>{{__('Company')}}</th>
-                        <td>{{$model->company??''}}</td>
                     </tr>
                     <tr>
                         <th>{{__('image')}}</th>

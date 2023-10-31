@@ -15,7 +15,7 @@
                     <tr>
                         <th>#</th>
                         <th>{{__('Name')}}</th>
-                        <th>{{__('Subcategory')}}</th>
+                        <th>{{__('Current category')}}</th>
                         <th>{{__('Status')}}</th>
                         <th>{{__('Images')}}</th>
                         <th>{{__('Updated_at')}}</th>
@@ -28,7 +28,14 @@
                     @endphp
                     @foreach($products as $product)
                         @php
-                            $i++
+                            $i++;
+                            if(isset($product->subSubCategory->id)){
+                                $current_category = $product->subSubCategory->name;
+                            }elseif(isset($product->subCategory->id)){
+                                $current_category = $product->subCategory->name;
+                            }elseif(isset($product->category->id)){
+                                $current_category = $product->category->name;
+                            }
                         @endphp
                         <tr>
                             <th scope="row">
@@ -49,7 +56,7 @@
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('product.show', $product->id)}}">
-                                    @if(isset($product->subCategory->name)){{ $product->subCategory->name }}@else <div class="no_text"></div> @endif
+                                    @if(isset($current_category)){{ $current_category }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>

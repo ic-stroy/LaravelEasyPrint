@@ -16,6 +16,7 @@ class ProductsController extends Controller
     public function index()
     {
         $products = Products::orderBy('created_at', 'desc')->get();
+
         return view('admin.products.index', ['products'=> $products]);
     }
 
@@ -24,11 +25,8 @@ class ProductsController extends Controller
      */
     public function create()
     {
-        $subcategories = Category::where('parent_id', 1)->get();
         $categories = Category::where('parent_id', 0)->orderBy('id', 'asc')->get();
-        $firstcategory = Category::where('parent_id', 0)->orderBy('id', 'asc')->first();
-        $colors = Color::all();
-        return view('admin.products.create', ['subcategories'=> $subcategories, 'colors'=> $colors, 'categories'=> $categories, 'firstcategory'=> $firstcategory]);
+        return view('admin.products.create', ['categories'=> $categories]);
     }
 
     /**
@@ -68,9 +66,10 @@ class ProductsController extends Controller
     public function show(string $id)
     {
         $model = Products::find($id);
-        $colors_array = json_decode($model->colors_id);
-        $colors = Color::select('name', 'code')->whereIn('id', $colors_array??[])->get();
-        return view('admin.products.show', ['model'=>$model, 'colors'=>$colors]);
+        $subcategories = Category::where('parent_id', 1)->get();
+        $categories = Category::where('parent_id', 0)->orderBy('id', 'asc')->get();
+        $firstcategory = Category::where('parent_id', 0)->orderBy('id', 'asc')->first();
+        return view('admin.products.show', ['model'=>$model, 'subcategories'=> $subcategories, 'categories'=> $categories, 'firstcategory'=> $firstcategory]);
     }
 
     /**
@@ -79,10 +78,21 @@ class ProductsController extends Controller
     public function edit(string $id)
     {
         $product = Products::find($id);
-        $current_category = isset($product->subCategory->category)?$product->subCategory->category:'no';
-        $categories = Category::orderBy('id', 'asc')->get();
-        $colors = Color::all();
-        return view('admin.products.edit', ['product'=> $product, 'categories'=> $categories, 'colors'=> $colors, 'current_category'=> $current_category]);
+        if(isset($product->subSubCategory->id)){
+            $category_product = $product->subSubCategory;
+            $is_category = 3;
+        }elseif(isset($product->subCategory->id)){
+            $category_product = $product->subCategory;
+            $is_category = 2;
+        }elseif(isset($product->category->id)){
+            $category_product = $product->category;
+            $is_category = 1;
+        }else{
+            $category_product = 'no';
+            $is_category = 0;
+        }
+        $categories = Category::where('parent_id', 0)->orderBy('id', 'asc')->get();
+        return view('admin.products.edit', ['product'=> $product, 'categories'=> $categories, 'category_product'=> $category_product, 'is_category'=>$is_category]);
     }
 
     /**
@@ -92,9 +102,14 @@ class ProductsController extends Controller
     {
         $model = Products::find($id);
         $model->name = $request->name;
-        $model->subcategory_id = $request->subcategory_id;
-        $model->sum = $request->sum;
-        $model->company = $request->company;
+        if(isset($request->subsubcategory_id)){
+            $model->category_id = $request->subsubcategory_id;
+        }elseif($request->subcategory_id){
+            $model->category_id = $request->subcategory_id;
+        }else{
+            $model->category_id = $request->category_id;
+        }
+        $model->status = $request->status;
         $images = $request->file('images');
         if(isset($request->images)){
             if(isset($model->images)){

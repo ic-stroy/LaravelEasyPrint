@@ -53,7 +53,7 @@
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Status')}}</label>
                         <select name="status" class="form-control" id="status_id">
-                            <option value="0">{{__('No active')}}</option>
+                            <option value="0" >{{__('No active')}}</option>
                             <option value="1">{{__('Active')}}</option>
                         </select>
                     </div>
