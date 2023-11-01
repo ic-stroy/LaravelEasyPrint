@@ -73,8 +73,10 @@
                             </td>
                             <td class="function_column">
                                 <div class="d-flex justify-content-center">
-                                    <a class="form_functions btn btn-info" href="{{route('company_product.edit', $coupon->id)}}"><i class="fe-edit-2"></i></a>
-                                    <form action="{{route('product.destroy', $coupon->id)}}" method="POST">
+                                    {{-- href="{{route('company_product.edit', $coupon->id)}}" --}}
+                                    <a class="form_functions btn btn-info" ><i class="fe-edit-2"></i></a>
+                                    {{-- {{route('product.destroy', $coupon->id)}} --}}
+                                    <form action="" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button class="form_functions btn btn-danger" type="submit"><i class="fe-trash-2"></i></button>

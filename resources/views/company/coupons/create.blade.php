@@ -51,7 +51,7 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                     <label class="form-label">{{__('Relation')}}</label>
-                    <select name="realtion_id" class="form-control" id="realtion_id">
+                    <select name="relation_id" class="form-control" id="relation_id">
 
                     </select>
                 </div>
@@ -93,7 +93,7 @@
                             console.log(i);
                             // opt.innerHTML = i;
                             // select.appendChild(opt);
-                            $('#realtion_id').appendChild(opt);
+                            $('#relation_id').appendChild(opt);
                         }
 
                         data.map(i => {
@@ -102,11 +102,11 @@
                             console.log(i);
                             opt.innerHTML = i.name;
                             // select.appendChild(opt);
-                            // $('#realtion_id').appendChild(opt);
-                            document.querySelector('#realtion_id').appendChild(opt);
+                            // $('#relation_id').appendChild(opt);
+                            document.querySelector('#relation_id').appendChild(opt);
                         })
-                        // $('#realtion_id').html(data)
-                        // $('#realtion_id').innerHTMl
+                        // $('#relation_id').html(data)
+                        // $('#relation_id').innerHTMl
                     }
                 })
             })

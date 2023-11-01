@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Company;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use App\Models\Category;
+use App\Models\Coupon;
 
 
 use Illuminate\Http\Request;
@@ -20,12 +21,12 @@ class CompanyCouponController extends Controller
 
 
         $coupons = DB::table('coupons as dt1')
-            ->leftJoin('warehouses as dt2', 'dt2.company_id', '=', 'dt1.company_id')
-            ->leftJoin('categories as dt3', 'dt3.id', '=', 'dt1.category_id')
+            ->Join('warehouses as dt2', 'dt2.company_id', '=', 'dt1.company_id')
+            ->Join('categories as dt3', 'dt3.id', '=', 'dt1.category_id')
             ->where('dt1.company_id', $id)
             ->select('dt1.*', 'dt2.*', 'dt3.*')
             ->get();
-            // dd($coupons);
+            dd($coupons);
 
             return view('company.coupons.index', ['coupons'=> $coupons]);
 
@@ -55,31 +56,35 @@ class CompanyCouponController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
-        if ($request->relation_type == "product") {
-            
-        }else {
-            # code...
-        }
-        if (condition) {
-            # code...
-        } else {
-            # code...
-        }
-
+        // dd($request->relation_type);
 
         $company_id=auth()->user()->company_id;
-        // dd($company_id);
-        $warehouse=Coupon::create([
-            'name'=>$request->name,
-            'color_id'=>$request->color_id,
-            'product_id'=>$request->product_id,
-            'company_id'=>$company_id,
-            'size_id'=>$request->size_id,
-            'price'=>$request->sum,
-            'quantity'=>$request->quantity,
+        if ($request->relation_type == "product") {
+            $category_id=null;
+            $warehouse_id=$request->relation_id;
+        }elseif ($request->relation_type == "category") {
+            $warehouse_id=null;
+            $category_id=$request->relation_id;
+            // dd($category_id);
+        }
+        if ($request->coupon_type == "price") {
+            $price=$request->sum;
+            $percent=null;
+        } elseif ($request->coupon_type == "percent") {
+            $percent=$request->sum;
+            $price=null;
+        }
+        // dd($category_id);
 
-        ]);
+            $warehouse=Coupon::create([
+                'percent'=>$percent,
+                'price'=>$price,
+                'category_id'=>$category_id,
+                'warehouse_id'=>$warehouse_id,
+                'company_id'=>$company_id
+            ]);
+        // dd($warehouse);
+
         return redirect()->route('company_coupon.index')->with('status', __('Successfully created'));
 
     }
