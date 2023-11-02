@@ -7,7 +7,8 @@
     @php
         switch ($is_category){
             case 1:
-                $current_category = $category_product;
+                $current_category = $category_producskyrim1004
+                t;
                 $current_sub_category_id = 'no';
                 $current_sub_sub_category_id = 'no';
                 break;
