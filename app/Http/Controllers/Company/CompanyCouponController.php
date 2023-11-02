@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Company;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use App\Models\Category;
+use App\Models\Coupon;
 
 
 use Illuminate\Http\Request;
@@ -20,12 +21,12 @@ class CompanyCouponController extends Controller
 
 
         $coupons = DB::table('coupons as dt1')
-            ->leftJoin('warehouses as dt2', 'dt2.company_id', '=', 'dt1.company_id')
-            ->leftJoin('categories as dt3', 'dt3.id', '=', 'dt1.category_id')
+            ->Join('warehouses as dt2', 'dt2.company_id', '=', 'dt1.company_id')
+            ->Join('categories as dt3', 'dt3.id', '=', 'dt1.category_id')
             ->where('dt1.company_id', $id)
             ->select('dt1.*', 'dt2.*', 'dt3.*')
             ->get();
-            // dd($coupons);
+            dd($coupons);
 
             return view('company.coupons.index', ['coupons'=> $coupons]);
 
@@ -55,7 +56,37 @@ class CompanyCouponController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request->relation_type);
+
+        $company_id=auth()->user()->company_id;
+        if ($request->relation_type == "product") {
+            $category_id=null;
+            $warehouse_id=$request->relation_id;
+        }elseif ($request->relation_type == "category") {
+            $warehouse_id=null;
+            $category_id=$request->relation_id;
+            // dd($category_id);
+        }
+        if ($request->coupon_type == "price") {
+            $price=$request->sum;
+            $percent=null;
+        } elseif ($request->coupon_type == "percent") {
+            $percent=$request->sum;
+            $price=null;
+        }
+        // dd($category_id);
+
+            $warehouse=Coupon::create([
+                'percent'=>$percent,
+                'price'=>$price,
+                'category_id'=>$category_id,
+                'warehouse_id'=>$warehouse_id,
+                'company_id'=>$company_id
+            ]);
+        // dd($warehouse);
+
+        return redirect()->route('company_coupon.index')->with('status', __('Successfully created'));
+
     }
 
     /**
@@ -80,6 +111,50 @@ class CompanyCouponController extends Controller
     public function update(Request $request, string $id)
     {
         //
+    }
+
+    public function relation(Request $request)
+    {
+        // dd($request->all());
+
+        // return $request->relation;
+
+
+        if ($request->relation == "product") {
+            $id=auth()->user()->company_id;
+            $warehouse_products= DB::table('warehouses')
+            ->where('company_id', $id)
+            ->latest()
+            ->get();
+            // dd($warehouse_products);
+
+
+
+            // $aaa="@foreach($warehouse_products as $warehouse_product)
+            //             <option value='{{$warehouse_product->id}}'>{{$warehouse_product->name}}</option>
+            //       @endforeach";
+
+
+
+            return $warehouse_products;
+        }
+        $categories= DB::table('categories')
+            ->latest()
+            ->get();
+            return $categories;
+        // $model = Category::where('parent_id', $id)->get();
+        // if(isset($model) && count($model)>0){
+        //     return response()->json([
+        //         'status'=>true,
+        //         'data'=>$model
+        //     ]);
+        // }else{
+        //     return response()->json([
+        //         'status'=>false,
+        //         'data'=>[]
+        //     ]);
+        // }
+
     }
 
     /**
