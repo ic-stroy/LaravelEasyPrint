@@ -154,15 +154,6 @@ class ProductsController extends Controller
         return redirect()->route('product.index')->with('status', __('Successfully deleted'));
     }
 
-    public function getSubcategory($id){
-        $subcategories = Category::where('parent_id', $id)->get();
-        $respone = [
-            'status'=>true,
-            'data'=>$subcategories
-        ];
-        return response()->json($respone, 200);
-    }
-
     public function getSizes($id){
         $sizes = Sizes::select('id', 'name', 'category_id')->where('category_id', $id)->get();
         $respone = [
