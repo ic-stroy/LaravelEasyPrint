@@ -87,4 +87,22 @@ class SubSubCategoryController extends Controller
         $model->delete();
         return redirect()->route('subsubcategory.index')->with('status', __('Successfully deleted'));
     }
+
+    public function category()
+    {
+        $category = Category::where('step', 0)->get();
+        return view('admin.sub-sub-category.category', ['categories'=>$category]);
+    }
+
+    public function subcategory($id)
+    {
+        $SubCategory = Category::where('parent_id', $id)->orderBy('created_at', 'desc')->get();
+        return view('admin.sub-sub-category.subcategory', ['subcategories'=>$SubCategory]);
+    }
+
+    public function subsubcategory($id)
+    {
+        $SubSubCategory = Category::where('parent_id', $id)->orderBy('created_at', 'desc')->get();
+        return view('admin.sub-sub-category.subsubcategory', ['subsubcategories'=>$SubSubCategory]);
+    }
 }

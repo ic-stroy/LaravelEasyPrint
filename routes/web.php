@@ -35,11 +35,18 @@ Route::group(['middleware'=>'authed'], function(){
     Route::resource('size', SizesController::class);
     Route::resource('user', UsersController::class);
     Route::resource('product', ProductsController::class);
+    Route::get('products-category', [ProductsController::class, 'category'])->name('product.category');
+    Route::get('products-by-category/{id}', [ProductsController::class, 'product'])->name('product.category.product');
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::resource('category', CategoryController::class);
     Route::resource('company', CompanyController::class);
     Route::resource('subcategory', SubCategoryController::class);
+    Route::get('sub-category', [SubCategoryController::class, 'category'])->name('subcategory.category');
+    Route::get('sub-category/subcategory/{id}', [SubCategoryController::class, 'subcategory'])->name('subcategory.subcategory');
     Route::resource('subsubcategory', SubSubCategoryController::class);
+    Route::get('sub-sub-category', [SubSubCategoryController::class, 'category'])->name('subsubcategory.category');
+    Route::get('sub-sub-category/subcategory/{id}', [SubSubCategoryController::class, 'subcategory'])->name('subsubcategory.subcategory');
+    Route::get('sub-sub-category/subsubcategory/{id}', [SubSubCategoryController::class, 'subsubcategory'])->name('subsubcategory.subsubcategory');
     Route::resource('role', RoleController::class);
 });
 Route::group(['middleware'=>'company_auth'], function (){

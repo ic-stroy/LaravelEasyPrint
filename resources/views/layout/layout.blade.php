@@ -431,7 +431,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('product.index') }}">
+                            <a href="{{ route('product.category') }}">
                                 <i class="mdi mdi-basket-outline"></i>
                                 <span> {{ __('Products') }} </span>
                             </a>
@@ -456,12 +456,12 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('subcategory.index') }}">
+                                        <a href="{{ route('subcategory.category') }}">
                                             <span> {{ __('Sub Category') }} </span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('subsubcategory.index') }}">
+                                        <a href="{{ route('subsubcategory.category') }}">
                                             <span> {{ __('Sub Sub Category') }} </span>
                                         </a>
                                     </li>

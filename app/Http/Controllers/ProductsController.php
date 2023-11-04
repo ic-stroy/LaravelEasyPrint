@@ -162,4 +162,25 @@ class ProductsController extends Controller
         ];
         return response()->json($respone, 200);
     }
+    public function category()
+    {
+        $category = Category::where('step', 0)->get();
+        return view('admin.products.category', ['categories'=>$category]);
+    }
+
+    public function product($id)
+    {
+        $category = Category::find($id);
+        $subcategories = $category->subcategory;
+        foreach ($subcategories as $subcategory){
+            $category_ids[] = $subcategory->id;
+        }
+        $subsubcategories = Category::WhereIn('parent_id', $category_ids)->get();
+        foreach ($subsubcategories as $subsubcategory){
+            $category_ids[] = $subsubcategory->id;
+        }
+        $category_ids[] = $category->id;
+        $products = Products::whereIn('category_id', $category_ids)->get();
+        return view('admin.products.product', ['products'=>$products]);
+    }
 }

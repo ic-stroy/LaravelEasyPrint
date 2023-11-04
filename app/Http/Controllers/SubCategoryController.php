@@ -104,4 +104,18 @@ class SubCategoryController extends Controller
         }
 
     }
+
+
+    public function category()
+    {
+        $category = Category::where('step', 0)->get();
+        return view('admin.sub-category.category', ['categories'=>$category]);
+    }
+
+    public function subcategory($id)
+    {
+        $SubCategory = Category::where('parent_id', $id)->orderBy('created_at', 'desc')->get();
+        return view('admin.sub-category.subcategory', ['subcategories'=>$SubCategory]);
+    }
+
 }
