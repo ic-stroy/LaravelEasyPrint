@@ -11,7 +11,13 @@ class Products extends Model
     use HasFactory, SoftDeletes;
 
     public $table = 'products';
-
+    protected $fillable = [
+        'id',
+        'name',
+        'category_id',
+        'status',
+        'description'
+    ];
     public function category(){
         return $this->hasOne(Category::class, 'id','category_id')->where('step', 0);
     }
@@ -23,5 +29,8 @@ class Products extends Model
     }
     public function category_(){
         return $this->hasOne(Category::class, 'parent_id','category_id');
+    }
+    public function categorizedProducts(){
+        return $this->hasMany(CharacterizedProducts::class, 'product_id', 'id');
     }
 }

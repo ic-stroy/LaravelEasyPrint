@@ -62,6 +62,11 @@
                         <input type="file" name="images[]" class="form-control" value="{{old('images')}}" multiple/>
                     </div>
                 </div>
+                <div class="mb-3">
+                    <label class="form-label">{{__('Description')}}</label>
+                    <textarea class="form-control" name="description" id="description" cols="20" rows="10">
+                    </textarea>
+                </div>
                 <div>
                     <button type="submit" class="btn btn-primary waves-effect waves-light">{{__('Create')}}</button>
                     <button type="reset" class="btn btn-secondary waves-effect">{{__('Cancel')}}</button>
@@ -69,6 +74,14 @@
             </form>
         </div>
     </div>
+    <script src="{{asset('assets/js/ckeditor/ckeditor.js')}}"></script>
+    <script>
+        ClassicEditor
+            .create( document.querySelector( '#description' ) )
+            .catch( error => {
+                console.error( error );
+            } );
+    </script>
     <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
     <script>
 

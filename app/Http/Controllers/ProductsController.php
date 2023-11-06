@@ -44,6 +44,7 @@ class ProductsController extends Controller
             $model->category_id = $request->category_id;
         }
         $model->status = $request->status;
+        $model->description = $request->description;
         $images = $request->file('images');
         if(isset($request->images)){
             foreach ($images as $image){
@@ -110,6 +111,7 @@ class ProductsController extends Controller
             $model->category_id = $request->category_id;
         }
         $model->status = $request->status;
+        $model->description = $request->description;
         $images = $request->file('images');
         if(isset($request->images)){
             if(isset($model->images)){
