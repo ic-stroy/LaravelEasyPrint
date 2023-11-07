@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Address;
+use App\Models\Cities;
 use App\Models\Color;
 use App\Models\Company;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class CompanyController extends Controller
 {
@@ -23,6 +25,24 @@ class CompanyController extends Controller
      */
     public function create(Request $request)
     {
+//        $response = Http::get(asset('assets/json/cities.json'));
+//        $cities = json_decode($response);
+//        foreach ($cities as $city){
+//            $model_region = new Cities();
+//            $model_region->name = $city->region;
+//            $model_region->type = 'region';
+//            $model_region->parent_id = 0;
+//            $model_region->save();
+//            foreach ($city->cities as $city_district){
+//                $model = new Cities();
+//                $model->name = $city_district->name;
+//                $model->type = 'district';
+//                $model->parent_id = $model_region->id;
+//                $model->lng = $city_district->long;
+//                $model->lat = $city_district->lat;
+//                $model->save();
+//            }
+//        }
         return view('admin.company.create');
     }
 
@@ -33,10 +53,11 @@ class CompanyController extends Controller
     {
         $model = new Company();
         $address = new Address();
-        $address->region = $request->region;
-        $address->district = $request->district;
+        $address->city_id = $request->district;
         $address->latitude = $request->address_lat;
         $address->longitude = $request->address_long;
+        $address->name = $request->address_name;
+        $address->postcode = $request->postcode;
         $address->save();
         $model->name = $request->name;
         $model->delivery_price = $request->delivery_price;
@@ -98,5 +119,26 @@ class CompanyController extends Controller
             $address->delete();
         }
         return redirect()->route('company.index')->with('status', __('Successfully deleted'));
+    }
+
+    public function getCities(){
+        $cities = Cities::where('parent_id', 0)->orderBy('id', 'ASC')->get();
+        foreach ($cities as $city){
+            $cities_ = [];
+            foreach ($city->getDistricts as $district){
+                $cities_[] = [
+                    'id'=>$district->id,
+                    'name'=>$district->name,
+                    'lat'=>$district->lat,
+                    'long'=>$district->lng
+                ];
+            }
+            $response[] = [
+                'id'=>$city->id,
+                'region'=>$city->name,
+                'cities'=>$cities_,
+            ];
+        }
+        return response()->json($response);
     }
 }

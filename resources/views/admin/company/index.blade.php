@@ -45,7 +45,7 @@
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('company.show', $company->id)}}">
-                                    @if(isset($company->address->id)){{ $company->address->region??'' }} {{ $company->address->district??'' }}@else <div class="no_text"></div> @endif
+                                    @if(isset($company->address) && isset($company->address->cities)){{ isset($company->address->cities->region)?$company->address->cities->region->name:'' }} {{ $company->address->cities->name??'' }} ... @else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>

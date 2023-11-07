@@ -4,6 +4,7 @@ use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CompanyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 //Route::get('subcategory/{id}', [ProductsController::class, 'getSubcategory'])->name('get_subcategory');
 Route::get('subcategory/{id}', [SubCategoryController::class, 'getSubcategory'])->name('get_subcategory');
+Route::get('get-districts', [CompanyController::class, 'getCities']);
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
