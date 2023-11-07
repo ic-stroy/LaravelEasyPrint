@@ -22,11 +22,18 @@
                 @csrf
                 @method("POST")
                 <div class="row size_store mb-3">
-                    <div class="col-6">
+                    <div class="col-md-5 col-sm-6">
                         <label class="form-label">{{__('Name')}}</label>
                         <input type="text" name="name" class="form-control" required value="{{old('name')}}"/>
                     </div>
-                    <div class="col-4">
+                    <div class="col-md-3 col-sm-6">
+                        <label class="form-label">{{__('Status')}}</label>
+                        <select name="status" class="form-control">
+                            <option value="1">{{__('Active')}}</option>
+                            <option value="0">{{__('No active')}}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
                         <label class="form-label">{{__('Type')}}</label>
                         <select name="category_id" class="form-control" required>
                             @foreach($categories as $category)

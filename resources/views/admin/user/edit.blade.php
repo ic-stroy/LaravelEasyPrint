@@ -151,8 +151,13 @@
     <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
     <script>
         let page = true
-        let current_region = "{{$user->address->region??''}}"
-        let current_district = "{{$user->address->district??''}}"
+        @if(isset($user->address) && isset($user->address->cities))
+            let current_region = "{{$user->address->cities->region->id??''}}"
+            let current_district = "{{$user->address->cities->id??''}}"
+        @else
+            let current_region = ''
+            let current_district = ''
+        @endif
         let current_latitude = "{{$user->address->latitude??''}}"
         let current_longitude = "{{$user->address->longitude??''}}"
     </script>

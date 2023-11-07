@@ -35,6 +35,7 @@ class SizesController extends Controller
         $model = new Sizes();
         $model->name = $request->name;
         $model->category_id = $request->category_id;
+        $model->status = 1;
         $model->save();
         return redirect()->route('size.index')->with('status', __('Successfully created'));
     }

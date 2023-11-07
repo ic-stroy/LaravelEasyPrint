@@ -71,7 +71,6 @@
             region_option.selected = true
             edit_changed = true
         }else if(edit_changed == false){
-            console.log([edit_changed, current_region == item.id])
             if(current_region == item.id){
                 region_option.selected = true
                 current_region_index = index

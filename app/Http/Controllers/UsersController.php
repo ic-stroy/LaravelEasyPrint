@@ -62,8 +62,9 @@ class UsersController extends Controller
         $model->company_id = $request->company_id;
 
         $address = new Address();
-        $address->region = $request->region;
-        $address->district = $request->district;
+        $address->city_id = $request->district;
+        $address->name = $request->address_name;
+        $address->postcode = $request->postcode;
         $address->latitude = $request->address_lat;
         $address->longitude = $request->address_long;
         $address->save();
@@ -164,9 +165,9 @@ class UsersController extends Controller
         }else{
             $address = new Address();
         }
-
-        $address->region = $request->region;
-        $address->district = $request->district;
+        $address->city_id = $request->district;
+        $address->name = $request->address_name;
+        $address->postcode = $request->postcode;
         $address->latitude = $request->address_lat;
         $address->longitude = $request->address_long;
         $address->save();
