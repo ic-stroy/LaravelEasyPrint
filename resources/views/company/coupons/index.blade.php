@@ -55,7 +55,7 @@
                             </td>
                             <td>
                                 <a class="show_page" >
-                                    @if ($coupon->warehouse_id != null)
+                                    @if ($coupon->warehouse_product_id != null)
                                        warehouse product
                                     @else
                                        Category
@@ -64,17 +64,29 @@
                             </td>
                             <td>
                                 <a class="show_page" >
-                                    @if ($coupon->warehouse_id != null)
-                                        {{$coupon->name}}
+                                    @if ($coupon->warehouse_product_id != null)
+                                        @php
+                                            $name=App\Models\Warehouse::where('id',$coupon->warehouse_product_id)->first()->name;
+                                            // dd($name);
+                                            echo $name;
+
+                                        @endphp
+                                    @elseif ($coupon->category_id != null)
+                                        @php
+                                            $aaa=App\Models\Category::where('id',$coupon->category_id)->first()->name;
+                                            // dd($aaa);
+                                            echo $aaa;
+
+                                        @endphp
                                     @else
-                                        {{$coupon->name}}
+                                        {{'name not found'}}
                                     @endif
                                 </a>
                             </td>
                             <td class="function_column">
                                 <div class="d-flex justify-content-center">
                                     {{-- href="{{route('company_product.edit', $coupon->id)}}" --}}
-                                    <a class="form_functions btn btn-info" ><i class="fe-edit-2"></i></a>
+                                    <a class="form_functions btn btn-info" href="{{route('company_coupon.edit', $coupon->id)}}"><i class="fe-edit-2"></i></a>
                                     {{-- {{route('product.destroy', $coupon->id)}} --}}
                                     <form action="" method="POST">
                                         @csrf
