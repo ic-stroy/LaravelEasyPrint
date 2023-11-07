@@ -1,8 +1,10 @@
 <?php
 
-use App\Http\Controllers\ProductsController;
-use App\Http\Controllers\SubCategoryController;
-use App\Http\Controllers\UsersController;
+// use App\Http\Controllers\ProductsController;
+// use App\Http\Controllers\SubCategoryController;
+use App\Http\Controllers\Api\ProductController;
+
+// use App\Http\Controllers\UsersController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanyController;
 use Illuminate\Http\Request;
@@ -28,17 +30,21 @@ Route::get('get-districts', [CompanyController::class, 'getCities']);
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
+
+Route::group(['prefix' => 'product'], function () {
+    Route::get('/list', [ProductController::class, 'index']);
+    // Route::get('/show/{id}', [CompanyProductsController::class, 'show'])->name('company_product.show');
+    // Route::get('/edit/{id}', [CompanyProductsController::class, 'edit'])->name('company_product.edit');
+    // Route::get('/create', [CompanyProductsController::class, 'create'])->name('company_product.create');
+    // Route::post('/store', [CompanyProductsController::class, 'store'])->name('company_product.store');
+    // Route::post('/update/{id}', [CompanyProductsController::class, 'update'])->name('company_product.update');
+});
+
 Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
     Route::post('personal-information', [UsersController::class, 'setPersonalInformation']);
     Route::get('personal-information', [UsersController::class, 'getPersonalInformation']);
 
-    Route::group(['prefix' => 'product'], function () {
-        // Route::get('/', [CompanyProductsController::class, 'index'])->name('company_product.index');
-        // Route::get('/show/{id}', [CompanyProductsController::class, 'show'])->name('company_product.show');
-        // Route::get('/edit/{id}', [CompanyProductsController::class, 'edit'])->name('company_product.edit');
-        // Route::get('/create', [CompanyProductsController::class, 'create'])->name('company_product.create');
-        // Route::post('/store', [CompanyProductsController::class, 'store'])->name('company_product.store');
-        // Route::post('/update/{id}', [CompanyProductsController::class, 'update'])->name('company_product.update');
-    });
+
 
 });
+
