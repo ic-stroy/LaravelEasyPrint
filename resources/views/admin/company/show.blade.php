@@ -19,10 +19,10 @@
             </div>
             <table id="datatable-buttons" class="table dt-responsive nowrap table_show">
                 <thead>
-                <tr>
-                    <th>{{__('Attributes')}}</th>
-                    <th>{{__('Informations')}}</th>
-                </tr>
+                    <tr>
+                        <th>{{__('Attributes')}}</th>
+                        <th>{{__('Informations')}}</th>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr>
@@ -35,11 +35,15 @@
                     </tr>
                     <tr>
                         <th>{{__('Region')}}</th>
-                        <td>{{$model->address->region??''}}</td>
+                        <td>{{isset($model->address->cities->region)? $model->address->cities->region->name :''}}</td>
                     </tr>
                     <tr>
                         <th>{{__('District')}}</th>
-                        <td>{{$model->address->district??''}}</td>
+                        <td>{{isset($model->address->cities)?$model->address->cities->name:''}}</td>
+                    </tr>
+                    <tr>
+                        <th>{{__('Street, house')}}</th>
+                        <td>{{isset($model->address->name)?$model->address->name:''}}</td>
                     </tr>
                     <tr>
                         <th>{{__('Map')}}</th>

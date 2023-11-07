@@ -71,7 +71,8 @@
             region_option.selected = true
             edit_changed = true
         }else if(edit_changed == false){
-            if(current_region == item.region){
+            console.log([edit_changed, current_region == item.id])
+            if(current_region == item.id){
                 region_option.selected = true
                 current_region_index = index
             }
@@ -80,7 +81,7 @@
     }
     $(document).ready(function () {
     $.ajax({
-        url:"../../assets/json/cities.json",
+        url:"/../api/get-districts",
         type:'GET',
         success: function (data) {
             data.forEach(addOption)
@@ -103,7 +104,7 @@
                         let district_selected_option = document.createElement('option')
                         district_selected_option.value = key
                         district_selected_option.text = districts_[key].name
-                        if (districts_[key].name == current_district) {
+                        if (districts_[key].id == current_district) {
                             district_selected_option.selected = true
                         }
                         district_id.add(district_selected_option)
@@ -113,6 +114,12 @@
             region_id.addEventListener('change', function () {
                 localStorage.setItem('region_id', region_id.value)
                 district_id.innerHTML = ""
+                let district_option_disabled = document.createElement('option')
+                district_option_disabled.text = "Select district or city of "+ data[region_id.value].region
+                district_option_disabled.disabled = true
+                district_option_disabled.selected = true
+                district_option_disabled.value = ''
+                district_id.add(district_option_disabled)
                 districts = data[region_id.value].cities
                 Object.keys(districts).forEach(function (key) {
                     let district_option = document.createElement('option')
@@ -122,13 +129,13 @@
                 })
             })
             district_id.addEventListener('change', function () {
-                localStorage.setItem('region', data[region_id.value].region)
-                localStorage.setItem('district', data[region_id.value].cities[district_id.value].name)
+                localStorage.setItem('region', data[region_id.value].id)
+                localStorage.setItem('district', data[region_id.value].cities[district_id.value].id)
                 localStorage.setItem('address_lat',data[region_id.value].cities[district_id.value].lat)
                 localStorage.setItem('address_long', data[region_id.value].cities[district_id.value].long)
                 localStorage.setItem('district_id', district_id.value)
-                region.value = data[region_id.value].region
-                district.value = data[region_id.value].cities[district_id.value].name
+                region.value = data[region_id.value].id
+                district.value = data[region_id.value].cities[district_id.value].id
                 address_lat.value = data[region_id.value].cities[district_id.value].lat
                 address_long.value = data[region_id.value].cities[district_id.value].long
                 location.reload()

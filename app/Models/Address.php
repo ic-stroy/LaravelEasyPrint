@@ -11,4 +11,8 @@ class Address extends Model
     use HasFactory, SoftDeletes;
 
     public $table = 'addresses';
+
+    public function cities(){
+        return $this->hasOne(Cities::class, 'id', 'city_id');
+    }
 }

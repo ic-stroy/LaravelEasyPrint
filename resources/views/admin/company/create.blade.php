@@ -52,6 +52,16 @@
                         </select>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Street, house')}}</label>
+                        <input class="form-control" type="text" name="address_name">
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Postcode')}}</label>
+                        <input class="form-control" type="text" name="postcode">
+                    </div>
+                </div>
                 <div class="form-group google-map-lat-lng">
                     <div>
                         <label for="map">{{__('Select a location')}}</label>
