@@ -75,6 +75,10 @@ Route::group(['middleware'=>'company_auth'], function (){
             Route::get('/create', [CompanyCouponController::class, 'create'])->name('company_coupon.create');
             Route::post('/store', [CompanyCouponController::class, 'store'])->name('company_coupon.store');
             Route::get('/relation', [CompanyCouponController::class, 'relation'])->name('relation');
+            Route::get('/edit/relation', [CompanyCouponController::class, 'relation'])->name('adit_relation');
+            Route::get('/edit/{id}', [CompanyCouponController::class, 'edit'])->name('company_coupon.edit');
+            Route::post('/update/{id}', [CompanyCouponController::class, 'update'])->name('company_coupon.update');
+
 
 
             // Route::get('/show/{id}', [CompanyCouponController::class, 'show'])->name('company_user.show');
