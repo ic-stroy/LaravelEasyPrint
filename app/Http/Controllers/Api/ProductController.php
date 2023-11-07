@@ -17,24 +17,23 @@ class ProductController extends Controller
     public function index()
     {
         // return "came";
-        // $products=Products::get();
-        // dd($products);
         $products = DB::table('products')
         ->select('id','name','price','images')
         ->get();
         // dd($products);
 
-        // $warehouse_products=DB::table('warehouses')
-        // // ->select('product_id','id','name','price','images')
-        // ->select('product_id', DB::raw('MAX(id)'), DB::raw('MAX(name)'), DB::raw('MAX(price)'), DB::raw('MAX(images)'))
-        // // ->select('product_id')
-        // ->groupBy('product_id')
-        // ->get();
-        // dd($warehouse_products);
-        // $warehouse_products=Warehouse::groupBy('product_id')
-        // ->get();
+        $warehouse_products=DB::table('warehouses')
+            ->select('product_id', 'id', 'name', 'price', 'images')
+            ->distinct('product_id')
+            ->get();
         // dd($warehouse_products);
 
+        $data=[
+            'product_list'=>$products,
+            'warehouse_product_list'=>$warehouse_products
+        ];
+        // dd($data);
+        return $this->success('success', 200,$data);
 
 
 
