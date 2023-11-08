@@ -26,28 +26,42 @@
             <form action="{{route('product.store')}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method("POST")
-                <div class="mb-3">
-                    <label class="form-label">{{__('Name')}}</label>
-                    <input type="text" name="name" class="form-control" required value="{{old('name')}}"/>
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Name')}}</label>
+                        <input type="text" name="name" class="form-control" required value="{{old('name')}}"/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Company')}}</label>
+                        <input type="text" name="company" class="form-control" value="{{old('company')}}"/>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">{{__('Category')}}</label>
-                    <select name="category_id" class="form-control" id="category_id" required>
-                        <option value="" selected disabled>{{__('Select category')}}</option>
-                        @foreach($categories as $category)
-                            <option value="{{$category->id}}">{{$category->name}} {{$category->category?$category->category->name:''}}</option>
-                        @endforeach
-                    </select>
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Category')}}</label>
+                        <select name="category_id" class="form-control" id="category_id" required>
+                            <option value="" selected disabled>{{__('Select category')}}</option>
+                            @foreach($categories as $category)
+                                <option value="{{$category->id}}">{{$category->name}} {{$category->category?$category->category->name:''}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Sum')}}</label>
+                        <input type="number" class="form-control" name="sum">
+                    </div>
                 </div>
-                <div class="mb-3 display-none" id="subcategory_exists">
-                    <label class="form-label">{{__('Sub category')}}</label>
-                    <select name="subcategory_id" class="form-control" id="subcategory_id">
-                    </select>
-                </div>
-                <div class="mb-3 display-none" id="subsubcategory_exists">
-                    <label class="form-label">{{__('Sub Sub category')}}</label>
-                    <select name="subsubcategory_id" class="form-control" id="subsubcategory_id">
-                    </select>
+                <div class="row">
+                    <div class="mb-3 col-6 display-none" id="subcategory_exists">
+                        <label class="form-label">{{__('Sub category')}}</label>
+                        <select name="subcategory_id" class="form-control" id="subcategory_id">
+                        </select>
+                    </div>
+                    <div class="mb-3 col-6 display-none" id="subsubcategory_exists">
+                        <label class="form-label">{{__('Sub Sub category')}}</label>
+                        <select name="subsubcategory_id" class="form-control" id="subsubcategory_id">
+                        </select>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">
@@ -67,6 +81,20 @@
                     <textarea class="form-control" name="description" id="description" cols="20" rows="10">
                     </textarea>
                 </div>
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Manufacturer country')}}</label>
+                        <input type="text" name="manufacturer_country" class="form-control" required value="{{old('manufacturer_country')}}"/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Material composition')}}</label>
+                        <input type="text" name="material_composition" class="form-control" value="{{old('material_composition')}}"/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Material')}}</label>
+                        <input type="text" name="material" class="form-control" value="{{old('material')}}"/>
+                    </div>
+                </div>
                 <div>
                     <button type="submit" class="btn btn-primary waves-effect waves-light">{{__('Create')}}</button>
                     <button type="reset" class="btn btn-secondary waves-effect">{{__('Cancel')}}</button>
@@ -74,7 +102,7 @@
             </form>
         </div>
     </div>
-    <script src="{{asset('assets/js/ckeditor/ckeditor.js')}}"></script>
+    <script type="text/javascript" src="{{asset('assets/js/ckeditor/ckeditor.js')}}"></script>
     <script>
         ClassicEditor
             .create( document.querySelector( '#description' ) )

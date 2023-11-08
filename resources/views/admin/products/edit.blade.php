@@ -42,43 +42,57 @@
             <form action="{{route('product.update', $product->id)}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method("PUT")
-                <div class="mb-3">
-                    <label class="form-label">{{__('Name')}}</label>
-                    <input type="text" name="name" class="form-control" required value="{{$product->name}}"/>
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Name')}}</label>
+                        <input type="text" name="name" class="form-control" required value="{{$product->name}}"/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Company')}}</label>
+                        <input type="text" name="company" class="form-control" value="{{$product->company}}"/>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">{{__('Category')}}</label>
-                    <select name="category_id" class="form-control" id="category_id">
-                        @foreach($categories as $category)
-                            <option value="{{$category->id}}"
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Category')}}</label>
+                        <select name="category_id" class="form-control" id="category_id">
+                            @foreach($categories as $category)
+                                <option value="{{$category->id}}"
                                 @if($category != 'no')
                                     {{$current_category->id == $category->id?'selected':'' }}
-                                @endif
-                            >
-                                {{$category->name}}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="mb-3 display-none" id="subcategory_exists">
-                    <label class="form-label">{{__('Sub category')}}</label>
-                    <select name="subcategory_id" class="form-control" id="subcategory_id">
-                        @if(isset($current_category->subcategory))
-                            @foreach($current_category->subcategory as $subcategory)
-                                <option value="{{$subcategory->id}}" {{$subcategory->id == $current_sub_category_id?'selected':''}}>{{$subcategory->name}}</option>
+                                    @endif
+                                >
+                                    {{$category->name}}
+                                </option>
                             @endforeach
-                        @endif
-                    </select>
+                        </select>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Sum')}}</label>
+                        <input type="number" class="form-control" name="sum" value="{{$product->sum??''}}">
+                    </div>
                 </div>
-                <div class="mb-3 display-none" id="subsubcategory_exists">
-                    <label class="form-label">{{__('Sub Sub category')}}</label>
-                    <select name="subsubcategory_id" class="form-control" id="subsubcategory_id">
-                        @if(isset($category_product->sub_category->subsubcategory))
-                            @foreach($category_product->sub_category->subsubcategory as $subsubcategory)
-                                <option value="{{$subsubcategory->id}}" {{$subsubcategory->id == $current_sub_sub_category_id?'selected':''}}>{{$subsubcategory->name}}</option>
-                            @endforeach
-                        @endif
-                    </select>
+                <div class="row">
+                    <div class="mb-3 col-6 display-none" id="subcategory_exists">
+                        <label class="form-label">{{__('Sub category')}}</label>
+                        <select name="subcategory_id" class="form-control" id="subcategory_id">
+                            @if(isset($current_category->subcategory))
+                                @foreach($current_category->subcategory as $subcategory)
+                                    <option value="{{$subcategory->id}}" {{$subcategory->id == $current_sub_category_id?'selected':''}}>{{$subcategory->name}}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                    <div class="mb-3 col-6 display-none" id="subsubcategory_exists">
+                        <label class="form-label">{{__('Sub Sub category')}}</label>
+                        <select name="subsubcategory_id" class="form-control" id="subsubcategory_id">
+                            @if(isset($category_product->sub_category->subsubcategory))
+                                @foreach($category_product->sub_category->subsubcategory as $subsubcategory)
+                                    <option value="{{$subsubcategory->id}}" {{$subsubcategory->id == $current_sub_sub_category_id?'selected':''}}>{{$subsubcategory->name}}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
                 </div>
                 <div class="mb-3">
                     @php
@@ -105,7 +119,7 @@
                             <option value="1" {{$product->status == 1?'selected':''}}>{{__('Active')}}</option>
                         </select>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 col-6">
                         <label class="form-label">{{__('Images')}}</label>
                         <input type="file" name="images[]" class="form-control" value="{{old('images')}}" multiple/>
                     </div>
@@ -115,6 +129,20 @@
                     <textarea class="form-control" name="description" id="description" cols="20" rows="10">
                         {{$product->description??''}}
                     </textarea>
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Manufacturer country')}}</label>
+                        <input type="text" name="manufacturer_country" class="form-control" required value="{{old('manufacturer_country')}}"/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Material composition')}}</label>
+                        <input type="text" name="material_composition" class="form-control" value="{{old('material_composition')}}"/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Material')}}</label>
+                        <input type="text" name="material" class="form-control" value="{{old('material')}}"/>
+                    </div>
                 </div>
                 <div>
                     <button type="submit" class="btn btn-primary waves-effect waves-light">{{__('Update')}}</button>

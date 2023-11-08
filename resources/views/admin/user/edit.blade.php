@@ -100,6 +100,15 @@
                             @endforeach
                         </select>
                     </div>
+                    <div class="mb-3 col-6 display-none" id="company_content">
+                        <label for="company_id" class="form-label">{{__("Select Company")}}</label><br>
+                        <select id="company_id" class="form-select" name="company_id">
+                            <option value="">{{__('Choose..')}}</option>
+                            @foreach($companies as $company)
+                                <option value="{{$company->id}}" {{$user->company_id==$company->id??'selected'}}>{{$company->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Birth date')}}</label>
                         @php
@@ -108,29 +117,43 @@
                         <input type="date" class="form-control" name="birth_date" value="{{$birth_date[0]}}"/>
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">{{__('Login')}}</label>
-                    <input type="email" class="form-control" name="email" required value="{{$user->email??''}}"/>
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Login')}}</label>
+                        <input type="email" class="form-control" name="email" required value="{{$user->email??''}}"/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Current password')}}</label>
+                        <input type="password" class="form-control" name="password" value=""/>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">{{__('Current password')}}</label>
-                    <input type="password" class="form-control" name="password" value=""/>
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('New password')}}</label>
+                        <input type="password" class="form-control" name="new_password" value=""/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Password confirmation')}}</label>
+                        <input type="password" class="form-control" name="new_password_confirmation" value=""/>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">{{__('New password')}}</label>
-                    <input type="password" class="form-control" name="new_password" value=""/>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">{{__('Password confirmation')}}</label>
-                    <input type="password" class="form-control" name="new_password_confirmation" value=""/>
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Street, house')}}</label>
+                        <input type="text" class="form-control" name="address_name" value="{{$user->address?$user->address->name:''}}"/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Postcode')}}</label>
+                        <input type="number" class="form-control" name="postcode" value="{{$user->address?$user->address->postcode:''}}"/>
+                    </div>
                 </div>
                 <div class="form-group google-map-lat-lng">
                     <div>
                         <label for="map">{{__('Select a location')}}</label>
                     </div>
                     <div>
-                        <span>Lat: <b id="label_latitude">{{$user->address->latitude??''}}</b></span>&nbsp;&nbsp;
-                        <span>Lng: <b id="label_longitude">{{$user->address->longitude??''}}</b></span>
+                        <span>Lat: <b id="label_latitude">{{$user->address?$user->address->latitude:''}}</b></span>&nbsp;&nbsp;
+                        <span>Lng: <b id="label_longitude">{{$user->address?$user->address->longitude:''}}</b></span>
                     </div>
                 </div>
                 <div class="form-group">
@@ -151,6 +174,24 @@
     <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
     <script>
         let page = true
+        let company_content = document.getElementById('company_content')
+        let role_id = document.getElementById('role_id')
+        if([2, 3].includes(parseInt(role_id.value))){
+            if(company_content.classList.contains('display-none')){
+                company_content.classList.remove('display-none')
+            }
+        }
+        role_id.addEventListener('change', function(){
+            if([2, 3].includes(parseInt(role_id.value))){
+                if(company_content.classList.contains('display-none')){
+                    company_content.classList.remove('display-none')
+                }
+            }else{
+                if(!company_content.classList.contains('display-none')){
+                    company_content.classList.add('display-none')
+                }
+            }
+        })
         @if(isset($user->address) && isset($user->address->cities))
             let current_region = "{{$user->address->cities->region->id??''}}"
             let current_district = "{{$user->address->cities->id??''}}"

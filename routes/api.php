@@ -1,10 +1,10 @@
 <?php
 
 // use App\Http\Controllers\ProductsController;
-// use App\Http\Controllers\SubCategoryController;
+ use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\Api\ProductController;
 
-// use App\Http\Controllers\UsersController;
+ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanyController;
 use Illuminate\Http\Request;

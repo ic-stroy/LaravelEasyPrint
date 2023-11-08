@@ -92,12 +92,12 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="mb-3 col-6">
+                    <div class="mb-3 col-6 display-none" id="company_content">
                         <label for="company_id" class="form-label">{{__("Select Company")}}</label><br>
                         <select id="company_id" class="form-select" name="company_id">
                             <option value="">{{__('Choose..')}}</option>
                             @foreach($companies as $company)
-                                <option value="{{$company->id}}" {{old('address_id')==$company->id??'selected'}}>{{$company->name}}</option>
+                                <option value="{{$company->id}}" {{old('company_id')==$company->id??'selected'}}>{{$company->name}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -114,6 +114,16 @@
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Password confirmation')}}</label>
                         <input type="password" class="form-control" name="password_confirmation" required value="{{old('password_confirmation')}}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Street, house')}}</label>
+                        <input type="text" class="form-control" name="address_name" value="{{old('address_name')}}"/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Postcode')}}</label>
+                        <input type="number" class="form-control" name="postcode" value="{{old('postcode')}}"/>
                     </div>
                 </div>
                 <div class="form-group google-map-lat-lng">
@@ -144,6 +154,20 @@
     <script>
         let page = false
         let current_region = ''
+        let company_content = document.getElementById('company_content')
+        let role_id = document.getElementById('role_id')
+
+        role_id.addEventListener('change', function(){
+            if([2, 3].includes(parseInt(role_id.value))){
+                if(company_content.classList.contains('display-none')){
+                    company_content.classList.remove('display-none')
+                }
+            }else{
+                if(!company_content.classList.contains('display-none')){
+                    company_content.classList.add('display-none')
+                }
+            }
+        })
     </script>
     <script src="{{asset('assets/js/company.js')}}"></script>
 @endsection

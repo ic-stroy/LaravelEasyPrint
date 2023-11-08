@@ -46,6 +46,10 @@
                         <td>{{isset($model->address->name)?$model->address->name:''}}</td>
                     </tr>
                     <tr>
+                        <th>{{__('Post code')}}</th>
+                        <td>{{isset($model->address->postcode)?$model->address->postcode:''}}</td>
+                    </tr>
+                    <tr>
                         <th>{{__('Map')}}</th>
                         <td>
                             <div class="yandex_maps" id="map">
