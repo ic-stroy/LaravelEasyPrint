@@ -280,4 +280,24 @@ class UsersController extends Controller
         ];
         return response()->json($response);
     }
+
+    public function setAddress(Request $request){
+        $user = Auth::user();
+        if(isset($user->address->id)){
+            $address = $user->address;
+        }else{
+            $address = new Address();
+        }
+        $address->city_id = $request->city_id;
+        $address->name = $request->name;
+        $address->postcode = $request->postcode;
+        $address->save();
+        $user->address_id = $address->id;
+        $user->save();
+        $response = [
+            'status'=>true,
+            'message'=>'Success'
+        ];
+        return response()->json($response);
+    }
 }

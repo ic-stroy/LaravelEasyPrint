@@ -83,10 +83,11 @@
         url:"/../api/get-districts",
         type:'GET',
         success: function (data) {
-            data.forEach(addOption)
+            console.log(data)
+            data.data.forEach(addOption)
             if(localStorage.getItem('region_id') != undefined && localStorage.getItem('region_id') != null &&
                 localStorage.getItem('district_id') != undefined && localStorage.getItem('district_id') != null) {
-                districts_ = data[localStorage.getItem('region_id')].cities
+                districts_ = data.data[localStorage.getItem('region_id')].cities
                 Object.keys(districts_).forEach(function (key) {
                     let district_selected_option = document.createElement('option')
                     district_selected_option.value = key
@@ -114,12 +115,12 @@
                 localStorage.setItem('region_id', region_id.value)
                 district_id.innerHTML = ""
                 let district_option_disabled = document.createElement('option')
-                district_option_disabled.text = "Select district or city of "+ data[region_id.value].region
+                district_option_disabled.text = "Select district or city of "+ data.data[region_id.value].region
                 district_option_disabled.disabled = true
                 district_option_disabled.selected = true
                 district_option_disabled.value = ''
                 district_id.add(district_option_disabled)
-                districts = data[region_id.value].cities
+                districts = data.data[region_id.value].cities
                 Object.keys(districts).forEach(function (key) {
                     let district_option = document.createElement('option')
                     district_option.text = districts[key].name
@@ -128,15 +129,15 @@
                 })
             })
             district_id.addEventListener('change', function () {
-                localStorage.setItem('region', data[region_id.value].id)
-                localStorage.setItem('district', data[region_id.value].cities[district_id.value].id)
-                localStorage.setItem('address_lat',data[region_id.value].cities[district_id.value].lat)
-                localStorage.setItem('address_long', data[region_id.value].cities[district_id.value].long)
+                localStorage.setItem('region', data.data[region_id.value].id)
+                localStorage.setItem('district', data.data[region_id.value].cities[district_id.value].id)
+                localStorage.setItem('address_lat',data.data[region_id.value].cities[district_id.value].lat)
+                localStorage.setItem('address_long', data.data[region_id.value].cities[district_id.value].long)
                 localStorage.setItem('district_id', district_id.value)
-                region.value = data[region_id.value].id
-                district.value = data[region_id.value].cities[district_id.value].id
-                address_lat.value = data[region_id.value].cities[district_id.value].lat
-                address_long.value = data[region_id.value].cities[district_id.value].long
+                region.value = data.data[region_id.value].id
+                district.value = data.data[region_id.value].cities[district_id.value].id
+                address_lat.value = data.data[region_id.value].cities[district_id.value].lat
+                address_long.value = data.data[region_id.value].cities[district_id.value].long
                 location.reload()
             })
             if(page == true){

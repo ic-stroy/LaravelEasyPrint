@@ -43,8 +43,7 @@ Route::group(['prefix' => 'product'], function () {
 Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
     Route::post('personal-information', [UsersController::class, 'setPersonalInformation']);
     Route::get('personal-information', [UsersController::class, 'getPersonalInformation']);
-
-
+    Route::post('set-address', [UsersController::class, 'setAddress']);
 
 });
 
