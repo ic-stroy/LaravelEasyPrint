@@ -15,9 +15,10 @@ if (!function_exists('default_language')) {
 if (!function_exists('translate')) {
     function translate($key, $lang = null)
     {
-        
+
         if ($lang === null) {
             $lang = App::getLocale();
+            // dd($lang);
         }
         // $lang = App::getLocale();
         // dd($lang);

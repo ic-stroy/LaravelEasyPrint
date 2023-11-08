@@ -123,52 +123,61 @@
                     </li>
                     <li class="">
                         <div>
-
+                            @php
+                                if (session()->has('locale')) {
+                                    $locale = session('locale');
+                                } else {
+                                    $locale = env('DEFAULT_LANGUAGE', 'ru');
+                                }
+                                // $locale=app()->getLocale()?? env('DEFAULT_LANGUAGE');
+                            @endphp
                             <div class="align-items-stretch d-flex dropdown" id="lang-change">
                                 <a class="buttonUzbDropDownHeader dropdown-toggle" type="button" id="dropdownMenuButton" role="button"
                                    data-toggle="dropdown" aria-haspopup="false" aria-expanded="false" href="javascript:void(0);">
-{{--                                    @switch($locale)--}}
-{{--                                        @case('uz')--}}
-{{--                                        <img class="notifRegion2" id="selected_language"--}}
-{{--                                             src="{{ asset('/assets/images/language/region.png') }}" alt="region">--}}
-{{--                                        @break--}}
+                                    @switch($locale)
+                                        @case('uz')
+                                        <img class="notifRegion2" id="selected_language"
+                                             src="{{ asset('/assets/images/language/region.png') }}" alt="region">
+                                        @break
 
-{{--                                        @case('en')--}}
-{{--                                        <img class="notifRegion2" id="selected_language"--}}
-{{--                                             src="{{ asset('/assets/images/language/GB.png') }}" alt="region">--}}
-{{--                                        @break--}}
+                                        @case('en')
+                                        <img class="notifRegion2" id="selected_language"
+                                             src="{{ asset('/assets/images/language/GB.png') }}" alt="region">
+                                        @break
 
-{{--                                        @case('ru')--}}
-{{--                                        <img class="notifRegion2" id="selected_language"--}}
-{{--                                             src="{{ asset('/assets/images/language/RU.png') }}" alt="region">--}}
-{{--                                        @break--}}
-{{--                                    @endswitch--}}
+                                        @case('ru')
+                                        <img class="notifRegion2" id="selected_language"
+                                             src="{{ asset('/assets/images/language/RU.png') }}" alt="region">
+                                        @break
+                                    @endswitch
                                 </a>
                                 <div id="language_flag" class="language_flag display-none"
                                      style="border: none; background-color: transparent;" aria-labelledby="dropdownMenuButton">
                                     <div class="up-arrow"></div>
                                     <div class="dropdownMenyApplyUzbFlag">
-{{--                                            <a href="javascript:void(0)" data-flag=""--}}
-{{--                                               class="dropdown-item dropdown-item dropdownLanguageItem @if ($locale == $language->code??'') active @endif" >--}}
-{{--                                                @switch($language->code)--}}
-{{--                                                    @case('uz')--}}
-{{--                                                    <img class="dropdownRegionBayroq" id="lang_uz" style="margin-right: 8px;" src="{{asset('/assets/images/language/region.png')}}" alt="region">--}}
-{{--                                                    {{ $language->name??'' }}--}}
-{{--                                                    @break--}}
+                                        @foreach (\App\Models\Language::all() as $key => $language)
+                                            <a href="javascript:void(0)" data-flag="{{ $language->code??'' }}"
+                                               class="dropdown-item dropdown-item dropdownLanguageItem @if ($locale == $language->code??'') active @endif" >
+                                                @switch($language->code)
+                                                    @case('uz')
+                                                    <img class="dropdownRegionBayroq" id="lang_uz" style="margin-right: 8px;" src="{{asset('/assets/images/language/region.png')}}" alt="region">
+                                                    {{ $language->name??'' }}
+                                                    @break
 
-{{--                                                    @case('ru')--}}
-{{--                                                    <img class="dropdownRegionBayroq" id="lang_ru" style="margin-right: 8px;"--}}
-{{--                                                         src="{{ asset('/assets/images/language/RU.png') }}" alt="region">--}}
-{{--                                                    {{ $language->name??'' }}--}}
-{{--                                                    @break--}}
+                                                    @case('ru')
+                                                    <img class="dropdownRegionBayroq" id="lang_ru" style="margin-right: 8px;"
+                                                         src="{{ asset('/assets/images/language/RU.png') }}" alt="region">
+                                                    {{ $language->name??'' }}
+                                                    @break
 
-{{--                                                    @case('en')--}}
-{{--                                                    <img class="dropdownRegionBayroq" id="lang_en" style="margin-right: 8px;"--}}
-{{--                                                         src="{{ asset('/assets/images/language/GB.png') }}" alt="region">--}}
-{{--                                                    {{ $language->name??'' }}--}}
-{{--                                                    @break--}}
-{{--                                                @endswitch--}}
-{{--                                            </a>--}}
+                                                    @case('en')
+                                                    <img class="dropdownRegionBayroq" id="lang_en" style="margin-right: 8px;"
+                                                         src="{{ asset('/assets/images/language/GB.png') }}" alt="region">
+                                                    {{ $language->name??'' }}
+                                                    @break
+                                                @endswitch
+                                            </a>
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>
@@ -467,6 +476,9 @@
                                     </li>
                                 </ul>
                             </div>
+                        </li>
+                        <li>
+                            <a href="{{route('language.index')}}"> {{translate('Language')}}  </a>
                         </li>
                     </ul>
 
@@ -952,11 +964,7 @@
             if(sessionSuccess){
                 toastr.success(sessionSuccess)
             }
-            let sessionError ="{{session('error_status')}}";
-            if(sessionError){
-                toastr.warning(sessionError)
-            }
-            {{--let language = '{{ $locale }}'--}}
+            let language = "{{ $locale ?? "ru"}}"
             let uz = `{{ asset('/assets/images/language/region.png') }}`
             let ru = `{{ asset('/assets/images/language/RU.png') }}`
             let en = `{{ asset('/assets/images/language/GB.png') }}`
@@ -978,12 +986,12 @@
                                 $('#selected_language').attr('src', ru)
                                 break;
                         }
-                        {{--$.post('{{ route('language.change') }}', {--}}
-                        {{--    _token: '{{ csrf_token() }}',--}}
-                        {{--    locale: locale--}}
-                        {{--}, function(data) {--}}
-                        {{--    location.reload();--}}
-                        {{--});--}}
+                        $.post('{{ route('language.change') }}', {
+                            _token: '{{ csrf_token() }}',
+                            locale: locale
+                        }, function(data) {
+                            location.reload();
+                        });
 
                     });
                 });
