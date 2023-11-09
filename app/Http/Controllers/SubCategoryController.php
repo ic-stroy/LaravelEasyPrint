@@ -84,28 +84,6 @@ class SubCategoryController extends Controller
         return redirect()->route('subcategory.index')->with('status', __('Successfully deleted'));
     }
 
-    /**
-     * json responses
-     */
-
-    public function getSubcategory($id)
-    {
-        $model = Category::where('parent_id', $id)->get();
-        if(isset($model) && count($model)>0){
-            return response()->json([
-                'status'=>true,
-                'data'=>$model
-            ]);
-        }else{
-            return response()->json([
-                'status'=>false,
-                'data'=>[]
-            ]);
-        }
-
-    }
-
-
     public function category()
     {
         $category = Category::where('step', 0)->get();
