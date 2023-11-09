@@ -58,3 +58,42 @@ if (!function_exists('translate')) {
         // return tkram(Translation::class, $app, $function);
     }
 }
+
+if (!function_exists('translate_api')) {
+    function translate_api($key, $lang = null)
+    {
+
+        if ($lang === null) {
+            $lang = App::getLocale();
+        }
+        // dd($lang);
+
+            $translate = Translation::where('lang_key', $key)
+                ->where('lang', $lang)
+                ->first();
+                // dd($translate);
+            if ($translate === null){
+                // dd($translate);
+                foreach (Language::all() as $language) {
+                    if(!Translation::where('lang_key', $key)->where('lang', $language->code)->exists()){
+                        Translation::create([
+                            'lang'=>$language->code,
+                            'lang_key'=> $key,
+                            'lang_value'=>$key
+                        ]);
+                    }
+                }
+                // dd($translate);
+                $data = $key;
+            }else{
+                $data = $translate->lang_value;
+            }
+
+            return $data;
+        // };
+
+        // return tkram(Translation::class, $app, $function);
+    }
+}
+
+

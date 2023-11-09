@@ -14,8 +14,12 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $language=$request->language;
+        if ($language == null) {
+            $language=env("DEFAULT_LANGUAGE", 'ru');
+        }
         // return "came";
         $products = DB::table('products')
         ->select('id','name','price','images')
@@ -33,7 +37,8 @@ class ProductController extends Controller
             'warehouse_product_list'=>$warehouse_products
         ];
         // dd($data);
-        return $this->success('success', 200,$data);
+        $message=translate_api('success',$language);
+        return $this->success($message, 200,$data);
 
 
 
