@@ -20,11 +20,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-//Route::get('subcategory/{id}', [ProductsController::class, 'getSubcategory'])->name('get_subcategory');
-Route::get('subcategory/{id}', [CategoryController::class, 'getSubcategory'])->name('get_subcategory');
+/**
+ * Frontent  Api routes
+ */
+
 Route::get('get-districts', [CompanyController::class, 'getCities']);
 
 Route::post('register', [AuthController::class, 'register']);
@@ -44,6 +43,6 @@ Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
     Route::get('personal-information', [UsersController::class, 'getPersonalInformation']);
     Route::post('set-address', [UsersController::class, 'setAddress']);
     Route::post('set-warehouse', [OrderController::class, 'setWarehouse']);
-
 });
+
 

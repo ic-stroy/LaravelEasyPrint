@@ -30,6 +30,7 @@ use \App\Http\Controllers\LanguageController;
 
 Auth::routes();
 
+Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcategory'])->name('get_subcategory');
 
 // Route::group(['middleware'=>['auth', 'language']], function(){
     Route::group(['middleware'=>'authed'], function(){

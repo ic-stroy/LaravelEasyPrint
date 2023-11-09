@@ -87,7 +87,7 @@ class LanguageController extends Controller
 
 
 
-    
+
     // public function defaultLanguage(Request $request)
     // {
     //     return $request->all();
@@ -303,9 +303,9 @@ class LanguageController extends Controller
     }
 
     protected function Paginate($items, $perPage = 10, $page = null, $options = [])
-{
-    $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
-    $items = $items instanceof Collection ? $items : Collection::make($items);
-    return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
-}
+    {
+        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+        $items = $items instanceof Collection ? $items : Collection::make($items);
+        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
+    }
 }
