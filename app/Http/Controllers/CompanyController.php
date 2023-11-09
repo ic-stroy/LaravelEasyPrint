@@ -25,25 +25,25 @@ class CompanyController extends Controller
      */
     public function create(Request $request)
     {
-//        $response = Http::get(asset('assets/json/cities.json'));
-//        $cities = json_decode($response);
-//        foreach ($cities as $city){
-//            $model_region = new Cities();
-//            $model_region->name = $city->region;
-//            $model_region->type = 'region';
-//            $model_region->parent_id = 0;
-//            $model_region->save();
-//            foreach ($city->cities as $city_district){
-//                $model = new Cities();
-//                $model->name = $city_district->name;
-//                $model->type = 'district';
-//                $model->parent_id = $model_region->id;
-//                $model->lng = $city_district->long;
-//                $model->lat = $city_district->lat;
-//                $model->save();
-//            }
-//        }
-        return view('admin.company.create');
+    //    $response = Http::get(asset("assets/json/cities.json"));
+    //    $cities = json_decode($response);
+    //    foreach ($cities as $city){
+    //        $model_region = new Cities();
+    //        $model_region->name = $city->region;
+    //        $model_region->type = 'region';
+    //        $model_region->parent_id = 0;
+    //        $model_region->save();
+    //        foreach ($city->cities as $city_district){
+    //            $model = new Cities();
+    //            $model->name = $city_district->name;
+    //            $model->type = 'district';
+    //            $model->parent_id = $model_region->id;
+    //            $model->lng = $city_district->long;
+    //            $model->lat = $city_district->lat;
+    //            $model->save();
+    //        }
+    //    }
+    //     return view('admin.company.create');
     }
 
     /**

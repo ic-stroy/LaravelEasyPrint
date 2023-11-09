@@ -33,7 +33,7 @@ Auth::routes();
 Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcategory'])->name('get_subcategory');
 
 // Route::group(['middleware'=>['auth', 'language']], function(){
-    Route::group(['middleware'=>'authed'], function(){
+    // Route::group(['middleware'=>'authed'], function(){
         Route::get('/', [HomeController::class, 'index'])->name('dashboard');
         Route::resource('color', ColorController::class);
         Route::resource('size', SizesController::class);
@@ -68,7 +68,7 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
             Route::post('/language/update/value', [LanguageController::class, 'updateValue'])->name('languages.update_value');
         });
 
-    });
+    // });
     Route::group(['middleware'=>'company_auth'], function (){
         Route::group(['prefix' => 'companies'], function () {
 
