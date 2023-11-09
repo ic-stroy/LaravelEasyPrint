@@ -30,7 +30,7 @@ class UserRequest extends BaseFormRequest
             'phone_number' => 'nullable|string',
             'gender' => 'nullable|integer',
             'birth_date' => 'nullable|date',
-            'email' => 'required|string|unique:yy_staffs',
+            'email' => 'required|string|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'role_id' => 'required|integer',
             'company_id' => 'nullable|integer',

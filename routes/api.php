@@ -29,6 +29,15 @@ Route::get('get-districts', [CompanyController::class, 'getCities']);
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
+Route::group(['prefix' => 'header'], function () {
+    Route::get('/list', [ProductController::class, 'index']);
+    // Route::get('/show/{id}', [CompanyProductsController::class, 'show'])->name('company_product.show');
+    // Route::get('/edit/{id}', [CompanyProductsController::class, 'edit'])->name('company_product.edit');
+    // Route::get('/create', [CompanyProductsController::class, 'create'])->name('company_product.create');
+    // Route::post('/store', [CompanyProductsController::class, 'store'])->name('company_product.store');
+    // Route::post('/update/{id}', [CompanyProductsController::class, 'update'])->name('company_product.update');
+});
+
 Route::group(['prefix' => 'product'], function () {
     Route::get('/list', [ProductController::class, 'index']);
     // Route::get('/show/{id}', [CompanyProductsController::class, 'show'])->name('company_product.show');
