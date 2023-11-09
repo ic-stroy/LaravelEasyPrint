@@ -12,9 +12,6 @@ use function response;
 
 class OrderController extends Controller
 {
-    public function getBasket(){
-
-    }
     public function setWarehouse(Request $request){
         $user = Auth::user();
         if(isset($user->orderBasket->id)){
@@ -64,5 +61,17 @@ class OrderController extends Controller
             $file->storeAs('public/'.$url.'/', $image_name);
             return $image_name;
         }
+    }
+
+    public function getBasket(){
+        $user = Auth::user();
+        dd($user->orderBasket->order_detail);
+        $data = [];
+        if(isset($user->orderBasket->order_detail)){
+            foreach ($user->orderBasket->order_detail as $order_detail){
+                $order_detail;
+            }
+        }
+
     }
 }

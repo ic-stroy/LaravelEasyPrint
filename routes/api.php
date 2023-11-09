@@ -43,6 +43,7 @@ Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
     Route::get('personal-information', [UsersController::class, 'getPersonalInformation']);
     Route::post('set-address', [UsersController::class, 'setAddress']);
     Route::post('set-warehouse', [OrderController::class, 'setWarehouse']);
+    Route::get('get-basket', [OrderController::class, 'getBasket']);
 });
 
 
