@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->double('price')->nullable();
             $table->integer('status')->nullable();
-            $table->integer('start_date')->nullable();
             $table->timestamp('delivery_date')->nullable();
             $table->double('delivery_price')->nullable();
             $table->double('all_price')->nullable();

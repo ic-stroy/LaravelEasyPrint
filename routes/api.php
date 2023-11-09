@@ -5,6 +5,7 @@
 use App\Http\Controllers\Api\ProductController;
 
  use App\Http\Controllers\UsersController;
+ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanyController;
 use Illuminate\Http\Request;
@@ -44,6 +45,7 @@ Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
     Route::post('personal-information', [UsersController::class, 'setPersonalInformation']);
     Route::get('personal-information', [UsersController::class, 'getPersonalInformation']);
     Route::post('set-address', [UsersController::class, 'setAddress']);
+    Route::post('set-warehouse', [OrderController::class, 'setWarehouse']);
 
 });
 
