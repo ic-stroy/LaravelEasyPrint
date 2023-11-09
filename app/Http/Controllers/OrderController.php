@@ -32,7 +32,7 @@ class OrderController extends Controller
         $order_detail->quantity = $request->quantity;
         $order_detail->color_id = $request->color_id;
         $order_detail->size_id = $request->size_id;
-        $images_print = $request->file($request->imagesPrint);
+        $images_print = $request->file('imagesPrint');
 
         $order_detail->price = $request->image_price;
         $image_front = $request->file('image_front');
