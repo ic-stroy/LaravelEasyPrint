@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('uploads', function (Blueprint $table) {
-            $this->tinyInteger('relation_type')->change();
+            $table->dropColumn('relation_type');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('uploads', function (Blueprint $table) {
-            $table->dropColumn('relation_type');
+            //
         });
     }
 };

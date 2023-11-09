@@ -416,6 +416,12 @@
                             </a>
                         </li>
                         <li>
+                            <a href="{{route('banner.index')}}">
+                            <i class="mdi mdi-crop-landscape"></i>
+                                <span> {{__('Banner')}} </span>
+                            </a>
+                        </li>
+                        <li>
                             <a href="{{ route('company.index') }}">
                                 <i class="mdi mdi-bank-outline"></i>
                                 <span> {{ __('Company') }} </span>

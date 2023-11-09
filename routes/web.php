@@ -6,6 +6,7 @@ use \App\Http\Controllers\Company\CompanyHomeController;
 use \App\Http\Controllers\Company\CompanyProductsController;
 use \App\Http\Controllers\Company\CompanyUsersController;
 use \App\Http\Controllers\Company\CompanyCouponController;
+use \App\Http\Controllers\BannerController;
 use \App\Http\Controllers\UsersController;
 use \App\Http\Controllers\CategoryController;
 use \App\Http\Controllers\SubCategoryController;
@@ -35,6 +36,7 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
 // Route::group(['middleware'=>['auth', 'language']], function(){
     Route::group(['middleware'=>'authed'], function(){
         Route::get('/', [HomeController::class, 'index'])->name('dashboard');
+        Route::resource('banner', BannerController::class);
         Route::resource('color', ColorController::class);
         Route::resource('size', SizesController::class);
         Route::resource('user', UsersController::class);
