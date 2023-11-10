@@ -14,6 +14,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>{{__('Image')}}</th>
                         <th>{{__('Name')}}</th>
                         <th>{{__('Updated_at')}}</th>
                         <th class="text-center">{{__('Functions')}}</th>
@@ -23,28 +24,45 @@
                     @php
                         $i = 0
                     @endphp
-                    @foreach($roles as $role)
+                    @foreach($banners as $banner)
                         @php
                             $i++
                         @endphp
                         <tr>
                             <th scope="row">
-                                <a class="show_page" href="{{route('banner.show', $role->id)}}">{{$i}}</a>
+                                <a class="show_page" href="{{route('banner.show', $banner->id)}}">{{$i}}</a>
                             </th>
                             <td>
-                                <a class="show_page" href="{{route('banner.show', $role->id)}}">
-                                    @if(isset($role->name)){{ $role->name }}@else <div class="no_text"></div> @endif
+                                <a class="show_page" href="{{route('banner.show', $banner->id)}}">
+                                    @if(isset($banner->title)){{ $banner->title }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>
-                                <a class="show_page" href="{{route('banner.show', $role->id)}}">
-                                    @if(isset($role->updated_at)){{ $role->updated_at }}@else <div class="no_text"></div> @endif
+                                <a class="show_page_color" href="{{route('banner.show', $banner->id)}}">
+                                    @php
+                                        if(!isset($banner->image)){
+                                             $banner_image = 'no';
+                                        }else{
+                                            $banner_image = $banner->image;
+                                        }
+                                        $avatar_main = storage_path('app/public/banner/'.$banner_image);
+                                    @endphp
+                                    @if(file_exists($avatar_main))
+                                        <div class="">
+                                            <img src="{{asset('storage/banner/'.$banner_image)}}" alt="" height="40px">
+                                        </div>
+                                    @endif
+                                </a>
+                            </td>
+                            <td>
+                                <a class="show_page" href="{{route('banner.show', $banner->id)}}">
+                                    @if(isset($banner->updated_at)){{ $banner->updated_at }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td class="function_column">
                                 <div class="d-flex justify-content-center">
-                                    <a class="form_functions btn btn-info" href="{{route('banner.edit', $role->id)}}"><i class="fe-edit-2"></i></a>
-                                    <form action="{{route('banner.destroy', $role->id)}}" method="POST">
+                                    <a class="form_functions btn btn-info" href="{{route('banner.edit', $banner->id)}}"><i class="fe-edit-2"></i></a>
+                                    <form action="{{route('banner.destroy', $banner->id)}}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button class="form_functions btn btn-danger" type="submit"><i class="fe-trash-2"></i></button>
