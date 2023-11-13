@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
 use App\Models\Banner;
+use Illuminate\Http\Request;
 
 class BannerController extends Controller
 {
@@ -12,9 +13,9 @@ class BannerController extends Controller
      */
     public function index()
     {
-        $users = Banner::orderBy('created_at', 'desc')->get();
+        $banners = Banner::orderBy('created_at', 'desc')->get();
         return view('admin.banner.index', [
-            'users' => $users
+            'banners' => $banners
         ]);
     }
 
@@ -29,7 +30,7 @@ class BannerController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(UserRequest $request)
+    public function store(Request $request)
     {
         $banner = new Banner();
         $banner->title = $request->title;
@@ -66,14 +67,14 @@ class BannerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UserRequest $request, string $id)
+    public function update(Request $request, string $id)
     {
         $model = Banner::find($id);
         $model->title = $request->title;
         $model->text = $request->text;
         $model->is_active = $request->is_active;
         $file = $request->file('image');
-        $this->imageSave($file, $model, 'store');
+        $this->imageSave($file, $model, 'update');
         $model->save();
         return redirect()->route('banner.index')->with('status', __('Successfully updated'));
     }
@@ -89,7 +90,7 @@ class BannerController extends Controller
                 }else{
                     $sms_avatar = storage_path('app/public/banner/' . 'no');
                 }
-                if (file_exists($sms_avatar)) {
+                if(file_exists($sms_avatar)) {
                     unlink($sms_avatar);
                 }
             }

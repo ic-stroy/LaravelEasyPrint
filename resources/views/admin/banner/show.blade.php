@@ -19,12 +19,34 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <th>{{__('Name')}}</th>
-                        <td>{{$model->name??''}}</td>
+                        <th>{{__('Title')}}</th>
+                        <td>{{$model->title??''}}</td>
                     </tr>
                     <tr>
-                        <th>{{__('Color')}}</th>
-                        <td><div style="background-color: {{$model->code??''}}; height: 40px; width: 64px; border-radius: 4px; border: solid 1px"></div></td>
+                        <th>{{__('Text')}}</th>
+                        <td>{!! $model->text !!}</td>
+                    </tr>
+                    <tr>
+                        <th>{{__('Image')}}</th>
+                        <td>
+                            @php
+                                if(!isset($model->image)){
+                                     $banner_image = 'no';
+                                }else{
+                                    $banner_image = $model->image;
+                                }
+                                $avatar_main = storage_path('app/public/banner/'.$banner_image);
+                            @endphp
+                            @if(file_exists($avatar_main))
+                                <div class="">
+                                    <img src="{{asset('storage/banner/'.$banner_image)}}" alt="" height="200px">
+                                </div>
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>{{__('Is active')}}</th>
+                        <td>{{$model->is_active = 1?'Active':'No active'}}</td>
                     </tr>
                     <tr>
                         <th>{{__('Updated at')}}</th>

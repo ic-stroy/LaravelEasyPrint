@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CompanyController;
@@ -53,6 +54,9 @@ Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
     Route::post('set-address', [UsersController::class, 'setAddress']);
     Route::post('set-warehouse', [OrderController::class, 'setWarehouse']);
     Route::get('get-basket', [OrderController::class, 'getBasket']);
+    Route::get('get-banner', [BannerController::class, 'getBanner']);
+    Route::get('get-products-by-category', [CategoryController::class, 'getProductsByCategories']);
+    Route::get('profile-info', [CategoryController::class, 'profileInfo']);
 });
 
 
