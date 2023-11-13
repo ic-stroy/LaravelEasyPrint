@@ -44,6 +44,7 @@ class ProductsController extends Controller
             $model->category_id = $request->category_id;
         }
         $model->status = $request->status;
+        $model->price = $request->price;
         $model->description = $request->description;
         $images = $request->file('images');
         if(isset($request->images)){
@@ -58,7 +59,7 @@ class ProductsController extends Controller
             $model->images = json_encode($array_images);
         }
         $model->save();
-        return redirect()->route('product.index')->with('status', __('Successfully created'));
+        return redirect()->route('product.category.product', $request->category_id)->with('status', __('Successfully created'));
     }
 
     /**
@@ -111,6 +112,7 @@ class ProductsController extends Controller
             $model->category_id = $request->category_id;
         }
         $model->status = $request->status;
+        $model->price = $request->price;
         $model->description = $request->description;
         $images = $request->file('images');
         if(isset($request->images)){
@@ -134,7 +136,7 @@ class ProductsController extends Controller
             $model->images = json_encode($array_images);
         }
         $model->save();
-        return redirect()->route('product.index')->with('status', __('Successfully updated'));
+        return redirect()->route('product.category.product', $request->category_id)->with('status', __('Successfully updated'));
     }
 
     /**
@@ -153,7 +155,7 @@ class ProductsController extends Controller
             }
         }
         $model->delete();
-        return redirect()->route('product.index')->with('status', __('Successfully deleted'));
+        return redirect()->route('product.category')->with('status', __('Successfully deleted'));
     }
 
     public function getSizes($id){
@@ -185,4 +187,5 @@ class ProductsController extends Controller
         $products = Products::whereIn('category_id', $category_ids)->get();
         return view('admin.products.product', ['products'=>$products]);
     }
+
 }

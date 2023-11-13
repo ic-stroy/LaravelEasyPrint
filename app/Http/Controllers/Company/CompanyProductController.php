@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 
 
-class CompanyProductsController extends Controller
+class CompanyProductController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -145,7 +145,7 @@ class CompanyProductsController extends Controller
 
     }
 
-    
+
 
     /**
      * Remove the specified resource from storage.

@@ -26,10 +26,6 @@
             <form action="{{route('subsubcategory.store')}}" class="parsley-examples" method="POST">
                 @csrf
                 @method("POST")
-                <div class="mb-3">
-                    <label class="form-label">{{__('Name')}}</label>
-                    <input type="text" class="form-control" name="name" value="{{old('name')}}">
-                </div>
                 <div class="row">
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Category')}}</label>
@@ -46,6 +42,10 @@
 
                         </select>
                     </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{__('Name')}}</label>
+                    <input type="text" class="form-control" name="name" value="{{old('name')}}">
                 </div>
                 <div>
                     <button type="submit" class="btn btn-primary waves-effect waves-light">{{__('Create')}}</button>

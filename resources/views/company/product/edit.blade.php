@@ -59,18 +59,13 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">{{__('Sum')}}</label>
-                    <input type="number" name="sum" class="form-control" required value="{{$warehouse->price}}"/>
+                    <label class="form-label">{{__('Price')}}</label>
+                    <input type="number" name="price" class="form-control" required value="{{$warehouse->price}}"/>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">{{__('Quantity')}}</label>
-                    <input type="number" name="quantity" class="form-control" required required value="{{$warehouse->quantity}}"/>
+                    <input type="number" name="quantity" class="form-control" required value="{{$warehouse->quantity}}"/>
                 </div>
-
-
-
-
-
                 <div>
                     <button type="submit" class="btn btn-primary waves-effect waves-light">{{__('Update')}}</button>
                     <button type="reset" class="btn btn-secondary waves-effect">{{__('Cancel')}}</button>

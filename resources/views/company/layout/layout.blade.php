@@ -421,23 +421,11 @@
                             <div class="collapse" id="catalog">
                                 <ul class="nav-second-level">
                                     <li>
-                                        <a href="{{route('company_product.index')}}">{{ __('Products') }}</a>
+                                        <a href="{{route('warehouse.index')}}">{{ __('Warehouse') }}</a>
                                     </li>
-                                    {{-- <li>
-                                        <a href="{{route('address.index')}}">{{ __('Category') }}</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{route('address.index')}}">{{ __('Attribute') }}</a>
-                                    </li> --}}
                                     <li>
                                         <a href="{{route('company_coupon.index')}}">{{ __('Coupon') }}</a>
                                     </li>
-                                    {{-- <li>
-                                        <a href="{{route('address.index')}}">{{ __('Size') }}</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{route('address.index')}}">{{ __('Color') }}</a>
-                                    </li> --}}
                                 </ul>
                             </div>
                         </li>

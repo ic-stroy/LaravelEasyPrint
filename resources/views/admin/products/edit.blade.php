@@ -48,12 +48,6 @@
                         <input type="text" name="name" class="form-control" required value="{{$product->name}}"/>
                     </div>
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Company')}}</label>
-                        <input type="text" name="company" class="form-control" value="{{$product->company}}"/>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="mb-3 col-6">
                         <label class="form-label">{{__('Category')}}</label>
                         <select name="category_id" class="form-control" id="category_id">
                             @foreach($categories as $category)
@@ -67,12 +61,12 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Sum')}}</label>
-                        <input type="number" class="form-control" name="sum" value="{{$product->sum??''}}">
-                    </div>
                 </div>
                 <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Price')}}</label>
+                        <input type="number" class="form-control" name="price" value="{{$product->price??''}}">
+                    </div>
                     <div class="mb-3 col-6 display-none" id="subcategory_exists">
                         <label class="form-label">{{__('Sub category')}}</label>
                         <select name="subcategory_id" class="form-control" id="subcategory_id">
@@ -83,6 +77,8 @@
                             @endif
                         </select>
                     </div>
+                </div>
+                <div class="row">
                     <div class="mb-3 col-6 display-none" id="subsubcategory_exists">
                         <label class="form-label">{{__('Sub Sub category')}}</label>
                         <select name="subsubcategory_id" class="form-control" id="subsubcategory_id">
@@ -91,6 +87,13 @@
                                     <option value="{{$subsubcategory->id}}" {{$subsubcategory->id == $current_sub_sub_category_id?'selected':''}}>{{$subsubcategory->name}}</option>
                                 @endforeach
                             @endif
+                        </select>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Status')}}</label>
+                        <select name="status" class="form-control" id="status_id">
+                            <option value="0" {{$product->status == 0?'selected':''}}>{{__('No active')}}</option>
+                            <option value="1" {{$product->status == 1?'selected':''}}>{{__('Active')}}</option>
                         </select>
                     </div>
                 </div>
@@ -113,15 +116,12 @@
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Status')}}</label>
-                        <select name="status" class="form-control" id="status_id">
-                            <option value="0" {{$product->status == 0?'selected':''}}>{{__('No active')}}</option>
-                            <option value="1" {{$product->status == 1?'selected':''}}>{{__('Active')}}</option>
-                        </select>
-                    </div>
-                    <div class="mb-3 col-6">
                         <label class="form-label">{{__('Images')}}</label>
                         <input type="file" name="images[]" class="form-control" value="{{old('images')}}" multiple/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Manufacturer country')}}</label>
+                        <input type="text" name="manufacturer_country" class="form-control" value="{{old('manufacturer_country')}}"/>
                     </div>
                 </div>
                 <div class="mb-3">
@@ -131,10 +131,6 @@
                     </textarea>
                 </div>
                 <div class="row">
-                    <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Manufacturer country')}}</label>
-                        <input type="text" name="manufacturer_country" class="form-control" required value="{{old('manufacturer_country')}}"/>
-                    </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Material composition')}}</label>
                         <input type="text" name="material_composition" class="form-control" value="{{old('material_composition')}}"/>

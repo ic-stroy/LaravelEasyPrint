@@ -21,9 +21,23 @@ class Warehouse extends Model
         'size_id',
         'price',
         'quantity',
+        'status',
+        'images',
+        'description',
+        'material_id',
+        'manufacturer_country',
+        'material_composition',
     ];
 
     public function product(){
         return $this->hasOne(Products::class, 'id', 'product_id');
+    }
+
+    public function size(){
+        return $this->hasOne(Sizes::class, 'id', 'size_id');
+    }
+
+    public function color(){
+        return $this->hasOne(Color::class, 'id', 'color_id');
     }
 }

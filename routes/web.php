@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\HomeController;
 use \App\Http\Controllers\Company\CompanyHomeController;
-use \App\Http\Controllers\Company\CompanyProductsController;
+use \App\Http\Controllers\Company\WarehouseController;
 use \App\Http\Controllers\Company\CompanyUsersController;
 use \App\Http\Controllers\Company\CompanyCouponController;
 use \App\Http\Controllers\BannerController;
@@ -34,7 +34,7 @@ Auth::routes();
 Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcategory'])->name('get_subcategory');
 
 // Route::group(['middleware'=>['auth', 'language']], function(){
-    // Route::group(['middleware'=>'authed'], function(){
+     Route::group(['middleware'=>'authed'], function(){
         Route::get('/', [HomeController::class, 'index'])->name('dashboard');
         Route::resource('banner', BannerController::class);
         Route::resource('color', ColorController::class);
@@ -70,19 +70,16 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
             Route::post('/language/update/value', [LanguageController::class, 'updateValue'])->name('languages.update_value');
         });
 
-    // });
+     });
     Route::group(['middleware'=>'company_auth'], function (){
         Route::group(['prefix' => 'companies'], function () {
-
             Route::get('/', [CompanyHomeController::class, 'index'])->name('company_dashboard');
-
             Route::group(['prefix' => 'product'], function () {
-                Route::get('/', [CompanyProductsController::class, 'index'])->name('company_product.index');
-                Route::get('/show/{id}', [CompanyProductsController::class, 'show'])->name('company_product.show');
-                Route::get('/edit/{id}', [CompanyProductsController::class, 'edit'])->name('company_product.edit');
-                Route::get('/create', [CompanyProductsController::class, 'create'])->name('company_product.create');
-                Route::post('/store', [CompanyProductsController::class, 'store'])->name('company_product.store');
-                Route::post('/update/{id}', [CompanyProductsController::class, 'update'])->name('company_product.update');
+                Route::resource('warehouse', WarehouseController::class);
+                Route::get('warehouse-category', [WarehouseController::class, 'category'])->name('warehouse.category');
+                Route::get('product-by-category/{id}', [WarehouseController::class, 'product'])->name('warehouse.category.product');
+                Route::get('warehouse-by-category/{id}', [WarehouseController::class, 'warehouse'])->name('warehouse.category.warehouse');
+                Route::get('create-warehouse-by-category/{id}', [WarehouseController::class, 'createWarehouse'])->name('warehouse.category.create_warehouse');
             });
             Route::group(['prefix' => 'user'], function () {
                 Route::get('/', [CompanyUsersController::class, 'index'])->name('company_user.index');

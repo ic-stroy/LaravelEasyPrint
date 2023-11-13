@@ -32,12 +32,6 @@
                         <input type="text" name="name" class="form-control" required value="{{old('name')}}"/>
                     </div>
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Company')}}</label>
-                        <input type="text" name="company" class="form-control" value="{{old('company')}}"/>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="mb-3 col-6">
                         <label class="form-label">{{__('Category')}}</label>
                         <select name="category_id" class="form-control" id="category_id" required>
                             <option value="" selected disabled>{{__('Select category')}}</option>
@@ -45,10 +39,6 @@
                                 <option value="{{$category->id}}">{{$category->name}} {{$category->category?$category->category->name:''}}</option>
                             @endforeach
                         </select>
-                    </div>
-                    <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Sum')}}</label>
-                        <input type="number" class="form-control" name="sum">
                     </div>
                 </div>
                 <div class="row">
@@ -65,15 +55,25 @@
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Price')}}</label>
+                        <input type="number" class="form-control" name="price">
+                    </div>
+                    <div class="mb-3 col-6">
                         <label class="form-label">{{__('Status')}}</label>
                         <select name="status" class="form-control" id="status_id">
                             <option value="0" >{{__('No active')}}</option>
                             <option value="1">{{__('Active')}}</option>
                         </select>
                     </div>
+                </div>
+                <div class="row">
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Images')}}</label>
                         <input type="file" name="images[]" class="form-control" value="{{old('images')}}" multiple/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Manufacturer country')}}</label>
+                        <input type="text" name="manufacturer_country" class="form-control" value="{{old('manufacturer_country')}}"/>
                     </div>
                 </div>
                 <div class="mb-3">
@@ -82,10 +82,6 @@
                     </textarea>
                 </div>
                 <div class="row">
-                    <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Manufacturer country')}}</label>
-                        <input type="text" name="manufacturer_country" class="form-control" required value="{{old('manufacturer_country')}}"/>
-                    </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Material composition')}}</label>
                         <input type="text" name="material_composition" class="form-control" value="{{old('material_composition')}}"/>

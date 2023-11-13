@@ -175,10 +175,14 @@
     <script>
         let page = true
         let company_content = document.getElementById('company_content')
+        let company_id = document.getElementById('company_id')
         let role_id = document.getElementById('role_id')
         if([2, 3].includes(parseInt(role_id.value))){
             if(company_content.classList.contains('display-none')){
                 company_content.classList.remove('display-none')
+            }
+            if(!company_id.hasAttribute('required')){
+                company_id.required = true
             }
         }
         role_id.addEventListener('change', function(){
@@ -186,9 +190,15 @@
                 if(company_content.classList.contains('display-none')){
                     company_content.classList.remove('display-none')
                 }
+                if(!company_id.hasAttribute('required')){
+                    company_id.required = true
+                }
             }else{
                 if(!company_content.classList.contains('display-none')){
                     company_content.classList.add('display-none')
+                }
+                if(company_id.hasAttribute('required')){
+                    company_id.required = false
                 }
             }
         })

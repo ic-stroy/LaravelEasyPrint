@@ -79,7 +79,7 @@
                 <div class="row">
                     <div class="mb-3 col-6">
                         <label for="role_id" class="form-label">{{__("Users' role")}}</label><br>
-                        <select id="role_id" class="form-select" name="role_id">
+                        <select id="role_id" class="form-select" name="role_id" required>
                             <option value="" disabled selected>{{__('Choose..')}}</option>
                             @foreach($roles as $role)
                                 <option value="{{$role->id}}">{{$role->name}}</option>
@@ -156,15 +156,29 @@
         let current_region = ''
         let company_content = document.getElementById('company_content')
         let role_id = document.getElementById('role_id')
-
+        let company_id = document.getElementById('company_id')
+        if([2, 3].includes(parseInt(role_id.value))){
+            if(company_content.classList.contains('display-none')){
+                company_content.classList.remove('display-none')
+            }
+            if(!company_id.hasAttribute('required')){
+                company_id.required = true
+            }
+        }
         role_id.addEventListener('change', function(){
             if([2, 3].includes(parseInt(role_id.value))){
                 if(company_content.classList.contains('display-none')){
                     company_content.classList.remove('display-none')
                 }
+                if(!company_id.hasAttribute('required')){
+                    company_id.required = true
+                }
             }else{
                 if(!company_content.classList.contains('display-none')){
                     company_content.classList.add('display-none')
+                }
+                if(company_id.hasAttribute('required')){
+                    company_id.required = false
                 }
             }
         })

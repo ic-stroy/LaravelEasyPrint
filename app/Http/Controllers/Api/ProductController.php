@@ -91,4 +91,46 @@ class ProductController extends Controller
     {
         //
     }
+
+    public function getCategoriesByProduct($id){
+        $product = Products::find($id);
+        $current_category = $this->getProductCategory($product);
+        $respone = [
+            'status'=>true,
+            'data'=>$current_category->sizes??[],
+            'category'=>$current_category->name??"",
+            'sum'=>$product->sum
+        ];
+        return response()->json($respone, 200);
+    }
+
+    public function getProductCategory($product){
+        if(isset($product->subSubCategory->id)){
+            $category_product = $product->subSubCategory;
+            $is_category = 3;
+        }elseif(isset($product->subCategory->id)){
+            $category_product = $product->subCategory;
+            $is_category = 2;
+        }elseif(isset($product->category->id)){
+            $category_product = $product->category;
+            $is_category = 1;
+        }else{
+            $category_product = 'no';
+            $is_category = 0;
+        }
+        switch ($is_category){
+            case 1:
+                $current_category = $category_product;
+                break;
+            case 2:
+                $current_category = isset($category_product->category)?$category_product->category:'no';
+                break;
+            case 3:
+                $current_category = isset($category_product->sub_category->category)?$category_product->sub_category->category:'no';
+                break;
+            default:
+                $current_category = 'no';
+        }
+        return $current_category;
+    }
 }

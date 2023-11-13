@@ -61,8 +61,8 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">{{__('Sum')}}</label>
-                    <input type="number" name="sum" class="form-control" required value="{{old('sum')}}"/>
+                    <label class="form-label">{{__('Price')}}</label>
+                    <input type="number" name="price" class="form-control" required value="{{old('price')}}"/>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">{{__('Quantity')}}</label>
