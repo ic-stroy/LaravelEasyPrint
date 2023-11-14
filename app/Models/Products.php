@@ -30,7 +30,10 @@ class Products extends Model
     public function category_(){
         return $this->hasOne(Category::class, 'parent_id','category_id');
     }
-    public function categorizedProducts(){
-        return $this->hasMany(CharacterizedProducts::class, 'product_id', 'id');
+    public function getCategory(){
+        return $this->hasOne(Category::class, 'id','category_id');
+    }
+    public function warehouse(){
+        return $this->hasMany(Warehouse::class, 'product_id', 'id');
     }
 }

@@ -421,7 +421,7 @@
                             <div class="collapse" id="catalog">
                                 <ul class="nav-second-level">
                                     <li>
-                                        <a href="{{route('warehouse.index')}}">{{ __('Warehouse') }}</a>
+                                        <a href="{{route('warehouse.category')}}">{{ __('Warehouse') }}</a>
                                     </li>
                                     <li>
                                         <a href="{{route('company_coupon.index')}}">{{ __('Coupon') }}</a>

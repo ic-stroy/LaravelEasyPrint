@@ -28,8 +28,8 @@
                         <input  value="{{$product->name??''}}" class="form-control" readonly>
                     </div>
                     <div style="width: 45%">
-                        <label class="form-label">{{__('Sum')}}</label>
-                        <input name="sum" required class="form-control" id="sum" value="{{$product->sum??''}}">
+                        <label class="form-label">{{__('Price')}}</label>
+                        <input name="sum" required class="form-control" id="sum" value="{{$product->price??''}}">
                     </div>
                 </div>
                 <div class="mb-3 d-flex justify-content-between">

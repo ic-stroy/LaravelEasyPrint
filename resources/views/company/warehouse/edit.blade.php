@@ -28,11 +28,11 @@
                         <input class="form-control" readonly id="product_id" value="{{$product->name!='no'?$product->name:''}}">
                     </div>
                     <div style="width: 45%">
-                        <label class="form-label">{{__('Sum')}}</label>
-                        @if(isset($warehouse->sum))
-                            <input name="sum" class="form-control" required id="sum" value="{{$warehouse->sum}}">
-                        @elseif(isset($warehouse->product->sum))
-                            <input name="sum" class="form-control" required id="sum" value="{{$warehouse->product->sum}}">
+                        <label class="form-label">{{__('Price')}}</label>
+                        @if(isset($warehouse->price))
+                            <input name="sum" class="form-control" required id="sum" value="{{$warehouse->price}}">
+                        @elseif(isset($warehouse->product->price))
+                            <input name="sum" class="form-control" required id="sum" value="{{$warehouse->product->price}}">
                         @else
                             <input name="sum" class="form-control" required id="sum" value="">
                         @endif
@@ -65,7 +65,7 @@
                     </div>
                     <div style="width: 45%">
                         <label class="form-label">{{__('Count')}}</label>
-                        <input type="number" name="count" required class="form-control" value="{{$warehouse->count}}"/>
+                        <input type="number" name="count" required class="form-control" value="{{$warehouse->quantity}}"/>
                     </div>
                 </div>
                 <div>

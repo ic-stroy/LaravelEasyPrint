@@ -16,7 +16,7 @@
                         <th>#</th>
                         <th>{{__('Product')}}</th>
                         <th>{{__('Size')}}</th>
-                        <th>{{__('Sum')}}</th>
+                        <th>{{__('Price')}}</th>
                         <th>{{__('Color')}}</th>
                         <th>{{__('Count')}}</th>
                         <th>{{__('Updated_at')}}</th>
@@ -55,7 +55,7 @@
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('warehouse.show', $product->id)}}">
-                                    @if(isset($product->sum)) {{ $product->sum }} @else <div class="no_text"></div> @endif
+                                    @if(isset($product->price)) {{ $product->price }} @else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>
@@ -65,7 +65,7 @@
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('warehouse.show', $product->id)}}">
-                                    @if(isset($product->count)){{ $product->count }}@else <div class="no_text"></div> @endif
+                                    @if(isset($product->quantity)){{ $product->quantity }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>

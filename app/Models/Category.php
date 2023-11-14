@@ -34,4 +34,7 @@ class Category extends Model
     public function sub_sub_category(){
         return $this->hasone(Category::class, 'id', 'parent_id')->where('step', 2);
     }
+    public function sizes(){
+        return $this->hasMany(Sizes::class, 'category_id', 'id');
+    }
 }

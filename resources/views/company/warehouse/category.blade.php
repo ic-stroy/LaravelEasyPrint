@@ -7,9 +7,9 @@
     <div class="card">
         <div class="card-body">
             <h4 class="mt-0 header-title">{{__('Category lists')}}</h4>
-            <div class="dropdown float-end">
-                <a class="form_functions btn btn-success" href="{{route('warehouse.create')}}">{{__('Create')}}</a>
-            </div>
+{{--            <div class="dropdown float-end">--}}
+{{--                <a class="form_functions btn btn-success" href="{{route('warehouse.create')}}">{{__('Create')}}</a>--}}
+{{--            </div>--}}
             <table class="table table-striped table-bordered dt-responsive nowrap">
                 <thead>
                 <tr>

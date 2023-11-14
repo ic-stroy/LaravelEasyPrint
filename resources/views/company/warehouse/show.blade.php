@@ -7,9 +7,6 @@
     <div class="card">
         <div class="card-body">
             <h4 class="mt-0 header-title">{{__('Warhouse product lists')}}</h4>
-            <div class="dropdown float-end">
-                <a class="form_functions btn btn-success" href="{{route('warehouse.create')}}">{{__('Create')}}</a>
-            </div>
             <table id="datatable-buttons" class="table dt-responsive nowrap table_show">
                 <thead>
                 <tr>
@@ -40,7 +37,7 @@
                     </tr>
                     <tr>
                         <th>{{__('Count')}}</th>
-                        <td>{{$model->count??''}}</td>
+                        <td>{{$model->quantity??''}}</td>
                     </tr>
                     <tr>
                         <th>{{__('image')}}</th>

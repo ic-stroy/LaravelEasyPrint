@@ -39,12 +39,12 @@ class WarehouseController extends Controller
     {
         $model = new Warehouse();
         $model->product_id = $request->product_id;
-        $model->sum = $request->sum;
+        $model->price = $request->sum;
         $model->size_id = $request->size_id;
         $model->color_id = $request->color_id;
-        $model->count = $request->count;
+        $model->quantity = $request->count;
         $model->save();
-        return redirect()->route('warehouse.category')->with('status', __('Successfully created'));
+        return redirect()->route('warehouse.category.warehouse', $request->product_id)->with('status', __('Successfully created'));
     }
 
     /**
@@ -74,7 +74,7 @@ class WarehouseController extends Controller
             $product = 'no';
         }
         $colors = Color::all();
-        return view('company.warehouse.edit', ['characterized_product'=> $warehouse, 'sizes'=> $sizes, 'current_category'=> $current_category, 'colors'=> $colors, 'product'=> $product]);
+        return view('company.warehouse.edit', ['warehouse'=> $warehouse, 'sizes'=> $sizes, 'current_category'=> $current_category, 'colors'=> $colors, 'product'=> $product]);
     }
 
     /**
@@ -84,12 +84,12 @@ class WarehouseController extends Controller
     {
         $model = Warehouse::find($id);
         $model->product_id = $request->product_id;
-        $model->sum = $request->sum;
+        $model->price = $request->sum;
         $model->size_id = $request->size_id;
         $model->color_id = $request->color_id;
-        $model->count = $request->count;
+        $model->quantity = $request->count;
         $model->save();
-        return redirect()->route('warehouse.category')->with('status', __('Successfully updated'));
+        return redirect()->route('warehouse.category.warehouse', $request->product_id)->with('status', __('Successfully updated'));
     }
 
     /**
@@ -99,7 +99,7 @@ class WarehouseController extends Controller
     {
         $model = Warehouse::find($id);
         $model->delete();
-        return redirect()->route('warehouse.category')->with('status', __('Successfully deleted'));
+        return redirect()->route('warehouse.category.warehouse', $model->product_id)->with('status', __('Successfully deleted'));
     }
 
     public function category()
@@ -112,6 +112,7 @@ class WarehouseController extends Controller
     {
         $category = Category::find($id);
         $subcategories = $category->subcategory;
+        $category_ids = [];
         foreach ($subcategories as $subcategory){
             $category_ids[] = $subcategory->id;
         }
