@@ -73,6 +73,10 @@
                         </td>
                     </tr>
                     <tr>
+                        <th>{{__('Price')}}</th>
+                        <td>{{$model->price??''}}</td>
+                    </tr>
+                    <tr>
                         <th>{{__('Updated at')}}</th>
                         <td>{{$model->updated_at??''}}</td>
                     </tr>

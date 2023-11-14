@@ -1,10 +1,16 @@
 @extends('company.layout.layout')
 
-
 @section('title')
     {{-- Your page title --}}
 @endsection
 @section('content')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+    <style>
+        .google_maps{
+            height: 400px;
+            width: 100%;
+        }
+    </style>
     <div class="card">
         <div class="card-body">
             <p class="text-muted font-14">
@@ -30,6 +36,20 @@
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Last name')}}</label>
                         <input type="text" class="form-control" name="last_name" value="{{$user->personalInfo?$user->personalInfo->last_name:''}}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Region')}}</label>
+                        <select name="region_id" class="form-control" id="region_id" required>
+                            <option disabled selected>{{__('Select region')}}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('District')}}</label>
+                        <select name="district_id" class="form-control" id="district_id" required>
+                            <option disabled selected>{{__('Select district')}}</option>
+                        </select>
                     </div>
                 </div>
                 <div class="row">
@@ -72,15 +92,22 @@
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">
-                        <div class="mb-3 col-6">
-                            <label for="role" class="form-label">{{__("Users' role")}}</label><br>
-                            <select id="role_id" class="form-select" name="role_id">
-                                <option value="">{{__('Choose..')}}</option>
-                                <option value="0" {{$user->role_id==0?'selected':''}}>{{__('Stuff')}}</option>
-                                <option value="1" {{$user->role_id==1?'selected':''}}>{{__('Seller')}}</option>
-                                <option value="2" {{$user->role_id==2?'selected':''}}>{{__('User')}}</option>
-                            </select>
-                        </div>
+                        <label for="role" class="form-label">{{__("Users' role")}}</label><br>
+                        <select id="role_id" class="form-select" name="role_id">
+                            <option value="" disabled selected>{{__('Choose..')}}</option>
+                            @foreach($roles as $role)
+                                <option {{$user->role_id == $role->id?'selected':''}} value="{{$role->id}}">{{$role->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3 col-6 display-none" id="company_content">
+                        <label for="company_id" class="form-label">{{__("Select Company")}}</label><br>
+                        <select id="company_id" class="form-select" name="company_id">
+                            <option value="">{{__('Choose..')}}</option>
+                            @foreach($companies as $company)
+                                <option value="{{$company->id}}" {{$user->company_id==$company->id??'selected'}}>{{$company->name}}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Birth date')}}</label>
@@ -90,27 +117,101 @@
                         <input type="date" class="form-control" name="birth_date" value="{{$birth_date[0]}}"/>
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">{{__('Login')}}</label>
-                    <input type="email" class="form-control" name="email" required value="{{$user->email??''}}"/>
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Login')}}</label>
+                        <input type="email" class="form-control" name="email" required value="{{$user->email??''}}"/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Current password')}}</label>
+                        <input type="password" class="form-control" name="password" value=""/>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">{{__('Current password')}}</label>
-                    <input type="password" class="form-control" name="password" value=""/>
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('New password')}}</label>
+                        <input type="password" class="form-control" name="new_password" value=""/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Password confirmation')}}</label>
+                        <input type="password" class="form-control" name="new_password_confirmation" value=""/>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">{{__('New password')}}</label>
-                    <input type="password" class="form-control" name="new_password" value=""/>
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Street, house')}}</label>
+                        <input type="text" class="form-control" name="address_name" value="{{$user->address?$user->address->name:''}}"/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Postcode')}}</label>
+                        <input type="number" class="form-control" name="postcode" value="{{$user->address?$user->address->postcode:''}}"/>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">{{__('Password confirmation')}}</label>
-                    <input type="password" class="form-control" name="password_confirmation" value=""/>
+                <div class="form-group google-map-lat-lng">
+                    <div>
+                        <label for="map">{{__('Select a location')}}</label>
+                    </div>
+                    <div>
+                        <span>Lat: <b id="label_latitude">{{$user->address?$user->address->latitude:''}}</b></span>&nbsp;&nbsp;
+                        <span>Lng: <b id="label_longitude">{{$user->address?$user->address->longitude:''}}</b></span>
+                    </div>
                 </div>
-                <div>
+                <div class="form-group">
+                    <div id="map" class="google_maps"></div>
+                </div>
+                <input type="hidden" name="region" id="region" value="{{$user->address->region??''}}">
+                <input type="hidden" name="district" id="district" value="{{$user->address->district??''}}">
+                <input type="hidden" name="address_lat" id="address_lat" value="{{$user->address->latitude??''}}">
+                <input type="hidden" name="address_long" id="address_long" value="{{$user->address->longitude??''}}">
+                <div class="mt-2">
                     <button type="submit" class="btn btn-primary waves-effect waves-light">{{__('Update')}}</button>
                     <button type="reset" class="btn btn-secondary waves-effect">{{__('Cancel')}}</button>
                 </div>
             </form>
         </div>
     </div>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
+    <script>
+        let page = true
+        let company_content = document.getElementById('company_content')
+        let company_id = document.getElementById('company_id')
+        let role_id = document.getElementById('role_id')
+        if([2, 3].includes(parseInt(role_id.value))){
+            if(company_content.classList.contains('display-none')){
+                company_content.classList.remove('display-none')
+            }
+            if(!company_id.hasAttribute('required')){
+                company_id.required = true
+            }
+        }
+        role_id.addEventListener('change', function(){
+            if([2, 3].includes(parseInt(role_id.value))){
+                if(company_content.classList.contains('display-none')){
+                    company_content.classList.remove('display-none')
+                }
+                if(!company_id.hasAttribute('required')){
+                    company_id.required = true
+                }
+            }else{
+                if(!company_content.classList.contains('display-none')){
+                    company_content.classList.add('display-none')
+                }
+                if(company_id.hasAttribute('required')){
+                    company_id.required = false
+                }
+            }
+        })
+        @if(isset($user->address) && isset($user->address->cities))
+            let current_region = "{{$user->address->cities->region->id??''}}"
+            let current_district = "{{$user->address->cities->id??''}}"
+        @else
+            let current_region = ''
+            let current_district = ''
+        @endif
+        let current_latitude = "{{$user->address->latitude??''}}"
+        let current_longitude = "{{$user->address->longitude??''}}"
+    </script>
+    <script src="{{asset('assets/js/company.js')}}"></script>
+
 @endsection

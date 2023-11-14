@@ -23,7 +23,8 @@ class CompanyUsersController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('created_at', 'desc')->get();
+        $user = Auth::user();
+        $users = User::orderBy('created_at', 'desc')->whereIn('role_id', [2, 3])->where('company_id', $user->company_id)->get();
         return view('company.user.index', [
             'users' => $users
         ]);
@@ -35,9 +36,8 @@ class CompanyUsersController extends Controller
     public function create()
     {
         $companies = Company::all();
-        $addresses = Address::select('id', 'name')->get();
         $roles = Role::select('id', 'name')->get();
-        return view('company.user.create', ['roles'=>$roles, 'companies'=>$companies, 'addresses'=>$addresses]);
+        return view('admin.user.create', ['roles'=>$roles, 'companies'=>$companies]);
     }
 
     /**
@@ -45,6 +45,7 @@ class CompanyUsersController extends Controller
      */
     public function store(Request $request)
     {
+        $user = Auth::user();
         $personal_info = new PersonalInfo();
         $personal_info->first_name = $request->first_name;
         $personal_info->last_name = $request->last_name;
@@ -59,14 +60,21 @@ class CompanyUsersController extends Controller
         $model = new User();
         $model->email =  $request->email;
         $model->password = Hash::make($request->password);
-        $model->role_id = (int)$request->role_id;
+        $model->role_id = 3;
         $model->personal_info_id = $personal_info->id;
         $model->phone_number = $request->phone_number;
         $model->language = 'ru';
-        $model->company_id = $request->company_id;
-        $model->address_id = $request->address_id;
-        $model->save();
+        $model->company_id = $user->company_id;
 
+        $address = new Address();
+        $address->city_id = $request->district;
+        $address->name = $request->address_name;
+        $address->postcode = $request->postcode;
+        $address->latitude = $request->address_lat;
+        $address->longitude = $request->address_long;
+        $address->save();
+        $model->address_id = $address->id;
+        $model->save();
         return redirect()->route('user.index')->with('status', __('Successfully created'));
     }
 
@@ -110,12 +118,12 @@ class CompanyUsersController extends Controller
     public function edit(string $id)
     {
         $companies = Company::all();
-        $addresses = Address::select('id', 'name')->get();
         $user = User::find($id);
-        return view('company.user.edit', [
+        $roles = Role::select('id', 'name')->get();
+        return view('admin.user.edit', [
             'user' => $user,
-            'companies'=>$companies,
-            'addresses'=>$addresses
+            'roles' => $roles,
+            'companies'=>$companies
         ]);
     }
 
@@ -124,39 +132,50 @@ class CompanyUsersController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $user = Auth::user();
         $model = User::find($id);
         if(isset($model->personalInfo)){
             $personal_info = $model->personalInfo;
-            $personal_info->first_name = $request->first_name;
-            $personal_info->last_name = $request->last_name;
-            $personal_info->middle_name = $request->middle_name;
-            $personal_info->phone_number = $request->phone_number;
-            $file = $request->file('avatar');
-            $this->imageSave($file, $personal_info, 'update');
-            $personal_info->gender = $request->gender;
-            $personal_info->birth_date = $request->birth_date;
-            $personal_info->save();
         }else{
             $personal_info = new PersonalInfo();
-            $personal_info->first_name = $request->first_name;
-            $personal_info->last_name = $request->last_name;
-            $personal_info->middle_name = $request->middle_name;
-            $personal_info->phone_number = $request->phone_number;
-            $file = $request->file('avatar');
-            $this->imageSave($file, $personal_info, 'store');
-            $personal_info->gender = $request->gender;
-            $personal_info->birth_date = $request->birth_date;
-            $personal_info->save();
         }
+        $personal_info->first_name = $request->first_name;
+        $personal_info->last_name = $request->last_name;
+        $personal_info->middle_name = $request->middle_name;
+        $personal_info->phone_number = $request->phone_number;
+        $file = $request->file('avatar');
+        $this->imageSave($file, $personal_info, 'update');
+        $personal_info->gender = $request->gender;
+        $personal_info->birth_date = $request->birth_date;
+        $personal_info->save();
 
         $model->email =  $request->email;
-        $model->password = Hash::make($request->password);
-        $model->role_id = (int)$request->role_id;
+        if (isset($request->new_password) && isset($request->password)) {
+            if(!password_verify($request->password, $model->password)){
+                return redirect()->back()->with('error_status', __('Your password is incorrect'));
+            }
+            if ($request->new_password == $request->new_password_confirmation) {
+                $model->password = Hash::make($request->new_password);
+            }
+        }
+        $model->role_id = 3;
         $model->personal_info_id = $personal_info->id;
         $model->phone_number = $request->phone_number;
         $model->language = 'ru';
-        $model->company_id = $request->company_id;
-        $model->address_id = $request->address_id;
+        $model->company_id = $user->company_id;
+
+        if(isset($model->address->id)){
+            $address = $model->address;
+        }else{
+            $address = new Address();
+        }
+        $address->city_id = $request->district;
+        $address->name = $request->address_name;
+        $address->postcode = $request->postcode;
+        $address->latitude = $request->address_lat;
+        $address->longitude = $request->address_long;
+        $address->save();
+        $model->address_id = $address->id;
         $model->save();
         return redirect()->route('user.index')->with('status', __('Successfully updated'));
     }
@@ -206,7 +225,11 @@ class CompanyUsersController extends Controller
             unlink($sms_avatar);
         }
 
+        $address = $model->address;
         $model->delete();
+        if(isset($address->id)){
+            $address->delete();
+        }
         return redirect()->route('user.index')->with('status', __('Successfully deleted'));
     }
 

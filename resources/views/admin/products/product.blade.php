@@ -16,7 +16,7 @@
                     <th>#</th>
                     <th>{{__('Name')}}</th>
                     <th>{{__('Current category')}}</th>
-                    <th>{{__('Sum')}}</th>
+                    <th>{{__('Price')}}</th>
                     <th>{{__('Images')}}</th>
                     <th>{{__('Updated_at')}}</th>
                     <th class="text-center">{{__('Functions')}}</th>
@@ -62,7 +62,7 @@
                         </td>
                         <td>
                             <a class="show_page" href="{{route('product.show', $product->id)}}">
-                                {{$product->sum??''}}
+                                {{$product->price??''}}
                             </a>
                         </td>
                         <td>

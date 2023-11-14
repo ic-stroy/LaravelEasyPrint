@@ -1,6 +1,5 @@
 @extends('company.layout.layout')
 
-
 @section('title')
     {{-- Your page title --}}
 @endsection
@@ -40,9 +39,7 @@
                             <h3 >@if(isset($model->personalInfo->id)){{$model->personalInfo->first_name.' '.$model->personalInfo->last_name.' '.$model->personalInfo->middle_name}}@endif</h3>
                             <p>{{__('Role').': '}}
                                 <b>
-                                    @if(isset($model->role_id))
-                                        @if($model->role_id == 0){{ __('Stuff') }}@elseif($model->role_id == 1)  {{ __('Seller') }} @elseif($model->role_id == 2) {{ __('User') }} @else <div class="no_text"></div> @endif
-                                    @endif
+                                    @if(isset($model->role_id)) {{$model->role->name}} @else <div class="no_text"></div> @endif
                                 </b>
                             </p>
                             <p>{{__('Phone').': '}}<b>{{$model->phone_number??''}}</b></p>
@@ -62,9 +59,7 @@
                             <div class="d-flex justify-content-between" style="margin-top: 20px; align-items: center">
                                 <h3 class="text_name">{{__('Role')}}:</h3>
                                 <div class="text_value">
-                                    @if(isset($model->role_id))
-                                        @if($model->role_id == 0){{ __('Stuff') }}@elseif($model->role_id == 1)  {{ __('Seller') }} @elseif($model->role_id == 2) {{ __('User') }} @else <div class="no_text"></div> @endif
-                                    @endif
+                                    @if(isset($model->role_id)) {{$model->role->name}} @else <div class="no_text"></div> @endif
                                 </div>
                             </div>
 
@@ -121,7 +116,11 @@
             <tbody>
             <tr>
                 <th>{{__('Role')}}</th>
-                <td>{{$model->role->name??''}}</td>
+                <td>
+                    @if(isset($model->role->name))
+                        {{$model->role->name}}
+                    @endif
+                </td>
             </tr>
             <tr>
                 <th>{{__('Company')}}</th>
