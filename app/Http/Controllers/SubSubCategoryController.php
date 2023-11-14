@@ -39,7 +39,7 @@ class SubSubCategoryController extends Controller
         $model->parent_id = $request->subcategory_id;
         $model->step = 2;
         $model->save();
-        return redirect()->route('subsubcategory.index')->with('status', __('Successfully created'));
+        return redirect()->route('subsubcategory.subsubcategory', $request->subcategory_id)->with('status', __('Successfully created'));
     }
 
     /**
@@ -75,7 +75,7 @@ class SubSubCategoryController extends Controller
         $model->parent_id = $request->subcategory_id;
         $model->step = 2;
         $model->save();
-        return redirect()->route('subsubcategory.index')->with('status', __('Successfully updated'));
+        return redirect()->route('subsubcategory.subsubcategory', $request->subcategory_id)->with('status', __('Successfully updated'));
     }
 
     /**
@@ -85,7 +85,7 @@ class SubSubCategoryController extends Controller
     {
         $model = Category::where('step', 2)->find($id);
         $model->delete();
-        return redirect()->route('subsubcategory.index')->with('status', __('Successfully deleted'));
+        return redirect()->route('subsubcategory.subsubcategory', $id)->with('status', __('Successfully deleted'));
     }
 
     public function category()
