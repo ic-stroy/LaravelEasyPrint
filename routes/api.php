@@ -60,6 +60,7 @@ Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
     Route::get('get-basket', [OrderController::class, 'getBasket']);
     Route::get('get-banner', [BannerController::class, 'getBanner']);
     Route::get('get-products-by-category', [CategoryController::class, 'getProductsByCategories']);
+    Route::get('product', [ProductController::class, 'getProduct']);
     Route::get('profile-info', [CategoryController::class, 'profileInfo']);
 });
 

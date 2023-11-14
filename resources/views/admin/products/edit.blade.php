@@ -126,9 +126,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">{{__('Description')}}</label>
-                    <textarea class="form-control" name="description" id="description" cols="20" rows="10">
-                        {{$product->description??''}}
-                    </textarea>
+                    <textarea class="form-control" name="description" id="description" cols="20" rows="2">{{$product->description??''}}</textarea>
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">
@@ -147,14 +145,6 @@
             </form>
         </div>
     </div>
-    <script src="{{asset('assets/js/ckeditor/ckeditor.js')}}"></script>
-    <script>
-        ClassicEditor
-            .create( document.querySelector( '#description' ) )
-            .catch( error => {
-                console.error( error );
-            } );
-    </script>
     <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
     <script>
 
