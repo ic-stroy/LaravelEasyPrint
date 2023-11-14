@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
        Schema::table('addresses', function (Blueprint $table) {
-            $table->renameColumn('region', 'name')->nullable();
+            // $table->renameColumn('region', 'name')->nullable();
             $table->dropColumn('district');
             $table->integer('city_id')->nullable();
             $table->integer('postcode')->nullable();
