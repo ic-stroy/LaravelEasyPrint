@@ -180,7 +180,7 @@ class ProductController extends Controller
             // $relation_id=$order_detail->warehouse_id;
 
             $list=[
-                "id"=>$warehouse_product->warehouse_product_id, 
+                "id"=>$warehouse_product->warehouse_product_id,
                 "name"=>$warehouse_product->warehouse_product_name,
                 // "relation_id"=>$relation_id,
                 "price"=>$warehouse_product->price,
@@ -241,15 +241,92 @@ class ProductController extends Controller
         //
     }
 
+    public function getProduct(Request $request)
+    {
+        $product = Products::find($request->id);
+        if (isset($product->warehouse)) {
+            $colors_array = [];
+            foreach ($product->warehouse as $warehouse_) {
+                $colors_array[] = $warehouse_->color->id;
+                if($colors_array[0] == $warehouse_->color->id){
+                    $firstColorProducts[] = [
+                        'id'=>$warehouse_->id,
+                        'size'=>$warehouse_->size ? $warehouse_->size->name:'',
+                        'quantity' => $warehouse_->quantity,
+                    ];
+                }
+            }
+            foreach (array_unique($colors_array) as $color) {
+                $productsByColor = [];
+                foreach ($product->warehouse as $warehouse){
+                    if($color == $warehouse->color->id){
+                        $colorModel = $warehouse->color;
+                        $productsByColor[] = [
+                            'id' => $warehouse->id,
+                            'size' => $warehouse->size ? $warehouse->size->name:'',
+                            'price' => $warehouse->price,
+                            'quantity' => $warehouse->quantity
+                        ];
+                    }
+                }
+                $categorizedByColor[] = [
+                    'color'=>$colorModel,
+                    'products'=>$productsByColor
+                ];
+            }
+        }
+        $good = [];
+        if(isset($product->id)){
+            $images_ = json_decode($product->images);
+            $images = [];
+            foreach ($images_ as $image_){
+                $images[] = asset('storage/products/'.$image_);
+            }
+            $good['id'] = $product->id;
+            $good['name'] = $product->name??null;
+            if(isset($product->subCategory->name)){
+                $good['subcategory'] = $product->subCategory->name;
+            }else{
+                $good['subcategory'] = null;
+            }
+            $current_category = $this->getProductCategory($product);
+            $good['category'] = $current_category->name??null;
+            $good['description'] = $product->description ?? null;
+            $good['price'] = $product->price??null;
+            $good['company'] = $product->company??null;
+            $good['characters'] = $categorizedByColor??[];
+            $good['first_color_products'] = $firstColorProducts??[];
+            $good['images'] = $images??[];
+            $good['basket_button'] = false;
+            $good['created_at'] = $product->created_at??null;
+            $good['updated_at'] = $product->updated_at??null;
+        }
+        $response = [
+            'status'=>true,
+            'data'=>$good
+        ];
+        return response()->json($response, 200);
+    }
+
     public function getCategoriesByProduct($id){
         $product = Products::find($id);
-        $current_category = $this->getProductCategory($product);
-        $respone = [
-            'status'=>true,
-            'data'=>$current_category->sizes??[],
-            'category'=>$current_category->name??"",
-            'sum'=>$product->sum
-        ];
+        if(isset($product->id)){
+            $current_category = $this->getProductCategory($product);
+            $respone = [
+                'status'=>true,
+                'data'=>$current_category->sizes??[],
+                'category'=>$current_category->name??null,
+                'price'=>$product->price??null
+            ];
+        }else{
+            $respone = [
+                'status'=>true,
+                'data'=>[],
+                'category'=>null,
+                'price'=>null
+            ];
+        }
+
         return response()->json($respone, 200);
     }
 
