@@ -8,8 +8,10 @@ use Illuminate\Http\Request;
 
 class CompanyController extends Controller
 {
-    public function getCities(){
+    public function getCities(Request $request){
+        $language = $request->header('language');
         $cities = Cities::where('parent_id', 0)->orderBy('id', 'ASC')->get();
+        $data = [];
         foreach ($cities as $city){
             $cities_ = [];
             foreach ($city->getDistricts as $district){
@@ -25,12 +27,8 @@ class CompanyController extends Controller
                 'region'=>$city->name,
                 'cities'=>$cities_,
             ];
-            $response = [
-                'status'=>true,
-                'message'=>'Success',
-                'data'=>$data
-            ];
         }
-        return response()->json($response);
+        $message = translate_api('Success', $language);
+        return $this->success($message, 200, $data);
     }
 }

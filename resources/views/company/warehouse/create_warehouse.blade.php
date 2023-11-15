@@ -29,7 +29,7 @@
                     </div>
                     <div style="width: 45%">
                         <label class="form-label">{{__('Price')}}</label>
-                        <input name="sum" required class="form-control" id="sum" value="{{$product->price??''}}">
+                        <input name="price" required class="form-control" id="price" value="{{$product->price??''}}">
                     </div>
                 </div>
                 <div class="mb-3 d-flex justify-content-between">
@@ -59,7 +59,7 @@
                     </div>
                     <div style="width: 45%">
                         <label class="form-label">{{__('Count')}}</label>
-                        <input type="number" name="count" class="form-control" required value="{{old('count')}}"/>
+                        <input type="number" name="quantity" class="form-control" required value="{{old('quantity')}}"/>
                     </div>
                 </div>
                 <div>

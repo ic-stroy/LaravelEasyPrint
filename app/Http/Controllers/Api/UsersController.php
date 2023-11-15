@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 class UsersController extends Controller
 {
     public function setPersonalInformation(Request $request){
+        $language = $request->header('language');
         $user = Auth::user();
         if(isset($user->personalInfo)){
             $personal_info = $user->personalInfo;
@@ -28,14 +29,13 @@ class UsersController extends Controller
         $personal_info->save();
         $user->personal_info_id = $personal_info->id;
         $user->save();
-        $response = [
-            'status'=>true,
-            'message'=>'Success'
-        ];
-        return response()->json($response);
+
+         $message = translate_api('Success', $language);
+        return $this->success($message, 200, []);
     }
 
-    public function getPersonalInformation(){
+    public function getPersonalInformation(Request $request){
+        $language = $request->header('language');
         $user = Auth::user();
         if(isset($user->personalInfo)){
             $data = [
@@ -50,15 +50,12 @@ class UsersController extends Controller
         }else{
             $data = [];
         }
-        $response = [
-            'status'=>true,
-            'message'=>'Success',
-            'data'=>$data
-        ];
-        return response()->json($response);
+        $message = translate_api('Success', $language);
+        return $this->success($message, 200, $data);
     }
 
     public function setAddress(Request $request){
+        $language = $request->header('language');
         $user = Auth::user();
         if(isset($user->address->id)){
             $address = $user->address;
@@ -71,10 +68,7 @@ class UsersController extends Controller
         $address->save();
         $user->address_id = $address->id;
         $user->save();
-        $response = [
-            'status'=>true,
-            'message'=>'Success'
-        ];
-        return response()->json($response);
+        $message = translate_api('Success', $language);
+        return $this->success($message, 200, []);
     }
 }

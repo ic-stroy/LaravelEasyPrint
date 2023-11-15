@@ -32,8 +32,8 @@
                         </select>
                     </div>
                     <div style="width: 45%">
-                        <label class="form-label">{{__('Sum')}}</label>
-                        <input name="sum" class="form-control" id="sum" required>
+                        <label class="form-label">{{__('Price')}}</label>
+                        <input name="price" class="form-control" id="price" required>
                     </div>
                 </div>
                 <div class="mb-3 d-flex justify-content-between">
@@ -58,7 +58,7 @@
                     </div>
                     <div style="width: 45%">
                         <label class="form-label">{{__('Count')}}</label>
-                        <input type="number" name="count" class="form-control" required value="{{old('count')}}"/>
+                        <input type="number" name="quantity" class="form-control" required value="{{old('quantity')}}"/>
                     </div>
                 </div>
                 <div>
@@ -74,7 +74,7 @@
         let category_id = document.getElementById('category_id')
         let product_id = document.getElementById('product_id')
         let size_types = document.getElementById('size_types')
-        let sum = document.getElementById('sum')
+        let price = document.getElementById('price')
         function addSize(item, index){
             let size_option = document.createElement('option')
             size_option.value = item.id
@@ -90,7 +90,7 @@
                     type:'GET',
                     success: function (data) {
                         category_id.value = data.category
-                        sum.value = data.sum
+                        price.value = data.price
                         data.data.forEach(addSize)
                     }
                 })

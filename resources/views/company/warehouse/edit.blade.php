@@ -30,11 +30,11 @@
                     <div style="width: 45%">
                         <label class="form-label">{{__('Price')}}</label>
                         @if(isset($warehouse->price))
-                            <input name="sum" class="form-control" required id="sum" value="{{$warehouse->price}}">
+                            <input name="price" class="form-control" required id="price" value="{{$warehouse->price}}">
                         @elseif(isset($warehouse->product->price))
-                            <input name="sum" class="form-control" required id="sum" value="{{$warehouse->product->price}}">
+                            <input name="price" class="form-control" required id="price" value="{{$warehouse->product->price}}">
                         @else
-                            <input name="sum" class="form-control" required id="sum" value="">
+                            <input name="price" class="form-control" required id="price" value="">
                         @endif
                     </div>
                 </div>
@@ -64,8 +64,8 @@
                         </select>
                     </div>
                     <div style="width: 45%">
-                        <label class="form-label">{{__('Count')}}</label>
-                        <input type="number" name="count" required class="form-control" value="{{$warehouse->quantity}}"/>
+                        <label class="form-label">{{__('Quantity')}}</label>
+                        <input type="number" name="quantity" required class="form-control" value="{{$warehouse->quantity}}"/>
                     </div>
                 </div>
                 <div>

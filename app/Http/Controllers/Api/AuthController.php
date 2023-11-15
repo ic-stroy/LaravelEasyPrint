@@ -15,6 +15,7 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
+        $language = $request->header('language');
         $fields = $request->validate([
             'name' => 'required|string',
             'email' => 'required|string|unique:users,email',
@@ -32,48 +33,40 @@ class AuthController extends Controller
         $user->token = $token;
         $user->personal_info_id = $personal_info->id;
         $user->save();
-        $response = [
-            'status'=>true,
-            'message'=>"Success",
-            'data'=>[
-                'user' => $user,
-                'token' => $token
-            ]
+        $data = [
+            'user' => $user,
+            'token' => $token
         ];
-        return response()->json($response, 201);
+        $message = translate_api('success', $language);
+        return $this->success($message, 200,$data);
     }
 
     public function login(Request $request) {
+        $language = $request->header('language');
         $fields = $request->validate([
             'email' => 'required|string',
             'password' => 'required|string'
         ]);
         $user = User::where('email', $fields['email'])->first();
         if(!$user || !Hash::check($fields['password'], $user->password)) {
-            return response([
-                'message' => 'bad creds'
-            ], 401);
+            $message = translate_api('Password or phone number is incorrect', $language);
+            return $this->error($message, 401, []);
         }
         $token = $user->createToken('myapptoken')->plainTextToken;
         $user->token = $token;
         $user->save();
-        $response = [
-            'status'=>true,
-            'message'=>"Success",
-            'data'=>[
-                'user' => $user,
-                'token' => $token
-            ]
+        $data = [
+            'user' => $user,
+            'token' => $token
         ];
-        return response()->json($response, 201);
+        $message = translate_api('success', $language);
+        return $this->success($message, 200, $data);
     }
 
     public function logout(Request $request) {
+        $language = $request->header('language');
         auth()->user()->tokens()->delete();
-        $response = [
-            'status'=>true,
-            'message'=>"Success",
-        ];
-        return response()->json($response, 201);
+        $message = translate_api('success', $language);
+        return $this->success($message, 200, []);
     }
 }

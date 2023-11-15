@@ -243,6 +243,7 @@ class ProductController extends Controller
 
     public function getProduct(Request $request)
     {
+        $language = $request->header('language');
         $product = Products::find($request->id);
         if (isset($product->warehouse)) {
             $colors_array = [];
@@ -301,33 +302,29 @@ class ProductController extends Controller
             $good['created_at'] = $product->created_at??null;
             $good['updated_at'] = $product->updated_at??null;
         }
-        $response = [
-            'status'=>true,
-            'data'=>$good
-        ];
-        return response()->json($response, 200);
+        $message = translate_api('Success', $language);
+        return $this->success($message, 200, $good);
     }
 
-    public function getCategoriesByProduct($id){
+    public function getCategoriesByProduct(Request $request, $id){
+        $language = $request->header('language');
         $product = Products::find($id);
         if(isset($product->id)){
             $current_category = $this->getProductCategory($product);
             $respone = [
-                'status'=>true,
                 'data'=>$current_category->sizes??[],
                 'category'=>$current_category->name??null,
                 'price'=>$product->price??null
             ];
         }else{
             $respone = [
-                'status'=>true,
                 'data'=>[],
                 'category'=>null,
                 'price'=>null
             ];
         }
-
-        return response()->json($respone, 200);
+         $message = translate_api('Success', $language);
+        return $this->success($message, 200, $respone);
     }
 
     public function getProductCategory($product){

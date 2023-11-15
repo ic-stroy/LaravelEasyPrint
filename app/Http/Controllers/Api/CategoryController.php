@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
-    public function getProductsByCategories(){
+    public function getProductsByCategories(Request $request){
+        $language = $request->header('language');
         $categories = Category::where('step', 0)->get();
         $data = [];
         foreach ($categories as $category){
@@ -38,14 +39,12 @@ class CategoryController extends Controller
                 ]
             ];
         }
-        return response()->json([
-            'status'=>true,
-            'message'=>'Success',
-            'data'=>$data
-        ]);
+        $message = translate_api('Success', $language);
+        return $this->success($message, 200, $data);
     }
 
-    public function profileInfo(){
+    public function profileInfo(Request $request){
+        $language = $request->header('language');
         $languages = Language::select('id', 'name', 'code')->get();
         $user = Auth::user();
         $basket_count = count(isset($user->orderBasket->order_detail)?$user->orderBasket->order_detail:[]);
@@ -65,10 +64,7 @@ class CategoryController extends Controller
             'basket_count'=>$basket_count,
             'profile'=>$profile,
         ];
-        return response()->json([
-            'status'=>true,
-            'message'=>'Success',
-            'data'=>$data
-        ]);
+         $message = translate_api('Success', $language);
+        return $this->success($message, 200, $data);
     }
 }

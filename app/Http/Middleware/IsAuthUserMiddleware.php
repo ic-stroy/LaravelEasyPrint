@@ -16,6 +16,7 @@ class IsAuthUserMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        date_default_timezone_set("Asia/Tashkent");
         $user = Auth::user();
         if(isset($user->token) && $user->token == $request->bearerToken()){
             return $next($request);

@@ -42,10 +42,10 @@ class WarehouseController extends Controller
         $model = new Warehouse();
         $model->company_id = $user->company_id;
         $model->product_id = $request->product_id;
-        $model->price = $request->sum;
+        $model->price = $request->price;
         $model->size_id = $request->size_id;
         $model->color_id = $request->color_id;
-        $model->quantity = $request->count;
+        $model->quantity = $request->quantity;
         $model->save();
         return redirect()->route('warehouse.category.warehouse', $request->product_id)->with('status', __('Successfully created'));
     }
@@ -85,12 +85,14 @@ class WarehouseController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $user = Auth::user();
         $model = Warehouse::find($id);
+        $model->company_id = $user->company_id;
         $model->product_id = $request->product_id;
-        $model->price = $request->sum;
+        $model->price = $request->price;
         $model->size_id = $request->size_id;
         $model->color_id = $request->color_id;
-        $model->quantity = $request->count;
+        $model->quantity = $request->quantity;
         $model->save();
         return redirect()->route('warehouse.category.warehouse', $request->product_id)->with('status', __('Successfully updated'));
     }

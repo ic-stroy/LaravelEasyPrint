@@ -15,6 +15,7 @@ use function response;
 class OrderController extends Controller
 {
     public function setWarehouse(Request $request){
+        $language = $request->header('language');
         $user = Auth::user();
         if(isset($user->orderBasket->id)){
             $order = $user->orderBasket;
@@ -50,11 +51,8 @@ class OrderController extends Controller
                 $uploads->save();
             }
         }
-
-        return response()->json([
-            'status'=>true,
-            'message'=>'Success'
-        ]);
+        $message = translate_api('Success', $language);
+        return $this->success($message, 200, []);
     }
 
     public function saveImage($file, $url){
