@@ -9,6 +9,7 @@ use App\Models\Color;
 use App\Models\Products;
 use App\Models\Sizes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class WarehouseController extends Controller
 {
@@ -37,7 +38,9 @@ class WarehouseController extends Controller
      */
     public function store(Request $request)
     {
+        $user = Auth::user();
         $model = new Warehouse();
+        $model->company_id = $user->company_id;
         $model->product_id = $request->product_id;
         $model->price = $request->sum;
         $model->size_id = $request->size_id;

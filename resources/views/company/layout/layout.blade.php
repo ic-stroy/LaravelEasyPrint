@@ -442,7 +442,7 @@
                         </li>
                     @endif
                     <li>
-                        <a href="{{ route('role.index') }}">
+                        <a href="{{ route('company_order.index') }}">
                             <i class="mdi mdi-account-check-outline"></i>
                             <span> {{ __('Orders') }} </span>
                         </a>

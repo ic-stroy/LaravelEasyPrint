@@ -6,6 +6,7 @@ use \App\Http\Controllers\Company\CompanyHomeController;
 use \App\Http\Controllers\Company\WarehouseController;
 use \App\Http\Controllers\Company\CompanyUsersController;
 use \App\Http\Controllers\Company\CompanyCouponController;
+use \App\Http\Controllers\Company\CompanyOrderController;
 use \App\Http\Controllers\BannerController;
 use \App\Http\Controllers\UsersController;
 use \App\Http\Controllers\CategoryController;
@@ -82,6 +83,11 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
             });
             Route::group(['prefix' => 'user'], function () {
                 Route::resource('company_user', CompanyUsersController::class)->middleware('is_admin');
+            });
+            Route::group(['prefix' => 'order'], function () {
+                Route::get('/', [CompanyOrderController::class, 'index'])->name('company_order.index');
+                Route::get('/show/{id}', [CompanyOrderController::class, 'show'])->name('company_order.show');
+                Route::get('/destroy/{id}', [CompanyOrderController::class, 'destroy'])->name('company_order.destroy');
             });
             Route::group(['prefix' => 'coupon'], function () {
                 Route::get('/', [CompanyCouponController::class, 'index'])->name('company_coupon.index');
