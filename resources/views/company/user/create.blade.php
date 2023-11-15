@@ -25,7 +25,7 @@
                     </ul>
                 </div>
             @endif
-            <form action="{{route('user.store')}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
+            <form action="{{route('company_user.store')}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('POST')
                 <div class="row">
@@ -134,34 +134,6 @@
     <script>
         let page = false
         let current_region = ''
-        let company_content = document.getElementById('company_content')
-        let role_id = document.getElementById('role_id')
-        let company_id = document.getElementById('company_id')
-        if([2, 3].includes(parseInt(role_id.value))){
-            if(company_content.classList.contains('display-none')){
-                company_content.classList.remove('display-none')
-            }
-            if(!company_id.hasAttribute('required')){
-                company_id.required = true
-            }
-        }
-        role_id.addEventListener('change', function(){
-            if([2, 3].includes(parseInt(role_id.value))){
-                if(company_content.classList.contains('display-none')){
-                    company_content.classList.remove('display-none')
-                }
-                if(!company_id.hasAttribute('required')){
-                    company_id.required = true
-                }
-            }else{
-                if(!company_content.classList.contains('display-none')){
-                    company_content.classList.add('display-none')
-                }
-                if(company_id.hasAttribute('required')){
-                    company_id.required = false
-                }
-            }
-        })
     </script>
     <script src="{{asset('assets/js/company.js')}}"></script>
 @endsection

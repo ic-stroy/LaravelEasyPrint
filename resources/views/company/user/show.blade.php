@@ -18,7 +18,7 @@
         <div class="card-body">
             <h4 class="mt-0 header-title">{{__('User informations')}}</h4>
             <div class="dropdown float-end">
-                <a class="form_functions btn btn-success" href="{{route('user.create')}}">{{__('Create')}}</a>
+                <a class="form_functions btn btn-success" href="{{route('company_user.create')}}">{{__('Create')}}</a>
             </div>
             <div class="account">
                 <div class="profile_box">

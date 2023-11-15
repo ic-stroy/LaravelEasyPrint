@@ -37,7 +37,7 @@ class CompanyUsersController extends Controller
     {
         $companies = Company::all();
         $roles = Role::select('id', 'name')->get();
-        return view('admin.user.create', ['roles'=>$roles, 'companies'=>$companies]);
+        return view('company.user.create', ['roles'=>$roles, 'companies'=>$companies]);
     }
 
     /**
@@ -75,7 +75,7 @@ class CompanyUsersController extends Controller
         $address->save();
         $model->address_id = $address->id;
         $model->save();
-        return redirect()->route('user.index')->with('status', __('Successfully created'));
+        return redirect()->route('company_user.index')->with('status', __('Successfully created'));
     }
 
     /**
@@ -120,7 +120,7 @@ class CompanyUsersController extends Controller
         $companies = Company::all();
         $user = User::find($id);
         $roles = Role::select('id', 'name')->get();
-        return view('admin.user.edit', [
+        return view('company.user.edit', [
             'user' => $user,
             'roles' => $roles,
             'companies'=>$companies
@@ -177,7 +177,7 @@ class CompanyUsersController extends Controller
         $address->save();
         $model->address_id = $address->id;
         $model->save();
-        return redirect()->route('user.index')->with('status', __('Successfully updated'));
+        return redirect()->route('company_user.index')->with('status', __('Successfully updated'));
     }
 
     public function imageSave($file, $personal_info, $text){
@@ -230,7 +230,7 @@ class CompanyUsersController extends Controller
         if(isset($address->id)){
             $address->delete();
         }
-        return redirect()->route('user.index')->with('status', __('Successfully deleted'));
+        return redirect()->route('company_user.index')->with('status', __('Successfully deleted'));
     }
 
 }

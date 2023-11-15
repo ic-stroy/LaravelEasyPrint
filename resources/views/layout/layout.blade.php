@@ -484,7 +484,10 @@
                             </div>
                         </li>
                         <li>
-                            <a href="{{route('language.index')}}"> {{translate('Language')}}  </a>
+                            <a href="{{route('language.index')}}">
+                                <i class="mdi mdi-flag-outline"></i>
+                                <span>{{translate('Language')}}</span>
+                            </a>
                         </li>
                     </ul>
 

@@ -33,7 +33,6 @@ Auth::routes();
 
 Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcategory'])->name('get_subcategory');
 
-// Route::group(['middleware'=>['auth', 'language']], function(){
      Route::group(['middleware'=>'authed'], function(){
         Route::get('/', [HomeController::class, 'index'])->name('dashboard');
         Route::resource('banner', BannerController::class);
@@ -82,13 +81,8 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
                 Route::get('create-warehouse-by-category/{id}', [WarehouseController::class, 'createWarehouse'])->name('warehouse.category.create_warehouse');
             });
             Route::group(['prefix' => 'user'], function () {
-                Route::get('/', [CompanyUsersController::class, 'index'])->name('company_user.index');
-                Route::get('/show/{id}', [CompanyUsersController::class, 'show'])->name('company_user.show');
-                Route::get('/edit/{id}', [CompanyUsersController::class, 'edit'])->name('company_user.edit');
-                Route::get('/create', [CompanyUsersController::class, 'create'])->name('company_user.create');
+                Route::resource('company_user', CompanyUsersController::class)->middleware('is_admin');
             });
-
-
             Route::group(['prefix' => 'coupon'], function () {
                 Route::get('/', [CompanyCouponController::class, 'index'])->name('company_coupon.index');
                 Route::get('/create', [CompanyCouponController::class, 'create'])->name('company_coupon.create');
@@ -105,19 +99,9 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
                 // Route::get('/create', [CompanyCouponController::class, 'create'])->name('company_user.create');
             });
 
-            // Route::resource('product', CompanyProductsController::class);
 
-            // Route::get('/home', [HomeController::class, 'index'])->name('home');
-            // Route::resource('color', ColorController::class);
-            // Route::resource('size', SizesController::class);
-            // Route::resource('user', UsersController::class);
-            // Route::resource('product', ProductsController::class);
-            // Route::resource('category', CategoryController::class);
-            // Route::resource('subcategory', SubCategoryController::class);
         });
     });
-// });
-
 
 
 

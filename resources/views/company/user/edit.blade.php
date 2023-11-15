@@ -25,7 +25,7 @@
                     </ul>
                 </div>
             @endif
-            <form action="{{route('user.update', $user->id)}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
+            <form action="{{route('company_user.update', $user->id)}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="row">
@@ -91,38 +91,18 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="mb-3 col-6">
-                        <label for="role" class="form-label">{{__("Users' role")}}</label><br>
-                        <select id="role_id" class="form-select" name="role_id">
-                            <option value="" disabled selected>{{__('Choose..')}}</option>
-                            @foreach($roles as $role)
-                                <option {{$user->role_id == $role->id?'selected':''}} value="{{$role->id}}">{{$role->name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3 col-6 display-none" id="company_content">
-                        <label for="company_id" class="form-label">{{__("Select Company")}}</label><br>
-                        <select id="company_id" class="form-select" name="company_id">
-                            <option value="">{{__('Choose..')}}</option>
-                            @foreach($companies as $company)
-                                <option value="{{$company->id}}" {{$user->company_id==$company->id??'selected'}}>{{$company->name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3 col-6">
+                    <div class="mb-3 col-4">
                         <label class="form-label">{{__('Birth date')}}</label>
                         @php
                             $birth_date = explode(' ', $user->personalInfo->birth_date??'');
                         @endphp
                         <input type="date" class="form-control" name="birth_date" value="{{$birth_date[0]}}"/>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="mb-3 col-6">
+                    <div class="mb-3 col-4">
                         <label class="form-label">{{__('Login')}}</label>
                         <input type="email" class="form-control" name="email" required value="{{$user->email??''}}"/>
                     </div>
-                    <div class="mb-3 col-6">
+                    <div class="mb-3 col-4">
                         <label class="form-label">{{__('Current password')}}</label>
                         <input type="password" class="form-control" name="password" value=""/>
                     </div>
@@ -174,34 +154,6 @@
     <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
     <script>
         let page = true
-        let company_content = document.getElementById('company_content')
-        let company_id = document.getElementById('company_id')
-        let role_id = document.getElementById('role_id')
-        if([2, 3].includes(parseInt(role_id.value))){
-            if(company_content.classList.contains('display-none')){
-                company_content.classList.remove('display-none')
-            }
-            if(!company_id.hasAttribute('required')){
-                company_id.required = true
-            }
-        }
-        role_id.addEventListener('change', function(){
-            if([2, 3].includes(parseInt(role_id.value))){
-                if(company_content.classList.contains('display-none')){
-                    company_content.classList.remove('display-none')
-                }
-                if(!company_id.hasAttribute('required')){
-                    company_id.required = true
-                }
-            }else{
-                if(!company_content.classList.contains('display-none')){
-                    company_content.classList.add('display-none')
-                }
-                if(company_id.hasAttribute('required')){
-                    company_id.required = false
-                }
-            }
-        })
         @if(isset($user->address) && isset($user->address->cities))
             let current_region = "{{$user->address->cities->region->id??''}}"
             let current_district = "{{$user->address->cities->id??''}}"

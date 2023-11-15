@@ -36,12 +36,12 @@
                     @endphp
                     <tr>
                         <th scope="row">
-                            <a class="show_page" href="{{ route('user.show', $user->id) }}">
+                            <a class="show_page" href="{{ route('company_user.show', $user->id) }}">
                                 {{$i}}
                             </a>
                         </th>
                         <td class="text-center">
-                            <a class="show_page_color" href="{{ route('user.show', $user->id) }}">
+                            <a class="show_page_color" href="{{ route('company_user.show', $user->id) }}">
                                 @if(isset($user->id))
                                     @php
                                         if(isset($user->personalInfo)){
@@ -59,29 +59,29 @@
                             </a>
                         </td>
                         <td>
-                            <a class="show_page" href="{{ route('user.show', $user->id) }}">
+                            <a class="show_page" href="{{ route('company_user.show', $user->id) }}">
                                 @if(isset($user->personalInfo->first_name)){{ $user->personalInfo->first_name }}@else <div class="no_text"></div> @endif
                             </a>
                         </td>
                         <td>
-                            <a class="show_page" href="{{ route('user.show', $user->id) }}">
+                            <a class="show_page" href="{{ route('company_user.show', $user->id) }}">
                                 @if(isset($user->personalInfo->last_name)){{ $user->personalInfo->last_name }}@else <div class="no_text"></div> @endif
                             </a>
                         </td>
                         <td>
-                            <a class="show_page" href="{{ route('user.show', $user->id) }}">
+                            <a class="show_page" href="{{ route('company_user.show', $user->id) }}">
                                 @if(isset($user->role_id)) {{$user->role->name}} @else <div class="no_text"></div> @endif
                             </a>
                         </td>
                         <td>
-                            <a class="show_page" href="{{ route('user.show', $user->id) }}">
+                            <a class="show_page" href="{{ route('company_user.show', $user->id) }}">
                                 @if(isset($user->phone_number)){{ $user->phone_number }}@else <div class="no_text"></div> @endif
                             </a>
                         </td>
                         <td class="function_column mt-2">
                             <div class="d-flex justify-content-center">
                                 <a class="form_functions btn btn-info" onclick="editCompany({{$user->id}})"><i class="fe-edit-2"></i></a>
-                                <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-alert-modal" data-url="{{ route('user.destroy', $user->id) }}"><i class="fe-trash-2"></i></button>
+                                <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-alert-modal" data-url="{{ route('company_user.destroy', $user->id) }}"><i class="fe-trash-2"></i></button>
                             </div>
                         </td>
                     </tr>
@@ -94,12 +94,12 @@
     <script>
         let edit_company = document.getElementById('edit_company')
         function createCompany(){
-            refreshData('')
-            window.location.href = "{{route('user.create')}}"
+            refreshData()
+            window.location.href = "{{route('company_user.create')}}"
         }
         function editCompany(id){
-            refreshData(id)
-            window.location.href = `/user/${id}/edit`
+            refreshData()
+            window.location.href = `company_user/${id}/edit`
         }
         function refreshData() {
             if(localStorage.getItem('district') != undefined && localStorage.getItem('district') != null){

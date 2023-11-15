@@ -83,7 +83,6 @@
         url:"/../api/get-districts",
         type:'GET',
         success: function (data) {
-            console.log(data)
             data.data.forEach(addOption)
             if(localStorage.getItem('region_id') != undefined && localStorage.getItem('region_id') != null &&
                 localStorage.getItem('district_id') != undefined && localStorage.getItem('district_id') != null) {
@@ -99,7 +98,7 @@
                 })
             }else if(page == true){
                 if(current_region_index != -1){
-                    districts_ = data[current_region_index].cities
+                    districts_ = data.data[current_region_index].cities
                     Object.keys(districts_).forEach(function (key) {
                         let district_selected_option = document.createElement('option')
                         district_selected_option.value = key
