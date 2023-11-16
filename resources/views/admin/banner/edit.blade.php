@@ -29,9 +29,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">{{__('Text')}}</label>
-                    <textarea class="form-control" name="text" id="text" required cols="20" rows="10">
-                        {!! $banner->text !!}
-                    </textarea>
+                    <textarea class="form-control" name="text" id="text" required cols="20" rows="2">{{$banner->text }}</textarea>
                 </div>
                 <div class="mb-3">
                     <div class="row">
@@ -53,7 +51,7 @@
                 <div class="row">
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Image')}}</label>
-                        <input type="file" name="image" class="form-control" required value="{{old('image')}}"/>
+                        <input type="file" name="image" class="form-control" value="{{old('image')}}"/>
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Is active')}}</label>
@@ -70,12 +68,4 @@
             </form>
         </div>
     </div>
-    <script type="text/javascript" src="{{asset('assets/js/ckeditor/ckeditor.js')}}"></script>
-    <script>
-        ClassicEditor
-            .create( document.querySelector( '#text' ) )
-            .catch( error => {
-                console.error( error );
-            } );
-    </script>
 @endsection

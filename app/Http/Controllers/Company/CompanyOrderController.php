@@ -9,25 +9,28 @@ use Illuminate\Support\Facades\Auth;
 
 class CompanyOrderController extends Controller
 {
-    public function index(){
+    public function index($id){
         $user = Auth::user();
-//        $order_details = OrderDetail::where('warehouse_id', '!=', null)->get()->groupBy('order_id');
-        $order_details = OrderDetail::get()->groupBy('order_id');
-        $orders = [];
-        foreach ($order_details as $order_detail_){
-            foreach ($order_detail_ as $order_detail){
-                if(isset($order_detail->warehouse_product->company_id) && $order_detail->warehouse_product->company_id == $user->company_id){
-                    if(isset($order_details->order)){
-                        $orders[] = $order_details->order;
-                    }
-                }
+        $order_ids = OrderDetail::select('order_id')->groupBy('order_id')->distinct()->get()->toArray();
+        $orders_id = [];
+        foreach ($order_ids as $order_id_){
+            foreach ($order_id_ as $order_id){
+                $orders_id[] = $order_id;
             }
         }
-        return view('company.order.index', ['orders'=>$orders]);
+        $orders = Order::where('status', $id)->whereIn('id', $orders_id)->get();
+
+        return view('company.order.index', ['orders'=>$orders, 'id'=>$id]);
+    }
+
+    public function category(){
+
+        return view('company.order.category');
     }
 
     public function show($id){
-        return view('company.order.show');
+        $order = Order::find($id);
+        return view('company.order.show', ['order'=>$order]);
     }
 
     public function destroy($id){

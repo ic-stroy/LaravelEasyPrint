@@ -85,7 +85,8 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
                 Route::resource('company_user', CompanyUsersController::class)->middleware('is_admin');
             });
             Route::group(['prefix' => 'order'], function () {
-                Route::get('/', [CompanyOrderController::class, 'index'])->name('company_order.index');
+                Route::get('/index/{id}', [CompanyOrderController::class, 'index'])->name('company_order.index');
+                Route::get('/category', [CompanyOrderController::class, 'category'])->name('company_order.category');
                 Route::get('/show/{id}', [CompanyOrderController::class, 'show'])->name('company_order.show');
                 Route::get('/destroy/{id}', [CompanyOrderController::class, 'destroy'])->name('company_order.destroy');
             });

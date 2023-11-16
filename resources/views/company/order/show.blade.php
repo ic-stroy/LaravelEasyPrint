@@ -6,10 +6,7 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <h4 class="mt-0 header-title">{{__('Products lists')}}</h4>
-            <div class="dropdown float-end">
-                <a class="form_functions btn btn-success" href="{{route('product.create')}}">{{__('Create')}}</a>
-            </div>
+            <h4 class="mt-0 header-title">{{__('Order lists')}}</h4>
             <table id="datatable-buttons" class="table dt-responsive nowrap table_show">
                 <thead>
                 <tr>
@@ -19,53 +16,58 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <th>{{__('Name')}}</th>
-                        <td>{{$warehouse->name??''}}</td>
+                        <th>{{__('id')}}</th>
+                        <td>{{$order->id??''}}</td>
                     </tr>
                     <tr>
-                        <th>{{__('Subcategory')}}</th>
-                        <td>@if(isset($warehouse->category_name)){{ $warehouse->category_name }}@endif</td>
+                        <th>{{__('Price')}}</th>
+                        <td>@if(isset($order->price)){{ $order->price }}@endif</td>
                     </tr>
                     <tr>
-                        <th>{{__('Sum')}}</th>
-                        <td>{{$warehouse->price??''}}</td>
-                    </tr>
-                    <tr>
-                        <th>{{__('quantity')}}</th>
-                        <td>{{$warehouse->quantity??''}}</td>
-                    </tr>
-                    <tr>
-                        <th>{{__('image')}}</th>
+                        <th>{{__('Status')}}</th>
                         <td>
-                            @if(isset($warehouse->images))
+                            @switch($order->status)
+                                @case(1)
+                                    {{translate('Basked')}}
+                                    @break
+                                @case(2)
+                                    {{translate('Ordered')}}
+                                    @break
+                                @case(3)
+                                    {{translate('Finished')}}
+                                    @break
+                            @endswitch
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>{{__('Client')}}</th>
+                        <td>
+                            @if(isset($order->user->personalInfo->id))
                                 @php
-                                    $images = json_decode($warehouse->images);
-                                    $is_image = 0;
+                                    $first_name = isset($order->user->personalInfo->first_name)?$order->user->personalInfo->first_name.' ':'';
+                                    $last_name = isset($order->user->personalInfo->last_name)?$order->user->personalInfo->last_name.' ':'';
+                                    $middle_name = isset($order->user->personalInfo->middle_name)?$order->user->personalInfo->middle_name:'';
+                                    $user_name = $first_name.''.$last_name.''.$middle_name;
                                 @endphp
-                                <div class="row">
-                                    @foreach($images as $image)
-                                        @php
-                                            $avatar_main = storage_path('app/public/products/'.$image);
-                                        @endphp
-                                        @if(file_exists($avatar_main))
-                                            @php($is_image = 1)
-                                            <div class="col-4 mb-3">
-                                                <img src="{{asset('storage/products/'.$image)}}" alt="">
-                                            </div>
-                                        @endif
-                                    @endforeach
-                                </div>
-                                @if($is_image == 0)
-                                    <div>
-                                        <img src="{{asset('icon/no_photo.jpg')}}" alt=""  height="100px">
-                                    </div>
-                                @endif
-                            @else
-                                <div>
-                                    <img src="{{asset('icon/no_photo.jpg')}}" alt=""  height="100px">
-                                </div>
+                                {{$user_name}}
                             @endif
                         </td>
+                    </tr>
+                    <tr>
+                        <th>{{__('Delivery date')}}</th>
+                        <td>{{$warehouse->delivery_date??''}}</td>
+                    </tr>
+                    <tr>
+                        <th>{{__('Delivery price')}}</th>
+                        <td>{{$warehouse->delivery_price??''}}</td>
+                    </tr>
+                    <tr>
+                        <th>{{__('All price')}}</th>
+                        <td>{{$warehouse->all_price??''}}</td>
+                    </tr>
+                    <tr>
+                        <th>{{__('Coupon')}}</th>
+                        <td>{{$warehouse->coupon_id??''}}</td>
                     </tr>
                     <tr>
                         <th>{{__('Updated at')}}</th>
