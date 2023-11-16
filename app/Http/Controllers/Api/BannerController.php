@@ -13,10 +13,16 @@ class BannerController extends Controller
         $all_banners = Banner::all();
         $banners = [];
         foreach ($all_banners as $banner){
+            if(!isset($banner->image)){
+                $banner_image = 'no';
+            }else{
+                $banner_image = $banner->image;
+            }
+            $avatar_main = storage_path('app/public/banner/'.$banner_image);
             $banners[] = [
               'id'=>$banner->id,
               'title'=>$banner->title,
-              'image'=>asset('banner/'.$banner->image),
+              'image'=>file_exists($avatar_main)?'storage/banner/'.$banner->image:null,
               'text'=>$banner->text,
               'is_active'=>$banner->is_active == 1 ? 'active':'no active',
             ];

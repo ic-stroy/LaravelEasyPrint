@@ -33,19 +33,19 @@
                 </div>
                 <div class="mb-3">
                     <div class="row">
-                            @php
-                                if(!isset($banner->image)){
-                                     $banner_image = 'no';
-                                }else{
-                                    $banner_image = $banner->image;
-                                }
-                                $avatar_main = storage_path('app/public/banner/'.$banner_image);
-                            @endphp
-                            @if(file_exists($avatar_main))
-                                <div class="col-2 mb-3">
-                                    <img src="{{asset('storage/banner/'.$banner_image)}}" alt="" height="200px">
-                                </div>
-                            @endif
+                        @php
+                            if(!isset($banner->image)){
+                                 $banner_image = 'no';
+                            }else{
+                                $banner_image = $banner->image;
+                            }
+                            $avatar_main = storage_path('app/public/banner/'.$banner_image);
+                        @endphp
+                        @if(file_exists($avatar_main))
+                            <div class="col-2 mb-3">
+                                <img src="{{asset('storage/banner/'.$banner_image)}}" alt="" height="200px">
+                            </div>
+                        @endif
                     </div>
                 </div>
                 <div class="row">
