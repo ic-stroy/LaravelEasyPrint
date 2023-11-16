@@ -29,13 +29,41 @@ class CategoryController extends Controller
             }
             $category_ids[] = $category->id;
             $products = Products::select('id', 'name', 'category_id', 'images', 'material_id', 'manufacturer_country', 'material_composition', 'price', 'description')->whereIn('category_id', $category_ids)->get();
+            foreach ($products as $product) {
+                if(!is_array($product->images)){
+                    $images = json_decode($product->images);
+                }
+                foreach ($images as $image){
+                    if(!isset($image)){
+                        $product_image = 'no';
+                    }else{
+                        $product_image = $image;
+                    }
+                    $avatar_main = storage_path('app/public/products/'.$product_image);
+                    if(file_exists($avatar_main)){
+                        $images_array[] = asset('storage/products/'.$image);
+                    }
+                }
+
+                $products_data[] = [
+                    'id'=>$product->id,
+                    'name'=>$product->name,
+                    'category_id'=>$product->category_id,
+                    'images'=>$images_array,
+                    'material_id'=>$product->material_id,
+                    'description'=>$product->description,
+                    'price'=>$product->price,
+                    'manufacturer_country'=>$product->manufacturer_country,
+                    'material_composition'=>$product->material_composition,
+                ];
+            }
             $data[] = [
                 'category'=>[
                     'id'=>$category->id,
                     'name'=>$category->name,
                 ],
                 'products'=>[
-                    $products
+                    $products_data
                 ]
             ];
         }

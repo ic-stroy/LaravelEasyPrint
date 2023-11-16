@@ -51,7 +51,7 @@ Route::group(['prefix' => 'product'], function () {
 });
 
 Route::get('get-categories-by-product/{id}', [ProductController::class, 'getCategoriesByProduct'])->name('get_categories_by_product');
-Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
+Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('personal-information', [UsersController::class, 'setPersonalInformation']);
     Route::get('personal-information', [UsersController::class, 'getPersonalInformation']);
     Route::post('set-address', [UsersController::class, 'setAddress']);
