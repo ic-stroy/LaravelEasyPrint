@@ -18,7 +18,7 @@ class CompanyOrderController extends Controller
                 $orders_id[] = $order_id;
             }
         }
-        $orders = Order::where('status', $id)->whereIn('id', $orders_id)->get();
+        $orders = Order::where('status', $id)->where('user_id', $user->id)->whereIn('id', $orders_id)->get();
 
         return view('company.order.index', ['orders'=>$orders, 'id'=>$id]);
     }
