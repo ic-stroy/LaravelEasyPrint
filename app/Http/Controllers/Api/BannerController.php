@@ -22,7 +22,7 @@ class BannerController extends Controller
             $banners[] = [
               'id'=>$banner->id,
               'title'=>$banner->title,
-              'image'=>file_exists($avatar_main)?'storage/banner/'.$banner->image:null,
+              'image'=>file_exists($avatar_main)?asset('storage/banner/'.$banner->image):null,
               'text'=>$banner->text,
               'is_active'=>$banner->is_active == 1 ? 'active':'no active',
             ];
