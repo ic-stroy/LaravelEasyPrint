@@ -82,7 +82,6 @@ class CategoryController extends Controller
         }else{
             $sms_avatar = 'no';
         }
-
         $profile = [
             'name'=>isset($personalInfo->first_name)?$personalInfo->first_name:null,
             'avatar'=>file_exists($sms_avatar)?asset('storage/user/'.$personalInfo->avatar):asset('assets/images/man.jpg')
@@ -92,7 +91,7 @@ class CategoryController extends Controller
             'basket_count'=>$basket_count,
             'profile'=>$profile,
         ];
-         $message = translate_api('Success', $language);
+        $message = translate_api('Success', $language);
         return $this->success($message, 200, $data);
     }
 }
