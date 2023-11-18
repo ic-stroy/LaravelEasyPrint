@@ -5,9 +5,7 @@
 @endsection
 @section('content')
     @php
-        if(isset($model->subSubCategory->id)){
-            $current_category = $model->subSubCategory->name;
-        }elseif(isset($model->subCategory->id)){
+        if(isset($model->subCategory->id)){
             $current_category = $model->subCategory->name;
         }elseif(isset($model->category->id)){
             $current_category = $model->category->name;
@@ -21,10 +19,10 @@
             </div>
             <table id="datatable-buttons" class="table dt-responsive nowrap table_show">
                 <thead>
-                <tr>
-                    <th>{{__('Attributes')}}</th>
-                    <th>{{__('Informations')}}</th>
-                </tr>
+                    <tr>
+                        <th>{{__('Attributes')}}</th>
+                        <th>{{__('Informations')}}</th>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr>

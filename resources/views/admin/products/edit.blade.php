@@ -63,11 +63,11 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="mb-3 col-6">
+                    <div class="mb-3 col-4">
                         <label class="form-label">{{__('Price')}}</label>
                         <input type="number" class="form-control" name="price" value="{{$product->price??''}}">
                     </div>
-                    <div class="mb-3 col-6 display-none" id="subcategory_exists">
+                    <div class="mb-3 col-4 display-none" id="subcategory_exists">
                         <label class="form-label">{{__('Sub category')}}</label>
                         <select name="subcategory_id" class="form-control" id="subcategory_id">
                             @if(isset($current_category->subcategory))
@@ -77,19 +77,7 @@
                             @endif
                         </select>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="mb-3 col-6 display-none" id="subsubcategory_exists">
-                        <label class="form-label">{{__('Sub Sub category')}}</label>
-                        <select name="subsubcategory_id" class="form-control" id="subsubcategory_id">
-                            @if(isset($category_product->sub_category->subsubcategory))
-                                @foreach($category_product->sub_category->subsubcategory as $subsubcategory)
-                                    <option value="{{$subsubcategory->id}}" {{$subsubcategory->id == $current_sub_sub_category_id?'selected':''}}>{{$subsubcategory->name}}</option>
-                                @endforeach
-                            @endif
-                        </select>
-                    </div>
-                    <div class="mb-3 col-6">
+                    <div class="mb-3 col-4">
                         <label class="form-label">{{__('Status')}}</label>
                         <select name="status" class="form-control" id="status_id">
                             <option value="0" {{$product->status == 0?'selected':''}}>{{__('No active')}}</option>
@@ -152,7 +140,6 @@
         let sizes_leg = document.getElementById('sizes_leg')
 
         let subcategory_exists = document.getElementById('subcategory_exists')
-        let subsubcategory_exists = document.getElementById('subsubcategory_exists')
 
         let is_category = "{{$is_category}}"
 
@@ -160,7 +147,6 @@
 
         let category_id = document.getElementById('category_id')
         let subcategory_id = document.getElementById('subcategory_id')
-        let subsubcategory_id = document.getElementById('subsubcategory_id')
 
         switch (is_category) {
             case "2":
@@ -172,9 +158,6 @@
                 if(subcategory_exists.classList.contains('display-none')){
                     subcategory_exists.classList.remove('display-none')
                 }
-                if(subsubcategory_exists.classList.contains('display-none')){
-                    subsubcategory_exists.classList.remove('display-none')
-                }
                 break;
         }
         function addOption(item, index){
@@ -185,7 +168,6 @@
         }
         category_id.addEventListener('change', function () {
             subcategory_id.innerHTML = ""
-            subsubcategory_id.innerHTML = ""
             $(document).ready(function () {
                 $.ajax({
                     url:`/../api/subcategory/${category_id.value}`,
@@ -195,15 +177,9 @@
                             if(subcategory_exists.classList.contains('display-none')){
                                 subcategory_exists.classList.remove('display-none')
                             }
-                            if(!subsubcategory_exists.classList.contains('display-none')){
-                                subsubcategory_exists.classList.add('display-none')
-                            }
                         }else{
                             if(!subcategory_exists.classList.contains('display-none')){
                                 subcategory_exists.classList.add('display-none')
-                            }
-                            if(!subsubcategory_exists.classList.contains('display-none')){
-                                subsubcategory_exists.classList.add('display-none')
                             }
                         }
                         let disabled_option = document.createElement('option')
@@ -212,38 +188,6 @@
                         disabled_option.disabled = true
                         subcategory_id.add(disabled_option)
                         data.data.forEach(addOption)
-                    }
-                })
-            })
-        })
-        function addSubOption(item, index){
-            let option = document.createElement('option')
-            option.value = item.id
-            option.text = item.name
-            subsubcategory_id.add(option)
-        }
-        subcategory_id.addEventListener('change', function () {
-            subsubcategory_id.innerHTML = ""
-            $(document).ready(function () {
-                $.ajax({
-                    url:`/../api/subcategory/${subcategory_id.value}`,
-                    type:'GET',
-                    success: function (data) {
-                        if(data.status == true){
-                            if(subsubcategory_exists.classList.contains('display-none')){
-                                subsubcategory_exists.classList.remove('display-none')
-                            }
-                        }else{
-                            if(!subsubcategory_exists.classList.contains('display-none')){
-                                subsubcategory_exists.classList.add('display-none')
-                            }
-                        }
-                        let disabled_sub_option = document.createElement('option')
-                        disabled_sub_option.text = "{{__('Select sub sub category')}}"
-                        disabled_sub_option.selected = true
-                        disabled_sub_option.disabled = true
-                        subsubcategory_id.add(disabled_sub_option)
-                        data.data.forEach(addSubOption)
                     }
                 })
             })

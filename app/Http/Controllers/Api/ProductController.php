@@ -249,10 +249,11 @@ class ProductController extends Controller
             $colors_array = [];
             foreach ($product->warehouse as $warehouse_) {
                 $colors_array[] = $warehouse_->color->id;
+                $sizes_array[] = $warehouse_->size->id;
                 if($colors_array[0] == $warehouse_->color->id){
                     $firstColorProducts[] = [
                         'id'=>$warehouse_->id,
-                        'size'=>$warehouse_->size ? $warehouse_->size->name:'',
+                        'size'=>isset($warehouse_->size) ? $warehouse_->size->name:'',
                         'quantity' => $warehouse_->quantity,
                     ];
                 }
@@ -264,7 +265,7 @@ class ProductController extends Controller
                         $colorModel = $warehouse->color;
                         $productsByColor[] = [
                             'id' => $warehouse->id,
-                            'size' => $warehouse->size ? $warehouse->size->name:'',
+                            'size' => isset($warehouse->size) ? $warehouse->size->name:'',
                             'price' => $warehouse->price,
                             'quantity' => $warehouse->quantity
                         ];
@@ -273,6 +274,24 @@ class ProductController extends Controller
                 $categorizedByColor[] = [
                     'color'=>$colorModel,
                     'products'=>$productsByColor
+                ];
+            }
+            foreach (array_unique($sizes_array) as $size) {
+                $productsBySize = [];
+                foreach ($product->warehouse as $warehouse){
+                    if($size == $warehouse->size->id){
+                        $sizeModel = $warehouse->size;
+                        $productsBySize[] = [
+                            'id' => $warehouse->id,
+                            'color' => isset($warehouse->color) ? $warehouse->color:'',
+                            'price' => $warehouse->price,
+                            'quantity' => $warehouse->quantity
+                        ];
+                    }
+                }
+                $categorizedBySize[] = [
+                    'size'=>$sizeModel,
+                    'products'=>$productsBySize
                 ];
             }
         }
@@ -296,6 +315,7 @@ class ProductController extends Controller
             $good['price'] = $product->price??null;
             $good['company'] = $product->company??null;
             $good['characters'] = $categorizedByColor??[];
+            $good['characters_by_size'] = $categorizedBySize??[];
             $good['first_color_products'] = $firstColorProducts??[];
             $good['images'] = $images??[];
             $good['basket_button'] = false;

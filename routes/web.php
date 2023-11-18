@@ -39,9 +39,11 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
         Route::resource('banner', BannerController::class);
         Route::resource('color', ColorController::class);
         Route::resource('size', SizesController::class);
+        Route::post('store-all-sizes', [SizesController::class, ]);
         Route::resource('user', UsersController::class);
         Route::resource('product', ProductsController::class);
         Route::get('products-category', [ProductsController::class, 'category'])->name('product.category');
+        Route::get('allproduct-destroy', [ProductsController::class, 'allproduct_destroy'])->name('product.allproduct_destroy');
         Route::get('products-by-category/{id}', [ProductsController::class, 'product'])->name('product.category.product');
         Route::get('/home', [HomeController::class, 'index'])->name('home');
         Route::resource('category', CategoryController::class);

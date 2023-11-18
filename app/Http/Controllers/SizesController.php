@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 class SizesController extends Controller
 {
+    public $all_sizes = ['S', 'M', 'L', 'X', 'XL', 'XXL', 'XXXL', 'XXXXL', '6-7 years', '8-10 years', '11-13 years'];
     /**
      * Display a listing of the resource.
      */
@@ -32,10 +33,17 @@ class SizesController extends Controller
      */
     public function store(Request $request)
     {
+//        foreach ($this->all_sizes as $all_size){
+//            $model = new Sizes();
+//            $model->name = $all_size;
+//            $model->category_id = $request->category_id;
+//            $model->status = $request->status;
+//            $model->save();
+//        }
         $model = new Sizes();
         $model->name = $request->name;
         $model->category_id = $request->category_id;
-        $model->status = 1;
+        $model->status = $request->status;
         $model->save();
         return redirect()->route('size.index')->with('status', __('Successfully created'));
     }
@@ -67,6 +75,7 @@ class SizesController extends Controller
         $model = Sizes::find($id);
         $model->name = $request->name;
         $model->category_id = $request->category_id;
+        $model->status = $request->status;
         $model->save();
         return redirect()->route('size.index')->with('status', __('Successfully updated'));
     }

@@ -36,9 +36,7 @@ class ProductsController extends Controller
     {
         $model = new Products();
         $model->name = $request->name;
-        if(isset($request->subsubcategory_id)){
-            $model->category_id = $request->subsubcategory_id;
-        }elseif($request->subcategory_id){
+        if($request->subcategory_id){
             $model->category_id = $request->subcategory_id;
         }else{
             $model->category_id = $request->category_id;
@@ -80,10 +78,7 @@ class ProductsController extends Controller
     public function edit(string $id)
     {
         $product = Products::find($id);
-        if(isset($product->subSubCategory->id)){
-            $category_product = $product->subSubCategory;
-            $is_category = 3;
-        }elseif(isset($product->subCategory->id)){
+       if(isset($product->subCategory->id)){
             $category_product = $product->subCategory;
             $is_category = 2;
         }elseif(isset($product->category->id)){
@@ -104,9 +99,7 @@ class ProductsController extends Controller
     {
         $model = Products::find($id);
         $model->name = $request->name;
-        if(isset($request->subsubcategory_id)){
-            $model->category_id = $request->subsubcategory_id;
-        }elseif($request->subcategory_id){
+        if($request->subcategory_id){
             $model->category_id = $request->subcategory_id;
         }else{
             $model->category_id = $request->category_id;
@@ -179,13 +172,35 @@ class ProductsController extends Controller
         foreach ($subcategories as $subcategory){
             $category_ids[] = $subcategory->id;
         }
-        $subsubcategories = Category::WhereIn('parent_id', $category_ids)->get();
-        foreach ($subsubcategories as $subsubcategory){
-            $category_ids[] = $subsubcategory->id;
-        }
         $category_ids[] = $category->id;
         $products = Products::whereIn('category_id', $category_ids)->get();
         return view('admin.products.product', ['products'=>$products]);
+    }
+
+    public function allproduct_destroy()
+    {
+        $models = Products::all();
+        foreach($models as $model){
+            $images = json_decode($model->images);
+            foreach ($images as $image){
+                $avatar_main = storage_path('app/public/products/'.$image);
+                if(file_exists($avatar_main)){
+                    unlink($avatar_main);
+                }
+            }
+            foreach($model->order_detail as $order_detail){
+                if(isset($order_detail->order)){
+                    $order_detail->order->delete();
+                }
+                $order_detail->delete();
+            }
+            foreach($model->warehouse as $warehouse){
+                $warehouse->delete();
+            }
+            $model->delete();
+        }
+
+        return redirect()->route('product.category')->with('status', __('Successfully deleted'));
     }
 
 }

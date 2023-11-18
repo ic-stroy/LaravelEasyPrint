@@ -64,6 +64,3 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('product', [ProductController::class, 'getProduct']);
     Route::post('logout', [AuthController::class, 'logout']);
 });
-
-
-

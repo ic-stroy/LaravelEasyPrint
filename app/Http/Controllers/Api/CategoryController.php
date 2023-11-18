@@ -18,14 +18,11 @@ class CategoryController extends Controller
         $categories = Category::where('step', 0)->get();
         $data = [];
         foreach ($categories as $category){
+            $products_data = [];
             $category_ids = [];
             $subcategories = $category->subcategory;
             foreach ($subcategories as $subcategory){
                 $category_ids[] = $subcategory->id;
-            }
-            $subsubcategories = Category::WhereIn('parent_id', $category_ids)->get();
-            foreach ($subsubcategories as $subsubcategory){
-                $category_ids[] = $subsubcategory->id;
             }
             $category_ids[] = $category->id;
             $products = Products::select('id', 'name', 'category_id', 'images', 'material_id', 'manufacturer_country', 'material_composition', 'price', 'description')->whereIn('category_id', $category_ids)->get();

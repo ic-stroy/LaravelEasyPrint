@@ -475,11 +475,11 @@
                                             <span> {{ __('Sub Category') }} </span>
                                         </a>
                                     </li>
-                                    <li>
-                                        <a href="{{ route('subsubcategory.category') }}">
-                                            <span> {{ __('Sub Sub Category') }} </span>
-                                        </a>
-                                    </li>
+{{--                                    <li>--}}
+{{--                                        <a href="{{ route('subsubcategory.category') }}">--}}
+{{--                                            <span> {{ __('Sub Sub Category') }} </span>--}}
+{{--                                        </a>--}}
+{{--                                    </li>--}}
                                 </ul>
                             </div>
                         </li>

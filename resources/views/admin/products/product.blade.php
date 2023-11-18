@@ -29,9 +29,7 @@
                 @foreach($products as $product)
                     @php
                         $i++;
-                        if(isset($product->subSubCategory->id)){
-                            $current_category = $product->subSubCategory->name;
-                        }elseif(isset($product->subCategory->id)){
+                        if(isset($product->subCategory->id)){
                             $current_category = $product->subCategory->name;
                         }elseif(isset($product->category->id)){
                             $current_category = $product->category->name;
