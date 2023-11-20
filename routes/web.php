@@ -18,7 +18,6 @@ use \App\Http\Controllers\ProductsController;
 use \App\Http\Controllers\RoleController;
 use \App\Http\Controllers\CompanyController;
 use \App\Http\Controllers\LanguageController;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -111,6 +110,7 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
 
         });
     });
+
 
 
 

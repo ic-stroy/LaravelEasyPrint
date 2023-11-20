@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\PersonalInfo;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Socialite\Facades\Socialite;
 use function auth;
 use function bcrypt;
 use function response;
@@ -69,4 +71,32 @@ class AuthController extends Controller
         $message = translate_api('success', $language);
         return $this->success($message, 200, []);
     }
+
+    public function redirectGoogle(){
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function callbackGoogle(Request $request){
+        $language = $request->header('language');
+        $user = Socialite::driver('google')->user();
+        $this->regOrLogin($user);
+        $token = $user->createToken('myapptoken')->plainTextToken;
+        $user->token = $token;
+        $user->save();
+        $message = translate_api('success', $language);
+        return $this->success($message, 200, $user);
+    }
+
+    public function regOrLogin($user){
+        $user = User::where('email', $user->email)->first();
+        if(!$user){
+            User::create([
+                'name'=>$user->name,
+                'email'=>$user->email,
+                'password'=>bcrypt(rand(10000, 100000)),
+            ]);
+        }
+        Auth::login($user);
+    }
+
 }

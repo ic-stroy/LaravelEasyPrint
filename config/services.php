@@ -31,4 +31,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'google' => [
+        'client_id' => '1013304105388-27cbp6vn9jhma2u1oo7hqt5ail4oqcdt.apps.googleusercontent.com',
+        'client_secret' => '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',
+        'redirect' => 'http://admin.easyprint.uz/api/googleauth/callback',
+    ],
 ];
