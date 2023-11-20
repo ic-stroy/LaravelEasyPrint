@@ -79,24 +79,28 @@ class AuthController extends Controller
     public function callbackGoogle(Request $request){
         $language = $request->header('language');
         $user = Socialite::driver('google')->user();
-        $this->regOrLogin($user);
-        $token = $user->createToken('myapptoken')->plainTextToken;
-        $user->token = $token;
-        $user->save();
+        $data = $this->regOrLogin($user);
         $message = translate_api('success', $language);
-        return $this->success($message, 200, $user);
+        return $this->success($message, 200, $data);
     }
 
     public function regOrLogin($user){
         $user = User::where('email', $user->email)->first();
         if(!$user){
-            User::create([
-                'name'=>$user->name,
-                'email'=>$user->email,
-                'password'=>bcrypt(rand(10000, 100000)),
-            ]);
+            $model = new User();
+            $model->email = $user->email;
+            $model->password = bcrypt(rand(10000, 100000));
+            $model->save();
+            $personal_info = new PersonalInfo();
+            $personal_info->first_name = $user->name;
+            $personal_info->save();
+            $token = $user->createToken('myapptoken')->plainTextToken;
+            $user->token = $token;
+            $user->personal_info_id = $personal_info->id;
+            $user->save();
         }
-        Auth::login($user);
+        return $user;
+//        Auth::login($user);
     }
 
 }
