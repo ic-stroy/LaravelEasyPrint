@@ -94,13 +94,13 @@ class AuthController extends Controller
             $personal_info = new PersonalInfo();
             $personal_info->first_name = $user->name;
             $personal_info->save();
-            $token = $user->createToken('myapptoken')->plainTextToken;
-            $user->token = $token;
-            $user->personal_info_id = $personal_info->id;
-            $user->save();
-            return $user;
+            $token = $model->createToken('myapptoken')->plainTextToken;
+            $model->token = $token;
+            $model->personal_info_id = $personal_info->id;
+            $model->save();
+            return $model;
         }
-        return $model;
+        return $user;
 //        Auth::login($user);
     }
 
