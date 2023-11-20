@@ -79,7 +79,10 @@ class AuthController extends Controller
     public function callbackGoogle(Request $request){
         $language = $request->header('language');
         $user = Socialite::driver('google')->user();
-        $data = $this->regOrLogin($user);
+        $user_data = $this->regOrLogin($user);
+        $data = [
+            'user' => $user_data
+        ];
         $message = translate_api('success', $language);
         return $this->success($message, 200, $data);
     }
