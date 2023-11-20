@@ -85,8 +85,8 @@ class AuthController extends Controller
     }
 
     public function regOrLogin($user){
-        $user = User::where('email', $user->email)->first();
-        if(!$user){
+        $model = User::where('email', $user->email)->first();
+        if(!$model){
             $model = new User();
             $model->email = $user->email;
             $model->password = bcrypt(rand(10000, 100000));
@@ -98,8 +98,9 @@ class AuthController extends Controller
             $user->token = $token;
             $user->personal_info_id = $personal_info->id;
             $user->save();
+            return $user;
         }
-        return $user;
+        return $model;
 //        Auth::login($user);
     }
 
