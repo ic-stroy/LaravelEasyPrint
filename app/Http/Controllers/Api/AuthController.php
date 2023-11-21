@@ -106,5 +106,4 @@ class AuthController extends Controller
         return $user;
 //        Auth::login($user);
     }
-
 }
