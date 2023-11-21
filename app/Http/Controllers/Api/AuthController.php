@@ -79,10 +79,16 @@ class AuthController extends Controller
     public function callbackGoogle(Request $request){
         $language = $request->header('language');
         $user = Socialite::driver('google')->user();
-        $user_data = $this->regOrLogin($user);
-        $data = [
-            'user' => $user_data
-        ];
+        $model = $this->regOrLogin($user);
+        $data = [];
+        if(isset($model->created_at)){
+            $token = $model->createToken('myapptoken')->plainTextToken;
+            $model->token = $token;
+            $model->save();
+            $data = [
+                'user' => $model
+            ];
+        }
         $message = translate_api('success', $language);
         return $this->success($message, 200, $data);
     }
@@ -97,8 +103,6 @@ class AuthController extends Controller
             $personal_info = new PersonalInfo();
             $personal_info->first_name = $user->name;
             $personal_info->save();
-            $token = $model->createToken('myapptoken')->plainTextToken;
-            $model->token = $token;
             $model->personal_info_id = $personal_info->id;
             $model->save();
             return $model;
