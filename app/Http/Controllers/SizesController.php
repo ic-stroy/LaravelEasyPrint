@@ -33,18 +33,18 @@ class SizesController extends Controller
      */
     public function store(Request $request)
     {
-        foreach ($this->all_sizes as $all_size){
-            $model = new Sizes();
-            $model->name = $all_size;
-            $model->category_id = $request->category_id;
-            $model->status = $request->status;
-            $model->save();
-        }
-//        $model = new Sizes();
-//        $model->name = $request->name;
-//        $model->category_id = $request->category_id;
-//        $model->status = $request->status;
-//        $model->save();
+//        foreach ($this->all_sizes as $all_size){
+//            $model = new Sizes();
+//            $model->name = $all_size;
+//            $model->category_id = $request->category_id;
+//            $model->status = $request->status;
+//            $model->save();
+//        }
+        $model = new Sizes();
+        $model->name = $request->name;
+        $model->category_id = $request->category_id;
+        $model->status = $request->status;
+        $model->save();
         return redirect()->route('size.index')->with('status', __('Successfully created'));
     }
 
