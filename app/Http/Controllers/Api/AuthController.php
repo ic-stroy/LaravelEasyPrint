@@ -93,6 +93,7 @@ class AuthController extends Controller
             $model = new User();
             $model->email = $user->email;
             $model->password = bcrypt(rand(10000, 100000));
+            $model->role_id = 4;
             $model->save();
             $personal_info = new PersonalInfo();
             $personal_info->first_name = $user->name;
