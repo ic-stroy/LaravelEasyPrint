@@ -434,7 +434,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('user.index') }}">
+                            <a href="{{ route('user.category') }}">
                                 <i class="mdi mdi-account-star-outline"></i>
                                 <span> {{ __('Users') }} </span>
                             </a>

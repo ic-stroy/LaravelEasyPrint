@@ -40,6 +40,8 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
         Route::resource('size', SizesController::class);
         Route::post('store-all-sizes', [SizesController::class, ]);
         Route::resource('user', UsersController::class);
+        Route::get('user-category', [UsersController::class, 'category'])->name('user.category');
+        Route::get('user-by-category/{id}', [UsersController::class, 'user'])->name('user.category.user');
         Route::resource('product', ProductsController::class);
         Route::get('products-category', [ProductsController::class, 'category'])->name('product.category');
         Route::get('allproduct-destroy', [ProductsController::class, 'allproduct_destroy'])->name('product.allproduct_destroy');

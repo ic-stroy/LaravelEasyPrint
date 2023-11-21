@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
+use App\Models\Category;
 use App\Models\Company;
 use App\Models\PersonalInfo;
+use App\Models\Products;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
@@ -227,5 +229,17 @@ class UsersController extends Controller
             $address->delete();
         }
         return redirect()->route('user.index')->with('status', __('Successfully deleted'));
+    }
+
+    public function category()
+    {
+        $roles = Role::all();
+        return view('admin.user.category', ['roles'=>$roles]);
+    }
+
+    public function user($id)
+    {
+        $users = User::where('role_id', $id)->get();
+        return view('admin.user.user', ['users'=>$users, 'role_id'=>$id]);
     }
 }
