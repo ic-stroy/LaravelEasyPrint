@@ -13,6 +13,71 @@ use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
+    public function getCategories(Request $request){
+        $language = $request->header('language');
+        $categories = Category::select("id", "name")->where('step', 0)->get();
+        if(count($categories)>0){
+            $data = [$categories];
+        }else{
+            $data = [];
+        }
+        $message = translate_api('Success', $language);
+        return $this->success($message, 200, $data);
+    }
+
+    public function getProductsByCategory(Request $request){
+        $language = $request->header('language');
+        $category = Category::find((int)$request->category_id);
+        $data = [];
+        $products_data = [];
+        $category_ids = [];
+        $subcategories = $category->subcategory;
+        foreach ($subcategories as $subcategory){
+            $category_ids[] = $subcategory->id;
+        }
+        $category_ids[] = $category->id;
+        $products = Products::select('id', 'name', 'category_id', 'images', 'material_id', 'manufacturer_country', 'material_composition', 'price', 'description')->whereIn('category_id', $category_ids)->get();
+        foreach ($products as $product) {
+            if(!is_array($product->images)){
+                $images = json_decode($product->images);
+            }
+            foreach ($images as $image){
+                if(!isset($image)){
+                    $product_image = 'no';
+                }else{
+                    $product_image = $image;
+                }
+                $avatar_main = storage_path('app/public/products/'.$product_image);
+                if(file_exists($avatar_main)){
+                    $images_array[] = asset('storage/products/'.$image);
+                }
+            }
+
+            $products_data[] = [
+                'id'=>$product->id,
+                'name'=>$product->name,
+                'category_id'=>$product->category_id,
+                'images'=>$images_array,
+                'material_id'=>$product->material_id,
+                'description'=>$product->description,
+                'price'=>$product->price,
+                'manufacturer_country'=>$product->manufacturer_country,
+                'material_composition'=>$product->material_composition,
+            ];
+        }
+        $data[] = [
+            'category'=>[
+                'id'=>$category->id,
+                'name'=>$category->name,
+            ],
+            'products'=>[
+                $products_data
+            ]
+        ];
+        $message = translate_api('Success', $language);
+        return $this->success($message, 200, $data);
+    }
+
     public function getProductsByCategories(Request $request){
         $language = $request->header('language');
         $categories = Category::where('step', 0)->get();

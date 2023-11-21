@@ -55,7 +55,9 @@ Route::group(['prefix' => 'product'], function () {
 Route::get('get-categories-by-product/{id}', [ProductController::class, 'getCategoriesByProduct'])->name('get_categories_by_product');
 Route::get('profile-info', [CategoryController::class, 'profileInfo']);
 Route::get('get-banner', [BannerController::class, 'getBanner']);
-Route::get('get-products-by-category', [CategoryController::class, 'getProductsByCategories']);
+Route::get('get-products-by-categories', [CategoryController::class, 'getProductsByCategories']);
+Route::get('get-products-by-category', [CategoryController::class, 'getProductsByCategory']);
+Route::get('get-categories', [CategoryController::class, 'getCategories']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('personal-information', [UsersController::class, 'setPersonalInformation']);
