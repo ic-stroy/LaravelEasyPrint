@@ -59,12 +59,13 @@ Route::get('get-products-by-categories', [CategoryController::class, 'getProduct
 Route::get('get-products-by-category', [CategoryController::class, 'getProductsByCategory']);
 Route::get('get-categories', [CategoryController::class, 'getCategories']);
 
+Route::get('product', [ProductController::class, 'getProduct']);
+
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('personal-information', [UsersController::class, 'setPersonalInformation']);
     Route::get('personal-information', [UsersController::class, 'getPersonalInformation']);
     Route::post('set-address', [UsersController::class, 'setAddress']);
     Route::post('set-warehouse', [OrderController::class, 'setWarehouse']);
     Route::get('get-basket', [OrderController::class, 'getBasket']);
-    Route::get('product', [ProductController::class, 'getProduct']);
     Route::post('logout', [AuthController::class, 'logout']);
 });
