@@ -77,14 +77,13 @@ class AuthController extends Controller
     }
 
     public function callbackGoogle(Request $request){
-        $language = $request->header('language');
         $user = Socialite::driver('google')->user();
         $model = $this->regOrLogin($user);
         $token = $model->createToken('myapptoken')->plainTextToken;
         $model->token = $token;
         $model->save();
-        $message = translate_api('success', $language);
-        return $this->success($message, 200, [$model]);
+        $this->responseUser($model);
+//        return redirect()->route('responseUser', [$model]);
     }
 
     public function regOrLogin($user){
@@ -103,5 +102,11 @@ class AuthController extends Controller
         }
         return $model;
 //        Auth::login($user);
+    }
+
+    public function responseUser(Request $request, $model){
+        $language = $request->header('language');
+        $message = translate_api('success', $language);
+        return $this->success($message, 200, [$model]);
     }
 }
