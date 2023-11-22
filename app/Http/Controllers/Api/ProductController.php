@@ -21,15 +21,50 @@ class ProductController extends Controller
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
         // return "came";
-        $products = DB::table('products')
+        $products_ = DB::table('products')
         ->select('id','name','price','images')
         ->get();
+        foreach ($products_ as $product_){
+            if(isset($product_->images)){
+                $images_ = json_decode($product_->images);
+                $images = [];
+                foreach ($images_ as $image_){
+                    $images[] = asset('storage/products/'.$image_);
+                }
+            }else{
+                $images = [];
+            }
+            $products[] = [
+                'id' => $product_->id,
+                'name' => $product_->name,
+                'price' => $product_->price,
+                'images' => $images
+            ];
+        }
         // dd($products);
 
-        $warehouse_products=DB::table('warehouses')
+        $warehouse_products_=DB::table('warehouses')
             ->select('product_id', 'id', 'name', 'price', 'images')
             ->distinct('product_id')
             ->get();
+        foreach ($warehouse_products_ as $warehouse_product_){
+            if(isset($warehouse_product_->images)){
+                $images_ = json_decode($warehouse_product_->images);
+                $images = [];
+                foreach ($images_ as $image_){
+                    $images[] = asset('storage/warehouses/'.$image_);
+                }
+            }else{
+                $images = [];
+            }
+            $warehouse_products[] = [
+                'product_id' => $warehouse_product_->product_id,
+                'id' => $warehouse_product_->id,
+                'name' => $warehouse_product_->name,
+                'price' => $warehouse_product_->price,
+                'images' => $images
+            ];
+        }
         // dd($warehouse_products);
 
         $data=[
@@ -39,8 +74,6 @@ class ProductController extends Controller
         // dd($data);
         $message=translate_api('success',$language);
         return $this->success($message, 200,$data);
-
-
 
     }
 
@@ -85,6 +118,15 @@ class ProductController extends Controller
                 ->first();
             // dd($warehouse_product);
 
+            if(isset($warehouse_product->images)){
+                $images_ = json_decode($warehouse_product->images);
+                $images = [];
+                foreach ($images_ as $image_){
+                    $images[] = asset('storage/warehouses/'.$image_);
+                }
+            }else{
+                $images = [];
+            }
 
             $sizes = DB::table('warehouses as dt1')
                 ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
@@ -187,7 +229,7 @@ class ProductController extends Controller
                 "quantity"=>$warehouse_product->quantity,
                 // "max_quantity"=>$warehouse_product->max_quantity,
                 "description"=>$warehouse_product->description,
-                "images"=>$warehouse_product->images,
+                "images"=>$images,
                 "color"=>[
                    "id"=>$warehouse_product->color_id,
                    "code"=>$warehouse_product->color_code,
