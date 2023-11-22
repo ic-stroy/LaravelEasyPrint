@@ -83,6 +83,7 @@ class ProductController extends Controller
            ->select('product_id', 'id', 'name', 'price', 'images')
            ->distinct('product_id')
            ->get();
+       $warehouse_products = [];
        foreach ($warehouse_products_ as $warehouse_product_){
            if(isset($warehouse_product_->images)){
                $images_ = json_decode($warehouse_product_->images);
