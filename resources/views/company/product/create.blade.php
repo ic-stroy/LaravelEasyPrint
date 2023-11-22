@@ -72,10 +72,11 @@
                     <label class="form-label">{{__('Company')}}</label>
                     <input type="text" name="company" class="form-control" value="{{old('code')}}"/>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">{{__('Images')}}</label>
-                    <input type="file" name="images[]" class="form-control" value="{{old('images')}}" multiple/>
-                </div> --}}
+
+{{--                <div class="mb-3">--}}
+{{--                    <label class="form-label">{{__('Images')}}</label>--}}
+{{--                    <input type="file" name="images[]" class="form-control" value="{{old('images')}}" multiple/>--}}
+{{--                </div> --}}
                 <div>
                     <button type="submit" class="btn btn-primary waves-effect waves-light">{{__('Create')}}</button>
                     <button type="reset" class="btn btn-secondary waves-effect">{{__('Cancel')}}</button>

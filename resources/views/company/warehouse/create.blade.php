@@ -61,6 +61,16 @@
                         <input type="number" name="quantity" class="form-control" required value="{{old('quantity')}}"/>
                     </div>
                 </div>
+                <div class="mb-3 d-flex justify-content-between">
+                    <div style="width: 45%">
+                        <label class="form-label">{{__('Images')}}</label>
+                        <input type="file" name="images[]" class="form-control" value="{{old('images')}}" multiple/>
+                    </div>
+                    <div style="width: 45%">
+                        <label class="form-label">{{__('Description')}}</label>
+                        <textarea class="form-control" name="description" id="description" cols="20" rows="2"></textarea>
+                    </div>
+                </div>
                 <div>
                     <button type="submit" class="btn btn-primary waves-effect waves-light">{{__('Create')}}</button>
                     <button type="reset" class="btn btn-secondary waves-effect">{{__('Cancel')}}</button>

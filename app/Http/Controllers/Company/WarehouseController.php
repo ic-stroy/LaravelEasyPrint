@@ -46,6 +46,19 @@ class WarehouseController extends Controller
         $model->size_id = $request->size_id;
         $model->color_id = $request->color_id;
         $model->quantity = $request->quantity;
+        $model->description = $request->description;
+        $images = $request->file('images');
+        if(isset($request->images)){
+            foreach ($images as $image){
+                $letters_new = range('a', 'z');
+                $random_array_new = [$letters_new[rand(0,25)], $letters_new[rand(0,25)], $letters_new[rand(0,25)], $letters_new[rand(0,25)], $letters_new[rand(0,25)]];
+                $random_new = implode("", $random_array_new);
+                $image_name = $random_new . '' . date('Y-m-dh-i-s') . '.' . $image->extension();
+                $image->storeAs('public/warehouses/'.$image_name);
+                $array_images[] = $image_name;
+            }
+            $model->images = json_encode($array_images);
+        }
         $model->save();
         return redirect()->route('warehouse.category.warehouse', $request->product_id)->with('status', __('Successfully created'));
     }
@@ -93,6 +106,28 @@ class WarehouseController extends Controller
         $model->size_id = $request->size_id;
         $model->color_id = $request->color_id;
         $model->quantity = $request->quantity;
+        $model->description = $request->description;
+        $images = $request->file('images');
+        if(isset($request->images)){
+            if(isset($model->images)){
+                $images_ = json_decode($model->images);
+                foreach ($images_ as $image_){
+                    $avatar_main = storage_path('app/warehouses/products/'.$image_);
+                    if(file_exists($avatar_main)){
+                        unlink($avatar_main);
+                    }
+                }
+            }
+            foreach ($images as $image){
+                $letters_new = range('a', 'z');
+                $random_array_new = [$letters_new[rand(0,25)], $letters_new[rand(0,25)], $letters_new[rand(0,25)], $letters_new[rand(0,25)], $letters_new[rand(0,25)]];
+                $random_new = implode("", $random_array_new);
+                $image_name = $random_new . '' . date('Y-m-dh-i-s') . '.' . $image->extension();
+                $image->storeAs('public/warehouses/'.$image_name);
+                $array_images[] = $image_name;
+            }
+            $model->images = json_encode($array_images);
+        }
         $model->save();
         return redirect()->route('warehouse.category.warehouse', $request->product_id)->with('status', __('Successfully updated'));
     }

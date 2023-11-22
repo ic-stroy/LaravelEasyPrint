@@ -57,11 +57,8 @@ class CompanyProductController extends Controller
      */
     public function store(Request $request)
     {
-        // return $request->all();
-        // dd($request->all());
         $company_id=auth()->user()->company_id;
-        // dd($company_id);
-        $warehouse=Warehouse::create([
+        $warehouse = Warehouse::create([
             'name'=>$request->name,
             'color_id'=>$request->color_id,
             'product_id'=>$request->product_id,
@@ -69,9 +66,7 @@ class CompanyProductController extends Controller
             'size_id'=>$request->size_id,
             'price'=>$request->sum,
             'quantity'=>$request->quantity,
-
         ]);
-        // dd($warehouse);
 
         // $model = ;
         // $model->name = $request->name;

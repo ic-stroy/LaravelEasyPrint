@@ -79,6 +79,28 @@ class ProductController extends Controller
     }
 
    public function getWarehouses(Request $request){
+       $products_ = DB::table('products')
+           ->select('id','name','price','images')
+           ->get();
+       foreach ($products_ as $product_){
+           if(isset($product_->images)){
+               $images_ = json_decode($product_->images);
+               $images = [];
+               foreach ($images_ as $image_){
+                   $images[] = asset('storage/products/'.$image_);
+               }
+           }else{
+               $images = [];
+           }
+           $products[] = [
+               'id' => $product_->id,
+               'name' => $product_->name,
+               'price' => $product_->price,
+               'images' => $images
+           ];
+       }
+
+
        $language = $request->header('language');
        $warehouse_products_=DB::table('warehouses')
            ->select('product_id', 'id', 'name', 'price', 'images')
@@ -104,7 +126,7 @@ class ProductController extends Controller
            ];
        }
        $data=[
-           'warehouse_product_list'=>$warehouse_products
+           'warehouse_product_list'=>$products
        ];
        $message=translate_api('success',$language);
        return $this->success($message, 200,$data);
