@@ -68,6 +68,33 @@
                         <input type="number" name="quantity" required class="form-control" value="{{$warehouse->quantity}}"/>
                     </div>
                 </div>
+                <div class="mb-3">
+                    @php
+                        $images = json_decode($warehouse->images)??[];
+                    @endphp
+                    <div class="row">
+                        @foreach($images as $image)
+                            @php
+                                $avatar_main = storage_path('app/public/warehouses/'.$image);
+                            @endphp
+                            @if(file_exists($avatar_main))
+                                <div class="col-2 mb-3">
+                                    <img src="{{asset('storage/warehouses/'.$image)}}" alt="" height="200px">
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
+                <div class="mb-3 d-flex justify-content-between">
+                    <div style="width: 45%">
+                        <label class="form-label">{{__('Images')}}</label>
+                        <input type="file" name="images[]" class="form-control" value="{{old('images')}}" multiple/>
+                    </div>
+                    <div style="width: 45%">
+                        <label class="form-label">{{__('Description')}}</label>
+                        <textarea class="form-control" name="description" id="description" cols="20" rows="2">{{$warehouse->description}}</textarea>
+                    </div>
+                </div>
                 <div>
                     <button type="submit" class="btn btn-primary waves-effect waves-light">{{__('Update')}}</button>
                     <button type="reset" class="btn btn-secondary waves-effect">{{__('Cancel')}}</button>

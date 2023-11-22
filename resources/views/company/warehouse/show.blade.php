@@ -42,20 +42,45 @@
                     <tr>
                         <th>{{__('image')}}</th>
                         <td>
-                            @if(isset($model->product->images))
+                            @if(isset($model->images))
                                 @php
-                                    $images = json_decode($model->product->images);
+                                    $images = json_decode($model->images);
                                     $is_image = 0;
                                 @endphp
                                 <div class="row">
                                     @foreach($images as $image)
                                         @php
-                                            $avatar_main = storage_path('app/public/products/'.$image);
+                                            $avatar_main = storage_path('app/public/warehouses/'.$image);
+                                        @endphp
+                                        @if(file_exists($avatar_main))
+                                            @php
+                                                $is_image = 1
+                                            @endphp
+                                            <div class="col-4 mb-3">
+                                                <img src="{{asset('storage/warehouses/'.$image)}}" alt="">
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                                @if($is_image == 0)
+                                    <div>
+                                        <img src="{{asset('icon/no_photo.jpg')}}" alt=""  height="100px">
+                                    </div>
+                                @endif
+                            @elseif(isset($model->product->images))
+                                @php
+                                    $product_images = json_decode($model->product->images);
+                                    $is_image = 0;
+                                @endphp
+                                <div class="row">
+                                    @foreach($product_images as $product_image)
+                                        @php
+                                            $avatar_main = storage_path('app/public/products/'.$product_image);
                                         @endphp
                                         @if(file_exists($avatar_main))
                                             @php($is_image = 1)
                                             <div class="col-4 mb-3">
-                                                <img src="{{asset('storage/products/'.$image)}}" alt="">
+                                                <img src="{{asset('storage/products/'.$product_image)}}" alt="">
                                             </div>
                                         @endif
                                     @endforeach

@@ -16,6 +16,7 @@
                         <th>#</th>
                         <th>{{__('Product')}}</th>
                         <th>{{__('Size')}}</th>
+                        <th>{{__('Images')}}</th>
                         <th>{{__('Price')}}</th>
                         <th>{{__('Color')}}</th>
                         <th>{{__('Count')}}</th>
@@ -51,6 +52,32 @@
                             <td>
                                 <a class="show_page" href="{{route('warehouse.show', $product->id)}}">
                                     @if(isset($product->size->id)) {{ $product->size->name }} @else <div class="no_text"></div> @endif
+                                </a>
+                            </td>
+                            <td>
+                                <a class="show_page_color" href="{{route('warehouse.show', $product->id)}}">
+                                    <div class="d-flex">
+                                        @if(isset($product->images))
+                                            @php
+                                                $images = json_decode($product->images);
+                                                $is_image = 0;
+                                            @endphp
+                                            @foreach($images as $image)
+                                                @php
+                                                    $avatar_main = storage_path('app/warehouses/'.$image);
+                                                @endphp
+                                                @if(file_exists($avatar_main))
+                                                    @php($is_image = 1)
+                                                    <div style="margin-right: 2px">
+                                                        <img src="{{ asset('storage/warehouses/'.$image) }}" alt="" height="40px">
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                            @if($is_image == 0)
+                                                <img src="{{asset('icon/no_photo.jpg')}}" alt=""  height="40px">
+                                            @endif
+                                        @else <img src="{{asset('icon/no_photo.jpg')}}" alt=""  height="40px"> @endif
+                                    </div>
                                 </a>
                             </td>
                             <td>
