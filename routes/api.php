@@ -58,6 +58,7 @@ Route::get('get-banner', [BannerController::class, 'getBanner']);
 Route::get('get-products-by-categories', [CategoryController::class, 'getProductsByCategories']);
 Route::get('get-products-by-category', [CategoryController::class, 'getProductsByCategory']);
 Route::get('get-categories', [CategoryController::class, 'getCategories']);
+Route::get('get-warehouses', [ProductController::class, 'getWarehouses']);
 
 Route::get('product', [ProductController::class, 'getProduct']);
 

@@ -16,7 +16,7 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $language=$request->language;
+        $language=$request->header('language');
         if ($language == null) {
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
@@ -77,13 +77,36 @@ class ProductController extends Controller
 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+   public function getWarehouses(Request $request){
+       $language = $request->header('language');
+       $warehouse_products_=DB::table('warehouses')
+           ->select('product_id', 'id', 'name', 'price', 'images')
+           ->distinct('product_id')
+           ->get();
+       foreach ($warehouse_products_ as $warehouse_product_){
+           if(isset($warehouse_product_->images)){
+               $images_ = json_decode($warehouse_product_->images);
+               $images = [];
+               foreach ($images_ as $image_){
+                   $images[] = asset('storage/warehouses/'.$image_);
+               }
+           }else{
+               $images = [];
+           }
+           $warehouse_products[] = [
+               'product_id' => $warehouse_product_->product_id,
+               'id' => $warehouse_product_->id,
+               'name' => $warehouse_product_->name,
+               'price' => $warehouse_product_->price,
+               'images' => $images
+           ];
+       }
+       $data=[
+           'warehouse_product_list'=>$warehouse_products
+       ];
+       $message=translate_api('success',$language);
+       return $this->success($message, 200,$data);
+   }
 
     /**
      * Store a newly created resource in storage.
@@ -216,7 +239,6 @@ class ProductController extends Controller
                         array_push($aaa_color_list,$aaa_color);
 
                         // dd($colors);
-
                 }
             // $relation_type='warehouse_product';
             // $relation_id=$order_detail->warehouse_id;
@@ -289,6 +311,7 @@ class ProductController extends Controller
         $product = Products::find($request->id);
         if (isset($product->warehouse)) {
             $colors_array = [];
+            $sizes_array = [];
             foreach ($product->warehouse as $warehouse_) {
                 $colors_array[] = $warehouse_->color->id;
                 $sizes_array[] = $warehouse_->size->id;
