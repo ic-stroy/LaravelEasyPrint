@@ -42,7 +42,6 @@ class BannerController extends Controller
                 }
             }
 
-
             $banners[] = [
               'id'=>$banner->id,
               'title'=>$banner->title,
