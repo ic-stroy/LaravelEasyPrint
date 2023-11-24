@@ -62,9 +62,7 @@ class ProductController extends Controller
 
    public function getWarehouses(Request $request){
        $language = $request->header('language');
-       $warehouse_products_ = DB::table('warehouses')
-           ->distinct('product_id')
-           ->get();
+       $warehouse_products_ = Warehouse::distinct('product_id')->get();
        $warehouse_products = [];
        foreach ($warehouse_products_ as $warehouse_product_){
            if(count($this->getImages($warehouse_product_))>0){
