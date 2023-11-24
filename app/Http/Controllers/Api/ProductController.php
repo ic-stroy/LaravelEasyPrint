@@ -240,7 +240,7 @@ class ProductController extends Controller
             }else{
                 $list = [];
             }
-            
+
             $message=translate_api('success',$language);
             return $this->success($message, 200,$list);
 

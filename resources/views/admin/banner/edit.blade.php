@@ -4,6 +4,13 @@
     {{-- Your page title --}}
 @endsection
 @section('content')
+    @php
+        if(isset($banner->image) && !is_array($banner->image)){
+            $banner_images = json_decode($banner->image);
+        }else{
+            $banner_images = [];
+        }
+    @endphp
     <div class="card">
         <div class="card-body">
             @if ($errors->any())
@@ -22,9 +29,16 @@
                 @csrf
                 @method("PUT")
                 <div class="row">
-                    <div class="mb-3">
+                    <div class="mb-3 col-6">
                         <label class="form-label">{{__('Title')}}</label>
                         <input type="text" name="title" class="form-control" required value="{{$banner->title}}"/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Is active')}}</label>
+                        <select id="is_active" class="form-select" name="is_active">
+                            <option value="1" {{$banner->is_active == 1?'selected':''}}>{{translate('Active')}}</option>
+                            <option value="0" {{$banner->is_active == 0?'selected':''}}>{{translate('No active')}}</option>
+                        </select>
                     </div>
                 </div>
                 <div class="mb-3">
@@ -34,31 +48,48 @@
                 <div class="mb-3">
                     <div class="row">
                         @php
-                            if(!isset($banner->image)){
+                            if(!isset($banner_images->banner) || $banner_images->banner == ''){
                                  $banner_image = 'no';
                             }else{
-                                $banner_image = $banner->image;
+                                $banner_image = $banner_images->banner;
                             }
                             $avatar_main = storage_path('app/public/banner/'.$banner_image);
                         @endphp
                         @if(file_exists($avatar_main))
-                            <div class="col-2 mb-3">
+                            <label class="form-label">{{__('Banner image')}}</label>
+                            <div class="">
                                 <img src="{{asset('storage/banner/'.$banner_image)}}" alt="" height="200px">
                             </div>
                         @endif
                     </div>
                 </div>
+                <div class="mb-3">
+                    <label class="form-label">{{__('Carousel image')}}</label>
+                    <div class="row">
+                        @php
+                            if(!isset($banner_images->carousel) && count($banner_images->carousel)>0){
+                                 $carousel_images[] = 'no';
+                            }else{
+                                $carousel_images = $banner_images->carousel;
+                            }
+                        @endphp
+                        @foreach($carousel_images as $carousel_image)
+                            @if(file_exists(storage_path('app/public/banner/carousel/'.$carousel_image)))
+                                <div class="col-2 mb-3">
+                                    <img src="{{asset('storage/banner/carousel/'.$carousel_image)}}" alt="" height="200px">
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
                 <div class="row">
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Image')}}</label>
+                        <label class="form-label">{{__('Banner image')}}</label>
                         <input type="file" name="image" class="form-control" value="{{old('image')}}"/>
                     </div>
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Is active')}}</label>
-                        <select id="is_active" class="form-select" name="is_active">
-                            <option value="1" {{$banner->is_active == 1?'selected':''}}>{{translate('Active')}}</option>
-                            <option value="0" {{$banner->is_active == 0?'selected':''}}>{{translate('No active')}}</option>
-                        </select>
+                        <label class="form-label">{{__('Carousel image')}}</label>
+                        <input type="file" name="carusel_images[]" class="form-control" multiple  value="{{old('image')}}"/>
                     </div>
                 </div>
                 <div>

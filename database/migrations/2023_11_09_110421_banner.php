@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title')->nullable();
             $table->text('text')->nullable();
-            $table->string('image')->nullable();
+            $table->json('image')->nullable();
             $table->tinyInteger('is_active')->default(0);
             $table->timestamps();
             $table->softDeletes();
