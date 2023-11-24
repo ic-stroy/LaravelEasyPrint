@@ -27,8 +27,42 @@ class OrderController extends Controller
             $order->price = $request->image_price;
         }
         $order->save();
+        $message = translate_api('Success', $language);
+        if ($request->warehouse_product_id && DB::table('warehouses')->where('id',$request->warehouse_product_id)->exists()) {
+
+            // dd($message);
+
+            $order_detail = DB::table('order_details')->where('order_id', $order->id)->where('warehouse_id', $request->warehouse_product_id)->where('color_id', $request->color_id)->where('size_id', $request->size_id);
+
+            if ($order_detail->exists()) {
+                $order_detail->update([
+                    'quantity' =>$request->quantity,
+                    'price'=>($request->quantity * $request->price)
+                ]);
+            } else {
+                DB::table('order_details')->insert([
+                    'order_id' => $order->id,
+                    'quantity' => $request->quantity,
+                    'color_id' => $request->color_id,
+                    'size_id' => $request->size_id,
+                    'price' => $request->price
+                    // Add more columns and their respective default values
+                ]);
+            }
+
+             return response()->json([
+                        'status'=>true,
+                        'message'=>$message
+                    ]);
+
+            // return $this->success($message, 200);
+        }
+
+
+
+
         $order_detail = new OrderDetail();
-        $order_detail->product_id = $request->product_id;
+        $order_detail->product_id = $request->product_id ?? null;
         //warehouse_product_id:45
         $order_detail->quantity = $request->quantity;
         $order_detail->color_id = $request->color_id;
@@ -51,8 +85,11 @@ class OrderController extends Controller
                 $uploads->save();
             }
         }
-        $message = translate_api('Success', $language);
-        return $this->success($message, 200, []);
+
+        return response()->json([
+            'status'=>true,
+            'message'=>$message
+        ]);
     }
 
     public function saveImage($file, $url){
