@@ -17,9 +17,7 @@ class CompanyCouponController extends Controller
      */
     public function index()
     {
-        $id=auth()->user()->company_id;
-
-
+        $id = auth()->user()->company_id;
         $coupons = DB::table('coupons as dt1')
             // ->Leftjoin('warehouses as dt2', 'dt2.id', '=', 'dt1.warehouse_product_id')
             // ->Leftjoin('categories as dt3', 'dt3.id', '=', 'dt1.category_id')
@@ -39,7 +37,7 @@ class CompanyCouponController extends Controller
      */
     public function create()
     {
-        $id=auth()->user()->company_id;
+        $id = auth()->user()->company_id;
         $warehouse_products= DB::table('warehouses')
         ->where('company_id', $id)
         ->latest()

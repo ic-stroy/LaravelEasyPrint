@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -37,12 +38,17 @@ class ProductController extends Controller
             ->get();
         $warehouse_products = [];
         foreach ($warehouse_products_ as $warehouse_product_){
+            if(count($this->getImages($warehouse_product_))>0){
+                $warehouseProducts = $this->getImages($warehouse_product_);
+            }else{
+                $warehouseProducts = $this->getImages($product_);
+            }
             $warehouse_products[] = [
                 'product_id' => $warehouse_product_->product_id,
                 'id' => $warehouse_product_->id,
                 'name' => $warehouse_product_->name,
                 'price' => $warehouse_product_->price,
-                'images' => $this->getImages($warehouse_product_)
+                'images' => $warehouseProducts
             ];
         }
         $data=[
@@ -56,18 +62,22 @@ class ProductController extends Controller
 
    public function getWarehouses(Request $request){
        $language = $request->header('language');
-       $warehouse_products_=DB::table('warehouses')
-           ->select('product_id', 'id', 'name', 'price', 'images')
+       $warehouse_products_ = DB::table('warehouses')
            ->distinct('product_id')
            ->get();
        $warehouse_products = [];
        foreach ($warehouse_products_ as $warehouse_product_){
+           if(count($this->getImages($warehouse_product_))>0){
+               $warehouseProducts = $this->getImages($warehouse_product_);
+           }else{
+               $warehouseProducts = $this->getImages($warehouse_product_->product);
+           }
            $warehouse_products[] = [
                'product_id' => $warehouse_product_->product_id,
                'id' => $warehouse_product_->id,
                'name' => $warehouse_product_->name,
                'price' => $warehouse_product_->price,
-               'images' => $this->getImages($warehouse_product_)
+               'images' => $warehouseProducts
            ];
        }
        $data=[
@@ -94,9 +104,6 @@ class ProductController extends Controller
         if ($language == null) {
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
-
-        // dd($request->all());
-        // return 'came';
         $warehouse_product_id = $request->warehouse_product_id;
         if ($warehouse_product_id != null) {
 
@@ -215,7 +222,7 @@ class ProductController extends Controller
 
             // $relation_type='warehouse_product';
             // $relation_id=$order_detail->warehouse_id;
-            if(isset($warehouse_product->id)){
+            if(isset($warehouse_product->warehouse_product_id)){
                 $list=[
                     "id"=>$warehouse_product->warehouse_product_id,
                     "name"=>$warehouse_product->warehouse_product_name??$warehouse_product->product_name,

@@ -115,22 +115,21 @@ class BannerController extends Controller
                 }
                 foreach ($carousel_images_base as $carousel_image_base){
                     $carousel_main = storage_path('app/public/banner/carousel/'.$carousel_image_base);
+                    dd(file_exists($carousel_main));
                     if(file_exists($carousel_main)){
                         unlink($carousel_main);
                     }
                 }
             }
         }
-        $random = $this->setRandom();
-        $banner_name = $random.''.date('Y-m-dh-i-s').'.'.$file->extension();
-        $file->storeAs('public/banner/', $banner_name);
+        if(isset($file)) {
+            $random = $this->setRandom();
+            $banner_name = $random . '' . date('Y-m-dh-i-s') . '.' . $file->extension();
+            $file->storeAs('public/banner/', $banner_name);
+        }
         $carouselImage = [];
         if(isset($carusel_images)){
             foreach ($carusel_images as $carusel_image){
-                $carousel_main = storage_path('app/public/banner/carousel/'.$carusel_image);
-                if(file_exists($carousel_main)){
-                    unlink($carousel_main);
-                }
                 $random = $this->setRandom();
                 $carusel_image_name = $random.''.date('Y-m-dh-i-s').'.'.$carusel_image->extension();
                 $carusel_image->storeAs('public/banner/carousel/', $carusel_image_name);
