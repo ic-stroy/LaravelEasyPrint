@@ -20,87 +20,41 @@ class ProductController extends Controller
         if ($language == null) {
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
-        // return "came";
         $products_ = DB::table('products')
         ->select('id','name','price','images')
         ->get();
         foreach ($products_ as $product_){
-            if(isset($product_->images)){
-                $images_ = json_decode($product_->images);
-                $images = [];
-                foreach ($images_ as $image_){
-                    $images[] = asset('storage/products/'.$image_);
-                }
-            }else{
-                $images = [];
-            }
             $products[] = [
                 'id' => $product_->id,
                 'name' => $product_->name,
                 'price' => $product_->price,
-                'images' => $images
+                'images' => $this->getImages($product_)
             ];
         }
-        // dd($products);
-
         $warehouse_products_=DB::table('warehouses')
             ->select('product_id', 'id', 'name', 'price', 'images')
             ->distinct('product_id')
             ->get();
         $warehouse_products = [];
         foreach ($warehouse_products_ as $warehouse_product_){
-            if(isset($warehouse_product_->images)){
-                $images_ = json_decode($warehouse_product_->images);
-                $images = [];
-                foreach ($images_ as $image_){
-                    $images[] = asset('storage/warehouses/'.$image_);
-                }
-            }else{
-                $images = [];
-            }
             $warehouse_products[] = [
                 'product_id' => $warehouse_product_->product_id,
                 'id' => $warehouse_product_->id,
                 'name' => $warehouse_product_->name,
                 'price' => $warehouse_product_->price,
-                'images' => $images
+                'images' => $this->getImages($warehouse_product_)
             ];
         }
-        // dd($warehouse_products);
-
         $data=[
             'product_list'=>$products,
             'warehouse_product_list'=>$warehouse_products
         ];
-        // dd($data);
         $message=translate_api('success',$language);
         return $this->success($message, 200,$data);
 
     }
 
    public function getWarehouses(Request $request){
-       $products_ = DB::table('products')
-           ->select('id','name','price','images')
-           ->get();
-       foreach ($products_ as $product_){
-           if(isset($product_->images)){
-               $images_ = json_decode($product_->images);
-               $images = [];
-               foreach ($images_ as $image_){
-                   $images[] = asset('storage/products/'.$image_);
-               }
-           }else{
-               $images = [];
-           }
-           $products[] = [
-               'id' => $product_->id,
-               'name' => $product_->name,
-               'price' => $product_->price,
-               'images' => $images
-           ];
-       }
-
-
        $language = $request->header('language');
        $warehouse_products_=DB::table('warehouses')
            ->select('product_id', 'id', 'name', 'price', 'images')
@@ -108,25 +62,16 @@ class ProductController extends Controller
            ->get();
        $warehouse_products = [];
        foreach ($warehouse_products_ as $warehouse_product_){
-           if(isset($warehouse_product_->images)){
-               $images_ = json_decode($warehouse_product_->images);
-               $images = [];
-               foreach ($images_ as $image_){
-                   $images[] = asset('storage/warehouses/'.$image_);
-               }
-           }else{
-               $images = [];
-           }
            $warehouse_products[] = [
                'product_id' => $warehouse_product_->product_id,
                'id' => $warehouse_product_->id,
                'name' => $warehouse_product_->name,
                'price' => $warehouse_product_->price,
-               'images' => $images
+               'images' => $this->getImages($warehouse_product_)
            ];
        }
        $data=[
-           'warehouse_product_list'=>$products
+           'warehouse_product_list'=>$warehouse_products
        ];
        $message=translate_api('success',$language);
        return $this->success($message, 200,$data);
@@ -145,25 +90,28 @@ class ProductController extends Controller
      */
     public function show(Request $request)
     {
-        $language=$request->language;
+        $language = $request->language;
         if ($language == null) {
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
 
         // dd($request->all());
         // return 'came';
-        $warehouse_product_id=$request->warehouse_product_id;
+        $warehouse_product_id = $request->warehouse_product_id;
         if ($warehouse_product_id != null) {
 
             $warehouse_product = DB::table('warehouses as dt2')
                 // ->join('warehouses as dt2', 'dt2.id', '=', 'dt1.warehouse_id')
                 ->join('sizes as dt3', 'dt3.id', '=', 'dt2.size_id')
                 ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
+                ->join('products as dt5', 'dt5.id', '=', 'dt2.product_id')
                 // ->leftJoin('coupons as dt5', 'dt5.warehouse_product_id', '=', 'dt2.id')
                 ->where('dt2.id' , $warehouse_product_id)
-                ->select('dt2.id as warehouse_product_id','dt2.name as warehouse_product_name','dt2.quantity as quantity', 'dt2.images as images', 'dt2.description as description','dt2.product_id as product_id', 'dt2.company_id as company_id', 'dt2.price as price', 'dt3.id as size_id','dt3.name as size_name','dt4.id as color_id','dt4.name as color_name','dt4.code as color_code')
+                ->select('dt2.id as warehouse_product_id','dt2.name as warehouse_product_name','dt2.quantity as quantity', 'dt2.images as images', 'dt2.description as description',
+                    'dt2.product_id as product_id', 'dt2.company_id as company_id', 'dt2.price as price', 'dt3.id as size_id',
+                    'dt3.name as size_name','dt4.id as color_id','dt4.name as color_name','dt4.code as color_code',
+                    'dt5.name as product_name', 'dt5.images as product_images', 'dt5.description as product_description')
                 ->first();
-            // dd($warehouse_product);
 
             if(isset($warehouse_product->images)){
                 $images_ = json_decode($warehouse_product->images);
@@ -171,19 +119,24 @@ class ProductController extends Controller
                 foreach ($images_ as $image_){
                     $images[] = asset('storage/warehouses/'.$image_);
                 }
+            }elseif(isset($warehouse_product->product_images)){
+                $images_ = json_decode($warehouse_product->product_images);
+                $images = [];
+                foreach ($images_ as $image_){
+                    $images[] = asset('storage/products/'.$image_);
+                }
             }else{
                 $images = [];
             }
-
-            $sizes = DB::table('warehouses as dt1')
-                ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
-                // ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
-                ->where('dt1.product_id', $warehouse_product->product_id)
-                ->where('dt1.company_id', $warehouse_product->company_id)
-                ->select('dt1.id as id','dt3.id as size_id', 'dt3.name as size_name')
-                ->distinct('size_id')
-                ->get();
-                // dd($sizes);
+            if(isset($warehouse_product->product_id)){
+                $sizes = DB::table('warehouses as dt1')
+                    ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
+                    // ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
+                    ->where('dt1.product_id', $warehouse_product->product_id)
+                    ->where('dt1.company_id', $warehouse_product->company_id)
+                    ->select('dt1.id as id','dt3.id as size_id', 'dt3.name as size_name')
+                    ->distinct('size_id')
+                    ->get();
 
                 $size_list=[];
                 foreach ($sizes as $size) {
@@ -196,40 +149,35 @@ class ProductController extends Controller
                         // ->distinct('color_id')
                         ->get();
 
-                        $color_list=[];
-                        foreach ($colors as $color) {
-                            $aa_color=[
-                                'id'=>$color->color_id,
-                                'code'=>$color->color_code,
-                                'name'=>$color->color_name,
-                            ];
-                            // dd($aa_color);
-                            array_push($color_list,$aa_color);
-                        }
-                        // dd($color_list);
-
-                        $aa_size=[
-                            'id'=>$size->size_id,
-                            'name'=>$size->size_name,
-                            'color'=>$color_list
+                    $color_list=[];
+                    foreach ($colors as $color) {
+                        $aa_color=[
+                            'id'=>$color->color_id,
+                            'code'=>$color->color_code,
+                            'name'=>$color->color_name,
                         ];
-                        array_push($size_list,$aa_size);
+                        array_push($color_list,$aa_color);
+                    }
 
-                        // dd($colors);
+                    $aa_size=[
+                        'id'=>$size->size_id,
+                        'name'=>$size->size_name,
+                        'color'=>$color_list
+                    ];
+                    array_push($size_list,$aa_size);
+
 
                 }
-                // dd($size_list);
 
 
-            $colors = DB::table('warehouses as dt1')
-                ->join('colors as dt3', 'dt3.id', '=', 'dt1.color_id')
-                // ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
-                ->where('dt1.product_id', $warehouse_product->product_id)
-                ->where('dt1.company_id', $warehouse_product->company_id)
-                ->select('dt1.id as id','dt3.id as color_id','dt3.code as color_code', 'dt3.name as color_name')
-                ->distinct('color_id')
-                ->get();
-                // dd($color);
+                $colors = DB::table('warehouses as dt1')
+                    ->join('colors as dt3', 'dt3.id', '=', 'dt1.color_id')
+                    // ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
+                    ->where('dt1.product_id', $warehouse_product->product_id)
+                    ->where('dt1.company_id', $warehouse_product->company_id)
+                    ->select('dt1.id as id','dt3.id as color_id','dt3.code as color_code', 'dt3.name as color_name')
+                    ->distinct('color_id')
+                    ->get();
 
                 $aaa_color_list=[];
                 foreach ($colors as $color) {
@@ -241,67 +189,62 @@ class ProductController extends Controller
                         ->select('dt4.id as size_id','dt4.name as size_name')
                         // ->distinct('color_id')
                         ->get();
-                        // dd($sizes);
 
-                        $aaa_size_list=[];
-                        foreach ($sizes as $size) {
-                            $aas_size=[
-                                'id'=>$size->size_id,
-                                'name'=>$size->size_name,
-                            ];
-                            // dd($aa_color);
-                            array_push($aaa_size_list,$aas_size);
-                        }
-                        // dd($aaa_size_list);
-
-                        $aaa_color=[
-                            'id'=>$color->color_id,
-                            'code'=>$color->color_code,
-                            'name'=>$color->color_name,
-                            'sizes'=>$aaa_size_list
+                    $aaa_size_list=[];
+                    foreach ($sizes as $size) {
+                        $aas_size=[
+                            'id'=>$size->size_id,
+                            'name'=>$size->size_name,
                         ];
-                        array_push($aaa_color_list,$aaa_color);
+                        array_push($aaa_size_list,$aas_size);
+                    }
 
-                        // dd($colors);
+                    $aaa_color=[
+                        'id'=>$color->color_id,
+                        'code'=>$color->color_code,
+                        'name'=>$color->color_name,
+                        'sizes'=>$aaa_size_list
+                    ];
+                    array_push($aaa_color_list,$aaa_color);
+
                 }
+            }else{
+                $aaa_color_list = [];
+                $size_list = [];
+            }
+
             // $relation_type='warehouse_product';
             // $relation_id=$order_detail->warehouse_id;
-
-            $list=[
-                "id"=>$warehouse_product->warehouse_product_id,
-                "name"=>$warehouse_product->warehouse_product_name,
-                // "relation_id"=>$relation_id,
-                "price"=>$warehouse_product->price,
-                "quantity"=>$warehouse_product->quantity,
-                // "max_quantity"=>$warehouse_product->max_quantity,
-                "description"=>$warehouse_product->description,
-                "images"=>$images,
-                "color"=>[
-                   "id"=>$warehouse_product->color_id,
-                   "code"=>$warehouse_product->color_code,
-                   "name"=>$warehouse_product->color_name,
-                ],
-                "size"=>[
-                    "id"=>$warehouse_product->size_id,
-                    "name"=>$warehouse_product->size_name,
-                ],
-                "color_by_size"=>$size_list,
-                "size_by_color"=>$aaa_color_list
-            ];
-
+            if(isset($warehouse_product->id)){
+                $list=[
+                    "id"=>$warehouse_product->warehouse_product_id,
+                    "name"=>$warehouse_product->warehouse_product_name??$warehouse_product->product_name,
+                    // "relation_id"=>$relation_id,
+                    "price"=>$warehouse_product->price,
+                    "quantity"=>$warehouse_product->quantity,
+                    // "max_quantity"=>$warehouse_product->max_quantity,
+                    "description"=>$warehouse_product->description??$warehouse_product->product_description,
+                    "images"=>$images,
+                    "color"=>[
+                        "id"=>$warehouse_product->color_id,
+                        "code"=>$warehouse_product->color_code,
+                        "name"=>$warehouse_product->color_name,
+                    ],
+                    "size"=>[
+                        "id"=>$warehouse_product->size_id,
+                        "name"=>$warehouse_product->size_name,
+                    ],
+                    "color_by_size"=>$size_list,
+                    "size_by_color"=>$aaa_color_list
+                ];
+            }else{
+                $list = [];
+            }
 
             $message=translate_api('success',$language);
             return $this->success($message, 200,$list);
 
-            //  dd($list);
-            //  return response()->json([
-            //     'data'=>$list,
-            //     'status'=>true,
-            //     'message'=>'Success'
-            // ]);
-
         }
-
 
     }
 
@@ -344,6 +287,7 @@ class ProductController extends Controller
                         'id'=>$warehouse_->id,
                         'size'=>isset($warehouse_->size) ? $warehouse_->size->name:'',
                         'quantity' => $warehouse_->quantity,
+                        'images' => $this->getImages($warehouse_),
                     ];
                 }
             }
@@ -356,7 +300,8 @@ class ProductController extends Controller
                             'id' => $warehouse->id,
                             'size' => isset($warehouse->size) ? $warehouse->size->name:'',
                             'price' => $warehouse->price,
-                            'quantity' => $warehouse->quantity
+                            'quantity' => $warehouse->quantity,
+                            'images' => $this->getImages($warehouse),
                         ];
                     }
                 }
@@ -374,7 +319,8 @@ class ProductController extends Controller
                             'id' => $warehouse->id,
                             'color' => isset($warehouse->color) ? $warehouse->color:'',
                             'price' => $warehouse->price,
-                            'quantity' => $warehouse->quantity
+                            'quantity' => $warehouse->quantity,
+                            'images' => $this->getImages($warehouse),
                         ];
                     }
                 }
@@ -465,4 +411,19 @@ class ProductController extends Controller
         }
         return $current_category;
     }
+
+    public function getImages($model){
+        if(isset($model->images)){
+            $images_ = [];
+            $images_ = json_decode($model->images);
+            $images = [];
+            foreach ($images_ as $image_){
+                $images[] = asset('storage/warehouses/'.$image_);
+            }
+        }else{
+            $images = [];
+        }
+        return $images;
+    }
+
 }

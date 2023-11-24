@@ -13,16 +13,41 @@ class BannerController extends Controller
         $all_banners = Banner::all();
         $banners = [];
         foreach ($all_banners as $banner){
-            if(!isset($banner->image)){
+            if(isset($banner->image) && !is_array($banner->image)){
+                $banner_images = json_decode($banner->image);
+            }else{
+                $banner_images = [];
+            }
+            if(!isset($banner_images->banner)){
                 $banner_image = 'no';
             }else{
-                $banner_image = $banner->image;
+                $banner_image = $banner_images->banner;
             }
             $avatar_main = storage_path('app/public/banner/'.$banner_image);
+            if(file_exists($avatar_main)){
+                $bannerImage = asset('storage/banner/'.$banner_image);
+            }else{
+                $bannerImage = null;
+            }
+
+            if(!isset($banner_images->carousel) && count($banner_images->carousel)>0){
+                $carousel_images[] = 'no';
+            }else{
+                $carousel_images = $banner_images->carousel;
+            }
+            $carouselImage = [];
+            foreach($carousel_images as $carousel_image){
+                if(file_exists(storage_path('app/public/banner/carousel/'.$carousel_image))){
+                    $carouselImage[] = asset('storage/banner/carousel/'.$carousel_image);
+                }
+            }
+
+
             $banners[] = [
               'id'=>$banner->id,
               'title'=>$banner->title,
-              'image'=>file_exists($avatar_main)?asset('storage/banner/'.$banner->image):null,
+              'banner_image'=>$bannerImage,
+              'carousel_image'=>$carouselImage,
               'text'=>$banner->text,
               'is_active'=>$banner->is_active == 1 ? 'active':'no active',
             ];

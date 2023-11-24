@@ -43,7 +43,7 @@ class CompanyController extends Controller
     //            $model->save();
     //        }
     //    }
-    //     return view('admin.company.create');
+         return view('admin.company.create');
     }
 
     /**

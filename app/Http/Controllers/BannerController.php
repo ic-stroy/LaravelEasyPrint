@@ -37,7 +37,8 @@ class BannerController extends Controller
         $banner->text = $request->text;
         $banner->is_active = $request->is_active;
         $file = $request->file('image');
-        $this->imageSave($file, $banner, 'store');
+        $carusel_images = $request->file('carusel_images');
+        $this->imageSave($file, $banner, $carusel_images, 'store');
         $banner->save();
         return redirect()->route('banner.index')->with('status', __('Successfully created'));
     }
@@ -74,32 +75,70 @@ class BannerController extends Controller
         $model->text = $request->text;
         $model->is_active = $request->is_active;
         $file = $request->file('image');
-        $this->imageSave($file, $model, 'update');
+        $carusel_images = $request->file('carusel_images');
+        $this->imageSave($file, $model, $carusel_images, 'update');
         $model->save();
         return redirect()->route('banner.index')->with('status', __('Successfully updated'));
     }
 
-    public function imageSave($file, $banner, $text){
-        if (isset($file)) {
-            $letters = range('a', 'z');
-            $random_array = [$letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)]];
-            $random = implode("", $random_array);
-            if($text == 'update'){
-                if(isset($banner->image)){
-                    $sms_avatar = storage_path('app/public/banner/' . $banner->image);
+    public function setRandom(){
+        $letters = range('a', 'z');
+        $random_array = [$letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)]];
+        $random = implode("", $random_array);
+        return $random;
+    }
+
+    public function imageSave($file, $banner, $carusel_images, $text){
+
+        if($text == 'update'){
+            if(isset($banner->image) && !is_array($banner->image)){
+                $banner_images = json_decode($banner->image);
+            }else{
+                $banner_images = [];
+            }
+            if(isset($file)){
+                if(!isset($banner_images->banner) || $banner_images->banner == ""){
+                    $banner_image = 'no';
                 }else{
-                    $sms_avatar = storage_path('app/public/banner/' . 'no');
+                    $banner_image = $banner_images->banner;
                 }
-                if(file_exists($sms_avatar)) {
-                    unlink($sms_avatar);
+                $avatar_main = storage_path('app/public/banner/'.$banner_image);
+                if(file_exists($avatar_main)){
+                    unlink($avatar_main);
                 }
             }
-            $image_name = $random.''.date('Y-m-dh-i-s').'.'.$file->extension();
-            $file->storeAs('public/banner/', $image_name);
-            $banner->image = $image_name;
-
-            return $banner;
+            if(isset($carusel_images)){
+                if(!isset($banner_images->carousel) && count($banner_images->carousel)>0){
+                    $carousel_images_base[] = 'no';
+                }else{
+                    $carousel_images_base = $banner_images->carousel;
+                }
+                foreach ($carousel_images_base as $carousel_image_base){
+                    $carousel_main = storage_path('app/public/banner/carousel/'.$carousel_image_base);
+                    if(file_exists($carousel_main)){
+                        unlink($carousel_main);
+                    }
+                }
+            }
         }
+        $random = $this->setRandom();
+        $banner_name = $random.''.date('Y-m-dh-i-s').'.'.$file->extension();
+        $file->storeAs('public/banner/', $banner_name);
+        $carouselImage = [];
+        if(isset($carusel_images)){
+            foreach ($carusel_images as $carusel_image){
+                $carousel_main = storage_path('app/public/banner/carousel/'.$carusel_image);
+                if(file_exists($carousel_main)){
+                    unlink($carousel_main);
+                }
+                $random = $this->setRandom();
+                $carusel_image_name = $random.''.date('Y-m-dh-i-s').'.'.$carusel_image->extension();
+                $carusel_image->storeAs('public/banner/carousel/', $carusel_image_name);
+                $carouselImage[] = $carusel_image_name;
+            }
+        }
+        $banner->image = json_encode(['banner'=>$banner_name??'', 'carousel'=>$carouselImage??[]]);
+        return $banner;
     }
 
     /**
