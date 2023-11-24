@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class SubCategoryController extends Controller
 {
     public $types_sex = [
-        'No sex type', 'Unisex', 'Men', 'Women', 'Boys and girls', 'Boys', 'Girls'
+        'No sex type', 'Unisex', 'Men', 'Women', 'Children'
     ];
     /**
      * Display a listing of the resource.
@@ -81,7 +81,7 @@ class SubCategoryController extends Controller
     {
         $model = Category::where('step', 1)->find($id);
         $model->delete();
-        return redirect()->route('subcategory.subcategory', $id)->with('status', __('Successfully deleted'));
+        return redirect()->route('subcategory.subcategory', $model->category->id)->with('status', __('Successfully deleted'));
     }
 
     public function category()
