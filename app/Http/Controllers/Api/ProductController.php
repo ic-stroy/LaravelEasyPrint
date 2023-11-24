@@ -29,7 +29,7 @@ class ProductController extends Controller
                 'id' => $product_->id,
                 'name' => $product_->name,
                 'price' => $product_->price,
-                'images' => $this->getImages($product_)
+                'images' => $this->getImages($product_, 'product')
             ];
         }
         $warehouse_products_=DB::table('warehouses')
@@ -38,10 +38,10 @@ class ProductController extends Controller
             ->get();
         $warehouse_products = [];
         foreach ($warehouse_products_ as $warehouse_product_){
-            if(count($this->getImages($warehouse_product_))>0){
-                $warehouseProducts = $this->getImages($warehouse_product_);
+            if(count($this->getImages($warehouse_product_, 'warehouse'))>0){
+                $warehouseProducts = $this->getImages($warehouse_product_, 'warehouse');
             }else{
-                $warehouseProducts = $this->getImages($product_);
+                $warehouseProducts = $this->getImages($product_, 'product');
             }
             $warehouse_products[] = [
                 'product_id' => $warehouse_product_->product_id,
@@ -65,10 +65,10 @@ class ProductController extends Controller
        $warehouse_products_ = Warehouse::distinct('product_id')->get();
        $warehouse_products = [];
        foreach ($warehouse_products_ as $warehouse_product_){
-           if(count($this->getImages($warehouse_product_))>0){
-               $warehouseProducts = $this->getImages($warehouse_product_);
+           if(count($this->getImages($warehouse_product_, 'warehouse'))>0){
+               $warehouseProducts = $this->getImages($warehouse_product_, 'warehouse');
            }else{
-               $warehouseProducts = $this->getImages($warehouse_product_->product);
+               $warehouseProducts = $this->getImages($warehouse_product_->product, 'product');
            }
            $warehouse_products[] = [
                'product_id' => $warehouse_product_->product_id,
@@ -292,7 +292,7 @@ class ProductController extends Controller
                         'id'=>$warehouse_->id,
                         'size'=>isset($warehouse_->size) ? $warehouse_->size->name:'',
                         'quantity' => $warehouse_->quantity,
-                        'images' => $this->getImages($warehouse_),
+                        'images' => $this->getImages($warehouse_, 'warehouse'),
                     ];
                 }
             }
@@ -306,7 +306,7 @@ class ProductController extends Controller
                             'size' => isset($warehouse->size) ? $warehouse->size->name:'',
                             'price' => $warehouse->price,
                             'quantity' => $warehouse->quantity,
-                            'images' => $this->getImages($warehouse),
+                            'images' => $this->getImages($warehouse, 'warehouse'),
                         ];
                     }
                 }
@@ -325,7 +325,7 @@ class ProductController extends Controller
                             'color' => isset($warehouse->color) ? $warehouse->color:'',
                             'price' => $warehouse->price,
                             'quantity' => $warehouse->quantity,
-                            'images' => $this->getImages($warehouse),
+                            'images' => $this->getImages($warehouse, 'warehouse'),
                         ];
                     }
                 }
@@ -417,13 +417,16 @@ class ProductController extends Controller
         return $current_category;
     }
 
-    public function getImages($model){
+    public function getImages($model, $text){
         if(isset($model->images)){
-            $images_ = [];
             $images_ = json_decode($model->images);
             $images = [];
             foreach ($images_ as $image_){
-                $images[] = asset('storage/warehouses/'.$image_);
+                if($text == 'warehouse'){
+                    $images[] = asset('storage/warehouses/'.$image_);
+                }elseif($text == 'product'){
+                    $images[] = asset('storage/products/'.$image_);
+                }
             }
         }else{
             $images = [];
