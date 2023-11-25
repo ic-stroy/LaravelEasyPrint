@@ -15,7 +15,7 @@ class Order extends Model
     public $fillable = [
       'id',
       'price',
-      'status',     // 1 basked 2 ordered 3 finished
+      'status',     // 1 basked 2 ordered 3 accepted 4 on_the_way 5 finished
       'delivery_date',
       'delivery_price',
       'all_price',
