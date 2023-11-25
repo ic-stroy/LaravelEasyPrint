@@ -115,7 +115,6 @@ class BannerController extends Controller
                 }
                 foreach ($carousel_images_base as $carousel_image_base){
                     $carousel_main = storage_path('app/public/banner/carousel/'.$carousel_image_base);
-                    dd(file_exists($carousel_main));
                     if(file_exists($carousel_main)){
                         unlink($carousel_main);
                     }

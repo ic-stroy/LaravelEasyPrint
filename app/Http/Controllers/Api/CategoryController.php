@@ -15,9 +15,23 @@ class CategoryController extends Controller
 {
     public function getCategories(Request $request){
         $language = $request->header('language');
-        $categories = Category::select("id", "name")->where('step', 0)->get();
-        if(count($categories)>0){
-            $data = [$categories];
+        $categories = Category::where('step', 0)->get();
+        foreach ($categories as $category){
+            $subcategory = [];
+            foreach ($category->subcategory as $subcategory_){
+                $subcategory[] = [
+                    'id'=>$subcategory_->id,
+                    'name'=>$subcategory_->name,
+                ];
+            }
+            $all_categories[] = [
+                'id'=>$category->id,
+                'name'=>$category->name,
+                'sub_category'=>$subcategory
+            ];
+        }
+        if(count($all_categories)>0){
+            $data = [$all_categories];
         }else{
             $data = [];
         }
@@ -27,16 +41,31 @@ class CategoryController extends Controller
 
     public function getProductsByCategory(Request $request){
         $language = $request->header('language');
-        $category = Category::find((int)$request->category_id);
+        $category = Category::find($request->category_id);
         $data = [];
         $products_data = [];
-        $category_ids = [];
-        $subcategories = $category->subcategory;
-        foreach ($subcategories as $subcategory){
-            $category_ids[] = $subcategory->id;
+        if(isset($category->id)){
+            if($category->step == 0){
+                $category_ = [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                ];
+            }elseif($category->step == 1){
+                $category_ = [
+                    'id' => $category->category->id,
+                    'name' => $category->category->name,
+                ];
+            }
+            $subCategory = [
+                'id'=>$category->id,
+                'name'=>$category->name,
+            ];
+            $products = Products::select('id', 'name', 'category_id', 'images', 'material_id', 'manufacturer_country', 'material_composition', 'price', 'description')->where('category_id', $category->id)->get();
+        }else{
+            $subCategory = [];
+            $products = [];
+            $category_= [];
         }
-        $category_ids[] = $category->id;
-        $products = Products::select('id', 'name', 'category_id', 'images', 'material_id', 'manufacturer_country', 'material_composition', 'price', 'description')->whereIn('category_id', $category_ids)->get();
         foreach ($products as $product) {
             if(!is_array($product->images)){
                 $images = json_decode($product->images);
@@ -66,10 +95,8 @@ class CategoryController extends Controller
             ];
         }
         $data[] = [
-            'category'=>[
-                'id'=>$category->id,
-                'name'=>$category->name,
-            ],
+            'category'=>$category_,
+            'sub_category'=>$subCategory,
             'products'=>[
                 $products_data
             ]
