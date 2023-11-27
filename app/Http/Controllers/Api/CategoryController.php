@@ -44,22 +44,25 @@ class CategoryController extends Controller
         $category = Category::find($request->category_id);
         $data = [];
         $products_data = [];
+        $category_ = [];
+        $subCategory = [];
         if(isset($category->id)){
             if($category->step == 0){
                 $category_ = [
                     'id' => $category->id,
                     'name' => $category->name,
                 ];
+                $subCategory = [];
             }elseif($category->step == 1){
                 $category_ = [
                     'id' => $category->category->id,
                     'name' => $category->category->name,
                 ];
+                $subCategory = [
+                    'id'=>$category->id,
+                    'name'=>$category->name,
+                ];
             }
-            $subCategory = [
-                'id'=>$category->id,
-                'name'=>$category->name,
-            ];
             $products = Products::select('id', 'name', 'category_id', 'images', 'material_id', 'manufacturer_country', 'material_composition', 'price', 'description')->where('category_id', $category->id)->get();
         }else{
             $subCategory = [];
@@ -109,57 +112,65 @@ class CategoryController extends Controller
         $language = $request->header('language');
         $categories = Category::where('step', 0)->get();
         $data = [];
-        foreach ($categories as $category){
-            $products_data = [];
-            $category_ids = [];
-            $subcategories = $category->subcategory;
-            foreach ($subcategories as $subcategory){
-                $category_ids[] = $subcategory->id;
-            }
-            $category_ids[] = $category->id;
-            $products = Products::select('id', 'name', 'category_id', 'images', 'material_id', 'manufacturer_country', 'material_composition', 'price', 'description')->whereIn('category_id', $category_ids)->get();
-            foreach ($products as $product) {
-                if(!is_array($product->images)){
-                    $images = json_decode($product->images);
-                }
-                foreach ($images as $image){
-                    if(!isset($image)){
-                        $product_image = 'no';
-                    }else{
-                        $product_image = $image;
-                    }
-                    $avatar_main = storage_path('app/public/products/'.$product_image);
-                    if(file_exists($avatar_main)){
-                        $images_array[] = asset('storage/products/'.$image);
-                    }
-                }
-
-                $products_data[] = [
-                    'id'=>$product->id,
-                    'name'=>$product->name,
-                    'category_id'=>$product->category_id,
-                    'images'=>$images_array,
-                    'material_id'=>$product->material_id,
-                    'description'=>$product->description,
-                    'price'=>$product->price,
-                    'manufacturer_country'=>$product->manufacturer_country,
-                    'material_composition'=>$product->material_composition,
+        $products_data = [];
+        $category_ = [];
+        $subCategory = [];
+        foreach ($categories as $category) {
+            $subCategory = [];
+            $category_products = Products::select('id', 'name', 'category_id', 'images', 'material_id', 'manufacturer_country', 'material_composition', 'price', 'description')->where('category_id', $category->id)->get();
+            $category_products_data = $this->getProductsList($category_products);
+            foreach ($category->subcategory as $subcategory_){
+                $products = Products::select('id', 'name', 'category_id', 'images', 'material_id', 'manufacturer_country', 'material_composition', 'price', 'description')->where('category_id', $subcategory_->id)->get();
+                $products_data = $this->getProductsList($products);
+                $subCategory = [
+                    'id' => $subcategory_->id,
+                    'name' => $subcategory_->name,
+                    'products'=>$products_data
                 ];
             }
             $data[] = [
-                'category'=>[
-                    'id'=>$category->id,
-                    'name'=>$category->name,
-                ],
-                'products'=>[
-                    $products_data
-                ]
+                'id' => $category->id,
+                'name' => $category->name,
+                'products'=>$category_products_data,
+                'subcategory'=>$subCategory
             ];
         }
+
         $message = translate_api('Success', $language);
         return $this->success($message, 200, $data);
     }
+    public function getProductsList($products){
+        $products_data = [];
+        foreach ($products as $product) {
+            if (!is_array($product->images)) {
+                $images = json_decode($product->images);
+            }
+            foreach ($images as $image) {
+                if (!isset($image)) {
+                    $product_image = 'no';
+                } else {
+                    $product_image = $image;
+                }
+                $avatar_main = storage_path('app/public/products/' . $product_image);
+                if (file_exists($avatar_main)) {
+                    $images_array[] = asset('storage/products/' . $image);
+                }
+            }
 
+            $products_data[] = [
+                'id' => $product->id,
+                'name' => $product->name,
+                'category_id' => $product->category_id,
+                'images' => $images_array,
+                'material_id' => $product->material_id,
+                'description' => $product->description,
+                'price' => $product->price,
+                'manufacturer_country' => $product->manufacturer_country,
+                'material_composition' => $product->material_composition,
+            ];
+        }
+        return $products_data;
+    }
     public function profileInfo(Request $request){
         $language = $request->header('language');
         $languages = Language::select('id', 'name', 'code')->get();

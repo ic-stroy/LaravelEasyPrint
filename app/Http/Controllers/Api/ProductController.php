@@ -78,11 +78,11 @@ class ProductController extends Controller
                'images' => $warehouseProducts
            ];
        }
-       $data=[
+       $data = [
            'warehouse_product_list'=>$warehouse_products
        ];
        $message=translate_api('success',$language);
-       return $this->success($message, 200,$data);
+       return $this->success($message, 200, $data);
    }
 
     /**
