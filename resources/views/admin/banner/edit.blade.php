@@ -66,20 +66,22 @@
                 <div class="mb-3">
                     <label class="form-label">{{__('Carousel image')}}</label>
                     <div class="row">
-                        @php
-                            if(!isset($banner_images->carousel) && count($banner_images->carousel)>0){
-                                 $carousel_images[] = 'no';
-                            }else{
-                                $carousel_images = $banner_images->carousel;
-                            }
-                        @endphp
-                        @foreach($carousel_images as $carousel_image)
-                            @if(file_exists(storage_path('app/public/banner/carousel/'.$carousel_image)))
-                                <div class="col-2 mb-3">
-                                    <img src="{{asset('storage/banner/carousel/'.$carousel_image)}}" alt="" height="200px">
-                                </div>
-                            @endif
-                        @endforeach
+                        @if(!is_array($banner_images))
+                            @php
+                                if(!isset($banner_images->carousel) && count($banner_images->carousel)>0){
+                                     $carousel_images[] = 'no';
+                                }else{
+                                    $carousel_images = $banner_images->carousel;
+                                }
+                            @endphp
+                            @foreach($carousel_images as $carousel_image)
+                                @if(file_exists(storage_path('app/public/banner/carousel/'.$carousel_image)))
+                                    <div class="col-2 mb-3">
+                                        <img src="{{asset('storage/banner/carousel/'.$carousel_image)}}" alt="" height="200px">
+                                    </div>
+                                @endif
+                            @endforeach
+                        @endif
                     </div>
                 </div>
                 <div class="row">

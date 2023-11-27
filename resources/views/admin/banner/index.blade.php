@@ -63,20 +63,22 @@
                             </td>
                             <td>
                                 <a class="show_page_color" href="{{route('banner.show', $banner->id)}}">
-                                    @php
-                                        if(!isset($banner_images->carousel) && count($banner_images->carousel)>0){
-                                             $carousel_images[] = 'no';
-                                        }else{
-                                            $carousel_images = $banner_images->carousel;
-                                        }
-                                    @endphp
-                                    @foreach($carousel_images as $carousel_image)
-                                        @if(file_exists(storage_path('app/public/banner/carousel/'.$carousel_image)))
-                                            <div class="">
-                                                <img src="{{asset('storage/banner/carousel/'.$carousel_image)}}" alt="" height="40px">
-                                            </div>
-                                        @endif
-                                    @endforeach
+                                    @if(!is_array($banner_images))
+                                        @php
+                                            if(!isset($banner_images->carousel) && count($banner_images->carousel)>0){
+                                                 $carousel_images[] = 'no';
+                                            }else{
+                                                $carousel_images = $banner_images->carousel;
+                                            }
+                                        @endphp
+                                        @foreach($carousel_images as $carousel_image)
+                                            @if(file_exists(storage_path('app/public/banner/carousel/'.$carousel_image)))
+                                                <div class="">
+                                                    <img src="{{asset('storage/banner/carousel/'.$carousel_image)}}" alt="" height="40px">
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    @endif
                                 </a>
                             </td>
                             <td>

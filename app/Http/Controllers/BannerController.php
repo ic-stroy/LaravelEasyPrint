@@ -38,7 +38,7 @@ class BannerController extends Controller
         $banner->is_active = $request->is_active;
         $file = $request->file('image');
         $carusel_images = $request->file('carusel_images');
-        $this->imageSave($file, $banner, $carusel_images, 'store');
+        $banner->image = $this->imageSave($file, $banner, $carusel_images, 'store');
         $banner->save();
         return redirect()->route('banner.index')->with('status', __('Successfully created'));
     }
@@ -76,7 +76,7 @@ class BannerController extends Controller
         $model->is_active = $request->is_active;
         $file = $request->file('image');
         $carusel_images = $request->file('carusel_images');
-        $this->imageSave($file, $model, $carusel_images, 'update');
+        $model->image = $this->imageSave($file, $model, $carusel_images, 'update');
         $model->save();
         return redirect()->route('banner.index')->with('status', __('Successfully updated'));
     }
@@ -93,10 +93,14 @@ class BannerController extends Controller
         if($text == 'update'){
             if(isset($banner->image) && !is_array($banner->image)){
                 $banner_images = json_decode($banner->image);
+                $banner_image_name = $banner_images->banner;
+                $carousel_image_names = $banner_images->carousel;
             }else{
                 $banner_images = [];
+                $banner_image_name = '';
+                $carousel_image_names = [];
             }
-            if(isset($file)){
+            if(isset($file) && !is_array($banner_images)){
                 if(!isset($banner_images->banner) || $banner_images->banner == ""){
                     $banner_image = 'no';
                 }else{
@@ -107,8 +111,8 @@ class BannerController extends Controller
                     unlink($avatar_main);
                 }
             }
-            if(isset($carusel_images)){
-                if(!isset($banner_images->carousel) && count($banner_images->carousel)>0){
+            if(isset($carusel_images) && !is_array($banner_images)){
+                if(!isset($banner_images->carousel) && count($banner_images->carousel) == 0){
                     $carousel_images_base[] = 'no';
                 }else{
                     $carousel_images_base = $banner_images->carousel;
@@ -126,7 +130,6 @@ class BannerController extends Controller
             $banner_name = $random . '' . date('Y-m-dh-i-s') . '.' . $file->extension();
             $file->storeAs('public/banner/', $banner_name);
         }
-        $carouselImage = [];
         if(isset($carusel_images)){
             foreach ($carusel_images as $carusel_image){
                 $random = $this->setRandom();
@@ -135,7 +138,11 @@ class BannerController extends Controller
                 $carouselImage[] = $carusel_image_name;
             }
         }
-        $banner->image = json_encode(['banner'=>$banner_name??'', 'carousel'=>$carouselImage??[]]);
+        if($text == 'update'){
+            $banner = json_encode(['banner'=>$banner_name??$banner_image_name, 'carousel'=>$carouselImage??$carousel_image_names]);
+        }elseif($text == 'store'){
+            $banner = json_encode(['banner'=>$banner_name??$banner_image_name, 'carousel'=>$carouselImage??$carousel_image_names]);
+        }
         return $banner;
     }
 

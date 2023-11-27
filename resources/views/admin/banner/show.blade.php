@@ -55,20 +55,22 @@
                         <th>{{__('Carousel image')}}</th>
                         <td>
                             <div class="d-flex">
-                                @php
-                                    if(!isset($banner_images->carousel) && count($banner_images->carousel)>0){
-                                         $carousel_images[] = 'no';
-                                    }else{
-                                        $carousel_images = $banner_images->carousel;
-                                    }
-                                @endphp
-                                @foreach($carousel_images as $carousel_image)
-                                    @if(file_exists(storage_path('app/public/banner/carousel/'.$carousel_image)))
-                                        <div class="col-4 mb-3">
-                                            <img src="{{asset('storage/banner/carousel/'.$carousel_image)}}" alt="" height="200px">
-                                        </div>
-                                    @endif
-                                @endforeach
+                                @if(!is_array($banner_images))
+                                    @php
+                                        if(!isset($banner_images->carousel) && count($banner_images->carousel)>0){
+                                             $carousel_images[] = 'no';
+                                        }else{
+                                            $carousel_images = $banner_images->carousel;
+                                        }
+                                    @endphp
+                                    @foreach($carousel_images as $carousel_image)
+                                        @if(file_exists(storage_path('app/public/banner/carousel/'.$carousel_image)))
+                                            <div class="col-4 mb-3">
+                                                <img src="{{asset('storage/banner/carousel/'.$carousel_image)}}" alt="" height="200px">
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                @endif
                             </div>
                         </td>
                     </tr>
