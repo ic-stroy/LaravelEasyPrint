@@ -60,4 +60,7 @@ class User extends Authenticatable
     public function orderBasket(){
         return $this->hasOne(Order::class, 'user_id', 'id')->where('status', 1);
     }
+    public function order(){
+        return $this->hasOne(Order::class, 'user_id', 'id')->where('status', 2);
+    }
 }
