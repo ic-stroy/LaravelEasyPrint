@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
+use App\Models\Products;
+use App\Models\Warehouse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Category;
 use App\Models\Coupon;
@@ -17,19 +20,9 @@ class CompanyCouponController extends Controller
      */
     public function index()
     {
-        $id = auth()->user()->company_id;
-        $coupons = DB::table('coupons as dt1')
-            // ->Leftjoin('warehouses as dt2', 'dt2.id', '=', 'dt1.warehouse_product_id')
-            // ->Leftjoin('categories as dt3', 'dt3.id', '=', 'dt1.category_id')
-            ->where('dt1.company_id', $id)
-            // ->select('dt1.*', 'dt2.*', 'dt3.*')
-            ->get();
-            // dd($coupons);
-
-            return view('company.coupons.index', ['coupons'=> $coupons]);
-
-
-
+        $user = auth()->user();
+        $coupons = Coupon::where('company_id', $user->company_id)->get();
+        return view('company.coupons.index', ['coupons'=> $coupons]);
     }
 
     /**
@@ -37,16 +30,8 @@ class CompanyCouponController extends Controller
      */
     public function create()
     {
-        $id = auth()->user()->company_id;
-        $warehouse_products= DB::table('warehouses')
-        ->where('company_id', $id)
-        ->latest()
-        ->get();
-        // dd($warehouse_products);
-
-        $categories = Category::where('step', 2)->orderBy('created_at', 'desc')->get();
-
-        return view('company.coupons.create', ['warehouse_products'=> $warehouse_products, 'categories'=> $categories]);
+        $categories = Category::where('parent_id', 0)->orderBy('id', 'asc')->get();
+        return view('company.coupons.create', ['categories'=> $categories]);
     }
 
     /**
@@ -54,37 +39,28 @@ class CompanyCouponController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->relation_type);
-
-        $company_id=auth()->user()->company_id;
-        if ($request->relation_type == "product") {
-            $category_id=null;
-            $warehouse_id=$request->relation_id;
-        }elseif ($request->relation_type == "category") {
-            $warehouse_id=null;
-            $category_id=$request->relation_id;
-            // dd($category_id);
-        }
+        $user = auth()->user();
+        $coupon = new Coupon();
+        $coupon->name = $request->name;
         if ($request->coupon_type == "price") {
-            $price=$request->sum;
-            $percent=null;
+            $coupon->price = $request->price;
         } elseif ($request->coupon_type == "percent") {
-            $percent=$request->sum;
-            $price=null;
+            $coupon->percent = $request->percent;
         }
-        // dd($category_id);
-
-            $warehouse=Coupon::create([
-                'percent'=>$percent,
-                'price'=>$price,
-                'category_id'=>$category_id,
-                'warehouse_id'=>$warehouse_id,
-                'company_id'=>$company_id
-            ]);
-        // dd($warehouse);
-
+        if (isset($request->subcategory_id) && $request->subcategory_id != "all" && $request->subcategory_id != ""){
+            $coupon->category_id = $request->subcategory_id;
+            if (isset($request->product_id) && $request->product_id != "all" && $request->product_id != "") {
+                $coupon->product_id = $request->product_id;
+                if (isset($request->warehouse_id) && $request->warehouse_id != "all" && $request->warehouse_id != "") {
+                    $coupon->warehouse_product_id = $request->warehouse_id;
+                }
+            }
+        }else{
+            $coupon->category_id = $request->category_id;
+        }
+        $coupon->company_id = $user->company_id;
+        $coupon->save();
         return redirect()->route('company_coupon.index')->with('status', __('Successfully created'));
-
     }
 
     /**
@@ -92,7 +68,18 @@ class CompanyCouponController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $model = Coupon::find($id);
+        if(isset($model->category->id)){
+            $category = $model->category->name;
+            $subcategory = '';
+        }elseif(isset($model->subCategory->id)){
+            $category = isset($model->subCategory->category)?$model->subCategory->category->name:'';
+            $subcategory = $model->subCategory->name;
+        }else {
+            $category = '';
+            $subcategory = '';
+        }
+        return view('company.coupons.show', ['model'=>$model, 'category'=>$category, 'subcategory'=>$subcategory]);
     }
 
     /**
@@ -100,18 +87,20 @@ class CompanyCouponController extends Controller
      */
     public function edit(string $id)
     {
-
-        $coupon = DB::table('coupons as dt1')
-        // ->Leftjoin('warehouses as dt2', 'dt2.id', '=', 'dt1.warehouse_product_id')
-        // ->Leftjoin('categories as dt3', 'dt3.id', '=', 'dt1.category_id')
-        ->where('dt1.id', $id)
-        // ->select('dt1.*', 'dt2.*', 'dt3.*')
-        ->first();
-        // dd($coupons);
-
-        return view('company.coupons.edit', ['coupon'=> $coupon]);
-
-
+        $user = Auth::user();
+        $coupon = Coupon::where('company_id', $user->company_id)->find($id);
+        $categories = Category::where('parent_id', 0)->orderBy('id', 'asc')->get();
+        if(isset($coupon->category->id)){
+            $category_id = $coupon->category->id;
+            $subcategory_id = '';
+        }elseif(isset($coupon->subCategory->id)){
+            $category_id = isset($coupon->subCategory->category)?$coupon->subCategory->category->id:'';
+            $subcategory_id = $coupon->subCategory->id;
+        }else {
+            $category_id = '';
+            $subcategory_id = '';
+        }
+        return view('company.coupons.edit', ['coupon'=> $coupon, 'categories'=>$categories, 'category_id'=>$category_id, 'subcategory_id'=>$subcategory_id]);
     }
 
     /**
@@ -119,87 +108,40 @@ class CompanyCouponController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // dd($id);
-        $company_id=auth()->user()->company_id;
-        if ($request->relation_type == "product") {
-            $category_id=null;
-            $warehouse_id=$request->relation_id;
-        }elseif ($request->relation_type == "category") {
-            $warehouse_id=null;
-            $category_id=$request->relation_id;
-            // dd($category_id);
-        }
+        $user = auth()->user();
+        $coupon = Coupon::find($id);
+        $coupon->name = $request->name;
         if ($request->coupon_type == "price") {
-            $price=$request->sum;
-            $percent=null;
+            $coupon->price = $request->price;
         } elseif ($request->coupon_type == "percent") {
-            $percent=$request->sum;
-            $price=null;
+            $coupon->percent = $request->percent;
         }
-        // dd($category_id);
-            $coupon=Coupon::where('id',$id)->first();
-            // dd($coupon);
-
-            $coupon=$coupon->update([
-                'percent'=>$percent,
-                'price'=>$price,
-                'category_id'=>$category_id,
-                'warehouse_product_id'=>$warehouse_id
-            ]);
-        // dd($warehouse);
-
+        if (isset($request->subcategory_id) && $request->subcategory_id != "all" && $request->subcategory_id != ""){
+            $coupon->category_id = $request->subcategory_id;
+            if (isset($request->product_id) && $request->product_id != "all" && $request->product_id != "") {
+                $coupon->product_id = $request->product_id;
+                if (isset($request->warehouse_id) && $request->warehouse_id != "all" && $request->warehouse_id != "") {
+                    $coupon->warehouse_product_id = $request->warehouse_id;
+                }
+            }
+        }else{
+            $coupon->category_id = $request->category_id;
+            $coupon->warehouse_product_id = NULL;
+            $coupon->product_id = NULL;
+        }
+        $coupon->company_id = $user->company_id;
+        $coupon->save();
         return redirect()->route('company_coupon.index')->with('status', __('Successfully created'));
     }
 
-    public function relation(Request $request)
-    {
-        // dd($request->all());
-
-        // return $request->all();
-
-
-        if ($request->relation == "product") {
-            $id=auth()->user()->company_id;
-            $warehouse_products= DB::table('warehouses')
-            ->where('company_id', $id)
-            ->latest()
-            ->get();
-            // dd($warehouse_products);
-
-
-
-            // $aaa="@foreach($warehouse_products as $warehouse_product)
-            //             <option value='{{$warehouse_product->id}}'>{{$warehouse_product->name}}</option>
-            //       @endforeach";
-
-
-
-            return $warehouse_products;
-        }
-        $categories= DB::table('categories')
-            ->latest()
-            ->get();
-            return $categories;
-        // $model = Category::where('parent_id', $id)->get();
-        // if(isset($model) && count($model)>0){
-        //     return response()->json([
-        //         'status'=>true,
-        //         'data'=>$model
-        //     ]);
-        // }else{
-        //     return response()->json([
-        //         'status'=>false,
-        //         'data'=>[]
-        //     ]);
-        // }
-
-    }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        //
+        $model = Coupon::find($id);
+        $model->delete();
+        return redirect()->route('company_coupon.index')->with('status', __('Successfully created'));
     }
 }

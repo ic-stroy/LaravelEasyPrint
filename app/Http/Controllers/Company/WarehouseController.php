@@ -206,4 +206,26 @@ class WarehouseController extends Controller
         }
         return $current_category;
     }
+
+
+    // backend json api
+
+    public function getWarehousesByProduct(Request $request){
+        $user = Auth::user();
+        $warehouses_ = Warehouse::where('product_id', $request->product_id)->get();
+        $warehouses = [];
+        foreach ($warehouses_ as $warehouse_){
+            $warehouses[] = [
+                'id'=>$warehouse_->id,
+                'name'=>isset($warehouse_->name)?$warehouse_->name:$warehouse_->product->name,
+                'color'=>isset($warehouse_->color->name)?$warehouse_->color->name:'',
+                'size'=>isset($warehouse_->size->name)?$warehouse_->size->name:''
+            ];
+        }
+        return response()->json([
+            'data'=>$warehouses,
+            'status'=>true,
+            'message'=>'Success'
+        ]);
+    }
 }

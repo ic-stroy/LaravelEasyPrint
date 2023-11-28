@@ -12,6 +12,11 @@
     let last_name = document.getElementById('last_name')
     let edit_changed = false
 
+    let text_select_sub_category = ""
+    let text_all_subcategory_products = ""
+    let text_all_products = ""
+    let text_select_product = ""
+
     let current_region_index = -1
 
     let districts = {}

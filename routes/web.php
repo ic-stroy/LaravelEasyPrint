@@ -83,6 +83,7 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
                 Route::get('product-by-category/{id}', [WarehouseController::class, 'product'])->name('warehouse.category.product');
                 Route::get('warehouse-by-category/{id}', [WarehouseController::class, 'warehouse'])->name('warehouse.category.warehouse');
                 Route::get('create-warehouse-by-category/{id}', [WarehouseController::class, 'createWarehouse'])->name('warehouse.category.create_warehouse');
+                Route::get('get-warehouses-by-product', [WarehouseController::class, 'getWarehousesByProduct'])->name('warehouse.product.warehouse');
             });
             Route::group(['prefix' => 'user'], function () {
                 Route::resource('company_user', CompanyUsersController::class)->middleware('is_admin');
@@ -94,14 +95,9 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
                 Route::get('/destroy/{id}', [CompanyOrderController::class, 'destroy'])->name('company_order.destroy');
             });
             Route::group(['prefix' => 'coupon'], function () {
-                Route::get('/', [CompanyCouponController::class, 'index'])->name('company_coupon.index');
-                Route::get('/create', [CompanyCouponController::class, 'create'])->name('company_coupon.create');
-                Route::post('/store', [CompanyCouponController::class, 'store'])->name('company_coupon.store');
+                Route::resource('company_coupon', CompanyCouponController::class);
                 Route::get('/relation', [CompanyCouponController::class, 'relation'])->name('relation');
                 Route::get('/edit/relation', [CompanyCouponController::class, 'relation'])->name('adit_relation');
-                Route::get('/edit/{id}', [CompanyCouponController::class, 'edit'])->name('company_coupon.edit');
-                Route::post('/update/{id}', [CompanyCouponController::class, 'update'])->name('company_coupon.update');
-
 
 
                 // Route::get('/show/{id}', [CompanyCouponController::class, 'show'])->name('company_user.show');
