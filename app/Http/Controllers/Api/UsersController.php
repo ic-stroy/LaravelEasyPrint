@@ -64,10 +64,9 @@ class UsersController extends Controller
         }
         $address->city_id = $request->city_id;
         $address->name = $request->name;
+        $address->user_id = $user->id;
         $address->postcode = $request->postcode;
         $address->save();
-        $user->address_id = $address->id;
-        $user->save();
         $message = translate_api('Success', $language);
         return $this->success($message, 200, []);
     }

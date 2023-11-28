@@ -111,10 +111,10 @@ class OrderController extends Controller
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
 
-        // dd($user->orderBasket->order_detail);
+        // dd($user->orderBasket->orderDetail);
         $data = [];
-        if(isset($user->orderBasket->order_detail)){
-            foreach ($user->orderBasket->order_detail as $order_detail){
+        if(isset($user->orderBasket->orderDetail)){
+            foreach ($user->orderBasket->orderDetail as $order_detail){
 
                 if ($order_detail->warehouse_id != null) {
 
@@ -299,4 +299,114 @@ class OrderController extends Controller
         }
 
     }
+
+    public function getOrder(Request $request){
+
+        $language=$request->language;
+        if ($language == null) {
+            $language=env("DEFAULT_LANGUAGE", 'ru');
+        }
+
+        // dd($request->order_id);
+        $order_id=$request->order_id;
+
+        if ($order_id  && $order=Order::where('id',$order_id)->first()) {
+            // dd($order->orderDetail);
+            $data=[];
+            $order_detail_list=[];
+            foreach ($order->orderDetail as $order_detail){
+
+                if ($order_detail->warehouse_id != null) {
+
+                    $warehouse_product = DB::table('order_details as dt1')
+                        ->join('warehouses as dt2', 'dt2.id', '=', 'dt1.warehouse_id')
+                        ->join('sizes as dt3', 'dt3.id', '=', 'dt2.size_id')
+                        ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
+                        ->where('dt1.id' , $order_detail->id)
+                        ->select('dt2.name as warehouse_product_name','dt2.quantity as max_quantity', 'dt2.images as images', 'dt2.description as description', 'dt2.product_id as product_id', 'dt2.company_id as company_id','dt3.id as size_id','dt3.name as size_name','dt4.id as color_id','dt4.name as color_name','dt4.code as color_code')
+                        ->first();
+                    // dd($warehouse_product->company_id);
+
+                    $relation_type='warehouse_product';
+                    $relation_id=$order_detail->warehouse_id;
+
+                    $list=[
+                        "id"=>$order_detail->id,
+                        "relation_type"=>$relation_type,
+                        "relation_id"=>$relation_id,
+                        'name'=>$warehouse_product->warehouse_product_name,
+                        "price"=>$order_detail->price,
+                        "quantity"=>$order_detail->quantity,
+                        "description"=>$warehouse_product->description,
+                        "images"=>$warehouse_product->images,
+                        "color_name"=>$warehouse_product->color_name,
+                        "size_name"=>$warehouse_product->size_name
+                    ];
+                }
+                else {
+                    $relation_type='product';
+                    $relation_id=$order_detail->product_id;
+
+                    $product = DB::table('order_details as dt1')
+                        ->join('products as dt2', 'dt2.id', '=', 'dt1.product_id')
+                        ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
+                        ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
+                        ->where('dt1.id' , $order_detail->id)
+                        ->select('dt2.name as product_name','dt2.images as images', 'dt2.description as description','dt3.id as size_id','dt3.name as size_name','dt4.id as color_id','dt4.code as color_code','dt4.name as color_name',)
+                        ->first();
+                        // dd($product);
+
+
+
+                    $list=[
+                        "id"=>$order_detail->id,
+                        "relation_type"=>$relation_type,
+                        "relation_id"=>$relation_id,
+                        "price"=>$order_detail->price,
+                        "quantity"=>$order_detail->quantity,
+                        "description"=>$product->description,
+                        "images"=>$product->images,
+                        "color_name"=>$product->color_name,
+                        "size_name"=>$product->size_name
+                    ];
+                    // dd($list);
+
+
+
+                }
+
+                array_push($order_detail_list,$list);
+            }
+            $addresses=DB::table('addresses as dt1')
+                ->join('yy_cities as dt2', 'dt2.id', '=', 'dt1.city_id')
+                ->join('yy_cities as dt3', 'dt3.id', '=', 'dt2.parent_id')
+                ->where('user_id',Auth::user()->id)
+                ->select('dt1.id as address_id','dt1.name as name','dt2.name as city_name','dt3.name as region_name')
+                ->get();
+
+
+            // $data
+            // dd($addresses);
+            $data=[
+                'list'=>$order_detail_list,
+                'addresses'=>$addresses,
+                'price'=>null,
+                'delivery_price'=>null,
+                'discount_price'=>null,
+                'grant_total'=>null
+            ];
+
+            // array_push($data,$addresses);
+
+            // dd($data);
+
+
+            $message=translate_api('success',$language);
+            return $this->success($message, 200,$data);
+        }
+
+
+    }
+
+
 }
