@@ -18,4 +18,8 @@ class Constants {
 
    // 1 basked 2 ordered 3 accepted 4 on_the_way 5 finished
 
+    //Personal info
+
+    const MALE = 1;
+    const FEMALE = 2;
 }

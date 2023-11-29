@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Constants;
 use App\Http\Controllers\Controller;
 use App\Models\Address;
 use App\Models\PersonalInfo;
@@ -49,10 +50,10 @@ class UsersController extends Controller
             }
             switch ($user->personalInfo->gender){
                 case 1:
-                    $gender = 'male';
+                    $gender = Constants::MALE;
                     break;
                 case 2:
-                    $gender = 'female';
+                    $gender = Constants::FEMALE;
                     break;
                 default:
                     $gender = null;

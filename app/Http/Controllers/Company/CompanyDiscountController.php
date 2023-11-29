@@ -17,7 +17,7 @@ class CompanyDiscountController extends Controller
     {
         $user = auth()->user();
         $coupons = Discount::where('company_id', $user->company_id)->get();
-        return view('company.coupons.index', ['coupons'=> $coupons]);
+        return view('company.discount.index', ['coupons'=> $coupons]);
     }
 
     /**
@@ -26,7 +26,7 @@ class CompanyDiscountController extends Controller
     public function create()
     {
         $categories = Category::where('parent_id', 0)->orderBy('id', 'asc')->get();
-        return view('company.coupons.create', ['categories'=> $categories]);
+        return view('company.discount.create', ['categories'=> $categories]);
     }
 
     /**
@@ -66,7 +66,7 @@ class CompanyDiscountController extends Controller
             $category = '';
             $subcategory = '';
         }
-        return view('company.coupons.show', ['model'=>$model, 'category'=>$category, 'subcategory'=>$subcategory]);
+        return view('company.discount.show', ['model'=>$model, 'category'=>$category, 'subcategory'=>$subcategory]);
     }
 
     /**
@@ -87,7 +87,7 @@ class CompanyDiscountController extends Controller
             $category_id = '';
             $subcategory_id = '';
         }
-        return view('company.coupons.edit', ['coupon'=> $coupon, 'categories'=>$categories, 'category_id'=>$category_id, 'subcategory_id'=>$subcategory_id]);
+        return view('company.discount.edit', ['coupon'=> $coupon, 'categories'=>$categories, 'category_id'=>$category_id, 'subcategory_id'=>$subcategory_id]);
     }
 
     /**

@@ -70,7 +70,6 @@
         let text_select_product = "{{translate('Select product')}}"
 
 
-
         let subcategory_exists = document.getElementById('subcategory_exists')
         let product_exists = document.getElementById('product_exists')
         let warehouse_exists = document.getElementById('warehouse_exists')
