@@ -408,5 +408,41 @@ class OrderController extends Controller
 
     }
 
+    public function connectOrder(Request $request){
+        $language = $request->header('language');
+        $data=$request->all();
+        $order_inner=$data['data'];
+        // dd($data['data']);
+        $order_id=$data['order_id'];
+
+        if ($order_id  && $order=Order::where('id',$order_id)->first()) {
+
+            foreach ($order_inner as  $update_order_detail) {
+                // dd($update_order_detail['order_detail_id']);
+                if ($order_detail=OrderDetail::where('id',$update_order_detail['order_detail_id'])->where('order_id',$order_id)->first()) {
+                    // dd($order_detail);
+                    $order_detail->update([
+                            'color_id'=>$update_order_detail['color_id'],
+                            'size_id'=>$update_order_detail['size_id'],
+                            'quantity'=>$update_order_detail['quantity']
+                    ]);
+                }else {
+                    $message=translate_api('order detail not found',$language);
+                    return $this->error($message, 400);
+                }
+            }
+            $message=translate_api('success',$language);
+            return $this->success($message, 200);
+        }
+        else {
+            $message=translate_api('order  not found',$language);
+            return $this->error($message, 400);
+        }
+
+
+    }
+
+
+
 
 }
