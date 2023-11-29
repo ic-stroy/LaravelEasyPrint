@@ -70,6 +70,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['prefix' => 'order'], function () {
         Route::post('/set-warehouse', [OrderController::class, 'setWarehouse']);
         Route::post('connection/to_order', [OrderController::class, 'connectOrder']);
+        Route::post('accepted/order', [OrderController::class, 'acceptedOrder']);
         Route::get('/get-basket', [OrderController::class, 'getBasket']);
         Route::get('/get-order', [OrderController::class, 'getOrder']);
     });

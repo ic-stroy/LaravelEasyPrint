@@ -21,6 +21,11 @@ class Order extends Model
       'all_price',
       'user_id',
       'coupon_id',
+      'address_id',
+      'receiver_name',
+      'phone_number',
+      'payment_method',
+      'user_card_id',
       'created_at',
       'updated_at',
       'deleted_at'
