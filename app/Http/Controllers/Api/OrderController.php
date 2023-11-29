@@ -9,6 +9,8 @@ use App\Models\Uploads;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Constants;
+
 
 use function response;
 
@@ -431,6 +433,34 @@ class OrderController extends Controller
                     return $this->error($message, 400);
                 }
             }
+            $message=translate_api('success',$language);
+            return $this->success($message, 200);
+        }
+        else {
+            $message=translate_api('order  not found',$language);
+            return $this->error($message, 400);
+        }
+
+
+    }
+
+    public function acceptedOrder(Request $request){
+        $language = $request->header('language');
+        $data=$request->all();
+
+        // dd($data);
+        $order_id=$data['order_id'];
+
+        if ($order_id  && $order=Order::where('id',$order_id)->first()) {
+            $order->update([
+                'address_id'=>$data['address_id'],
+                'receiver_name'=>$data['receiver_name'],
+                'phone_number'=>$data['receiver_phone'],
+                'payment_method'=>$data['payment_method'],
+                'user_card_id'=>$data['user_card_id'],
+                'status'=>Constants::ACCEPTED,
+            ]);
+
             $message=translate_api('success',$language);
             return $this->success($message, 200);
         }
