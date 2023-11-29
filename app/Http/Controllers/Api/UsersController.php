@@ -47,12 +47,12 @@ class UsersController extends Controller
             if (file_exists($sms_avatar)) {
                 $user_image = asset('storage/user/'.$user->personalInfo->avatar);
             }
-            switch ($user->gender){
+            switch ($user->personalInfo->gender){
                 case 1:
                     $gender = 'male';
                     break;
                 case 2:
-                    $gender = 'male';
+                    $gender = 'female';
                     break;
                 default:
                     $gender = null;
