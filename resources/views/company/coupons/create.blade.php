@@ -16,7 +16,7 @@
                 </div>
             @endif
             <p class="text-muted font-14">
-                {{__('Products list create')}}
+                {{__('Coupon list create')}}
             </p>
             <form action="{{route('company_coupon.store')}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
                 @csrf

@@ -38,13 +38,32 @@ class UsersController extends Controller
         $language = $request->header('language');
         $user = Auth::user();
         if(isset($user->personalInfo)){
+            $user_image = null;
+            if(isset($user->personalInfo->avatar)){
+                $sms_avatar = storage_path('app/public/user/' . $user->personalInfo->avatar);
+            }else{
+                $sms_avatar = storage_path('app/public/user/' . 'no');
+            }
+            if (file_exists($sms_avatar)) {
+                $user_image = asset('storage/user/'.$user->personalInfo->avatar);
+            }
+            switch ($user->gender){
+                case 1:
+                    $gender = 'male';
+                    break;
+                case 2:
+                    $gender = 'male';
+                    break;
+                default:
+                    $gender = null;
+            }
             $data = [
                 "id"=>$user->id,
-                "first_name" => $user->personalInfo->first_name,
-                "last_name" => $user->personalInfo->last_name,
-                "phone_number" => $user->personalInfo->last_name,
-                "gender" => $user->personalInfo->last_name,
-                "image"=>asset('storage/user/'.$user->personalInfo->avatar),
+                "first_name" => $user->personalInfo->first_name??null,
+                "last_name" => $user->personalInfo->last_name??null,
+                "phone_number" => $user->personalInfo->phone_number??null,
+                "gender" => $gender,
+                "image"=>$user_image,
                 "birth_date"=>$user->personalInfo->birth_date
             ];
         }else{

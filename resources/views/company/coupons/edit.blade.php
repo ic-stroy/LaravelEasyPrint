@@ -16,7 +16,7 @@
                 </div>
             @endif
             <p class="text-muted font-14">
-                {{translate('Products list edit')}}
+                {{translate('Coupon list edit')}}
             </p>
             <form action="{{route('company_coupon.update', $coupon->id)}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
                 @csrf
