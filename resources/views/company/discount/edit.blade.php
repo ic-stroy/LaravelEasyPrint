@@ -1,4 +1,4 @@
-@extends('company.layout.layout')
+@extends('layout.layout')
 
 @section('title')
     {{-- Your page title --}}
@@ -16,9 +16,9 @@
                 </div>
             @endif
             <p class="text-muted font-14">
-                {{translate('Products list edit')}}
+                {{translate('Discount list edit')}}
             </p>
-            <form action="{{route('company_coupon.update', $coupon->id)}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
+            <form action="{{route('company_discount.update', $coupon->id)}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method("PUT")
                 <div class="row">
@@ -76,7 +76,7 @@
     </div>
     <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
     <script>
-        let super_admin = false
+        let super_admin = true
         let coupon_category_id = "{{$category_id}}"
         let coupon_subcategory_id = "{{$subcategory_id}}"
         let coupon_product_id = "{{$coupon->product_id}}"

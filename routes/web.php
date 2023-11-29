@@ -7,6 +7,7 @@ use \App\Http\Controllers\Company\WarehouseController;
 use \App\Http\Controllers\Company\CompanyUsersController;
 use \App\Http\Controllers\Company\CompanyCouponController;
 use \App\Http\Controllers\Company\CompanyOrderController;
+use \App\Http\Controllers\Company\CompanyDiscountController;
 use \App\Http\Controllers\BannerController;
 use \App\Http\Controllers\UsersController;
 use \App\Http\Controllers\CategoryController;
@@ -18,6 +19,8 @@ use \App\Http\Controllers\ProductsController;
 use \App\Http\Controllers\RoleController;
 use \App\Http\Controllers\CompanyController;
 use \App\Http\Controllers\LanguageController;
+use \App\Http\Controllers\CouponController;
+use \App\Http\Controllers\DiscountController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -38,7 +41,6 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
         Route::resource('banner', BannerController::class);
         Route::resource('color', ColorController::class);
         Route::resource('size', SizesController::class);
-        Route::post('store-all-sizes', [SizesController::class, ]);
         Route::resource('user', UsersController::class);
         Route::get('user-category', [UsersController::class, 'category'])->name('user.category');
         Route::get('user-by-category/{id}', [UsersController::class, 'user'])->name('user.category.user');
@@ -46,6 +48,7 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
         Route::get('products-category', [ProductsController::class, 'category'])->name('product.category');
         Route::get('allproduct-destroy', [ProductsController::class, 'allproduct_destroy'])->name('product.allproduct_destroy');
         Route::get('products-by-category/{id}', [ProductsController::class, 'product'])->name('product.category.product');
+        Route::get('get-warehouses-by-product', [ProductsController::class, 'getWarehousesByProduct']);
         Route::get('/home', [HomeController::class, 'index'])->name('home');
         Route::resource('category', CategoryController::class);
         Route::resource('company', CompanyController::class);
@@ -57,7 +60,8 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
         Route::get('sub-sub-category/subcategory/{id}', [SubSubCategoryController::class, 'subcategory'])->name('subsubcategory.subcategory');
         Route::get('sub-sub-category/subsubcategory/{id}', [SubSubCategoryController::class, 'subsubcategory'])->name('subsubcategory.subsubcategory');
         Route::resource('role', RoleController::class);
-
+        Route::resource('coupons', CouponController::class);
+        Route::resource('discount', DiscountController::class);
 
         Route::group(['prefix' => 'language'], function () {
             Route::get('/', [LanguageController::class, 'index'])->name('language.index');
@@ -84,6 +88,7 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
                 Route::get('warehouse-by-category/{id}', [WarehouseController::class, 'warehouse'])->name('warehouse.category.warehouse');
                 Route::get('create-warehouse-by-category/{id}', [WarehouseController::class, 'createWarehouse'])->name('warehouse.category.create_warehouse');
                 Route::get('get-warehouses-by-product', [WarehouseController::class, 'getWarehousesByProduct'])->name('warehouse.product.warehouse');
+                Route::resource('company_discount', CompanyDiscountController::class);
             });
             Route::group(['prefix' => 'user'], function () {
                 Route::resource('company_user', CompanyUsersController::class)->middleware('is_admin');
@@ -96,16 +101,7 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
             });
             Route::group(['prefix' => 'coupon'], function () {
                 Route::resource('company_coupon', CompanyCouponController::class);
-                Route::get('/relation', [CompanyCouponController::class, 'relation'])->name('relation');
-                Route::get('/edit/relation', [CompanyCouponController::class, 'relation'])->name('adit_relation');
-
-
-                // Route::get('/show/{id}', [CompanyCouponController::class, 'show'])->name('company_user.show');
-                // Route::get('/edit/{id}', [CompanyCouponController::class, 'edit'])->name('company_user.edit');
-                // Route::get('/create', [CompanyCouponController::class, 'create'])->name('company_user.create');
             });
-
-
         });
     });
 

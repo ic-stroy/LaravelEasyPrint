@@ -70,4 +70,27 @@ class UsersController extends Controller
         $message = translate_api('Success', $language);
         return $this->success($message, 200, []);
     }
+
+    public function imageSave($file, $personal_info, $text){
+        if (isset($file)) {
+            $letters = range('a', 'z');
+            $random_array = [$letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)]];
+            $random = implode("", $random_array);
+
+            if($text == 'update'){
+                if(isset($personal_info->avatar)){
+                    $sms_avatar = storage_path('app/public/user/' . $personal_info->avatar);
+                }else{
+                    $sms_avatar = storage_path('app/public/user/' . 'no');
+                }
+                if (file_exists($sms_avatar)) {
+                    unlink($sms_avatar);
+                }
+            }
+            $image_name = $random.''.date('Y-m-dh-i-s').'.'.$file->extension();
+            $file->storeAs('public/user/', $image_name);
+            $personal_info->avatar = $image_name;
+            return $personal_info;
+        }
+    }
 }

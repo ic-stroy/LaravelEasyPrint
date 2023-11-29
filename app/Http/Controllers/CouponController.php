@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\Company;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
 use App\Models\Coupon;
@@ -10,16 +9,15 @@ use App\Models\Coupon;
 
 use Illuminate\Http\Request;
 
-class CompanyCouponController extends Controller
+class CouponController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $user = auth()->user();
-        $coupons = Coupon::where('company_id', $user->company_id)->get();
-        return view('company.coupons.index', ['coupons'=> $coupons]);
+        $coupons = Coupon::where('company_id', NULL)->get();
+        return view('admin.coupons.index', ['coupons'=> $coupons]);
     }
 
     /**
@@ -28,7 +26,7 @@ class CompanyCouponController extends Controller
     public function create()
     {
         $categories = Category::where('parent_id', 0)->orderBy('id', 'asc')->get();
-        return view('company.coupons.create', ['categories'=> $categories]);
+        return view('admin.coupons.create', ['categories'=> $categories]);
     }
 
     /**
@@ -36,7 +34,6 @@ class CompanyCouponController extends Controller
      */
     public function store(Request $request)
     {
-        $user = auth()->user();
         $coupon = new Coupon();
         $coupon->name = $request->name;
         if ($request->coupon_type == "price") {
@@ -57,9 +54,8 @@ class CompanyCouponController extends Controller
         }else{
             $coupon->category_id = $request->category_id;
         }
-        $coupon->company_id = $user->company_id;
         $coupon->save();
-        return redirect()->route('company_coupon.index')->with('status', __('Successfully created'));
+        return redirect()->route('coupons.index')->with('status', __('Successfully created'));
     }
 
     /**
@@ -78,7 +74,7 @@ class CompanyCouponController extends Controller
             $category = '';
             $subcategory = '';
         }
-        return view('company.coupons.show', ['model'=>$model, 'category'=>$category, 'subcategory'=>$subcategory]);
+        return view('admin.coupons.show', ['model'=>$model, 'category'=>$category, 'subcategory'=>$subcategory]);
     }
 
     /**
@@ -99,7 +95,7 @@ class CompanyCouponController extends Controller
             $category_id = '';
             $subcategory_id = '';
         }
-        return view('company.coupons.edit', ['coupon'=> $coupon, 'categories'=>$categories, 'category_id'=>$category_id, 'subcategory_id'=>$subcategory_id]);
+        return view('admin.coupons.edit', ['coupon'=> $coupon, 'categories'=>$categories, 'category_id'=>$category_id, 'subcategory_id'=>$subcategory_id]);
     }
 
     /**
@@ -135,9 +131,8 @@ class CompanyCouponController extends Controller
             $coupon->warehouse_product_id = NULL;
             $coupon->product_id = NULL;
         }
-        $coupon->company_id = $user->company_id;
         $coupon->save();
-        return redirect()->route('company_coupon.index')->with('status', __('Successfully created'));
+        return redirect()->route('coupons.index')->with('status', __('Successfully created'));
     }
 
 
@@ -148,6 +143,6 @@ class CompanyCouponController extends Controller
     {
         $model = Coupon::find($id);
         $model->delete();
-        return redirect()->route('company_coupon.index')->with('status', __('Successfully created'));
+        return redirect()->route('coupons.index')->with('status', __('Successfully created'));
     }
 }

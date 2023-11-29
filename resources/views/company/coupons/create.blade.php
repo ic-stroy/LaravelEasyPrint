@@ -77,6 +77,7 @@
     </div>
     <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
     <script>
+        let super_admin = false
         let coupon_category_id = ""
         let coupon_subcategory_id = ""
         let coupon_product_id = ""
