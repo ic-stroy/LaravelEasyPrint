@@ -22,39 +22,50 @@
                 @csrf
                 @method("POST")
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label">{{__('Coupon type')}}</label>
-                            <select name="coupon_type" class="form-control" id="coupon_type">
-                                    <option value="price" class="form-control">price</option>
-                                    <option value="percent" class="form-control">percent</option>
-                            </select>
-                        </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Coupon name')}}</label>
+                        <input type="text" name="name" class="form-control" required value="{{old('name')}}"/>
                     </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label">{{__('Sum')}}</label>
-                            <input type="number" name="sum" class="form-control" required value="{{old('sum')}}"/>
-                        </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Coupon type')}}</label>
+                        <select name="coupon_type" class="form-control" id="coupon_type">
+                            <option value="price" class="form-control">{{translate('Price')}}</option>
+                            <option value="percent" class="form-control">{{translate('Percent')}}</option>
+                        </select>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label">{{__('Relation type')}}</label>
-                            <select name="relation_type" class="form-control" id="relation_type">
-                                    <option value="product" class="form-control" id="product">product</option>
-                                    <option value="category" class="form-control" id="category">category</option>
-                            </select>
-                        </div>
+                    <div class="mb-3 col-6" id="coupon_price">
+                        <label class="form-label">{{__('Coupon price')}}</label>
+                        <input type="number" name="price" class="form-control" id="coupon_price_input"  min="0"  value="{{old('price')}}"/>
                     </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                    <label class="form-label">{{__('Relation')}}</label>
-                    <select name="relation_id" class="form-control" id="relation_id">
-
-                    </select>
+                    <div class="mb-3 col-6 display-none" id="coupon_percent">
+                        <label class="form-label">{{__('Coupon percent')}}</label>
+                        <input type="number" name="percent" class="form-control" id="coupon_percent_input" min="0" max="100"/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{__('Category')}}</label>
+                        <select name="category_id" class="form-control" id="category_id" required>
+                            <option value="" selected disabled>{{__('Select category')}}</option>
+                            <option value="all">{{__('Select all subcategories` products')}}</option>
+                            @foreach($categories as $category)
+                                <option value="{{$category->id}}">{{$category->name}} {{$category->category?$category->category->name:''}}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
+                <div class="row">
+                    <div class="mb-3 col-6 display-none" id="subcategory_exists">
+                        <label class="form-label">{{__('Sub category')}}</label>
+                        <select name="subcategory_id" class="form-control" id="subcategory_id"></select>
+                    </div>
+                    <div class="mb-3 col-6 display-none" id="product_exists">
+                        <label class="form-label">{{__('Products')}}</label>
+                        <select name="product_id" class="form-control" id="product_id"></select>
+                    </div>
+                    <div class="mb-3 col-6 display-none" id="warehouse_exists">
+                        <label class="form-label">{{__('Warehouses')}}</label>
+                        <select name="warehouse_id" class="form-control" id="warehouse_id"></select>
                     </div>
                 </div>
                 <div>
@@ -66,63 +77,17 @@
     </div>
     <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
     <script>
-
-
-        let category_id = document.getElementById('relation_id')
-
-
-        $(document).on('change', '#relation_type', function(e) {
-            let val = $(this).val()
-            console.log(val);
-            $(document).ready(function () {
-                $.ajax({
-                    url:`./relation`,
-                    data: {
-                        'relation': val
-                    },
-                    type:'GET',
-                    success: function (data) {
-                        console.log(data);
-
-                        // array.forEach(element => {
-
-                        // });
-                        for (var i = 0; i<=data; i++){
-                            var opt = document.createElement('option');
-                            // opt.value = i;
-                            console.log(i);
-                            // opt.innerHTML = i;
-                            // select.appendChild(opt);
-                            $('#relation_id').appendChild(opt);
-                        }
-
-                        data.map(i => {
-                            var opt = document.createElement('option');
-                            opt.value = i.id;
-                            console.log(i);
-                            opt.innerHTML = i.name;
-                            // select.appendChild(opt);
-                            // $('#relation_id').appendChild(opt);
-                            document.querySelector('#relation_id').appendChild(opt);
-                        })
-                        // $('#relation_id').html(data)
-                        // $('#relation_id').innerHTMl
-                    }
-                })
-            })
-        })
-
-        // category_id.addEventListener('change', function () {
-        //     subcategory_id.innerHTML = ""
-        //     $(document).ready(function () {
-        //         $.ajax({
-        //             url:`/../api/subcategory/${category_id.value}`,
-        //             type:'GET',
-        //             success: function (data) {
-        //                 data.data.forEach(addOption)
-        //             }
-        //         })
-        //     })
-        // })
+        let coupon_category_id = ""
+        let coupon_subcategory_id = ""
+        let coupon_product_id = ""
+        let coupon_warehouse_id = ""
+        let coupon_price_value = ""
+        let coupon_percent_value = ""
+        let text_select_sub_category = "{{translate('Select sub category')}}"
+        let text_all_subcategory_products = "{{translate('All subcategories`s products')}}"
+        let text_all_products = "{{translate('All products')}}"
+        let text_all_warehouses = "{{translate('All warehouses')}}"
+        let text_select_product = "{{translate('Select product')}}"
     </script>
+    <script src="{{asset('assets/js/coupon.js')}}"></script>
 @endsection

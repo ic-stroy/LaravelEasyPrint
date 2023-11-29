@@ -42,14 +42,13 @@ class CompanyProductController extends Controller
      */
     public function create()
     {
-        $subcategories = Category::where('parent_id', '!=', 0)->get();
         $categories = Category::where('parent_id', 0)->orderBy('id', 'asc')->get();
         $firstcategory = Category::where('parent_id', 0)->orderBy('id', 'asc')->first();
         $products = Products::orderBy('created_at', 'desc')->get();
         $colors = Color::all();
         $sizes = Sizes::all();
 
-        return view('company.products.create', ['products'=> $products, 'colors'=> $colors, 'categories'=> $categories, 'firstcategory'=> $firstcategory , 'sizes'=> $sizes]);
+        return view('company.products.create', ['products'=> $products, 'colors'=> $colors, 'categories'=> $categories, 'firstcategory'=> $firstcategory, 'sizes'=> $sizes]);
     }
 
     /**

@@ -16,152 +16,77 @@
                 </div>
             @endif
             <p class="text-muted font-14">
-                {{__('Products list create')}}
+                {{translate('Products list edit')}}
             </p>
-            {{-- {{route('company_product.update', $warehouse->id)}} --}}
             <form action="{{route('company_coupon.update', $coupon->id)}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
                 @csrf
-                @method("POST")
+                @method("PUT")
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label">{{__('Coupon type')}}</label>
-                            <select name="coupon_type" class="form-control" id="coupon_type">
-                                    <option value="1"></option>
-                                    <option value="price" class="form-control" <?php echo ($coupon->price != null ? ' selected="selected"' : '');?>>price</option>
-                                    <option value="percent" class="form-control" <?php echo ($coupon->percent != null ? ' selected="selected"' : '');?> >percent</option>
-                            </select>
-                        </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{translate('Coupon name')}}</label>
+                        <input type="text" name="name" class="form-control" required value="{{$coupon->name}}"/>
                     </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label">{{__('Sum')}}</label>
-                            @if ($coupon->price != null)
-
-                            <input type="number" name="sum" class="form-control" required value="{{$coupon->price}}"/>
-
-                            @else
-                            <input type="number" name="sum" class="form-control" required value="{{$coupon->percent}}"/>
-
-                            @endif
-                        </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{translate('Coupon type')}}</label>
+                        <select name="coupon_type" class="form-control" id="coupon_type">
+                            <option value="price" class="form-control" {{$coupon->price != NULL?'selected':''}}>{{translate('Price')}}</option>
+                            <option value="percent" class="form-control" {{$coupon->percent != NULL?'selected':''}}>{{translate('Percent')}}</option>
+                        </select>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label">{{__('Relation type')}}</label>
-                            <select name="relation_type" class="form-control" id="relation_type">
-                                <option value=""></option>
-                                    <option value="product" class="form-control" id="product"  <?php echo ($coupon->warehouse_product_id != null ? ' selected="selected"' : '');?>>product</option>
-                                    <option value="category" class="form-control" id="category" <?php echo ($coupon->category_id != null ? ' selected="selected"' : '');?>>category</option>
-                            </select>
-                        </div>
+                    <div class="mb-3 col-6" id="coupon_price">
+                        <label class="form-label">{{translate('Coupon price')}}</label>
+                        <input type="number" name="price" class="form-control" id="coupon_price_input"  min="0"  value="{{$coupon->price}}"/>
                     </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            @if ($coupon->warehouse_product_id != null)
-                                @php
-                                    $warehouse_product=App\Models\Warehouse::where('id',$coupon->warehouse_product_id)->first();
-                                    $relations=App\Models\Warehouse::where('company_id',$coupon->company_id)->pluck('name','id');
-                                    $id=$warehouse_product->id;
-                                    // dd($relations)
-                                    // dd($name);
-                                    // echo $name;
-
-                                @endphp
-                            @elseif ($coupon->category_id != null)
-                                @php
-                                    $cetagory=App\Models\Category::where('id',$coupon->category_id)->first();
-                                    $relations=App\Models\Category::pluck('name','id');
-                                    $id=$cetagory->id;
-                                    // dd($aaa);
-                                    // echo $categories;
-
-                                @endphp
-                            @else
-                                {{'name not found'}}
-                            @endif
-                            <label class="form-label">{{__('Relation')}}</label>
-                            <select name="relation_id" class="form-control" id="relation_id">
-                                @foreach($relations as $key => $relation)
-                                {{-- @dd($relations) --}}
-                                <option value="{{$key}}" @if($key) {{$key == $id?'selected':'' }} @endif>
-                                    {{$relation}}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
+                    <div class="mb-3 col-6 display-none" id="coupon_percent">
+                        <label class="form-label">{{translate('Coupon percent')}}</label>
+                        <input type="number" name="percent" value="{{$coupon->percent}}" class="form-control" id="coupon_percent_input" min="0" max="100"/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{translate('Category')}}</label>
+                        <select name="category_id" class="form-control" id="category_id" required>
+                            <option value="" selected disabled>{{translate('Select category')}}</option>
+                            @foreach($categories as $category)
+                                <option value="{{$category->id}}" {{$category->id == $category_id? 'selected' : ''}}>{{$category->name}} {{$category->category?$category->category->name:''}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-6 display-none" id="subcategory_exists">
+                        <label class="form-label">{{translate('Sub category')}}</label>
+                        <select name="subcategory_id" class="form-control" id="subcategory_id"></select>
+                    </div>
+                    <div class="mb-3 col-6 display-none" id="product_exists">
+                        <label class="form-label">{{translate('Products')}}</label>
+                        <select name="product_id" class="form-control" id="product_id"></select>
+                    </div>
+                    <div class="mb-3 col-6 display-none" id="warehouse_exists">
+                        <label class="form-label">{{translate('Warehouses')}}</label>
+                        <select name="warehouse_id" class="form-control" id="warehouse_id"></select>
                     </div>
                 </div>
                 <div>
-                    <button type="submit" class="btn btn-primary waves-effect waves-light">{{__('Create')}}</button>
-                    <button type="reset" class="btn btn-secondary waves-effect">{{__('Cancel')}}</button>
+                    <button type="submit" class="btn btn-primary waves-effect waves-light">{{translate('Update')}}</button>
+                    <button type="reset" class="btn btn-secondary waves-effect">{{translate('Cancel')}}</button>
                 </div>
             </form>
         </div>
     </div>
     <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
     <script>
-
-
-        let category_id = document.getElementById('relation_id')
-
-
-        $(document).on('change', '#relation_type', function(e) {
-            let val = $(this).val()
-            console.log(val);
-            $(document).ready(function () {
-                $.ajax({
-                    url:`./relation`,
-                    data: {
-                        'relation': val
-                    },
-                    type:'GET',
-                    success: function (data) {
-                        console.log(data);
-
-
-                        // array.forEach(element => {
-
-                        // });
-                        // for (var i = 0; i<=data; i++){
-                        //     var opt = document.createElement('option');
-                        //     // opt.value = i;
-                        //     console.log(i);
-                        //     // opt.innerHTML = i;
-                        //     // select.appendChild(opt);
-                        //     $('#relation_id').appendChild(opt);
-                        // }
-                        document.querySelector('#relation_id').innerHTML = ''
-                        data.map(i => {
-                            var opt = document.createElement('option');
-                            opt.value = i.id;
-                            console.log(i);
-                            opt.innerHTML = i.name;
-                            // select.appendChild(opt);
-                            // $('#relation_id').appendChild(opt);
-                            // document.querySelector('#relation_id').innerHTML = ''
-                            document.querySelector('#relation_id').appendChild(opt);
-                        })
-                        // $('#relation_id').html(data)
-                        // $('#relation_id').innerHTMl
-                    }
-                })
-            })
-        })
-
-        // category_id.addEventListener('change', function () {
-        //     subcategory_id.innerHTML = ""
-        //     $(document).ready(function () {
-        //         $.ajax({
-        //             url:`/../api/subcategory/${category_id.value}`,
-        //             type:'GET',
-        //             success: function (data) {
-        //                 data.data.forEach(addOption)
-        //             }
-        //         })
-        //     })
-        // })
+        let coupon_category_id = "{{$category_id}}"
+        let coupon_subcategory_id = "{{$subcategory_id}}"
+        let coupon_product_id = "{{$coupon->product_id}}"
+        let coupon_warehouse_id = "{{$coupon->warehouse_product_id}}"
+        let coupon_price_value = "{{$coupon->price??''}}"
+        let coupon_percent_value = "{{$coupon->percent??''}}"
+        let text_select_sub_category = "{{translate('Select sub category')}}"
+        let text_all_subcategory_products = "{{translate('All subcategories`s products')}}"
+        let text_all_products = "{{translate('All products')}}"
+        let text_all_warehouses = "{{translate('All warehouses')}}"
+        let text_select_product = "{{translate('Select product')}}"
     </script>
+    <script src="{{asset('assets/js/coupon.js')}}"></script>
 @endsection

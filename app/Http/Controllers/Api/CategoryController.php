@@ -100,9 +100,7 @@ class CategoryController extends Controller
         $data[] = [
             'category'=>$category_,
             'sub_category'=>$subCategory,
-            'products'=>[
-                $products_data
-            ]
+            'products'=>$products_data
         ];
         $message = translate_api('Success', $language);
         return $this->success($message, 200, $data);

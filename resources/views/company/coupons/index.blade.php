@@ -14,10 +14,10 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>{{__('Coupon type')}}</th>
-                        <th>{{__('value')}}</th>
-                        <th>{{__('Relation type')}}</th>
                         <th>{{__('Name')}}</th>
+                        <th>{{__('Coupon quantity')}}</th>
+                        <th>{{__('Category')}}</th>
+                        <th>{{__('Product')}}</th>
                         <th class="text-center">{{__('Functions')}}</th>
                     </tr>
                 </thead>
@@ -27,67 +27,66 @@
                     @endphp
                     @foreach($coupons as $coupon)
                         @php
-                            $i++
+                            $i++;
+                            if(isset($coupon->category->id)){
+                                $category = $coupon->category->name;
+                                $subcategory = '';
+                            }elseif(isset($coupon->subCategory->id)){
+                                $category = isset($coupon->subCategory->category)?$coupon->subCategory->category->name:'';
+                                $subcategory = $coupon->subCategory->name;
+                            }else{
+                                $category = '';
+                                $subcategory = '';
+                            }
                         @endphp
                         <tr>
                             <td>
-                                <a class="show_page" >
+                                <a class="show_page" href="{{route('company_coupon.show', $coupon->id)}}">
                                     {{$i}}
                                 </a>
                             </td>
                             <td>
-                                <a class="show_page" >
+                                <a class="show_page" href="{{route('company_coupon.show', $coupon->id)}}">
+                                    @if(isset($coupon->name))
+                                        {{$coupon->name}}
+                                    @else
+                                        <div class="no_text"></div>
+                                    @endif
+                                </a>
+                            </td>
+                            <td>
+                                <a class="show_page" href="{{route('company_coupon.show', $coupon->id)}}">
                                     @if ($coupon->price != null)
-                                       price
+                                       {{$coupon->price}} {{translate(' sum')}}
+                                    @elseif($coupon->percent != null)
+                                       {{$coupon->percent}} {{translate(' %')}}
                                     @else
-                                       percent
+                                        <div class="no_text"></div>
                                     @endif
                                 </a>
                             </td>
                             <td>
-                                <a class="show_page" >
-                                    @if ($coupon->price != null)
-                                       {{$coupon->price}}
+                                <a class="show_page" href="{{route('company_coupon.show', $coupon->id)}}">
+                                    @if($category != '' || $subcategory != '')
+                                        {{$category}} {{' '.$subcategory}}
                                     @else
-                                       {{$coupon->percent}}
+                                        <div class="no_text"></div>
                                     @endif
                                 </a>
                             </td>
                             <td>
-                                <a class="show_page" >
-                                    @if ($coupon->warehouse_product_id != null)
-                                       warehouse product
+                                <a class="show_page" href="{{route('company_coupon.show', $coupon->id)}}">
+                                    @if(isset($coupon->product->id))
+                                        {{$coupon->product->name}}
                                     @else
-                                       Category
+                                        {{translate('All products')}}
                                     @endif
                                 </a>
                             </td>
-                            <td>
-                                <a class="show_page" >
-                                    @if ($coupon->warehouse_product_id != null)
-                                        @php
-                                            $name=App\Models\Warehouse::where('id',$coupon->warehouse_product_id)->first()->name;
-                                            // dd($name);
-                                            echo $name;
 
-                                        @endphp
-                                    @elseif ($coupon->category_id != null)
-                                        @php
-                                            $aaa=App\Models\Category::where('id',$coupon->category_id)->first()->name;
-                                            // dd($aaa);
-                                            echo $aaa;
-
-                                        @endphp
-                                    @else
-                                        {{'name not found'}}
-                                    @endif
-                                </a>
-                            </td>
                             <td class="function_column">
                                 <div class="d-flex justify-content-center">
-                                    {{-- href="{{route('company_product.edit', $coupon->id)}}" --}}
                                     <a class="form_functions btn btn-info" href="{{route('company_coupon.edit', $coupon->id)}}"><i class="fe-edit-2"></i></a>
-                                    {{-- {{route('product.destroy', $coupon->id)}} --}}
                                     <form action="" method="POST">
                                         @csrf
                                         @method('DELETE')
