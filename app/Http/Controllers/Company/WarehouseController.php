@@ -212,7 +212,7 @@ class WarehouseController extends Controller
 
     public function getWarehousesByProduct(Request $request){
         $user = Auth::user();
-        $warehouses_ = Warehouse::where('product_id', $request->product_id)->get();
+        $warehouses_ = Warehouse::where('product_id', $request->product_id)->where('company_id', $user->company_id)->get();
         $warehouses = [];
         foreach ($warehouses_ as $warehouse_){
             $warehouses[] = [

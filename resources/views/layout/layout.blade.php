@@ -446,10 +446,31 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('product.category') }}">
+                        <li>
+                            <a href="#productMenus" data-bs-toggle="collapse">
                                 <i class="mdi mdi-basket-outline"></i>
                                 <span> {{ __('Products') }} </span>
+                                <span class="menu-arrow"></span>
                             </a>
+                            <div class="collapse" id="productMenus">
+                                <ul class="nav-second-level">
+                                    <li>
+                                        <a href="{{ route('product.category') }}">
+                                            <span> {{ __('Products') }} </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('coupons.index') }}">
+                                            <span> {{ __('Coupon') }} </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('discount.index') }}">
+                                            <span> {{ __('Discount') }} </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
                         <li>
                             <a href="{{ route('size.index') }}">

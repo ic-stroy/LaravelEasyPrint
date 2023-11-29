@@ -430,6 +430,9 @@
                                 <li>
                                     <a href="{{route('company_coupon.index')}}">{{ __('Coupon') }}</a>
                                 </li>
+                                <li>
+                                    <a href="{{route('company_discount.index')}}">{{ __('Discount') }}</a>
+                                </li>
                             </ul>
                         </div>
                     </li>

@@ -6,7 +6,9 @@ use App\Models\Color;
 use App\Models\Products;
 use App\Models\Sizes;
 use App\Models\Category;
+use App\Models\Warehouse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductsController extends Controller
 {
@@ -202,5 +204,26 @@ class ProductsController extends Controller
 
         return redirect()->route('product.category')->with('status', __('Successfully deleted'));
     }
+
+    // Backend api json
+
+    public function getWarehousesByProduct(Request $request){
+        $warehouses_ = Warehouse::where('product_id', $request->product_id)->get();
+        $warehouses = [];
+        foreach ($warehouses_ as $warehouse_){
+            $warehouses[] = [
+                'id'=>$warehouse_->id,
+                'name'=>isset($warehouse_->name)?$warehouse_->name:$warehouse_->product->name,
+                'color'=>isset($warehouse_->color->name)?$warehouse_->color->name:'',
+                'size'=>isset($warehouse_->size->name)?$warehouse_->size->name:''
+            ];
+        }
+        return response()->json([
+            'data'=>$warehouses,
+            'status'=>true,
+            'message'=>'Success'
+        ]);
+    }
+
 
 }
