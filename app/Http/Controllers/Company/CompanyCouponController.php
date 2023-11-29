@@ -122,7 +122,12 @@ class CompanyCouponController extends Controller
                 $coupon->product_id = $request->product_id;
                 if (isset($request->warehouse_id) && $request->warehouse_id != "all" && $request->warehouse_id != "") {
                     $coupon->warehouse_product_id = $request->warehouse_id;
+                }else{
+                    $coupon->warehouse_product_id = NULL;
                 }
+            }else{
+                $coupon->product_id = NULL;
+                $coupon->warehouse_product_id = NULL;
             }
         }else{
             $coupon->category_id = $request->category_id;

@@ -82,12 +82,11 @@
         let coupon_warehouse_id = "{{$coupon->warehouse_product_id}}"
         let coupon_price_value = "{{$coupon->price??''}}"
         let coupon_percent_value = "{{$coupon->percent??''}}"
+        let text_select_sub_category = "{{translate('Select sub category')}}"
+        let text_all_subcategory_products = "{{translate('All subcategories`s products')}}"
+        let text_all_products = "{{translate('All products')}}"
+        let text_all_warehouses = "{{translate('All warehouses')}}"
+        let text_select_product = "{{translate('Select product')}}"
     </script>
     <script src="{{asset('assets/js/coupon.js')}}"></script>
-    <script>
-        text_select_sub_category = "{{__('Select sub category')}}"
-        text_all_subcategory_products = "{{__('All subcategories`s products')}}"
-        text_all_products = "{{__('All products')}}"
-        text_select_product = "{{__('Select product')}}"
-    </script>
 @endsection

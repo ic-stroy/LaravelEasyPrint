@@ -31,21 +31,14 @@ if(coupon_subcategory_id != ''){
             url:`/../api/subcategory/${coupon_category_id}`,
             type:'GET',
             success: function (data) {
-                if(data.status == true){
-                    if(subcategory_exists.classList.contains('display-none')){
-                        subcategory_exists.classList.remove('display-none')
-                    }
-                }else{
-                    if(!subcategory_exists.classList.contains('display-none')){
-                        subcategory_exists.classList.add('display-none')
-                    }
+                if(subcategory_exists.classList.contains('display-none')){
+                    subcategory_exists.classList.remove('display-none')
                 }
+                data.data.forEach(couponAddOption)
                 let disabled_option = document.createElement('option')
-                disabled_option.text = text_select_sub_category
-                disabled_option.selected = true
+                disabled_option.text = text_select_product
                 disabled_option.disabled = true
                 subcategory_id.add(disabled_option)
-                data.data.forEach(couponAddOption)
                 let all_subcategories = document.createElement('option')
                 all_subcategories.text = text_all_subcategory_products
                 all_subcategories.value = "all"
@@ -58,6 +51,12 @@ if(coupon_subcategory_id != ''){
             }
         })
     })
+}else{
+    let all_subcategories = document.createElement('option')
+    all_subcategories.text = text_all_subcategory_products
+    all_subcategories.value = "all"
+    all_subcategories.selected = true
+    subcategory_id.add(all_subcategories)
 }
 function couponAddOptionToProduct(item, index){
     let option = document.createElement('option')
@@ -68,25 +67,18 @@ function couponAddOptionToProduct(item, index){
     }
     product_id.add(option)
 }
-if(coupon_product_id != undefined){
+if(coupon_product_id != undefined && coupon_product_id != '' && coupon_product_id != null){
     product_id.innerHTML = ""
     $(document).ready(function () {
         $.ajax({
             url:`/../api/get-products-by-category?category_id=${coupon_subcategory_id}`,
             type:'GET',
             success: function (data) {
-                if(data.status == true){
-                    if(product_exists.classList.contains('display-none')){
-                        product_exists.classList.remove('display-none')
-                    }
-                }else{
-                    if(!product_exists.classList.contains('display-none')){
-                        product_exists.classList.add('display-none')
-                    }
+                if(product_exists.classList.contains('display-none')){
+                    product_exists.classList.remove('display-none')
                 }
                 let disabled_option = document.createElement('option')
                 disabled_option.text = text_select_product
-                disabled_option.selected = true
                 disabled_option.disabled = true
                 product_id.add(disabled_option)
                 let all_products = document.createElement('option')
@@ -105,6 +97,12 @@ if(coupon_product_id != undefined){
             }
         })
     })
+}else{
+    let all_products = document.createElement('option')
+    all_products.text = text_all_products
+    all_products.value = "all"
+    all_products.selected = true
+    product_id.add(all_products)
 }
 if(coupon_percent_value != ''){
     if(coupon_percent.classList.contains('display-none')){
@@ -130,24 +128,22 @@ function couponAddOptionToWarehouse(item, index){
     }
     warehouse_id.add(option)
 }
-if(coupon_warehouse_id != '') {
+if(coupon_warehouse_id != undefined && coupon_warehouse_id != '' && coupon_warehouse_id != null) {
     warehouse_id.innerHTML = ""
     $(document).ready(function () {
         $.ajax({
             url:`/../companies/product/get-warehouses-by-product?product_id=${coupon_product_id}`,
             type:'GET',
             success: function (data) {
-                if(data.status == true){
-                    if(warehouse_exists.classList.contains('display-none')){
-                        warehouse_exists.classList.remove('display-none')
-                    }
-                }else{
-                    if(!warehouse_exists.classList.contains('display-none')){
-                        warehouse_exists.classList.add('display-none')
-                    }
+                if(warehouse_exists.classList.contains('display-none')){
+                    warehouse_exists.classList.remove('display-none')
                 }
+                let disabled_option = document.createElement('option')
+                disabled_option.text = text_select_product
+                disabled_option.disabled = true
+                warehouse_id.add(disabled_option)
                 let all_warehouses = document.createElement('option')
-                all_warehouses.text = text_all_products
+                all_warehouses.text = text_all_warehouses
                 all_warehouses.value = "all"
                 warehouse_id.add(all_warehouses)
                 data.data.forEach(couponAddOptionToWarehouse)
@@ -159,6 +155,12 @@ if(coupon_warehouse_id != '') {
             }
         })
     })
+}else{
+    let all_warehouses = document.createElement('option')
+    all_warehouses.text = text_all_products
+    all_warehouses.value = "all"
+    all_warehouses.selected = true
+    warehouse_id.add(all_warehouses)
 }
 
 
@@ -178,14 +180,8 @@ category_id.addEventListener('change', function () {
             url:`/../api/subcategory/${category_id.value}`,
             type:'GET',
             success: function (data) {
-                if(data.status == true){
-                    if(subcategory_exists.classList.contains('display-none')){
-                        subcategory_exists.classList.remove('display-none')
-                    }
-                }else{
-                    if(!subcategory_exists.classList.contains('display-none')){
-                        subcategory_exists.classList.add('display-none')
-                    }
+                if(subcategory_exists.classList.contains('display-none')){
+                    subcategory_exists.classList.remove('display-none')
                 }
                 let disabled_option = document.createElement('option')
                 disabled_option.text = text_select_sub_category
@@ -225,14 +221,8 @@ subcategory_id.addEventListener('change', function () {
             url:`/../api/get-products-by-category?category_id=${subcategory_id.value}`,
             type:'GET',
             success: function (data) {
-                if(data.status == true){
-                    if(product_exists.classList.contains('display-none')){
-                        product_exists.classList.remove('display-none')
-                    }
-                }else{
-                    if(!product_exists.classList.contains('display-none')){
-                        product_exists.classList.add('display-none')
-                    }
+                if(product_exists.classList.contains('display-none')){
+                    product_exists.classList.remove('display-none')
                 }
                 let disabled_option = document.createElement('option')
                 disabled_option.text = text_select_product
@@ -288,17 +278,11 @@ product_id.addEventListener('change', function () {
             url:`/../companies/product/get-warehouses-by-product?product_id=${product_id.value}`,
             type:'GET',
             success: function (data) {
-                if(data.status == true){
-                    if(warehouse_exists.classList.contains('display-none')){
-                        warehouse_exists.classList.remove('display-none')
-                    }
-                }else{
-                    if(!warehouse_exists.classList.contains('display-none')){
-                        warehouse_exists.classList.add('display-none')
-                    }
+                if(warehouse_exists.classList.contains('display-none')){
+                    warehouse_exists.classList.remove('display-none')
                 }
                 let all_warehouses = document.createElement('option')
-                all_warehouses.text = text_all_products
+                all_warehouses.text = text_all_warehouses
                 all_warehouses.value = "all"
                 warehouse_id.add(all_warehouses)
                 data.data.forEach(addOptionToWarehouse)
