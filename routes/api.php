@@ -5,7 +5,7 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
-use App\Http\Controllers\Api\CompanyController;
+use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Route;
  * Frontent  Api routes
  */
 
-Route::get('get-districts', [CompanyController::class, 'getCities']);
+Route::get('get-districts', [AddressController::class, 'getCities']);
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
@@ -65,7 +65,8 @@ Route::get('product', [ProductController::class, 'getProduct']);
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('personal-information', [UsersController::class, 'setPersonalInformation']);
     Route::get('personal-information', [UsersController::class, 'getPersonalInformation']);
-    Route::post('set-address', [UsersController::class, 'setAddress']);
+    Route::post('set-address', [AddressController::class, 'setAddress']);
+    Route::get('get-address', [AddressController::class, 'getAddress']);
 
     Route::group(['prefix' => 'order'], function () {
         Route::post('/set-warehouse', [OrderController::class, 'setWarehouse']);

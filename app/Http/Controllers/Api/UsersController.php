@@ -76,23 +76,6 @@ class UsersController extends Controller
         return $this->success($message, 200, $data);
     }
 
-    public function setAddress(Request $request){
-        $language = $request->header('language');
-        $user = Auth::user();
-        if(isset($user->address->id)){
-            $address = $user->address;
-        }else{
-            $address = new Address();
-        }
-        $address->city_id = $request->city_id;
-        $address->name = $request->name;
-        $address->user_id = $user->id;
-        $address->postcode = $request->postcode;
-        $address->save();
-        $message = translate_api('Success', $language);
-        return $this->success($message, 200, []);
-    }
-
     public function imageSave($file, $personal_info, $text){
         if (isset($file)) {
             $letters = range('a', 'z');

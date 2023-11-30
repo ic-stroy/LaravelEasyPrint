@@ -31,7 +31,6 @@
 
     <!-- icons -->
     <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
-
 </head>
 <style>
     #dropdownMenuButton{
@@ -208,11 +207,11 @@
                     <!-- item-->
                     <div class="dropdown-item noti-title">
                         <h5 class="m-0">
-                                    <span class="float-end">
-                                        <a href="" class="text-dark">
-                                            <small>{{__('Clear All')}}</small>
-                                        </a>
-                                    </span>{{__('Notification')}}
+                            <span class="float-end">
+                                <a href="" class="text-dark">
+                                    <small>{{__('Clear All')}}</small>
+                                </a>
+                            </span>{{__('Notification')}}
                         </h5>
                     </div>
 
