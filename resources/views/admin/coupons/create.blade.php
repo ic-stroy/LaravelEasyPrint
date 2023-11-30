@@ -47,7 +47,6 @@
                         <label class="form-label">{{__('Category')}}</label>
                         <select name="category_id" class="form-control" id="category_id" required>
                             <option value="" selected disabled>{{__('Select category')}}</option>
-                            <option value="all">{{__('Select all subcategories` products')}}</option>
                             @foreach($categories as $category)
                                 <option value="{{$category->id}}">{{$category->name}} {{$category->category?$category->category->name:''}}</option>
                             @endforeach

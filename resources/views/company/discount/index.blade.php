@@ -6,7 +6,7 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <h4 class="mt-0 header-title">{{__('Coupon lists')}}</h4>
+            <h4 class="mt-0 header-title">{{__('Discount lists')}}</h4>
             <div class="dropdown float-end">
                 <a class="form_functions btn btn-success" href="{{route('company_discount.create')}}">{{__('Create')}}</a>
             </div>
@@ -14,8 +14,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>{{__('Name')}}</th>
-                        <th>{{__('Coupon quantity')}}</th>
+                        <th>{{__('Discount percent')}}</th>
                         <th>{{__('Category')}}</th>
                         <th>{{__('Product')}}</th>
                         <th class="text-center">{{__('Functions')}}</th>
@@ -25,15 +24,15 @@
                     @php
                         $i = 0
                     @endphp
-                    @foreach($coupons as $coupon)
+                    @foreach($discounts as $discount)
                         @php
                             $i++;
-                            if(isset($coupon->category->id)){
-                                $category = $coupon->category->name;
+                            if(isset($discount->category->id)){
+                                $category = $discount->category->name;
                                 $subcategory = '';
-                            }elseif(isset($coupon->subCategory->id)){
-                                $category = isset($coupon->subCategory->category)?$coupon->subCategory->category->name:'';
-                                $subcategory = $coupon->subCategory->name;
+                            }elseif(isset($discount->subCategory->id)){
+                                $category = isset($discount->subCategory->category)?$discount->subCategory->category->name:'';
+                                $subcategory = $discount->subCategory->name;
                             }else{
                                 $category = '';
                                 $subcategory = '';
@@ -41,32 +40,21 @@
                         @endphp
                         <tr>
                             <td>
-                                <a class="show_page" href="{{route('coupons.show', $coupon->id)}}">
+                                <a class="show_page" href="{{route('company_discount.show', $discount->id)}}">
                                     {{$i}}
                                 </a>
                             </td>
                             <td>
-                                <a class="show_page" href="{{route('coupons.show', $coupon->id)}}">
-                                    @if(isset($coupon->name))
-                                        {{$coupon->name}}
+                                <a class="show_page" href="{{route('company_discount.show', $discount->id)}}">
+                                    @if($discount->percent != null)
+                                       {{$discount->percent}} {{translate(' %')}}
                                     @else
                                         <div class="no_text"></div>
                                     @endif
                                 </a>
                             </td>
                             <td>
-                                <a class="show_page" href="{{route('coupons.show', $coupon->id)}}">
-                                    @if ($coupon->price != null)
-                                       {{$coupon->price}} {{translate(' sum')}}
-                                    @elseif($coupon->percent != null)
-                                       {{$coupon->percent}} {{translate(' %')}}
-                                    @else
-                                        <div class="no_text"></div>
-                                    @endif
-                                </a>
-                            </td>
-                            <td>
-                                <a class="show_page" href="{{route('coupons.show', $coupon->id)}}">
+                                <a class="show_page" href="{{route('company_discount.show', $discount->id)}}">
                                     @if($category != '' || $subcategory != '')
                                         {{$category}} {{' '.$subcategory}}
                                     @else
@@ -75,19 +63,18 @@
                                 </a>
                             </td>
                             <td>
-                                <a class="show_page" href="{{route('coupons.show', $coupon->id)}}">
-                                    @if(isset($coupon->product->id))
-                                        {{$coupon->product->name}}
+                                <a class="show_page" href="{{route('company_discount.show', $discount->id)}}">
+                                    @if(isset($discount->product->id))
+                                        {{$discount->product->name}}
                                     @else
                                         {{translate('All products')}}
                                     @endif
                                 </a>
                             </td>
-
                             <td class="function_column">
                                 <div class="d-flex justify-content-center">
-                                    <a class="form_functions btn btn-info" href="{{route('coupons.edit', $coupon->id)}}"><i class="fe-edit-2"></i></a>
-                                    <form action="" method="POST">
+                                    <a class="form_functions btn btn-info" href="{{route('company_discount.edit', $discount->id)}}"><i class="fe-edit-2"></i></a>
+                                    <form action="{{route('company_discount.destroy', $discount->id)}}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button class="form_functions btn btn-danger" type="submit"><i class="fe-trash-2"></i></button>

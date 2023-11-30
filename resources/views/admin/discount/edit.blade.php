@@ -1,4 +1,4 @@
-@extends('layout.layout')
+@extends('company.layout.layout')
 
 @section('title')
     {{-- Your page title --}}
@@ -18,20 +18,14 @@
             <p class="text-muted font-14">
                 {{translate('Discount list edit')}}
             </p>
-            <form action="{{route('company_discount.update', $coupon->id)}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
+            <form action="{{route('discount.update', $discount->id)}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method("PUT")
                 <div class="row">
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{translate('Coupon name')}}</label>
-                        <input type="text" name="name" class="form-control" required value="{{$coupon->name}}"/>
+                        <label class="form-label">{{translate('Discount percent')}}</label>
+                        <input type="number" name="percent" value="{{$discount->percent}}" class="form-control" min="0" max="100"/>
                     </div>
-                    <div class="mb-3 col-6">
-                        <label class="form-label">{{translate('Coupon percent')}}</label>
-                        <input type="number" name="percent" value="{{$coupon->percent}}" class="form-control" min="0" max="100"/>
-                    </div>
-                </div>
-                <div class="row">
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Category')}}</label>
                         <select name="category_id" class="form-control" id="category_id" required>
@@ -51,10 +45,6 @@
                         <label class="form-label">{{translate('Products')}}</label>
                         <select name="product_id" class="form-control" id="product_id"></select>
                     </div>
-                    <div class="mb-3 col-6 display-none" id="warehouse_exists">
-                        <label class="form-label">{{translate('Warehouses')}}</label>
-                        <select name="warehouse_id" class="form-control" id="warehouse_id"></select>
-                    </div>
                 </div>
                 <div>
                     <button type="submit" class="btn btn-primary waves-effect waves-light">{{translate('Update')}}</button>
@@ -65,6 +55,16 @@
     </div>
     <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
     <script>
-
+        let super_admin = true
+        let coupon_category_id = "{{$category_id}}"
+        let coupon_subcategory_id = "{{$subcategory_id}}"
+        let coupon_product_id = "{{$discount->product_id}}"
+        let coupon_price_value = "{{$discount->price??''}}"
+        let coupon_percent_value = "{{$discount->percent??''}}"
+        let text_select_sub_category = "{{translate('Select sub category')}}"
+        let text_all_subcategory_products = "{{translate('All subcategories`s products')}}"
+        let text_all_products = "{{translate('All products')}}"
+        let text_select_product = "{{translate('Select product')}}"
     </script>
+    <script src="{{asset('assets/js/discount.js')}}"></script>
 @endsection

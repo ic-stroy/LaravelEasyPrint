@@ -18,4 +18,17 @@ class Discount extends Model
       'category_id',
       'company_id'
     ];
+
+    public function product(){
+        return $this->hasOne(Products::class, 'id', 'product_id');
+    }
+    public function company(){
+        return $this->hasOne(Company::class, 'id', 'company_id');
+    }
+    public function category(){
+        return $this->hasOne(Category::class, 'id', 'category_id')->where('step', 0);
+    }
+    public function subCategory(){
+        return $this->hasOne(Category::class, 'id', 'category_id')->where('step', 1);
+    }
 }

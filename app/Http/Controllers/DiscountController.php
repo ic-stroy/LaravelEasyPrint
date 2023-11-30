@@ -10,14 +10,10 @@ use Illuminate\Support\Facades\Auth;
 
 class DiscountController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $user = auth()->user();
-        $coupons = Discount::where('company_id', $user->company_id)->get();
-        return view('admin.coupons.index', ['coupons'=> $coupons]);
+        $discounts = Discount::where('company_id', NULL)->get();
+        return view('admin.discount.index', ['discounts'=> $discounts]);
     }
 
     /**
@@ -26,7 +22,7 @@ class DiscountController extends Controller
     public function create()
     {
         $categories = Category::where('parent_id', 0)->orderBy('id', 'asc')->get();
-        return view('admin.coupons.create', ['categories'=> $categories]);
+        return view('admin.discount.create', ['categories'=> $categories]);
     }
 
     /**
@@ -34,7 +30,6 @@ class DiscountController extends Controller
      */
     public function store(Request $request)
     {
-        $user = auth()->user();
         $discount = new Discount();
         $discount->percent = $request->percent;
         if (isset($request->subcategory_id) && $request->subcategory_id != "all" && $request->subcategory_id != ""){
@@ -45,9 +40,8 @@ class DiscountController extends Controller
         }else{
             $discount->category_id = $request->category_id;
         }
-        $discount->company_id = $user->company_id;
         $discount->save();
-        return redirect()->route('company_coupon.index')->with('status', __('Successfully created'));
+        return redirect()->route('discount.index')->with('status', __('Successfully created'));
     }
 
     /**
@@ -66,7 +60,7 @@ class DiscountController extends Controller
             $category = '';
             $subcategory = '';
         }
-        return view('company.coupons.show', ['model'=>$model, 'category'=>$category, 'subcategory'=>$subcategory]);
+        return view('admin.discount.show', ['model'=>$model, 'category'=>$category, 'subcategory'=>$subcategory]);
     }
 
     /**
@@ -74,20 +68,19 @@ class DiscountController extends Controller
      */
     public function edit(string $id)
     {
-        $user = Auth::user();
-        $coupon = Discount::where('company_id', $user->company_id)->find($id);
+        $discount = Discount::where('company_id', NULL)->find($id);
         $categories = Category::where('parent_id', 0)->orderBy('id', 'asc')->get();
-        if(isset($coupon->category->id)){
-            $category_id = $coupon->category->id;
+        if(isset($discount->category->id)){
+            $category_id = $discount->category->id;
             $subcategory_id = '';
-        }elseif(isset($coupon->subCategory->id)){
-            $category_id = isset($coupon->subCategory->category)?$coupon->subCategory->category->id:'';
-            $subcategory_id = $coupon->subCategory->id;
+        }elseif(isset($discount->subCategory->id)){
+            $category_id = isset($discount->subCategory->category)?$discount->subCategory->category->id:'';
+            $subcategory_id = $discount->subCategory->id;
         }else {
             $category_id = '';
             $subcategory_id = '';
         }
-        return view('company.coupons.edit', ['coupon'=> $coupon, 'categories'=>$categories, 'category_id'=>$category_id, 'subcategory_id'=>$subcategory_id]);
+        return view('admin.discount.edit', ['discount'=> $discount, 'categories'=>$categories, 'category_id'=>$category_id, 'subcategory_id'=>$subcategory_id]);
     }
 
     /**
@@ -95,24 +88,21 @@ class DiscountController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $user = auth()->user();
-        $coupon = Discount::find($id);
-        $coupon->name = $request->name;
-        $coupon->percent = $request->percent;
+        $discount = Discount::find($id);
+        $discount->percent = $request->percent;
         if (isset($request->subcategory_id) && $request->subcategory_id != "all" && $request->subcategory_id != ""){
-            $coupon->category_id = $request->subcategory_id;
+            $discount->category_id = $request->subcategory_id;
             if (isset($request->product_id) && $request->product_id != "all" && $request->product_id != "") {
-                $coupon->product_id = $request->product_id;
+                $discount->product_id = $request->product_id;
             }else{
-                $coupon->product_id = NULL;
+                $discount->product_id = NULL;
             }
         }else{
-            $coupon->category_id = $request->category_id;
-            $coupon->product_id = NULL;
+            $discount->category_id = $request->category_id;
+            $discount->product_id = NULL;
         }
-        $coupon->company_id = $user->company_id;
-        $coupon->save();
-        return redirect()->route('company_coupon.index')->with('status', __('Successfully created'));
+        $discount->save();
+        return redirect()->route('discount.index')->with('status', __('Successfully created'));
     }
 
 
@@ -123,6 +113,6 @@ class DiscountController extends Controller
     {
         $model = Discount::find($id);
         $model->delete();
-        return redirect()->route('company_coupon.index')->with('status', __('Successfully created'));
+        return redirect()->route('discount.index')->with('status', __('Successfully created'));
     }
 }
