@@ -23,6 +23,7 @@ class UsersController extends Controller
         $personal_info->last_name = $request->last_name;
         $personal_info->phone_number = $request->phone_number;
         $personal_info->gender = $request->gender;
+        $personal_info->email = $request->email;
 
         $file = $request->file('image');
         $this->imageSave($file, $personal_info, 'update');
@@ -64,8 +65,9 @@ class UsersController extends Controller
                 "last_name" => $user->personalInfo->last_name??null,
                 "phone_number" => $user->personalInfo->phone_number??null,
                 "gender" => $gender,
+                "email" => $user->personalInfo->email??null,
                 "image"=>$user_image,
-                "birth_date"=>$user->personalInfo->birth_date
+                "birth_date"=>explode(' ', $user->personalInfo->birth_date??' ')[0]
             ];
         }else{
             $data = [];

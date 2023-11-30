@@ -175,7 +175,7 @@ class CompanyUsersController extends Controller
         $address->postcode = $request->postcode;
         $address->latitude = $request->address_lat;
         $address->longitude = $request->address_long;
-        $address->user_id = $user->id;
+        $address->user_id = $model->id;
         $address->save();
         return redirect()->route('company_user.index')->with('status', __('Successfully updated'));
     }
