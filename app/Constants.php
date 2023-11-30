@@ -22,4 +22,16 @@ class Constants {
 
     const MALE = 1;
     const FEMALE = 2;
+
+    //User roles
+
+    const SUPER_ADMIN = 1;
+    const ADMIN = 1;
+    const MANAGER = 1;
+    const USER = 1;
+
+    //    Uploads relation_type
+    const PRODUCT ="products";
+    const WAREHOUSE ="warehouses";
+
 }

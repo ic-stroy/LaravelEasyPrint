@@ -65,6 +65,7 @@ class CompanyUsersController extends Controller
         $model->phone_number = $request->phone_number;
         $model->language = 'ru';
         $model->company_id = $user->company_id;
+        $model->save();
 
         $address = new Address();
         $address->city_id = $request->district;
@@ -72,9 +73,8 @@ class CompanyUsersController extends Controller
         $address->postcode = $request->postcode;
         $address->latitude = $request->address_lat;
         $address->longitude = $request->address_long;
+        $address->user_id = $model->id;
         $address->save();
-        $model->address_id = $address->id;
-        $model->save();
         return redirect()->route('company_user.index')->with('status', __('Successfully created'));
     }
 
@@ -115,6 +115,7 @@ class CompanyUsersController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
+
     public function edit(string $id)
     {
         $companies = Company::all();
@@ -163,7 +164,7 @@ class CompanyUsersController extends Controller
         $model->phone_number = $request->phone_number;
         $model->language = 'ru';
         $model->company_id = $user->company_id;
-
+        $model->save();
         if(isset($model->address->id)){
             $address = $model->address;
         }else{
@@ -174,9 +175,8 @@ class CompanyUsersController extends Controller
         $address->postcode = $request->postcode;
         $address->latitude = $request->address_lat;
         $address->longitude = $request->address_long;
+        $address->user_id = $user->id;
         $address->save();
-        $model->address_id = $address->id;
-        $model->save();
         return redirect()->route('company_user.index')->with('status', __('Successfully updated'));
     }
 

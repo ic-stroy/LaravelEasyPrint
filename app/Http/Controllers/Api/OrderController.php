@@ -82,8 +82,8 @@ class OrderController extends Controller
             foreach ($images_print as $image_print){
                 $uploads = new Uploads();
                 $uploads->image = $this->saveImage($image_print, 'print');
-                $uploads->relation_type = 1;
-                $uploads->relation_id = $order_detail->id;
+                $uploads->relation_type = Constants::PRODUCT;
+                $uploads->relation_id = $request->product_id;
                 $uploads->save();
             }
         }
