@@ -94,7 +94,7 @@
                     <div class="mb-3 col-6">
                         <label for="role" class="form-label">{{__("Users' role")}}</label><br>
                         <select id="role_id" class="form-select" name="role_id">
-                            <option value="" disabled selected>{{__('Choose..')}}</option>
+                            <option value="" disabled>{{__('Choose..')}}</option>
                             @foreach($roles as $role)
                                 <option {{$user->role_id == $role->id?'selected':''}} value="{{$role->id}}">{{$role->name}}</option>
                             @endforeach
@@ -103,7 +103,7 @@
                     <div class="mb-3 col-6 display-none" id="company_content">
                         <label for="company_id" class="form-label">{{__("Select Company")}}</label><br>
                         <select id="company_id" class="form-select" name="company_id">
-                            <option value="">{{__('Choose..')}}</option>
+                            <option value="" disabled>{{__('Choose..')}}</option>
                             @foreach($companies as $company)
                                 <option value="{{$company->id}}" {{$user->company_id==$company->id??'selected'}}>{{$company->name}}</option>
                             @endforeach

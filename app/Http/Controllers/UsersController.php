@@ -62,19 +62,16 @@ class UsersController extends Controller
         $model->phone_number = $request->phone_number;
         $model->language = 'ru';
         $model->company_id = $request->company_id;
-
+        $model->save();
         $address = new Address();
         $address->city_id = $request->district;
         $address->name = $request->address_name;
         $address->postcode = $request->postcode;
         $address->latitude = $request->address_lat;
         $address->longitude = $request->address_long;
+        $address->user_id = $model->id;
         $address->save();
-
-        $model->address_id = $address->id;
-        $model->save();
-
-        return redirect()->route('user.index')->with('status', __('Successfully created'));
+        return redirect()->route('user.category.user', $request->role_id)->with('status', __('Successfully created'));
     }
 
     /**
@@ -161,7 +158,7 @@ class UsersController extends Controller
         $model->phone_number = $request->phone_number;
         $model->language = 'ru';
         $model->company_id = $request->company_id;
-
+        $model->save();
         if(isset($model->address->id)){
             $address = $model->address;
         }else{
@@ -172,10 +169,9 @@ class UsersController extends Controller
         $address->postcode = $request->postcode;
         $address->latitude = $request->address_lat;
         $address->longitude = $request->address_long;
+        $address->user_id = $model->id;
         $address->save();
-        $model->address_id = $address->id;
-        $model->save();
-        return redirect()->route('user.index')->with('status', __('Successfully updated'));
+        return redirect()->route('user.category.user', $request->role_id)->with('status', __('Successfully updated'));
     }
 
     public function imageSave($file, $personal_info, $text){
@@ -228,7 +224,7 @@ class UsersController extends Controller
         if(isset($address->id)){
             $address->delete();
         }
-        return redirect()->route('user.index')->with('status', __('Successfully deleted'));
+        return redirect()->route('user.category.user', $model->role_id)->with('status', __('Successfully deleted'));
     }
 
     public function category()
