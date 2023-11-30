@@ -476,7 +476,7 @@ class OrderController extends Controller
 
         $order_detail_id=$request->order_detail_id;
 
-        if ($order_detail=DB::table('order_details')->where('id',$order_detail_id)->first()) {
+        if ($order_detail=OrderDetail::where('id',$order_detail_id)->first()) {
 
            if ($order_detail->warehouse_id != null) {
                $warehouse=DB::table('warehouses')->where('id',$order_detail->warehouse_id)->first();
@@ -488,20 +488,23 @@ class OrderController extends Controller
                return $this->success($message, 200);
 
            }
-           $upload=DB::table('uploads')->where('relation_type',Constants::PRODUCT)->where('relation_id',$order_detail->product_id)->first();
+           //    dd($order_detail);
+           $upload=Uploads::where('relation_type',Constants::PRODUCT)
+           ->where('relation_id',$order_detail->product_id)
+           ->first();
+           //    dd($upload);
            $upload->delete();
            $order_detail->delete();
 
-
+           $message=translate_api('order detail deleted',$language);
+           return $this->success($message, 200);
             // dd($order_detail);
         }
-        return "order_detail not found";
-            // dd($order_detail_id);
 
-
+        $message=translate_api('order_detail not found',$language);
+        return $this->error($message, 400);
 
     }
-
 
 
 }
