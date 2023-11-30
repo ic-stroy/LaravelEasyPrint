@@ -16,7 +16,7 @@ class Uploads extends Model
       'id',
       'status',
       'image',
-      'relation_type',   // 1 order_detail  2// warehouse
+      'relation_type',
       'relation_id',
       'created_at',
       'updated_at',
