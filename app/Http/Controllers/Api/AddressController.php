@@ -37,10 +37,11 @@ class AddressController extends Controller
     public function setAddress(Request $request){
         $language = $request->header('language');
         $user = Auth::user();
-        if(isset($user->address->id)){
-            $address = $user->address;
-        }else{
-            $address = new Address();
+        $address = new Address();
+        $cities = Cities::find($request->city_id);
+        if(!isset($cities->id)){
+            $message = translate_api('City or Region not found', $language);
+            return $this->error($message, 400);
         }
         $address->city_id = $request->city_id;
         $address->name = $request->name;
@@ -49,6 +50,28 @@ class AddressController extends Controller
         $address->save();
         $message = translate_api('Success', $language);
         return $this->success($message, 200, []);
+    }
+
+    public function editAddress(Request $request){
+        $language = $request->header('language');
+        $user = Auth::user();
+        $address = Address::where('user_id', $user->id)->find($request->id);
+        if(!isset($address->id)){
+            $message = translate_api('Address not found', $language);
+            return $this->error($message, 400);
+        }
+        $cities = Cities::find($request->city_id);
+        if(!isset($cities->id)){
+            $message = translate_api('City or Region not found', $language);
+            return $this->error($message, 400);
+        }
+        $address->city_id = $request->city_id;
+        $address->name = $request->name;
+        $address->user_id = $user->id;
+        $address->postcode = $request->postcode;
+        $address->save();
+        $message = translate_api('Success', $language);
+        return $this->success($message, 200);
     }
 
     public function getAddress(Request $request){
