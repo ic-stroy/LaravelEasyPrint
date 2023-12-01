@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('get-districts', [AddressController::class, 'getCities']);
 
+Route::post('phone-register', [AuthController::class, 'PhoneRegister']);
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::get('/googleauth', [AuthController::class, 'redirectGoogle'])->name('redirectGoogle');
@@ -60,7 +61,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('update-card', [CardController::class, 'updateCard']);
     Route::get('show-card', [CardController::class, 'showCard']);
     Route::post('destroy-card', [CardController::class, 'destroyCard']);
-
     Route::group(['prefix' => 'order'], function () {
         Route::post('/set-warehouse', [OrderController::class, 'setWarehouse']);
         Route::post('connection/to_order', [OrderController::class, 'connectOrder']);
