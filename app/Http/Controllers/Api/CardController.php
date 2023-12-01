@@ -3,63 +3,102 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\UserCard;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CardController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function getCards(Request $request)
     {
-        //
+        $language = $request->header('language');
+        $user = Auth::user();
+        $user_cards = UserCard::where('user_id', $user->id)->get();
+        $data = [];
+        foreach ($user_cards as $user_card){
+            $data[] = [
+              'id'=>$user_card->id,
+              'name'=>$user_card->name??null,
+              'card_number'=>$user_card->card_number??null,
+              'validity_period'=>$user_card->validity_period??null,
+              'user_id'=>$user_card->user_id??null,
+            ];
+        }
+        $message = translate_api('Success', $language);
+        return $this->success($message, 200, $data);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function storeCard(Request $request)
     {
-        //
+        $language = $request->header('language');
+        $user = Auth::user();
+        $user_card = new UserCard();
+        $user_card->name = $request->name;
+        $user_card->card_number = $request->card_number;
+        $user_card->validity_period = $request->validity_period;
+        $user_card->user_id = $user->id;
+        $user_card->save();
+        $message = translate_api('Success', $language);
+        return $this->success($message, 200);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function showCard(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        $language = $request->header('language');
+        $user = Auth::user();
+        $user_card = UserCard::where('user_id', $user->id)->find($request->id);
+        if(isset($user_card->id)){
+            $data = [
+                'id'=>$user_card->id,
+                'name'=>$user_card->name??null,
+                'card_number'=>$user_card->card_number??null,
+                'validity_period'=>$user_card->validity_period??null,
+                'user_id'=>$user_card->user_id??null,
+            ];
+        }else{
+            $data = [];
+        }
+        $message = translate_api('Success', $language);
+        return $this->success($message, 200, $data);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function updateCard(Request $request)
     {
-        //
+        $language = $request->header('language');
+        $user = Auth::user();
+        $user_card = UserCard::where('user_id', $user->id)->find($request->id);
+        $user_card->name = $request->name;
+        $user_card->card_number = $request->card_number;
+        $user_card->validity_period = $request->validity_period;
+        $user_card->user_id = $user->id;
+        $user_card->save();
+        $message = translate_api('Success', $language);
+        return $this->success($message, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroyCard(Request $request)
     {
-        //
+        $language = $request->header('language');
+        $user = Auth::user();
+        $user_card = UserCard::where('user_id', $user->id)->find($request->id);
+        $user_card->delete();
+        $message = translate_api('Success', $language);
+        return $this->success($message, 200, $user_card);
     }
 }

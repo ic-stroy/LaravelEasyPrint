@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\UsersController;
+use App\Http\Controllers\Api\CardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,24 +33,10 @@ Route::post('login', [AuthController::class, 'login']);
 Route::get('/googleauth', [AuthController::class, 'redirectGoogle'])->name('redirectGoogle');
 Route::get('/googleauth/callback', [AuthController::class, 'callbackGoogle'])->name('callbackGoogle');
 Route::get('/googleauth/user', [AuthController::class, 'responseUser'])->name('responseUser');
-// Route::group(['prefix' => 'header'], function () {
-//     Route::get('/list', [ProductController::class, 'index']);
-//     // Route::get('/show/{id}', [CompanyProductsController::class, 'show'])->name('company_product.show');
-//     // Route::get('/edit/{id}', [CompanyProductsController::class, 'edit'])->name('company_product.edit');
-//     // Route::get('/create', [CompanyProductsController::class, 'create'])->name('company_product.create');
-//     // Route::post('/store', [CompanyProductsController::class, 'store'])->name('company_product.store');
-//     // Route::post('/update/{id}', [CompanyProductsController::class, 'update'])->name('company_product.update');
-// });
 
 Route::group(['prefix' => 'product'], function () {
     Route::get('/list', [ProductController::class, 'index']);
     Route::get('/show/warehouse_product', [ProductController::class, 'show']);
-
-    // Route::get('/show/{id}', [CompanyProductsController::class, 'show'])->name('company_product.show');
-    // Route::get('/edit/{id}', [CompanyProductsController::class, 'edit'])->name('company_product.edit');
-    // Route::get('/create', [CompanyProductsController::class, 'create'])->name('company_product.create');
-    // Route::post('/store', [CompanyProductsController::class, 'store'])->name('company_product.store');
-    // Route::post('/update/{id}', [CompanyProductsController::class, 'update'])->name('company_product.update');
 });
 
 Route::get('get-categories-by-product/{id}', [ProductController::class, 'getCategoriesByProduct'])->name('get_categories_by_product');
@@ -68,6 +55,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('set-address', [AddressController::class, 'setAddress']);
     Route::post('edit-address', [AddressController::class, 'editAddress']);
     Route::get('get-address', [AddressController::class, 'getAddress']);
+    Route::get('get-cards', [CardController::class, 'getCards']);
+    Route::post('store-card', [CardController::class, 'storeCard']);
+    Route::post('update-card', [CardController::class, 'updateCard']);
+    Route::get('show-card', [CardController::class, 'showCard']);
+    Route::post('destroy-card', [CardController::class, 'destroyCard']);
 
     Route::group(['prefix' => 'order'], function () {
         Route::post('/set-warehouse', [OrderController::class, 'setWarehouse']);
