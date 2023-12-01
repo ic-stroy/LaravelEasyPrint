@@ -31,7 +31,7 @@
                 <div class="row">
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('First name')}}</label>
-                        <input type="text" class="form-control" name="first_name" id="first_name"  value="{{old('first_name')}}"/>
+                        <input type="text" class="form-control" name="first_name" id="first_name" required value="{{old('first_name')}}"/>
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Last name')}}</label>
@@ -41,13 +41,13 @@
                 <div class="row">
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Region')}}</label>
-                        <select name="region_id" class="form-control" id="region_id" >
+                        <select name="region_id" class="form-control" id="region_id" required>
                             <option disabled selected>{{__('Select region')}}</option>
                         </select>
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('District')}}</label>
-                        <select name="district_id" class="form-control" id="district_id" >
+                        <select name="district_id" class="form-control" id="district_id" required>
                             <option disabled selected>{{__('Select district')}}</option>
                         </select>
                     </div>
@@ -79,7 +79,7 @@
                 <div class="row">
                     <div class="mb-3 col-6">
                         <label for="role_id" class="form-label">{{__("Users' role")}}</label><br>
-                        <select id="role_id" class="form-select" name="role_id" >
+                        <select id="role_id" class="form-select" name="role_id" required>
                             <option value="" disabled selected>{{__('Choose..')}}</option>
                             @foreach($roles as $role)
                                 <option value="{{$role->id}}">{{$role->name}}</option>
@@ -103,17 +103,17 @@
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Login')}}</label>
-                        <input type="email" class="form-control" name="email"  value="{{old('login')}}"/>
+                        <input type="email" class="form-control" name="email" required value="{{old('login')}}"/>
                     </div>
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Password')}}</label>
-                        <input type="password" class="form-control" name="password"  value="{{old('password')}}"/>
+                        <input type="password" class="form-control" name="password" required value="{{old('password')}}"/>
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{__('Password confirmation')}}</label>
-                        <input type="password" class="form-control" name="password_confirmation"  value="{{old('password_confirmation')}}"/>
+                        <input type="password" class="form-control" name="password_confirmation" required value="{{old('password_confirmation')}}"/>
                     </div>
                 </div>
                 <div class="row">
@@ -161,7 +161,7 @@
             if(company_content.classList.contains('display-none')){
                 company_content.classList.remove('display-none')
             }
-            if(!company_id.hasAttribute('')){
+            if(!company_id.hasAttribute('required')){
                 company_id.required = true
             }
         }
@@ -170,14 +170,14 @@
                 if(company_content.classList.contains('display-none')){
                     company_content.classList.remove('display-none')
                 }
-                if(!company_id.hasAttribute('')){
+                if(!company_id.hasAttribute('required')){
                     company_id.required = true
                 }
             }else{
                 if(!company_content.classList.contains('display-none')){
                     company_content.classList.add('display-none')
                 }
-                if(company_id.hasAttribute('')){
+                if(company_id.hasAttribute('required')){
                     company_id.required = false
                 }
             }

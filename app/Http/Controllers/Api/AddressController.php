@@ -136,10 +136,12 @@ class AddressController extends Controller
         $user = Auth::user();
         $address = Address::where('user_id', $user->id)->find($request->id);
         if(count($address)>0){
-
+            $address->delete();
+            $message = translate_api('Success', $language);
+            return $this->success($message, 200);
+        }else{
+            $message = translate_api('No address', $language);
+            return $this->error($message, 400);
         }
-        $address->delete();
-        $message = translate_api('Success', $language);
-        return $this->success($message, 200);
     }
 }
