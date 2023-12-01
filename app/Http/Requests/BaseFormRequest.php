@@ -14,10 +14,10 @@ class BaseFormRequest extends FormRequest
      *
      * @return bool
      */
-//     public function authorize()
-//     {
-//         return true;
-//     }
+     public function authorize()
+     {
+         return true;
+     }
 
     /**
      * Get the validation rules that apply to the request.
@@ -31,7 +31,7 @@ class BaseFormRequest extends FormRequest
         if ($this->method() === 'PUT' || $this->method() === 'PATCH') return $this->update();
     }
 
-     /**
+    /**
      * Get the validation rules that apply to the get request.
      *
      * @return array

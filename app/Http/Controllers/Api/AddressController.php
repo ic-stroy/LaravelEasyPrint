@@ -30,8 +30,13 @@ class AddressController extends Controller
                 'cities'=>$cities_,
             ];
         }
-        $message = translate_api('Success', $language);
-        return $this->success($message, 200, $data);
+        if(count($data)>0){
+            $message = translate_api('Success', $language);
+            return $this->success($message, 200, $data);
+        }else{
+            $message = translate_api('No cities', $language);
+            return $this->error($message, 400);
+        }
     }
 
     public function setAddress(Request $request){
@@ -117,8 +122,24 @@ class AddressController extends Controller
                 'postcode'=>$address_->postcode??null,
             ];
         }
+        if(count($address)>0){
+            $message = translate_api('Success', $language);
+            return $this->success($message, 200, $address);
+        }else{
+            $message = translate_api('No address', $language);
+            return $this->error($message, 400);
+        }
+    }
 
+    public function destroy(Request $request){
+        $language = $request->header('language');
+        $user = Auth::user();
+        $address = Address::where('user_id', $user->id)->find($request->id);
+        if(count($address)>0){
+
+        }
+        $address->delete();
         $message = translate_api('Success', $language);
-        return $this->success($message, 200, $address);
+        return $this->success($message, 200);
     }
 }

@@ -49,20 +49,19 @@ class UsersController extends Controller
         $personal_info->middle_name = $request->middle_name;
         $personal_info->phone_number = $request->phone_number;
         $file = $request->file('avatar');
-        $this->imageSave($file, $personal_info, 'store');
+//        $this->imageSave($file, $personal_info, 'store');
         $personal_info->gender = $request->gender;
         $personal_info->birth_date = $request->birth_date;
-        $personal_info->save();
+//        $personal_info->save();
 
         $model = new User();
         $model->email =  $request->email;
-        $model->password = Hash::make($request->password);
         $model->role_id = $request->role_id;
         $model->personal_info_id = $personal_info->id;
         $model->phone_number = $request->phone_number;
         $model->language = 'ru';
         $model->company_id = $request->company_id;
-        $model->save();
+//        $model->save();
         $address = new Address();
         $address->city_id = $request->district;
         $address->name = $request->address_name;
@@ -70,8 +69,8 @@ class UsersController extends Controller
         $address->latitude = $request->address_lat;
         $address->longitude = $request->address_long;
         $address->user_id = $model->id;
-        $address->save();
-        return redirect()->route('user.category.user', $request->role_id)->with('status', __('Successfully created'));
+//        $address->save();
+        return redirect()->route('user.category.user', $request->role_id)->with('status', translate('Successfully created'));
     }
 
     /**
