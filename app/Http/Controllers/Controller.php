@@ -20,11 +20,18 @@ class Controller extends BaseController
     }
     public function success(string $message, int $error_type, array $data = null)
     {
+        if ($data) {
+            return response()->json([
+                'data' => $data ?? NULL,
+                'status' => true,
+                'message' => $message ?? 'success'
+            ], 200, [], JSON_INVALID_UTF8_SUBSTITUTE); // $error_type
+        }
         return response()->json([
-            'data' => $data ?? NULL,
             'status' => true,
             'message' => $message ?? 'success'
         ], 200, [], JSON_INVALID_UTF8_SUBSTITUTE); // $error_type
+
     }
 
 }
