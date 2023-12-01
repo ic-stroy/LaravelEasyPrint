@@ -13,7 +13,6 @@ class Controller extends BaseController
     public function error(string $message, int $error_type, array $data = null)
     {
         return response()->json([
-            'data' => $data ?? NULL,
             'status' => false,
             'message' => $message ?? 'error occured'
         ], $error_type, [], JSON_INVALID_UTF8_SUBSTITUTE);
