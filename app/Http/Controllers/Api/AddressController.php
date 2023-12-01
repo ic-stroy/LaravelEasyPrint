@@ -135,7 +135,7 @@ class AddressController extends Controller
         $language = $request->header('language');
         $user = Auth::user();
         $address = Address::where('user_id', $user->id)->find($request->id);
-        if(count($address)>0){
+        if(isset($address->id)){
             $address->delete();
             $message = translate_api('Success', $language);
             return $this->success($message, 200);
