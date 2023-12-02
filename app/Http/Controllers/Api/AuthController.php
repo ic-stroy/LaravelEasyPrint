@@ -3,17 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\EskizToken;
 use App\Models\PersonalInfo;
 use App\Models\User;
 use App\Models\UserVerify;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use GuzzleHttp\Psr7\Request as GuzzleRequest;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
 use function auth;
 use function bcrypt;
-use function response;
 
 class AuthController extends Controller
 {
@@ -78,7 +78,7 @@ class AuthController extends Controller
                 ],
                 [
                     'name' => 'message',
-                    'contents' => translate_api('Easy Go - Sizni bir martalik tasdiqlash kodingiz', $language).': '.$random
+                    'contents' => translate_api('Easy Print - Sizni bir martalik tasdiqlash kodingiz', $language).': '.$random
                 ],
                 [
                     'name' => 'from',
@@ -96,6 +96,91 @@ class AuthController extends Controller
             return $this->success("Success", 200, ['Verify_code'=>$random]);
         }else{
             return $this->error(translate_api("Fail message not sent. Try again", $language), 400);
+        }
+    }
+
+    public function loginToken(Request $request){
+        date_default_timezone_set("Asia/Tashkent");
+        $language = $request->header('language');
+        $fields = $request->validate([
+            'phone_number'=>'required',
+            'verify_code'=>'required',
+            'device_type'=>'nullable',
+            'device_id'=>'nullable',
+        ]);
+        $model = UserVerify::withTrashed()->where('phone_number', (int)$fields['phone_number'])->first();
+        if(isset($model->id)){
+            if(strtotime('-7 minutes') > strtotime($model->updated_at)){
+                $model->verify_code = rand(100000, 999999);
+                $model->save();
+                return $this->error(translate_api('Your sms code expired. Resend sms code', $language), 400);
+            }
+            if(isset($model->deleted_at)){
+                $model->deleted_at = NULL;
+            }
+            if($model->verify_code == $fields['verify_code']){
+                $is_registred = false;
+                $user = User::withTrashed()->find($model->user_id);
+                if(!isset($user->id)){
+                    $new_user = new User();
+                    $personal_info = new PersonalInfo();
+                    $personal_info->phone_number = (int)$fields['phone_number'];
+                    $personal_info->save();
+                    $new_user->personal_info_id = $personal_info->id;
+                    $personal_info->phone_number = (int)$fields['phone_number'];
+                    $personal_info->save();
+                    $new_user->personal_info_id = $personal_info->id;
+                    $new_user->rating = 4.5;
+                    $new_user->language = $request->header('language');
+                    $new_user->save();
+                    $model->user_id = $new_user->id;
+                    $model->save();
+                    $new_user->email = $model->phone_number;
+                    $new_user->password = Hash::make($model->verify_code);
+                    $token = $new_user->createToken('myapptoken')->plainTextToken;
+                    $new_user->token = $token;
+                    $new_user->save();
+                    $message = 'Success';
+                    return $this->success($message, 201, ['token'=>$token, 'is_registred'=>$is_registred]);
+                }else{
+                    $is_registred = true;
+                    if(isset($user->deleted_at)){
+                        $user->deleted_at = NULL;
+                    }
+                    $user->email = $model->phone_number;
+                    if(!isset($user->personal_info_id)){
+                        $personal_info = new PersonalInfo();
+                        $personal_info->phone_number = (int)$fields['phone_number'];
+                        $personal_info->save();
+                        $user->personal_info_id = $personal_info->id;
+                    }else{
+                        $personal_info = PersonalInfo::withTrashed()->find($user->personal_info_id);
+                        if(!isset($personal_info->id)){
+                            $personal_info = new PersonalInfo();
+                            $personal_info->phone_number = (int)$fields['phone_number'];
+                            $personal_info->save();
+                            $user->personal_info_id = $personal_info->id;
+                        }elseif(isset($personal_info->deleted_at)){
+                            $personal_info->deleted_at = NULL;
+                        }
+                    }
+                    $personal_info->save();
+                    $user->password = Hash::make($model->verify_code);
+                    $token = $user->createToken('myapptoken')->plainTextToken;
+                    $user->token = $token;
+                    $user->language = $request->header('language');
+                    $user->save();
+                    $model->save();
+                    $message = 'Success';
+                    return $this->success($message, 201, ['token'=>$token, 'is_registred'=>$is_registred]);
+                }
+            }else{
+                $message = "Failed your token didn't match";
+                return $this->error(translate_api($message, $language), 400);
+            }
+        }else{
+            $message = "Failed your token didn't match";
+            return $this->error(translate_api($message, $language), 400);
         }
     }
 
