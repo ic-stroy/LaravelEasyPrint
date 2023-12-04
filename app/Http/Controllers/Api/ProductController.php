@@ -7,7 +7,7 @@ use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use App\Constants;
 use App\Models\Products;
 
 
@@ -33,28 +33,28 @@ class ProductController extends Controller
                 'images' => $this->getImages($product_, 'product')
             ];
         }
-        $warehouse_products_=DB::table('warehouses')
-            ->select('product_id', 'id', 'name', 'price', 'images')
-            ->distinct('product_id')
-            ->get();
-        $warehouse_products = [];
-        foreach ($warehouse_products_ as $warehouse_product_){
-            if(count($this->getImages($warehouse_product_, 'warehouse'))>0){
-                $warehouseProducts = $this->getImages($warehouse_product_, 'warehouse');
-            }else{
-                $warehouseProducts = $this->getImages($product_, 'product');
-            }
-            $warehouse_products[] = [
-                'product_id' => $warehouse_product_->product_id,
-                'id' => $warehouse_product_->id,
-                'name' => $warehouse_product_->name,
-                'price' => $warehouse_product_->price,
-                'images' => $warehouseProducts
-            ];
+        // $warehouse_products_=DB::table('warehouses')
+        //     ->select('product_id', 'id', 'name', 'price', 'images')
+        //     ->distinct('product_id')
+        //     ->get();
+        // $warehouse_products = [];
+        // foreach ($warehouse_products_ as $warehouse_product_){
+        //     if(count($this->getImages($warehouse_product_, 'warehouse'))>0){
+        //         $warehouseProducts = $this->getImages($warehouse_product_, 'warehouse');
+        //     }else{
+        //         $warehouseProducts = $this->getImages($product_, 'product');
+        //     }
+        //     $warehouse_products[] = [
+        //         'product_id' => $warehouse_product_->product_id,
+        //         'id' => $warehouse_product_->id,
+        //         'name' => $warehouse_product_->name,
+        //         'price' => $warehouse_product_->price,
+        //         'images' => $warehouseProducts
+        //     ];
         }
         $data=[
-            'product_list'=>$products,
-            'warehouse_product_list'=>$warehouse_products
+            'product_list'=>$products
+            // 'warehouse_product_list'=>$warehouse_products
         ];
         $message=translate_api('success',$language);
         return $this->success($message, 200,$data);
@@ -79,7 +79,20 @@ class ProductController extends Controller
                'images' => $warehouseProducts
            ];
        }
+       $products_ = DB::table('products')
+        ->select('id','name','price','images')
+        ->where('slide_show',Constants::ACTIVE)
+        ->get();
+        foreach ($products_ as $product_){
+            $products[] = [
+                'id' => $product_->id,
+                'name' => $product_->name,
+                'price' => $product_->price,
+                'images' => $this->getImages($product_, 'product')
+            ];
+        }
        $data = [
+           'product_list'=>$products,
            'warehouse_product_list'=>$warehouse_products
        ];
        $message=translate_api('success',$language);
