@@ -59,7 +59,7 @@ class CompanyCouponController extends Controller
         }
         $coupon->company_id = $user->company_id;
         $coupon->save();
-        return redirect()->route('company_coupon.index')->with('status', __('Successfully created'));
+        return redirect()->route('company_coupon.index')->with('status', translate('Successfully created'));
     }
 
     /**
@@ -137,7 +137,7 @@ class CompanyCouponController extends Controller
         }
         $coupon->company_id = $user->company_id;
         $coupon->save();
-        return redirect()->route('company_coupon.index')->with('status', __('Successfully created'));
+        return redirect()->route('company_coupon.index')->with('status', translate('Successfully created'));
     }
 
 
@@ -148,6 +148,6 @@ class CompanyCouponController extends Controller
     {
         $model = Coupon::find($id);
         $model->delete();
-        return redirect()->route('company_coupon.index')->with('status', __('Successfully created'));
+        return redirect()->route('company_coupon.index')->with('status', translate('Successfully created'));
     }
 }

@@ -133,6 +133,7 @@ class AuthController extends Controller
                     $new_user->email = $model->phone_number;
                     $new_user->password = Hash::make($model->verify_code);
                     $token = $new_user->createToken('myapptoken')->plainTextToken;
+                    $new_user->role_id = 4;
                     $new_user->token = $token;
                     $new_user->save();
                     $message = 'Success';
@@ -163,6 +164,7 @@ class AuthController extends Controller
                     $user->password = Hash::make($model->verify_code);
                     $token = $user->createToken('myapptoken')->plainTextToken;
                     $user->token = $token;
+                    $user->user_id = 4;
                     $user->language = $request->header('language');
                     $user->save();
                     $model->save();
@@ -188,7 +190,6 @@ class AuthController extends Controller
             'password' => 'required|string|confirmed'
         ]);
         $user->password = bcrypt($fields['password']);
-        $user->role_id = 4;
         if(isset($user->personalInfo)){
             $personal_info = $user->personalInfo;
             $personal_info->first_name = $fields['name'];
@@ -199,12 +200,11 @@ class AuthController extends Controller
             $personal_info->save();
             $user->personal_info_id = $personal_info->id;
         }
-        $token = $user->createToken('myapptoken')->plainTextToken;
-        $user->token = $token;
+        $user->role_id = 4;
         $user->save();
         $data = [
             'user' => $user,
-            'token' => $token
+            'token' => $user->token??null
         ];
         $message = translate_api('success', $language);
         return $this->success($message, 200,$data);

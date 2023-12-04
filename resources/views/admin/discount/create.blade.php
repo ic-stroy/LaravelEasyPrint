@@ -1,4 +1,4 @@
-@extends('company.layout.layout')
+@extends('layout.layout')
 
 @section('title')
     {{-- Your page title --}}

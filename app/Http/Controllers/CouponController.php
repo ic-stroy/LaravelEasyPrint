@@ -55,7 +55,7 @@ class CouponController extends Controller
             $coupon->category_id = $request->category_id;
         }
         $coupon->save();
-        return redirect()->route('coupons.index')->with('status', __('Successfully created'));
+        return redirect()->route('coupons.index')->with('status', translate('Successfully created'));
     }
 
     /**
@@ -132,7 +132,7 @@ class CouponController extends Controller
             $coupon->product_id = NULL;
         }
         $coupon->save();
-        return redirect()->route('coupons.index')->with('status', __('Successfully created'));
+        return redirect()->route('coupons.index')->with('status', translate('Successfully created'));
     }
 
 
@@ -143,6 +143,6 @@ class CouponController extends Controller
     {
         $model = Coupon::find($id);
         $model->delete();
-        return redirect()->route('coupons.index')->with('status', __('Successfully created'));
+        return redirect()->route('coupons.index')->with('status', translate('Successfully created'));
     }
 }
