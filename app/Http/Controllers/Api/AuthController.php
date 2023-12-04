@@ -10,6 +10,7 @@ use App\Models\UserVerify;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use GuzzleHttp\Psr7\Request as GuzzleRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 use function auth;
@@ -99,14 +100,12 @@ class AuthController extends Controller
         }
     }
 
-    public function loginToken(Request $request){
+    public function PhoneVerify(Request $request){
         date_default_timezone_set("Asia/Tashkent");
         $language = $request->header('language');
         $fields = $request->validate([
             'phone_number'=>'required',
             'verify_code'=>'required',
-            'device_type'=>'nullable',
-            'device_id'=>'nullable',
         ]);
         $model = UserVerify::withTrashed()->where('phone_number', (int)$fields['phone_number'])->first();
         if(isset($model->id)){
@@ -127,10 +126,6 @@ class AuthController extends Controller
                     $personal_info->phone_number = (int)$fields['phone_number'];
                     $personal_info->save();
                     $new_user->personal_info_id = $personal_info->id;
-                    $personal_info->phone_number = (int)$fields['phone_number'];
-                    $personal_info->save();
-                    $new_user->personal_info_id = $personal_info->id;
-                    $new_user->rating = 4.5;
                     $new_user->language = $request->header('language');
                     $new_user->save();
                     $model->user_id = $new_user->id;
@@ -187,22 +182,25 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $language = $request->header('language');
+        $user = Auth::user();
         $fields = $request->validate([
             'name' => 'required|string',
-            'email' => 'required|string|unique:users,email',
             'password' => 'required|string|confirmed'
         ]);
-        $user = User::create([
-            'email' => $fields['email'],
-            'password' => bcrypt($fields['password']),
-            'role_id' => 4
-        ]);
-        $personal_info = new PersonalInfo();
-        $personal_info->first_name = $fields['name'];
-        $personal_info->save();
+        $user->password = bcrypt($fields['password']);
+        $user->role_id = 4;
+        if(isset($user->personalInfo)){
+            $personal_info = $user->personalInfo;
+            $personal_info->first_name = $fields['name'];
+            $personal_info->save();
+        }else{
+            $personal_info = new PersonalInfo();
+            $personal_info->first_name = $fields['name'];
+            $personal_info->save();
+            $user->personal_info_id = $personal_info->id;
+        }
         $token = $user->createToken('myapptoken')->plainTextToken;
         $user->token = $token;
-        $user->personal_info_id = $personal_info->id;
         $user->save();
         $data = [
             'user' => $user,

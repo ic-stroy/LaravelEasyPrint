@@ -57,6 +57,7 @@ class UsersController extends Controller
         $model = new User();
         $model->email =  $request->email;
         $model->role_id = $request->role_id;
+        $model->password = Hash::make($request->password);
         $model->personal_info_id = $personal_info->id;
         $model->phone_number = $request->phone_number;
         $model->language = 'ru';

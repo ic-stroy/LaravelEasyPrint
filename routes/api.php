@@ -28,8 +28,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('get-districts', [AddressController::class, 'getCities']);
 
+Route::post('phone-verify', [AuthController::class, 'PhoneVerify']);
 Route::post('phone-register', [AuthController::class, 'PhoneRegister']);
-Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::get('/googleauth', [AuthController::class, 'redirectGoogle'])->name('redirectGoogle');
 Route::get('/googleauth/callback', [AuthController::class, 'callbackGoogle'])->name('callbackGoogle');
@@ -51,6 +51,7 @@ Route::get('get-warehouses', [ProductController::class, 'getWarehouses']);
 Route::get('product', [ProductController::class, 'getProduct']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::post('register', [AuthController::class, 'register']);
     Route::post('personal-information', [UsersController::class, 'setPersonalInformation']);
     Route::get('personal-information', [UsersController::class, 'getPersonalInformation']);
     Route::post('set-address', [AddressController::class, 'setAddress']);
