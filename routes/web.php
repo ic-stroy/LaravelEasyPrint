@@ -62,6 +62,13 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
         Route::resource('role', RoleController::class);
         Route::resource('coupons', CouponController::class);
         Route::resource('discount', DiscountController::class);
+        Route::get('slide-show', [ProductsController::class, 'SlideShow'])->name('slide_show.index');
+        Route::get('slide-show/create', [ProductsController::class, 'SlideShowCreate'])->name('slide_show.create');
+        Route::post('slide-show/store', [ProductsController::class, 'SlideShowStore'])->name('slide_show.store');
+        Route::get('slide-show/edit/{id}', [ProductsController::class, 'SlideShowEdit'])->name('slide_show.edit');
+        Route::post('slide-show/update/{id}', [ProductsController::class, 'SlideShowUpdate'])->name('slide_show.update');
+        Route::get('slide-show/show/{id}', [ProductsController::class, 'SlideShowShow'])->name('slide_show.show');
+        Route::post('slide-show/destroy/{id}', [ProductsController::class, 'SlideShowDestroy'])->name('slide_show.destroy');
 
         Route::group(['prefix' => 'language'], function () {
             Route::get('/', [LanguageController::class, 'index'])->name('language.index');

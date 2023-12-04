@@ -59,7 +59,7 @@ class ProductsController extends Controller
             $model->images = json_encode($array_images);
         }
         $model->save();
-        return redirect()->route('product.category.product', $request->category_id)->with('status', __('Successfully created'));
+        return redirect()->route('product.category.product', $request->category_id)->with('status', translate('Successfully created'));
     }
 
     /**
@@ -131,7 +131,7 @@ class ProductsController extends Controller
             $model->images = json_encode($array_images);
         }
         $model->save();
-        return redirect()->route('product.category.product', $request->category_id)->with('status', __('Successfully updated'));
+        return redirect()->route('product.category.product', $request->category_id)->with('status', translate('Successfully updated'));
     }
 
     /**
@@ -150,7 +150,7 @@ class ProductsController extends Controller
             }
         }
         $model->delete();
-        return redirect()->route('product.category')->with('status', __('Successfully deleted'));
+        return redirect()->route('product.category')->with('status', translate('Successfully deleted'));
     }
 
     public function getSizes($id){
@@ -202,8 +202,56 @@ class ProductsController extends Controller
             $model->delete();
         }
 
-        return redirect()->route('product.category')->with('status', __('Successfully deleted'));
+        return redirect()->route('product.category')->with('status', translate('Successfully deleted'));
     }
+
+    public function SlideShow(){
+        $products = Products::all();
+        return view('admin.slide-show.index', ['products'=>$products]);
+    }
+
+    public function SlideShowCreate(){
+        $products = Products::where('slide_show')->get();
+        return view('admin.slide-show.create');
+    }
+
+    public function SlideShowStore(){
+        $products = Products::where('slide_show')->get();
+        return view('admin.slide-show.create');
+    }
+
+    public function SlideShowEdit($id){
+        $products = Products::where('slide_show')->get();
+        return view('admin.slide-show.edit');
+    }
+
+    public function SlideShowUpdate($id){
+        $products = Products::where('slide_show')->get();
+        return view('admin.slide-show.edit');
+    }
+
+    public function SlideShowShow($id){
+        $products = Products::where('slide_show')->get();
+        return view('admin.slide-show.show');
+    }
+
+    public function SlideShowDestroy($id){
+        $products = Products::where('slide_show')->get();
+        return redirect()->route('slide_show.index');
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Backend api json
 
