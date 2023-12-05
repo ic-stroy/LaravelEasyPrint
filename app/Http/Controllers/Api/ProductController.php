@@ -90,6 +90,7 @@ class ProductController extends Controller
         ->select('id','name','price','images')
         ->where('slide_show',Constants::ACTIVE)
         ->get();
+        $products=[];
         foreach ($products_ as $product_){
             $products[] = [
                 'id' => $product_->id,
