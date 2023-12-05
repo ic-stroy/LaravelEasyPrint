@@ -5,9 +5,7 @@ use \App\Http\Controllers\HomeController;
 use \App\Http\Controllers\Company\CompanyHomeController;
 use \App\Http\Controllers\Company\WarehouseController;
 use \App\Http\Controllers\Company\CompanyUsersController;
-use \App\Http\Controllers\Company\CompanyCouponController;
 use \App\Http\Controllers\Company\CompanyOrderController;
-use \App\Http\Controllers\Company\CompanyDiscountController;
 use \App\Http\Controllers\BannerController;
 use \App\Http\Controllers\UsersController;
 use \App\Http\Controllers\CategoryController;
@@ -63,12 +61,8 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
         Route::resource('coupons', CouponController::class);
         Route::resource('discount', DiscountController::class);
         Route::get('slide-show', [ProductsController::class, 'SlideShow'])->name('slide_show.index');
-        Route::get('slide-show/create', [ProductsController::class, 'SlideShowCreate'])->name('slide_show.create');
-        Route::post('slide-show/store', [ProductsController::class, 'SlideShowStore'])->name('slide_show.store');
-        Route::get('slide-show/edit/{id}', [ProductsController::class, 'SlideShowEdit'])->name('slide_show.edit');
-        Route::post('slide-show/update/{id}', [ProductsController::class, 'SlideShowUpdate'])->name('slide_show.update');
         Route::get('slide-show/show/{id}', [ProductsController::class, 'SlideShowShow'])->name('slide_show.show');
-        Route::post('slide-show/destroy/{id}', [ProductsController::class, 'SlideShowDestroy'])->name('slide_show.destroy');
+        Route::get('/slide-show/status/', [ProductsController::class, 'SlideShowStatus'])->name('slide_show.status');
 
         Route::group(['prefix' => 'language'], function () {
             Route::get('/', [LanguageController::class, 'index'])->name('language.index');
@@ -95,7 +89,6 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
                 Route::get('warehouse-by-category/{id}', [WarehouseController::class, 'warehouse'])->name('warehouse.category.warehouse');
                 Route::get('create-warehouse-by-category/{id}', [WarehouseController::class, 'createWarehouse'])->name('warehouse.category.create_warehouse');
                 Route::get('get-warehouses-by-product', [WarehouseController::class, 'getWarehousesByProduct'])->name('warehouse.product.warehouse');
-                Route::resource('company_discount', CompanyDiscountController::class);
             });
             Route::group(['prefix' => 'user'], function () {
                 Route::resource('company_user', CompanyUsersController::class)->middleware('is_admin');
@@ -105,9 +98,6 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
                 Route::get('/category', [CompanyOrderController::class, 'category'])->name('company_order.category');
                 Route::get('/show/{id}', [CompanyOrderController::class, 'show'])->name('company_order.show');
                 Route::get('/destroy/{id}', [CompanyOrderController::class, 'destroy'])->name('company_order.destroy');
-            });
-            Route::group(['prefix' => 'coupon'], function () {
-                Route::resource('company_coupon', CompanyCouponController::class);
             });
         });
     });

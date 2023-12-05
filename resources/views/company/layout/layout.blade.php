@@ -426,12 +426,6 @@
                                 <li>
                                     <a href="{{route('warehouse.category')}}">{{ __('Warehouse') }}</a>
                                 </li>
-                                <li>
-                                    <a href="{{route('company_coupon.index')}}">{{ __('Coupon') }}</a>
-                                </li>
-                                <li>
-                                    <a href="{{route('company_discount.index')}}">{{ __('Discount') }}</a>
-                                </li>
                             </ul>
                         </div>
                     </li>
@@ -447,12 +441,6 @@
                         <a href="{{ route('company_order.category') }}">
                             <i class="mdi mdi-account-check-outline"></i>
                             <span> {{ __('Orders') }} </span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{route('language.index')}}">
-                            <i class="mdi mdi-flag-outline"></i>
-                            <span>{{translate('Language')}}</span>
                         </a>
                     </li>
                 </ul>
