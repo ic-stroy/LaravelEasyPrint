@@ -79,7 +79,7 @@ class ProductController extends Controller
 
 
            $warehouse_products[] = [
-               'warehouse_product_id' => $warehouse_product_->id,
+            //    'product_id' => $warehouse_product_->product_id,
                'id' => $warehouse_product_->id,
                'name' => $warehouse_product_->name??$warehouse_product_->product->name,
                'price' => $warehouse_product_->price,
