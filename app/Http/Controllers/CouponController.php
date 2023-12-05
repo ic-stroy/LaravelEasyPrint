@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
+use App\Models\Products;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
 use App\Models\Coupon;
@@ -25,8 +27,8 @@ class CouponController extends Controller
      */
     public function create()
     {
-        $categories = Category::where('parent_id', 0)->orderBy('id', 'asc')->get();
-        return view('admin.coupons.create', ['categories'=> $categories]);
+        $companies = Company::all();
+        return view('admin.coupons.create', ['companies'=> $companies]);
     }
 
     /**
@@ -43,17 +45,7 @@ class CouponController extends Controller
             $coupon->price = NULL;
             $coupon->percent = $request->percent;
         }
-        if (isset($request->subcategory_id) && $request->subcategory_id != "all" && $request->subcategory_id != ""){
-            $coupon->category_id = $request->subcategory_id;
-            if (isset($request->product_id) && $request->product_id != "all" && $request->product_id != "") {
-                $coupon->product_id = $request->product_id;
-                if (isset($request->warehouse_id) && $request->warehouse_id != "all" && $request->warehouse_id != "") {
-                    $coupon->warehouse_product_id = $request->warehouse_id;
-                }
-            }
-        }else{
-            $coupon->category_id = $request->category_id;
-        }
+
         $coupon->save();
         return redirect()->route('coupons.index')->with('status', translate('Successfully created'));
     }
@@ -64,16 +56,6 @@ class CouponController extends Controller
     public function show(string $id)
     {
         $model = Coupon::find($id);
-        if(isset($model->category->id)){
-            $category = $model->category->name;
-            $subcategory = '';
-        }elseif(isset($model->subCategory->id)){
-            $category = isset($model->subCategory->category)?$model->subCategory->category->name:'';
-            $subcategory = $model->subCategory->name;
-        }else {
-            $category = '';
-            $subcategory = '';
-        }
         return view('admin.coupons.show', ['model'=>$model, 'category'=>$category, 'subcategory'=>$subcategory]);
     }
 
@@ -82,20 +64,9 @@ class CouponController extends Controller
      */
     public function edit(string $id)
     {
-        $user = Auth::user();
-        $coupon = Coupon::where('company_id', $user->company_id)->find($id);
-        $categories = Category::where('parent_id', 0)->orderBy('id', 'asc')->get();
-        if(isset($coupon->category->id)){
-            $category_id = $coupon->category->id;
-            $subcategory_id = '';
-        }elseif(isset($coupon->subCategory->id)){
-            $category_id = isset($coupon->subCategory->category)?$coupon->subCategory->category->id:'';
-            $subcategory_id = $coupon->subCategory->id;
-        }else {
-            $category_id = '';
-            $subcategory_id = '';
-        }
-        return view('admin.coupons.edit', ['coupon'=> $coupon, 'categories'=>$categories, 'category_id'=>$category_id, 'subcategory_id'=>$subcategory_id]);
+        $coupon = Coupon::find($id);
+        $companies = Company::all();
+        return view('admin.coupons.edit', ['coupon'=> $coupon, 'companies'=>$companies]);
     }
 
     /**
@@ -103,7 +74,6 @@ class CouponController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $user = auth()->user();
         $coupon = Coupon::find($id);
         $coupon->name = $request->name;
         if ($request->coupon_type == "price") {
@@ -112,24 +82,6 @@ class CouponController extends Controller
         } elseif ($request->coupon_type == "percent") {
             $coupon->price = NULL;
             $coupon->percent = $request->percent;
-        }
-        if (isset($request->subcategory_id) && $request->subcategory_id != "all" && $request->subcategory_id != ""){
-            $coupon->category_id = $request->subcategory_id;
-            if (isset($request->product_id) && $request->product_id != "all" && $request->product_id != "") {
-                $coupon->product_id = $request->product_id;
-                if (isset($request->warehouse_id) && $request->warehouse_id != "all" && $request->warehouse_id != "") {
-                    $coupon->warehouse_product_id = $request->warehouse_id;
-                }else{
-                    $coupon->warehouse_product_id = NULL;
-                }
-            }else{
-                $coupon->product_id = NULL;
-                $coupon->warehouse_product_id = NULL;
-            }
-        }else{
-            $coupon->category_id = $request->category_id;
-            $coupon->warehouse_product_id = NULL;
-            $coupon->product_id = NULL;
         }
         $coupon->save();
         return redirect()->route('coupons.index')->with('status', translate('Successfully created'));

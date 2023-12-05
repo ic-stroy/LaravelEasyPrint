@@ -4,6 +4,7 @@
     {{-- Your page title --}}
 @endsection
 @section('content')
+    <link rel="stylesheet" href="{{asset('assets/css/toogle-switch.css')}}">
     <div class="card">
         <div class="card-body">
             <h4 class="mt-0 header-title">{{__('Products lists')}}</h4>
@@ -19,7 +20,7 @@
                         <th>{{__('Status')}}</th>
                         <th>{{__('Images')}}</th>
                         <th>{{__('Updated_at')}}</th>
-                        <th class="text-center">{{__('Functions')}}</th>
+                        <th class="text-center">{{__('On Slide show')}}</th>
                     </tr>
                 </thead>
                 <tbody class="table_body">
@@ -94,9 +95,12 @@
                                 </a>
                             </td>
                             <td class="function_column">
+                                <input type="hidden" class="productId" name="product_id" value="{{$product->id}}">
                                 <div class="d-flex justify-content-center">
-                                    <a class="form_functions btn btn-info" href="{{route('product.edit', $product->id)}}"><i class="fe-edit-2"></i></a>
-                                    
+                                    <label class="switch">
+                                        <input name="slide_show" class="slideShow" type="checkbox" {{$product->slide_show == 1?'checked':''}}>
+                                        <span class="slider round"></span>
+                                    </label>
                                 </div>
                             </td>
                         </tr>
@@ -105,5 +109,46 @@
             </table>
         </div>
     </div>
+    <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
+    <script>
+        $(document).ready(function () {
+            let slideShow = document.getElementsByClassName('slideShow')
+            let productId = document.getElementsByClassName('productId')
 
+            function slideShowFunc(item, val) {
+                slideShow[val].addEventListener('change', function () {
+                    if (this.checked) {
+                        $.ajax({
+                            type: "GET",
+                            url: "/../slide-show/status/",
+                            data: {
+                                "id": productId[val].value,
+                                "checked": true,
+                            },
+                            success: function (data) {
+                                if(data.status == true){
+                                    toastr.success(data.message)
+                                }
+                            }
+                        });
+                    } else {
+                        $.ajax({
+                            type: "GET",
+                            url: "/../slide-show/status/",
+                            data: {
+                                "id": productId[val].value,
+                                "checked": false,
+                            },
+                            success: function (data) {
+                                if(data.status == true){
+                                    toastr.warning(data.message)
+                                }
+                            }
+                        });
+                    }
+                })
+            }
+            Object.keys(slideShow).forEach(slideShowFunc)
+        })
+    </script>
 @endsection

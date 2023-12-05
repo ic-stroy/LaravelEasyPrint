@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants;
 use App\Models\Color;
 use App\Models\Products;
 use App\Models\Sizes;
@@ -210,48 +211,25 @@ class ProductsController extends Controller
         return view('admin.slide-show.index', ['products'=>$products]);
     }
 
-    public function SlideShowCreate(){
-        $products = Products::where('slide_show')->get();
-        return view('admin.slide-show.create');
-    }
-
-    public function SlideShowStore(){
-        $products = Products::where('slide_show')->get();
-        return view('admin.slide-show.create');
-    }
-
-    public function SlideShowEdit($id){
-        $products = Products::where('slide_show')->get();
-        return view('admin.slide-show.edit');
-    }
-
-    public function SlideShowUpdate($id){
-        $products = Products::where('slide_show')->get();
-        return view('admin.slide-show.edit');
-    }
-
     public function SlideShowShow($id){
         $products = Products::where('slide_show')->get();
         return view('admin.slide-show.show');
     }
 
-    public function SlideShowDestroy($id){
-        $products = Products::where('slide_show')->get();
-        return redirect()->route('slide_show.index');
+    public function SlideShowStatus(Request $request){
+        $product = Products::find($request->id);
+        if(isset($product)){
+            if($request->checked == 'true'){
+                $product->slide_show = Constants::ACTIVE;
+                $message = translate('Added to slide show');
+            }elseif($request->checked == 'false'){
+                $product->slide_show = Constants::NOT_ACTIVE;
+                $message = translate('Deleted from slide show');
+            }
+            $product->save();
+        }
+        return $this->success($message, 200);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     // Backend api json
 
@@ -272,6 +250,4 @@ class ProductsController extends Controller
             'message'=>'Success'
         ]);
     }
-
-
 }
