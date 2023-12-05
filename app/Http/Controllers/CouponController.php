@@ -3,11 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
-use App\Models\Products;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Category;
 use App\Models\Coupon;
-
 
 use Illuminate\Http\Request;
 
@@ -18,7 +14,7 @@ class CouponController extends Controller
      */
     public function index()
     {
-        $coupons = Coupon::where('company_id', NULL)->get();
+        $coupons = Coupon::all();
         return view('admin.coupons.index', ['coupons'=> $coupons]);
     }
 
@@ -41,11 +37,15 @@ class CouponController extends Controller
         if ($request->coupon_type == "price") {
             $coupon->price = $request->price;
             $coupon->percent = NULL;
-        } elseif ($request->coupon_type == "percent") {
+        }elseif ($request->coupon_type == "percent") {
             $coupon->price = NULL;
             $coupon->percent = $request->percent;
         }
-
+        $coupon->min_price = $request->min_price;
+        $coupon->company_id = $request->company_id;
+        $coupon->order_count = $request->order_count;
+        $coupon->start_date = $request->start_date;
+        $coupon->end_date = $request->end_date;
         $coupon->save();
         return redirect()->route('coupons.index')->with('status', translate('Successfully created'));
     }
@@ -56,7 +56,7 @@ class CouponController extends Controller
     public function show(string $id)
     {
         $model = Coupon::find($id);
-        return view('admin.coupons.show', ['model'=>$model, 'category'=>$category, 'subcategory'=>$subcategory]);
+        return view('admin.coupons.show', ['model'=>$model]);
     }
 
     /**
@@ -82,6 +82,21 @@ class CouponController extends Controller
         } elseif ($request->coupon_type == "percent") {
             $coupon->price = NULL;
             $coupon->percent = $request->percent;
+        }
+        if(isset($request->min_price)){
+            $coupon->min_price = $request->min_price;
+        }
+        if(isset($request->company_id)){
+            $coupon->company_id = $request->company_id;
+        }
+        if(isset($request->order_count)){
+            $coupon->order_count = $request->order_count;
+        }
+        if(isset($request->start_date)){
+            $coupon->start_date = $request->start_date;
+        }
+        if(isset($request->end_date)){
+            $coupon->end_date = $request->end_date;
         }
         $coupon->save();
         return redirect()->route('coupons.index')->with('status', translate('Successfully created'));

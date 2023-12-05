@@ -102,11 +102,7 @@
                             <td class="function_column">
                                 <div class="d-flex justify-content-center">
                                     <a class="form_functions btn btn-info" href="{{route('banner.edit', $banner->id)}}"><i class="fe-edit-2"></i></a>
-                                    <form action="{{route('banner.destroy', $banner->id)}}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="form_functions btn btn-danger" type="submit"><i class="fe-trash-2"></i></button>
-                                    </form>
+                                    <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-alert-modal" data-url="{{route('banner.destroy', $banner->id)}}"><i class="fe-trash-2"></i></button>
                                 </div>
                             </td>
                         </tr>

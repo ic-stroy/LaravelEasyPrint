@@ -16,8 +16,8 @@
                         <th>#</th>
                         <th>{{__('Name')}}</th>
                         <th>{{__('Coupon quantity')}}</th>
-                        <th>{{__('Category')}}</th>
-                        <th>{{__('Product')}}</th>
+                        <th>{{__('Minimum price')}}</th>
+                        <th>{{__('Number of orders')}}</th>
                         <th class="text-center">{{__('Functions')}}</th>
                     </tr>
                 </thead>
@@ -28,16 +28,6 @@
                     @foreach($coupons as $coupon)
                         @php
                             $i++;
-                            if(isset($coupon->category->id)){
-                                $category = $coupon->category->name;
-                                $subcategory = '';
-                            }elseif(isset($coupon->subCategory->id)){
-                                $category = isset($coupon->subCategory->category)?$coupon->subCategory->category->name:'';
-                                $subcategory = $coupon->subCategory->name;
-                            }else{
-                                $category = '';
-                                $subcategory = '';
-                            }
                         @endphp
                         <tr>
                             <td>
@@ -67,8 +57,8 @@
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('coupons.show', $coupon->id)}}">
-                                    @if($category != '' || $subcategory != '')
-                                        {{$category}} {{' '.$subcategory}}
+                                    @if(isset($coupon->min_price))
+                                        {{$coupon->min_price}}
                                     @else
                                         <div class="no_text"></div>
                                     @endif
@@ -76,22 +66,17 @@
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('coupons.show', $coupon->id)}}">
-                                    @if(isset($coupon->product->id))
-                                        {{$coupon->product->name}}
+                                    @if(isset($coupon->order_count))
+                                        {{$coupon->order_count}}
                                     @else
-                                        {{translate('All products')}}
+                                        <div class="no_text"></div>
                                     @endif
                                 </a>
                             </td>
-
                             <td class="function_column">
                                 <div class="d-flex justify-content-center">
-                                    <a class="form_functions btn btn-info" href="{{route('coupons.edit', $coupon->id)}}"><i class="fe-edit-2"></i></a>
-                                    <form action="" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="form_functions btn btn-danger" type="submit"><i class="fe-trash-2"></i></button>
-                                    </form>
+                                    <a class="form_functions btn btn-info" href="{{route('coupons.destroy', $coupon->id)}}"><i class="fe-edit-2"></i></a>
+                                    <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-alert-modal" data-url="{{route('coupons.destroy', $coupon->id)}}"><i class="fe-trash-2"></i></button>
                                 </div>
                             </td>
                         </tr>

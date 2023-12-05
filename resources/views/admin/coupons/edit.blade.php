@@ -41,26 +41,36 @@
                     </div>
                     <div class="mb-3 col-6 display-none" id="coupon_percent">
                         <label class="form-label">{{translate('Coupon percent')}}</label>
-                        <input type="number" name="percent" value="{{$coupon->percent}}" class="form-control" id="coupon_percent_input" min="0" max="100"/>
+                        <input type="number" name="percent" value="{{$coupon->percent??''}}" class="form-control" id="coupon_percent_input" min="0" max="100"/>
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate("Order's min price")}}</label>
-                        <input type="number" name="min_price" class="form-control" min="0" max="100"/>
+                        <input type="number" name="min_price" class="form-control" min="0" value="{{$coupon->min_price??''}}"/>
                     </div>
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Companies')}}</label>
-                        <select name="company" class="form-control" required>
-                            <option value="" selected disabled>{{translate('Select company')}}</option>
+                        <select name="company" class="form-control">
+                            <option value="" {{$coupon->company_id == ''?'selected':''}}>{{translate('All company')}}</option>
                             @foreach($companies as $company)
-                                <option value="{{$company->id}}">{{$company->name}}</option>
+                                <option value="{{$company->id}}" {{$coupon->company_id == $company->id?'selected':''}}>{{$company->name}}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Number of orders')}}</label>
-                        <input type="number" name="order_number" class="form-control"/>
+                        <input type="number" name="order_count" class="form-control" value="{{$coupon->order_count}}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{translate('Start date')}}</label>
+                        <input type="date" name="start_date" class="form-control" required value="{{explode(' ', $coupon->start_date)[0]}}"/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{translate('End date')}}</label>
+                        <input type="date" name="end_date" class="form-control" required value="{{explode(' ', $coupon->end_date)[0]}}"/>
                     </div>
                 </div>
                 <div>

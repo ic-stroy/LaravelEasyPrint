@@ -86,11 +86,7 @@
                             </td>
                             <td class="function_column">
                                 <div class="d-flex justify-content-center">
-                                    <form action="{{route('company_order.destroy', $order->id)}}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="form_functions btn btn-danger" type="submit"><i class="fe-trash-2"></i></button>
-                                    </form>
+                                    <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-alert-modal" data-url="{{route('company_order.destroy', $order->id)}}"><i class="fe-trash-2"></i></button>
                                 </div>
                             </td>
                         </tr>
