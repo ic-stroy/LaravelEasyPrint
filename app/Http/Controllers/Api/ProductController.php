@@ -51,10 +51,9 @@ class ProductController extends Controller
         //         'price' => $warehouse_product_->price,
         //         'images' => $warehouseProducts
         //     ];
-        }
+        // }
         $data=[
             'product_list'=>$products
-            // 'warehouse_product_list'=>$warehouse_products
         ];
         $message=translate_api('success',$language);
         return $this->success($message, 200,$data);
@@ -71,8 +70,16 @@ class ProductController extends Controller
            }else{
                $warehouseProducts = $this->getImages($warehouse_product_->product, 'product');
            }
+
+
+        //    $discount=DB::table('discounts')::where('company_id','!=',null)->get();
+
+
+        //     //  join qilish kere
+
+
            $warehouse_products[] = [
-               'product_id' => $warehouse_product_->product_id,
+            //    'product_id' => $warehouse_product_->product_id,
                'id' => $warehouse_product_->id,
                'name' => $warehouse_product_->name??$warehouse_product_->product->name,
                'price' => $warehouse_product_->price,
@@ -83,6 +90,7 @@ class ProductController extends Controller
         ->select('id','name','price','images')
         ->where('slide_show',Constants::ACTIVE)
         ->get();
+        $products=[];
         foreach ($products_ as $product_){
             $products[] = [
                 'id' => $product_->id,
