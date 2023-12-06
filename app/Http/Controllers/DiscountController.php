@@ -12,7 +12,7 @@ class DiscountController extends Controller
 {
     public function index()
     {
-        $discounts = Discount::where('company_id', NULL)->get();
+        $discounts = Discount::all();
         return view('admin.discount.index', ['discounts'=> $discounts]);
     }
 
