@@ -103,6 +103,8 @@ class ProductController extends Controller
                 'id' => $product_->id,
                 'name' => $product_->name,
                 'price' => $product_->price,
+                'discount' => (isset($product_->discount)) > 0 ? $product_->discount->percent : NULL,
+                'price_discount' => (isset($product_->discount)) > 0 ? $product_->price - ($product_->price / 100 * $product_->discount->percent) : NULL,
                 'images' => $this->getImages($product_, 'product')
             ];
         }
