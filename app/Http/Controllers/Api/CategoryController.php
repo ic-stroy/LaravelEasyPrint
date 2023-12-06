@@ -8,6 +8,7 @@ use App\Models\Products;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\Warehouse;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -47,6 +48,8 @@ class CategoryController extends Controller
         $products_data = [];
         $category_ = [];
         $subCategory = [];
+        $productId = [];
+
         if (isset($category->id)) {
             if ($category->step == 0) {
                 $category_ = [
@@ -92,6 +95,7 @@ class CategoryController extends Controller
                 }
             }
 
+            $productId[] = $product->id;
             $products_data[] = [
                 'id' => $product->id,
                 'name' => $product->name,
@@ -107,10 +111,32 @@ class CategoryController extends Controller
             ];
         }
 
+        $warehouse_products_ = Warehouse::where('product_id', $productId)->with('discount')->get();
+        $warehouse_products = [];
+
+        foreach ($warehouse_products_ as $warehouse_product_) {
+            if (count($this->getImages($warehouse_product_, 'warehouse'))>0) {
+                $warehouseProducts = $this->getImages($warehouse_product_, 'warehouse');
+            } else {
+                $warehouseProducts = $this->getImages($warehouse_product_->product, 'product');
+            }
+
+            //  join qilish kere
+            $warehouse_products[] = [
+                'id' => $warehouse_product_->id,
+                'name' => $warehouse_product_->name ?? $warehouse_product_->product->name,
+                'price' => $warehouse_product_->price,
+                'discount' => (isset($warehouse_product_->discount)) > 0 ? $warehouse_product_->discount->percent : NULL,
+                'price_discount' => (isset($warehouse_product_->discount)) > 0 ? $warehouse_product_->price - ($warehouse_product_->price / 100 * $warehouse_product_->discount->percent) : NULL,
+                'images' => $warehouseProducts
+            ];
+        }
+
         $data[] = [
             'category' => $category_,
             'sub_category' => $subCategory,
-            'products' => $products_data
+            'products' => $products_data,
+            'warehouse_products' => $warehouse_products
         ];
 
         $message = translate_api('Success', $language);
@@ -180,6 +206,7 @@ class CategoryController extends Controller
         }
         return $products_data;
     }
+
     public function profileInfo(Request $request){
         $language = $request->header('language');
         $languages = Language::select('id', 'name', 'code')->get();
@@ -202,5 +229,24 @@ class CategoryController extends Controller
         ];
         $message = translate_api('Success', $language);
         return $this->success($message, 200, $data);
+    }
+
+    public function getImages($model, $text)
+    {
+        if (isset($model->images)) {
+            $images_ = json_decode($model->images);
+            $images = [];
+            foreach ($images_ as $image_) {
+                if ($text == 'warehouse') {
+                    $images[] = asset('storage/warehouses/'.$image_);
+                } elseif ($text == 'product') {
+                    $images[] = asset('storage/products/'.$image_);
+                }
+            }
+        } else {
+            $images = [];
+        }
+
+        return $images;
     }
 }
