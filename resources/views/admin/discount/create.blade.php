@@ -29,7 +29,7 @@
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Companies')}}</label>
                         <select name="company_id" class="form-control" id="company_id">
-                            <option value="" selected disabled>{{translate('All company')}}</option>
+                            <option value="" selected>{{translate('All company')}}</option>
                             @foreach($companies as $company)
                                 <option value="{{$company->id}}">{{$company->name}}</option>
                             @endforeach
@@ -40,7 +40,7 @@
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Category')}}</label>
                         <select name="category_id" class="form-control" id="category_id">
-                            <option value="" selected disabled>{{translate('Select category')}}</option>
+                            <option value="" selected>{{translate('All category')}}</option>
                             @foreach($categories as $category)
                                 <option value="{{$category->id}}">{{$category->name}} {{$category->category?$category->category->name:''}}</option>
                             @endforeach
@@ -70,7 +70,6 @@
     </div>
     <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
     <script>
-        let super_admin = false
         let coupon_category_id = ""
         let coupon_subcategory_id = ""
         let coupon_product_id = ""

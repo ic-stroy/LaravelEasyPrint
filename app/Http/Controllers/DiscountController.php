@@ -16,8 +16,16 @@ class DiscountController extends Controller
 {
     public function index()
     {
-        $discounts = Discount::all();
-        return view('admin.discount.index', ['discounts'=> $discounts]);
+        $discounts_distinct = Discount::distinct('discount_number')->get();
+        $discounts_data = [];
+        foreach ($discounts_distinct as $discount_distinct) {
+            $discount_number = Discount::where('discount_number', $discount_distinct->discount_number)->get()->count();
+            $discounts_data[] = [
+                'discount'=>$discount_distinct,
+                'number'=>$discount_number
+            ];
+        }
+        return view('admin.discount.index', ['discounts_data'=> $discounts_data]);
     }
 
     /**
@@ -36,6 +44,12 @@ class DiscountController extends Controller
 
     public function store(Request $request)
     {
+        $discount_ = Discount::orderBy('discount_number', 'desc')->first();
+        if(isset($discount_->id)){
+            $discount_number = $discount_->discount_number + 1;
+        }else{
+            $discount_number = 1;
+        }
         $products = $this->getProducts($request);
         if(isset($request->company_id)){
             foreach ($products as $product){
@@ -51,6 +65,8 @@ class DiscountController extends Controller
                     $discount->type = Constants::DISCOUNT_WAREHOUSE_TYPE;
                     $discount->warehouse_id = $warehouse_id;
                     $discount->product_id = $data['product_id'];
+                    $discount->company_id = $request->company_id;
+                    $discount->discount_number = $discount_number;
                     $discount->save();
                 }
             }
@@ -59,6 +75,7 @@ class DiscountController extends Controller
                 $discount = $this->newDiscount($request);
                 $discount->type = Constants::DISCOUNT_PRODUCT_TYPE;
                 $discount->product_id = $product->id;
+                $discount->discount_number = $discount_number;
                 $discount->save();
             }
         }
@@ -84,6 +101,11 @@ class DiscountController extends Controller
         $discount->percent = $request->percent;
         $discount->start_date = $request->start_date;
         $discount->end_date = $request->end_date;
+        if (isset($request->subcategory_id) && $request->subcategory_id != "all" && $request->subcategory_id != ""){
+            $discount->category_id = $request->subcategory_id;
+        }else{
+            $discount->category_id = $request->category_id;
+        }
         return $discount;
     }
     /**
@@ -92,6 +114,11 @@ class DiscountController extends Controller
     public function show(string $id)
     {
         $model = Discount::find($id);
+        $discount_number = Discount::where('discount_number', $model->discount_number)->get()->count();
+        $discounts_data = [
+            'discount'=>$model,
+            'number'=>$discount_number
+        ];
         if(isset($model->category->id)){
             $category = $model->category->name;
             $subcategory = '';
@@ -102,7 +129,7 @@ class DiscountController extends Controller
             $category = '';
             $subcategory = '';
         }
-        return view('admin.discount.show', ['model'=>$model, 'category'=>$category, 'subcategory'=>$subcategory]);
+        return view('admin.discount.show', ['model'=>$model, 'discounts_data'=>$discounts_data, 'category'=>$category, 'subcategory'=>$subcategory]);
     }
 
     /**
@@ -112,13 +139,13 @@ class DiscountController extends Controller
     {
         $discount = Discount::find($id);
         $categories = Category::where('step', 0)->orderBy('id', 'asc')->get();
-        if(isset($discount->product->category->id)){
-            $category_id = $discount->product->category->id;
+        if(isset($discount->category->id)){
+            $category_id = $discount->category->id;
             $subcategory_id = '';
-        }elseif(isset($discount->product->subCategory->id)){
-            $category_id = isset($discount->product->subCategory->category)?$discount->product->subCategory->category->id:'';
-            $subcategory_id = $discount->product->subCategory->id;
-        }else {
+        }elseif(isset($discount->subCategory->id)){
+            $category_id = isset($discount->subCategory->category)?$discount->subCategory->category->id:'';
+            $subcategory_id = $discount->subCategory->id;
+        }else{
             $category_id = '';
             $subcategory_id = '';
         }
@@ -131,23 +158,20 @@ class DiscountController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $discount = Discount::find($id);
-        $discount->percent = $request->percent;
-        $discount->start_date = $request->start_date;
-        $discount->end_date = $request->end_date;
-        $sub_category = [];
-        if (isset($request->subcategory_id) && $request->subcategory_id != "all" && $request->subcategory_id != ""){
-            $sub_category[] = $request->subcategory_id;
+        $discount_ = Discount::orderBy('discount_number', 'desc')->first();
+        if(isset($discount_->id)){
+            $discount_number = $discount_->discount_number + 1;
         }else{
-            $category = Category::where('step', 0)->find($request->category_id);
-            foreach($category->subcategory as $subcategory){
-                $sub_category[] = $subcategory->id;
-            }
+            $discount_number = 1;
         }
-        $products = Products::whereIn('category_id', $sub_category)->get();
+        $products = $this->getProducts($request);
+        $current_discount = Discount::find($id);
+        $current_discount_group = Discount::where('discount_number', $current_discount->discount_number)->get();
+        foreach ($current_discount_group as $currentDiscount){
+            $currentDiscount->delete();
+        }
         if(isset($request->company_id)){
-            $discount->type = Constants::DISCOUNT_WAREHOUSE_TYPE;
-            foreach ($products as $product){
+            foreach($products as $product){
                 $warehouses_id = Warehouse::where('company_id', $request->company_id)->where('product_id', $product->id)->pluck('id');
                 $datas[] = [
                     'product_id'=>$product->id,
@@ -156,21 +180,26 @@ class DiscountController extends Controller
             }
             foreach ($datas as $data){
                 foreach($data['warehouses_id'] as $warehouse_id){
+                    $discount = $this->newDiscount($request);
+                    $discount->type = Constants::DISCOUNT_WAREHOUSE_TYPE;
                     $discount->warehouse_id = $warehouse_id;
                     $discount->product_id = $data['product_id'];
+                    $discount->company_id = $request->company_id;
+                    $discount->discount_number = $discount_number;
                     $discount->save();
                 }
             }
         }else{
-            $discount->type = Constants::DISCOUNT_PRODUCT_TYPE;
             foreach($products as $product){
+                $discount = $this->newDiscount($request);
+                $discount->type = Constants::DISCOUNT_PRODUCT_TYPE;
                 $discount->product_id = $product->id;
+                $discount->discount_number = $discount_number;
                 $discount->save();
             }
         }
-        return redirect()->route('discount.index')->with('status', __('Successfully created'));
+        return redirect()->route('discount.index')->with('status', __('Successfully updated'));
     }
-
 
     /**
      * Remove the specified resource from storage.

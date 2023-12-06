@@ -29,9 +29,9 @@
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Companies')}}</label>
                         <select name="company_id" class="form-control" id="company_id">
-                            <option value="" selected disabled>{{translate('All company')}}</option>
+                            <option value="" selected>{{translate('All company')}}</option>
                             @foreach($companies as $company)
-                                <option value="{{$company->id}}">{{$company->name}}</option>
+                                <option value="{{$company->id}}" {{$discount->company->id == $company->id?'selected':''}}>{{$company->name}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -40,7 +40,7 @@
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Category')}}</label>
                         <select name="category_id" class="form-control" id="category_id" required>
-                            <option value="" selected disabled>{{translate('Select category')}}</option>
+                            <option value="" selected>{{translate('All category')}}</option>
                             @foreach($categories as $category)
                                 <option value="{{$category->id}}" {{$category->id == $category_id? 'selected' : ''}}>{{$category->name}} {{$category->category?$category->category->name:''}}</option>
                             @endforeach

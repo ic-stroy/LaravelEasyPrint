@@ -12,10 +12,10 @@
             </div>
             <table id="datatable-buttons" class="table dt-responsive nowrap table_show">
                 <thead>
-                <tr>
-                    <th>{{__('Attributes')}}</th>
-                    <th>{{__('Informations')}}</th>
-                </tr>
+                    <tr>
+                        <th>{{__('Attributes')}}</th>
+                        <th>{{__('Informations')}}</th>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr>
@@ -29,20 +29,28 @@
                     <tr>
                         <th>{{__('Discount percent')}}</th>
                         <td>
-                            @if($model->percent != null)
-                                {{$model->percent}} {{translate(' %')}}
+                            @if($discounts_data['discount']->percent != null)
+                                {{$discounts_data['discount']->percent}} {{translate(' %')}}
                             @endif
                         </td>
                     </tr>
-                    @if(isset($model->product))
+                    <tr>
+                        <th>{{__('Number of warehouses')}}</th>
+                        <td>
+                            @if($discounts_data['number'] != null)
+                                {{$discounts_data['number']}}
+                            @endif
+                        </td>
+                    </tr>
+                    @if(isset($discounts_data['discount']->product))
                         <tr>
                             <th>{{__('Product')}}</th>
-                            <td>{{$model->product->name??''}}</td>
+                            <td>{{$discounts_data['discount']->product->name??''}}</td>
                         </tr>
                     @endif
                     <tr>
                         <th>{{__('Updated at')}}</th>
-                        <td>{{$model->updated_at??''}}</td>
+                        <td>{{$discounts_data['discount']->updated_at??''}}</td>
                     </tr>
                 </tbody>
             </table>
