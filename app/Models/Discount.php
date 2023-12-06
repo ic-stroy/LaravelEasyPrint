@@ -15,8 +15,10 @@ class Discount extends Model
       'id',
       'percent',
       'product_id',
-      'category_id',
-      'company_id'
+      'warehouse_id',
+      'type',
+      'start_date',
+      'end_date',
     ];
 
     public function product(){

@@ -39,69 +39,80 @@ class CategoryController extends Controller
         return $this->success($message, 200, $data);
     }
 
-    public function getProductsByCategory(Request $request){
+    public function getProductsByCategory(Request $request)
+    {
         $language = $request->header('language');
         $category = Category::find($request->category_id);
         $data = [];
         $products_data = [];
         $category_ = [];
         $subCategory = [];
-        if(isset($category->id)){
-            if($category->step == 0){
+        if (isset($category->id)) {
+            if ($category->step == 0) {
                 $category_ = [
                     'id' => $category->id,
                     'name' => $category->name,
                 ];
+
                 $subCategory = [];
-            }elseif($category->step == 1){
+            } elseif ($category->step == 1) {
                 $category_ = [
                     'id' => $category->category->id,
                     'name' => $category->category->name,
                 ];
+
                 $subCategory = [
-                    'id'=>$category->id,
-                    'name'=>$category->name,
+                    'id' => $category->id,
+                    'name' => $category->name,
                 ];
             }
-            $products = Products::select('id', 'name', 'category_id', 'images', 'material_id', 'manufacturer_country', 'material_composition', 'price', 'description')->where('category_id', $category->id)->get();
-        }else{
+
+            $products = Products::select('id', 'name', 'category_id', 'images', 'material_id', 'manufacturer_country', 'material_composition', 'price', 'description')->with('discount')->where('category_id', $category->id)->get();
+        } else {
             $subCategory = [];
             $products = [];
             $category_= [];
         }
+
         foreach ($products as $product) {
-            if(!is_array($product->images)){
+            if (!is_array($product->images)) {
                 $images = json_decode($product->images);
             }
-            foreach ($images as $image){
-                if(!isset($image)){
+
+            foreach ($images as $image) {
+                if (!isset($image)) {
                     $product_image = 'no';
-                }else{
+                } else {
                     $product_image = $image;
                 }
-                $avatar_main = storage_path('app/public/products/'.$product_image);
-                if(file_exists($avatar_main)){
-                    $images_array[] = asset('storage/products/'.$image);
+
+                $avatar_main = storage_path('app/public/products/' . $product_image);
+                if (file_exists($avatar_main)) {
+                    $images_array[] = asset('storage/products/' . $image);
                 }
             }
 
             $products_data[] = [
-                'id'=>$product->id,
-                'name'=>$product->name,
-                'category_id'=>$product->category_id,
-                'images'=>$images_array,
-                'material_id'=>$product->material_id,
-                'description'=>$product->description,
-                'price'=>$product->price,
-                'manufacturer_country'=>$product->manufacturer_country,
-                'material_composition'=>$product->material_composition,
+                'id' => $product->id,
+                'name' => $product->name,
+                'category_id' => $product->category_id,
+                'images' => $images_array,
+                'material_id' => $product->material_id,
+                'description' => $product->description,
+                'price' => $product->price,
+                'discount' => (isset($product->discount)) > 0 ? $product->discount->percent : NULL,
+                'price_discount' => (isset($product->discount)) > 0 ? $product->price - ($product->price / 100 * $product->discount->percent) : NULL,
+                'manufacturer_country' => $product->manufacturer_country,
+                'material_composition' => $product->material_composition,
             ];
         }
+
         $data[] = [
-            'category'=>$category_,
-            'sub_category'=>$subCategory,
-            'products'=>$products_data
+            'category' => $category_,
+            'sub_category' => $subCategory,
+            'products' => $products_data
         ];
+
         $message = translate_api('Success', $language);
         return $this->success($message, 200, $data);
     }
