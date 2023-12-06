@@ -84,7 +84,7 @@ class ProductController extends Controller
             $warehouse_products[] = [
                 // 'product_id' => $warehouse_product_->product_id,
                 'id' => $warehouse_product_->id,
-                'name' => $warehouse_product_->name??$warehouse_product_->product->name,
+                'name' => $warehouse_product_->name ?? $warehouse_product_->product->name,
                 'price' => $warehouse_product_->price,
                 'discount' => (isset($warehouse_product_->discount)) > 0 ? $warehouse_product_->discount->percent : NULL,
                 'price_discount' => (isset($warehouse_product_->discount)) > 0 ? $warehouse_product_->price - ($warehouse_product_->price / 100 * $warehouse_product_->discount->percent) : NULL,
@@ -262,7 +262,7 @@ class ProductController extends Controller
             if (isset($warehouse_product->warehouse_product_id)) {
                 $list = [
                     "id" => $warehouse_product->warehouse_product_id,
-                    "name" => $warehouse_product->warehouse_product_name??$warehouse_product->product_name,
+                    "name" => $warehouse_product->warehouse_product_name ?? $warehouse_product->product_name,
                     // "relation_id" => $relation_id,
                     "price" => $warehouse_product->price,
                     'discount' => (isset($warehouse_product->discount)) > 0 ? $warehouse_product->discount : NULL,
@@ -270,7 +270,7 @@ class ProductController extends Controller
                     // "discounts" => $warehouse_product->price,
                     "quantity" => $warehouse_product->quantity,
                     // "max_quantity" => $warehouse_product->max_quantity,
-                    "description" => $warehouse_product->description??$warehouse_product->product_description,
+                    "description" => $warehouse_product->description ?? $warehouse_product->product_description,
                     "images" => $images,
                     "color" => [
                         "id" => $warehouse_product->color_id,
