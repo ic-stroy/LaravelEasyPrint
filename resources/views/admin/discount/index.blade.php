@@ -27,15 +27,16 @@
                     @foreach($discounts as $discount)
                         @php
                             $i++;
-                            if(isset($discount->category->id)){
-                                $category = $discount->category->name;
-                                $subcategory = '';
-                            }elseif(isset($discount->subCategory->id)){
-                                $category = isset($discount->subCategory->category)?$discount->subCategory->category->name:'';
-                                $subcategory = $discount->subCategory->name;
-                            }else{
-                                $category = '';
-                                $subcategory = '';
+                            $category = '';
+                            $subcategory = '';
+                            if(isset($discount->product->id)){
+                                if(isset($discount->product->category->id)){
+                                    $category = $discount->product->category->name;
+                                    $subcategory = '';
+                                }elseif(isset($discount->product->subCategory->id)){
+                                    $category = isset($discount->product->subCategory->category)?$discount->product->subCategory->category->name:'';
+                                    $subcategory = $discount->product->subCategory->name;
+                                }
                             }
                         @endphp
                         <tr>
@@ -83,5 +84,4 @@
             </table>
         </div>
     </div>
-
 @endsection
