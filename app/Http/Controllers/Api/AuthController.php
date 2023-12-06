@@ -164,7 +164,7 @@ class AuthController extends Controller
                     $user->password = Hash::make($model->verify_code);
                     $token = $user->createToken('myapptoken')->plainTextToken;
                     $user->token = $token;
-                    $user->user_id = 4;
+                    $user->role_id = 4;
                     $user->language = $request->header('language');
                     $user->save();
                     $model->save();

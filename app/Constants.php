@@ -34,4 +34,8 @@ class Constants {
     const PRODUCT ="products";
     const WAREHOUSE ="warehouses";
 
+    //    Discount status
+    const DISCOUNT_PRODUCT_TYPE = 1;
+    const DISCOUNT_WAREHOUSE_TYPE = 2;
+
 }

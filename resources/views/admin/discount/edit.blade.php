@@ -24,8 +24,19 @@
                 <div class="row">
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Discount percent')}}</label>
-                        <input type="number" name="percent" value="{{$discount->percent}}" class="form-control" min="0" max="100"/>
+                        <input type="number" name="percent" value="{{$discount->percent}}" class="form-control" min="0" max="100" required/>
                     </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{translate('Companies')}}</label>
+                        <select name="company_id" class="form-control" id="company_id">
+                            <option value="" selected disabled>{{translate('All company')}}</option>
+                            @foreach($companies as $company)
+                                <option value="{{$company->id}}">{{$company->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Category')}}</label>
                         <select name="category_id" class="form-control" id="category_id" required>
@@ -35,15 +46,19 @@
                             @endforeach
                         </select>
                     </div>
-                </div>
-                <div class="row">
                     <div class="mb-3 col-6 display-none" id="subcategory_exists">
                         <label class="form-label">{{translate('Sub category')}}</label>
                         <select name="subcategory_id" class="form-control" id="subcategory_id"></select>
                     </div>
-                    <div class="mb-3 col-6 display-none" id="product_exists">
-                        <label class="form-label">{{translate('Products')}}</label>
-                        <select name="product_id" class="form-control" id="product_id"></select>
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{translate('Start date')}}</label>
+                        <input type="date" name="start_date" class="form-control" required value="{{explode(' ', $discount->start_date)[0]}}"/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{translate('End date')}}</label>
+                        <input type="date" name="end_date" class="form-control" required value="{{explode(' ', $discount->end_date)[0]}}"/>
                     </div>
                 </div>
                 <div>
@@ -55,11 +70,9 @@
     </div>
     <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
     <script>
-        let super_admin = true
         let coupon_category_id = "{{$category_id}}"
         let coupon_subcategory_id = "{{$subcategory_id}}"
         let coupon_product_id = "{{$discount->product_id}}"
-        let coupon_price_value = "{{$discount->price??''}}"
         let coupon_percent_value = "{{$discount->percent??''}}"
         let text_select_sub_category = "{{translate('Select sub category')}}"
         let text_all_subcategory_products = "{{translate('All subcategories`s products')}}"

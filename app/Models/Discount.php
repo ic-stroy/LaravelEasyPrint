@@ -24,6 +24,9 @@ class Discount extends Model
     public function product(){
         return $this->hasOne(Products::class, 'id', 'product_id');
     }
+    public function warehouse(){
+        return $this->hasOne(Warehouse::class, 'id', 'warehouse_id');
+    }
     public function company(){
         return $this->hasOne(Company::class, 'id', 'company_id');
     }
