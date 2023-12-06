@@ -40,4 +40,9 @@ class Warehouse extends Model
     public function color(){
         return $this->hasOne(Color::class, 'id', 'color_id');
     }
+
+    public function discount()
+    {
+        return $this->hasOne(Discount::class, 'warehouse_id','id')->where('type', 2)->where('start_date', '<=', date('Y-m-d H:i:s'))->where('end_date', '>=', date('Y-m-d H:i:s'));
+    }
 }
