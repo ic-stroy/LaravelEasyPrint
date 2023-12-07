@@ -23,11 +23,11 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>{{__('Price')}}</th>
-                        <th>{{__('All price')}}</th>
-                        <th>{{__('Status')}}</th>
-                        <th>{{__('User')}}</th>
-                        <th class="text-center">{{__('Functions')}}</th>
+                        <th>{{translate('Price')}}</th>
+                        <th>{{translate('All price')}}</th>
+                        <th>{{translate('Status')}}</th>
+                        <th>{{translate('User')}}</th>
+                        <th class="text-center">{{translate('Functions')}}</th>
                     </tr>
                 </thead>
                 <tbody class="table_body">

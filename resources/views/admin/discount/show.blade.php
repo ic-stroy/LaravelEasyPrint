@@ -6,20 +6,20 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <h4 class="mt-0 header-title">{{__('Discount lists')}}</h4>
+            <h4 class="mt-0 header-title">{{translate('Discount lists')}}</h4>
             <div class="dropdown float-end">
-                <a class="form_functions btn btn-success" href="{{route('discount.create')}}">{{__('Create')}}</a>
+                <a class="form_functions btn btn-success" href="{{route('discount.create')}}">{{translate('Create')}}</a>
             </div>
             <table id="datatable-buttons" class="table dt-responsive nowrap table_show">
                 <thead>
                     <tr>
-                        <th>{{__('Attributes')}}</th>
-                        <th>{{__('Informations')}}</th>
+                        <th>{{translate('Attributes')}}</th>
+                        <th>{{translate('Informations')}}</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <th>{{__('Category')}}</th>
+                        <th>{{translate('Category')}}</th>
                         <td>
                             @if($category != '' || $subcategory != '')
                                 {{$category}} {{' '.$subcategory}}
@@ -27,7 +27,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>{{__('Discount percent')}}</th>
+                        <th>{{translate('Discount percent')}}</th>
                         <td>
                             @if($discounts_data['discount']->percent != null)
                                 {{$discounts_data['discount']->percent}} {{translate(' %')}}
@@ -35,7 +35,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>{{__('Number of warehouses')}}</th>
+                        <th>{{translate('Number of warehouses')}}</th>
                         <td>
                             @if($discounts_data['number'] != null)
                                 {{$discounts_data['number']}}
@@ -44,12 +44,12 @@
                     </tr>
                     @if(isset($discounts_data['discount']->product))
                         <tr>
-                            <th>{{__('Product')}}</th>
+                            <th>{{translate('Product')}}</th>
                             <td>{{$discounts_data['discount']->product->name??''}}</td>
                         </tr>
                     @endif
                     <tr>
-                        <th>{{__('Updated at')}}</th>
+                        <th>{{translate('Updated at')}}</th>
                         <td>{{$discounts_data['discount']->updated_at??''}}</td>
                     </tr>
                 </tbody>

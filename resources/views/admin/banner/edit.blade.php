@@ -23,18 +23,18 @@
                 </div>
             @endif
             <p class="text-muted font-14">
-                {{__('Banner list edit')}}
+                {{translate('Banner list edit')}}
             </p>
             <form action="{{route('banner.update', $banner->id)}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method("PUT")
                 <div class="row">
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Title')}}</label>
+                        <label class="form-label">{{translate('Title')}}</label>
                         <input type="text" name="title" class="form-control" required value="{{$banner->title}}"/>
                     </div>
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Is active')}}</label>
+                        <label class="form-label">{{translate('Is active')}}</label>
                         <select id="is_active" class="form-select" name="is_active">
                             <option value="1" {{$banner->is_active == 1?'selected':''}}>{{translate('Active')}}</option>
                             <option value="0" {{$banner->is_active == 0?'selected':''}}>{{translate('No active')}}</option>
@@ -42,7 +42,7 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">{{__('Text')}}</label>
+                    <label class="form-label">{{translate('Text')}}</label>
                     <textarea class="form-control" name="text" id="text" required cols="20" rows="2">{{$banner->text }}</textarea>
                 </div>
                 <div class="mb-3">
@@ -56,7 +56,7 @@
                             $avatar_main = storage_path('app/public/banner/'.$banner_image);
                         @endphp
                         @if(file_exists($avatar_main))
-                            <label class="form-label">{{__('Banner image')}}</label>
+                            <label class="form-label">{{translate('Banner image')}}</label>
                             <div class="">
                                 <img src="{{asset('storage/banner/'.$banner_image)}}" alt="" height="200px">
                             </div>
@@ -64,7 +64,7 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">{{__('Carousel image')}}</label>
+                    <label class="form-label">{{translate('Carousel image')}}</label>
                     <div class="row">
                         @if(!is_array($banner_images))
                             @php
@@ -86,17 +86,17 @@
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Banner image')}}</label>
+                        <label class="form-label">{{translate('Banner image')}}</label>
                         <input type="file" name="image" class="form-control" value="{{old('image')}}"/>
                     </div>
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Carousel image')}}</label>
+                        <label class="form-label">{{translate('Carousel image')}}</label>
                         <input type="file" name="carusel_images[]" class="form-control" multiple  value="{{old('image')}}"/>
                     </div>
                 </div>
                 <div>
-                    <button type="submit" class="btn btn-primary waves-effect waves-light">{{__('Update')}}</button>
-                    <button type="reset" class="btn btn-secondary waves-effect">{{__('Cancel')}}</button>
+                    <button type="submit" class="btn btn-primary waves-effect waves-light">{{translate('Update')}}</button>
+                    <button type="reset" class="btn btn-secondary waves-effect">{{translate('Cancel')}}</button>
                 </div>
             </form>
         </div>

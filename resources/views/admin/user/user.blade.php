@@ -12,21 +12,21 @@
     <div class="card">
         <div class="card-body">
             <div class="dropdown float-end">
-                <a class="form_functions btn btn-success" onclick="createCompany()">{{__('Create')}}</a>
+                <a class="form_functions btn btn-success" onclick="createCompany()">{{translate('Create')}}</a>
             </div>
             <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>{{__('Avatar')}}</th>
-                        <th>{{__('Firstname')}}</th>
-                        <th>{{__('Lastname')}}</th>
-                        <th>{{__('Role')}}</th>
+                        <th>{{translate('Avatar')}}</th>
+                        <th>{{translate('Firstname')}}</th>
+                        <th>{{translate('Lastname')}}</th>
+                        <th>{{translate('Role')}}</th>
                         @if(in_array($role_id, [2, 3]))
-                            <th>{{__('Company')}}</th>
+                            <th>{{translate('Company')}}</th>
                         @endif
-                        <th>{{__('Phone number')}}</th>
-                        <th class="text-center">{{__('Functions')}}</th>
+                        <th>{{translate('Phone number')}}</th>
+                        <th class="text-center">{{translate('Functions')}}</th>
                     </tr>
                 </thead>
                 <tbody class="table_body">

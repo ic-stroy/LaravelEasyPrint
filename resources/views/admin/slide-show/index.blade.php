@@ -7,20 +7,20 @@
     <link rel="stylesheet" href="{{asset('assets/css/toogle-switch.css')}}">
     <div class="card">
         <div class="card-body">
-            <h4 class="mt-0 header-title">{{__('Products lists')}}</h4>
+            <h4 class="mt-0 header-title">{{translate('Products lists')}}</h4>
             <div class="dropdown float-end">
-                <a class="form_functions btn btn-success" href="{{route('product.create')}}">{{__('Create')}}</a>
+                <a class="form_functions btn btn-success" href="{{route('product.create')}}">{{translate('Create')}}</a>
             </div>
             <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>{{__('Name')}}</th>
-                        <th>{{__('Current category')}}</th>
-                        <th>{{__('Status')}}</th>
-                        <th>{{__('Images')}}</th>
-                        <th>{{__('Updated_at')}}</th>
-                        <th class="text-center">{{__('On Slide show')}}</th>
+                        <th>{{translate('Name')}}</th>
+                        <th>{{translate('Current category')}}</th>
+                        <th>{{translate('Status')}}</th>
+                        <th>{{translate('Images')}}</th>
+                        <th>{{translate('Updated_at')}}</th>
+                        <th class="text-center">{{translate('On Slide show')}}</th>
                     </tr>
                 </thead>
                 <tbody class="table_body">
@@ -60,7 +60,7 @@
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('product.show', $product->id)}}">
-                                    {{$product->status == 1?__('Active'):__('No active') }}
+                                    {{$product->status == 1?translate('Active'):translate('No active') }}
                                 </a>
                             </td>
                             <td>

@@ -13,28 +13,28 @@
     @endphp
     <div class="card">
         <div class="card-body">
-            <h4 class="mt-0 header-title">{{__('Banner lists')}}</h4>
+            <h4 class="mt-0 header-title">{{translate('Banner lists')}}</h4>
             <div class="dropdown float-end">
-                <a class="form_functions btn btn-success" href="{{route('banner.create')}}">{{__('Create')}}</a>
+                <a class="form_functions btn btn-success" href="{{route('banner.create')}}">{{translate('Create')}}</a>
             </div>
             <table id="datatable-buttons" class="table dt-responsive table_show">
                 <thead>
                 <tr>
-                    <th>{{__('Attributes')}}</th>
-                    <th>{{__('Informations')}}</th>
+                    <th>{{translate('Attributes')}}</th>
+                    <th>{{translate('Informations')}}</th>
                 </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <th>{{__('Title')}}</th>
+                        <th>{{translate('Title')}}</th>
                         <td>{{$model->title??''}}</td>
                     </tr>
                     <tr>
-                        <th>{{__('Text')}}</th>
+                        <th>{{translate('Text')}}</th>
                         <td>{!! $model->text !!}</td>
                     </tr>
                     <tr>
-                        <th>{{__('Banner image')}}</th>
+                        <th>{{translate('Banner image')}}</th>
                         <td>
                             @php
                                 if(!isset($banner_images->banner)){
@@ -52,7 +52,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>{{__('Carousel image')}}</th>
+                        <th>{{translate('Carousel image')}}</th>
                         <td>
                             <div class="d-flex">
                                 @if(!is_array($banner_images))
@@ -75,11 +75,11 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>{{__('Is active')}}</th>
+                        <th>{{translate('Is active')}}</th>
                         <td>{{$model->is_active = 1?'Active':'No active'}}</td>
                     </tr>
                     <tr>
-                        <th>{{__('Updated at')}}</th>
+                        <th>{{translate('Updated at')}}</th>
                         <td>{{$model->updated_at??''}}</td>
                     </tr>
                 </tbody>

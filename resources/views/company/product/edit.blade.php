@@ -16,18 +16,18 @@
                 </div>
             @endif
             <p class="text-muted font-14">
-                {{__('Products list edit')}}
+                {{translate('Products list edit')}}
             </p>
             <form action="{{route('company_product.update', $warehouse->id)}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method("post")
                 {{-- <input type="hidden" name="id" value="{{$warehouse->id}}"> --}}
                 <div class="mb-3">
-                    <label class="form-label">{{__('Name')}}</label>
+                    <label class="form-label">{{translate('Name')}}</label>
                     <input type="text" name="name" class="form-control" required value="{{$warehouse->name}}"/>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">{{__('Product')}}</label>
+                    <label class="form-label">{{translate('Product')}}</label>
                     <select name="product_id" class="form-control" id="product_id">
                         @if(isset($products))
                             @foreach($products as $product)
@@ -39,7 +39,7 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">{{__('Color')}}</label>
+                    <label class="form-label">{{translate('Color')}}</label>
                     <select name="color_id" class="form-control" id="color_id">
                         @foreach($colors as $color)
                             <option value="{{$color->id}}" @if($warehouse->color_id) {{$warehouse->color_id == $color->id?'selected':'' }} @endif>
@@ -49,7 +49,7 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">{{__('Size')}}</label>
+                    <label class="form-label">{{translate('Size')}}</label>
                     <select name="size_id" class="form-control" id="size_id">
                         @foreach($sizes as $size)
                             <option value="{{$size->id}}" @if($warehouse->size_id) {{$warehouse->size_id == $size->id?'selected':'' }} @endif>
@@ -59,16 +59,16 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">{{__('Price')}}</label>
+                    <label class="form-label">{{translate('Price')}}</label>
                     <input type="number" name="price" class="form-control" required value="{{$warehouse->price}}"/>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">{{__('Quantity')}}</label>
+                    <label class="form-label">{{translate('Quantity')}}</label>
                     <input type="number" name="quantity" class="form-control" required value="{{$warehouse->quantity}}"/>
                 </div>
                 <div>
-                    <button type="submit" class="btn btn-primary waves-effect waves-light">{{__('Update')}}</button>
-                    <button type="reset" class="btn btn-secondary waves-effect">{{__('Cancel')}}</button>
+                    <button type="submit" class="btn btn-primary waves-effect waves-light">{{translate('Update')}}</button>
+                    <button type="reset" class="btn btn-secondary waves-effect">{{translate('Cancel')}}</button>
                 </div>
             </form>
         </div>

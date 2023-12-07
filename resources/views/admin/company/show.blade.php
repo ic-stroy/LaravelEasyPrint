@@ -13,44 +13,44 @@
     </style>
     <div class="card">
         <div class="card-body">
-            <h4 class="mt-0 header-title">{{__('Color lists')}}</h4>
+            <h4 class="mt-0 header-title">{{translate('Color lists')}}</h4>
             <div class="dropdown float-end">
-                <a class="form_functions btn btn-success" href="{{route('color.create')}}">{{__('Create')}}</a>
+                <a class="form_functions btn btn-success" href="{{route('color.create')}}">{{translate('Create')}}</a>
             </div>
             <table id="datatable-buttons" class="table dt-responsive nowrap table_show">
                 <thead>
                     <tr>
-                        <th>{{__('Attributes')}}</th>
-                        <th>{{__('Informations')}}</th>
+                        <th>{{translate('Attributes')}}</th>
+                        <th>{{translate('Informations')}}</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <th>{{__('Name')}}</th>
+                        <th>{{translate('Name')}}</th>
                         <td>{{$model->name??''}}</td>
                     </tr>
                     <tr>
-                        <th>{{__('Delivery price')}}</th>
+                        <th>{{translate('Delivery price')}}</th>
                         <td>{{$model->delivery_price??''}}</td>
                     </tr>
                     <tr>
-                        <th>{{__('Region')}}</th>
+                        <th>{{translate('Region')}}</th>
                         <td>{{isset($model->address->cities->region)? $model->address->cities->region->name :''}}</td>
                     </tr>
                     <tr>
-                        <th>{{__('District')}}</th>
+                        <th>{{translate('District')}}</th>
                         <td>{{isset($model->address->cities)?$model->address->cities->name:''}}</td>
                     </tr>
                     <tr>
-                        <th>{{__('Street, house')}}</th>
+                        <th>{{translate('Street, house')}}</th>
                         <td>{{isset($model->address->name)?$model->address->name:''}}</td>
                     </tr>
                     <tr>
-                        <th>{{__('Post code')}}</th>
+                        <th>{{translate('Post code')}}</th>
                         <td>{{isset($model->address->postcode)?$model->address->postcode:''}}</td>
                     </tr>
                     <tr>
-                        <th>{{__('Map')}}</th>
+                        <th>{{translate('Map')}}</th>
                         <td>
                             <div class="yandex_maps" id="map">
 
@@ -58,7 +58,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>{{__('Updated at')}}</th>
+                        <th>{{translate('Updated at')}}</th>
                         <td>{{$model->updated_at??''}}</td>
                     </tr>
                 </tbody>

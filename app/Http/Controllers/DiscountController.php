@@ -79,7 +79,7 @@ class DiscountController extends Controller
                 $discount->save();
             }
         }
-        return redirect()->route('discount.index')->with('status', __('Successfully created'));
+        return redirect()->route('discount.index')->with('status', translate('Successfully created'));
     }
 
     public function getProducts($request){
@@ -198,7 +198,7 @@ class DiscountController extends Controller
                 $discount->save();
             }
         }
-        return redirect()->route('discount.index')->with('status', __('Successfully updated'));
+        return redirect()->route('discount.index')->with('status', translate('Successfully updated'));
     }
 
     /**
@@ -206,8 +206,11 @@ class DiscountController extends Controller
      */
     public function destroy(string $id)
     {
-        $model = Discount::find($id);
-        $model->delete();
-        return redirect()->route('discount.index')->with('status', __('Successfully created'));
+        $current_discount = Discount::find($id);
+        $current_discount_group = Discount::where('discount_number', $current_discount->discount_number)->get();
+        foreach ($current_discount_group as $currentDiscount){
+            $currentDiscount->delete();
+        }
+        return redirect()->route('discount.index')->with('status', translate('Successfully created'));
     }
 }
