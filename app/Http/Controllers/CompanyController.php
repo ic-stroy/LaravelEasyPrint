@@ -63,7 +63,7 @@ class CompanyController extends Controller
         $model->delivery_price = $request->delivery_price;
         $model->address_id = $address->id;
         $model->save();
-        return redirect()->route('company.index')->with('status', __('Successfully created'));
+        return redirect()->route('company.index')->with('status', translate('Successfully created'));
     }
 
     /**
@@ -105,7 +105,7 @@ class CompanyController extends Controller
         $model->delivery_price = $request->delivery_price;
         $model->address_id = $address->id;
         $model->save();
-        return redirect()->route('company.index')->with('status', __('Successfully updated'));
+        return redirect()->route('company.index')->with('status', translate('Successfully updated'));
     }
 
     /**
@@ -119,7 +119,7 @@ class CompanyController extends Controller
         if(isset($address->id)){
             $address->delete();
         }
-        return redirect()->route('company.index')->with('status', __('Successfully deleted'));
+        return redirect()->route('company.index')->with('status', translate('Successfully deleted'));
     }
 
 }

@@ -40,7 +40,7 @@ class BannerController extends Controller
         $carusel_images = $request->file('carusel_images');
         $banner->image = $this->imageSave($file, $banner, $carusel_images, 'store');
         $banner->save();
-        return redirect()->route('banner.index')->with('status', __('Successfully created'));
+        return redirect()->route('banner.index')->with('status', translate('Successfully created'));
     }
 
     /**
@@ -78,7 +78,7 @@ class BannerController extends Controller
         $carusel_images = $request->file('carusel_images');
         $model->image = $this->imageSave($file, $model, $carusel_images, 'update');
         $model->save();
-        return redirect()->route('banner.index')->with('status', __('Successfully updated'));
+        return redirect()->route('banner.index')->with('status', translate('Successfully updated'));
     }
 
     public function setRandom(){
@@ -161,6 +161,6 @@ class BannerController extends Controller
             unlink($sms_avatar);
         }
         $model->delete();
-        return redirect()->route('banner.index')->with('status', __('Successfully deleted'));
+        return redirect()->route('banner.index')->with('status', translate('Successfully deleted'));
     }
 }
