@@ -65,6 +65,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('destroy-card', [CardController::class, 'destroyCard']);
     Route::group(['prefix' => 'order'], function () {
         Route::post('/set-warehouse', [OrderController::class, 'setWarehouse']);
+        Route::post('/add-coupon', [OrderController::class, 'addCoupon']);
         Route::post('connection/to_order', [OrderController::class, 'connectOrder']);
         Route::post('accepted/order', [OrderController::class, 'acceptedOrder']);
         Route::post('delete/order-detail', [OrderController::class, 'deleteOrderDetail']);

@@ -19,17 +19,52 @@ class OrderController extends Controller
     public function setWarehouse(Request $request){
         $language = $request->header('language');
         $user = Auth::user();
+
+        if ($request->image_price) {
+            if ($request->discount != null) {
+                $discount_price = (($request->price + $request->image_price)/100)*$request->discount;
+            }
+            else {
+                $discount_price = null;
+            }
+            $order_price =(int)($request->price + $request->image_price)*$request->quantity;
+            $order_all_price=$order_price - $discount_price;
+        }
+        else {
+            if ($request->discount != null) {
+                $discount_price = (($request->price)/100)*$request->discount;
+            }
+            else {
+                $discount_price = null;
+            }
+            $order_price =(int)(($request->price)*($request->quantity));
+            $order_all_price=$order_price - $discount_price * $request->quantity;
+            // dd($order_price);
+            // dd($order_all_price);
+        }
+
+
+
+
         if(isset($user->orderBasket->id)){
             $order = $user->orderBasket;
-            $order->price = (int)$order->price + (int)$request->image_price;
+            $order->price =$order->price + $order_price;
+            $order->all_price=$order->all_price + $order_all_price;
+            $order->discount_price=$order->discount_price + ($order_price-$order_all_price);
         }else{
             $order = new Order();
             $order->user_id = $user->id;
             $order->status = 1;
-            $order->price = $request->image_price;
+            $order->price = (int)$order_price;
+            $order->discount_price=(int)($order_price-$order_all_price);
+            $order->all_price=(int)$order_all_price;
         }
+        // dd($order);
         $order->save();
         $message = translate_api('Success', $language);
+
+
+
         if ($request->warehouse_product_id && DB::table('warehouses')->where('id',$request->warehouse_product_id)->exists()) {
 
             // dd($message);
@@ -42,12 +77,16 @@ class OrderController extends Controller
                     'price'=>($request->quantity * $request->price)
                 ]);
             } else {
+
                 DB::table('order_details')->insert([
                     'order_id' => $order->id,
                     'quantity' => $request->quantity,
                     'color_id' => $request->color_id,
                     'size_id' => $request->size_id,
-                    'price' => $request->price
+                    'price' => $request->price,
+                    'discount'=>$request->discount,
+                    'discount_price'=>$discount_price,
+                    'warehouse_id'=>$request->warehouse_product_id
                     // Add more columns and their respective default values
                 ]);
             }
@@ -70,13 +109,16 @@ class OrderController extends Controller
         $order_detail->color_id = $request->color_id;
         $order_detail->size_id = $request->size_id;
         $images_print = $request->file('imagesPrint');
-
-        $order_detail->price = $request->image_price;
+        $order_detail->price = $request->price + $request->image_price ;
+        $order_detail->image_price = $request->image_price;
         $image_front = $request->file('image_front');
         $image_back = $request->file('image_back');
         $order_detail->image_front = $this->saveImage($image_front, 'warehouse');
         $order_detail->image_back = $this->saveImage($image_back, 'warehouse');
         $order_detail->order_id = $order->id;
+        $order_detail->discount = $request->discount;
+        $order_detail->discount_price = $discount_price;
+
         $order_detail->save();
         if (isset($images_print)) {
             foreach ($images_print as $image_print){
@@ -232,6 +274,8 @@ class OrderController extends Controller
                         "quantity"=>$order_detail->quantity,
                         "max_quantity"=>$warehouse_product->max_quantity,
                         "description"=>$warehouse_product->description,
+                        "discount"=>$order_detail->discount,
+                        "discount_price"=>$order_detail->discount_price,
                         "images"=>$warehouse_product->images,
                         "color"=>[
                            "id"=>$warehouse_product->color_id,
@@ -274,6 +318,8 @@ class OrderController extends Controller
                         "relation_id"=>$relation_id,
                         "price"=>$order_detail->price,
                         "quantity"=>$order_detail->quantity,
+                        "discount"=>$order_detail->discount,
+                        "discount_price"=>$order_detail->discount_price,
                         "description"=>$product->description,
                         "images"=>$product->images,
                         "color"=>[
@@ -316,6 +362,8 @@ class OrderController extends Controller
             // dd($order->orderDetail);
             $data=[];
             $order_detail_list=[];
+            // $order_price=0;
+            // $order_discount_price=0;
             foreach ($order->orderDetail as $order_detail){
 
                 if ($order_detail->warehouse_id != null) {
@@ -338,6 +386,8 @@ class OrderController extends Controller
                         "relation_id"=>$relation_id,
                         'name'=>$warehouse_product->warehouse_product_name,
                         "price"=>$order_detail->price,
+                        "discount"=>$order_detail->discount,
+                        "discount_price"=>$order_detail->discount_price,
                         "quantity"=>$order_detail->quantity,
                         "description"=>$warehouse_product->description,
                         "images"=>$warehouse_product->images,
@@ -365,6 +415,8 @@ class OrderController extends Controller
                         "relation_type"=>$relation_type,
                         "relation_id"=>$relation_id,
                         "price"=>$order_detail->price,
+                        "discount"=>$order_detail->discount,
+                        "discount_price"=>$order_detail->discount_price,
                         "quantity"=>$order_detail->quantity,
                         "description"=>$product->description,
                         "images"=>$product->images,
@@ -376,26 +428,16 @@ class OrderController extends Controller
 
 
                 }
-
                 array_push($order_detail_list,$list);
             }
-            $addresses=DB::table('addresses as dt1')
-                ->join('yy_cities as dt2', 'dt2.id', '=', 'dt1.city_id')
-                ->join('yy_cities as dt3', 'dt3.id', '=', 'dt2.parent_id')
-                ->where('user_id',Auth::user()->id)
-                ->select('dt1.id as address_id','dt1.name as name','dt2.name as city_name','dt3.name as region_name')
-                ->get();
 
-
-            // $data
-            // dd($addresses);
+            
             $data=[
                 'list'=>$order_detail_list,
-                'addresses'=>$addresses,
-                'price'=>null,
-                'delivery_price'=>null,
-                'discount_price'=>null,
-                'grant_total'=>null
+                // 'addresses'=>$addresses,
+                'price'=>$order->price,
+                'discount_price'=>$order->discount_price,
+                'grant_total'=>$order->all_price
             ];
 
             // array_push($data,$addresses);
@@ -410,6 +452,68 @@ class OrderController extends Controller
 
     }
 
+    public function addCoupon(Request $request){
+        // dd($request->all());
+        $language=$request->language;
+        if ($language == null) {
+            $language=env("DEFAULT_LANGUAGE", 'ru');
+        }
+
+        if ($coupon=DB::table('coupons')->where('name',$request->coupon_name)->first()) {
+            // dd('dfhsdg');
+            if ($order=Order::where('id',$request->order_id)->first()) {
+                // dd($order);
+                if ($order->coupon_id == null) {
+                    // dd($order->orderDetail);
+                    if ($coupon->company_id != null) {
+                        foreach ($order->orderDetail as $order_detail) {
+                            if ($order_detail->warehouse_id) {
+                                // dd($order_detail->warehouse_id);
+                               $company_id=DB::table('warehouses')->where('id',$order_detail->warehouse_id)->first()->company_id;
+                               if ($coupon->company_id == $company_id) {
+                                $order->coupon_id = $coupon->id;
+                                // dd($order);
+                               }
+                            }
+
+                        }
+
+                    }
+                    elseif ($order->all_price > $coupon->min_price ) {
+                        $order->coupon_id = $coupon->id;
+                    }
+                    elseif (count(Order::where('id',$request->order_id)->where('status','!=', Constants::BASKED)) == $coupon->order_count ) {
+                        $order->coupon_id = $coupon->id;
+                    }
+                    // dd($order->coupun_id);
+                    if ($order->coupun_id != null) {
+                         if ($coupon->percent != null) {
+                            // dd($order);
+                            $order_coupon_price=(($order->all_price)/100)*($coupon->percent);
+                            $order->all_price=$order->all_price - $order_coupon_price;
+                         }
+                         else {
+                            $order->all_price=$order->all_price - $coupon->price;
+                         }
+                    }
+                    $order->save();
+                    $message=translate_api('success',$language);
+                    return $this->success($message, 200);
+                }
+
+                // dd($order);
+
+            }
+            else {
+                $message=translate_api('order not found',$language);
+                return $this->error($message, 400);
+            }
+        }
+        // dd($coupon);
+        $message=translate_api('coupon not found',$language);
+        return $this->error($message, 400);
+    }
+
     public function connectOrder(Request $request){
         $language = $request->header('language');
         $data=$request->all();
@@ -418,6 +522,8 @@ class OrderController extends Controller
         $order_id=$data['order_id'];
 
         if ($order_id  && $order=Order::where('id',$order_id)->first()) {
+            $order_price=0;
+            $order_discount_price=0;
 
             foreach ($order_inner as  $update_order_detail) {
                 // dd($update_order_detail['order_detail_id']);
@@ -428,11 +534,19 @@ class OrderController extends Controller
                             'size_id'=>$update_order_detail['size_id'],
                             'quantity'=>$update_order_detail['quantity']
                     ]);
+
+                    $order_price +=(($order_detail->price)*($order_detail->quantity));
+                    $order_discount_price +=(($order_detail->discount_price)*($order_detail->quantity));
                 }else {
                     $message=translate_api('order detail not found',$language);
                     return $this->error($message, 400);
                 }
             }
+
+            $order->price=$order_price;
+            $order->all_price=$order_price-$order_discount_price;
+            $order->save();
+
             $message=translate_api('success',$language);
             return $this->success($message, 200);
         }

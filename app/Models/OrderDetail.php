@@ -24,6 +24,8 @@ class OrderDetail extends Model
         'coupon_id',
         'size_id',
         'color_id',
+        'discount',
+        'discount_price',
         'created_at',
         'updated_at',
         'deleted_at'

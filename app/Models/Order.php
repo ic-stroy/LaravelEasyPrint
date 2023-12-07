@@ -26,6 +26,7 @@ class Order extends Model
       'phone_number',
       'payment_method',
       'user_card_id',
+      'discount_price',
       'created_at',
       'updated_at',
       'deleted_at'
