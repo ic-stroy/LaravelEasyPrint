@@ -11,6 +11,26 @@
             $banner_images = [];
         }
     @endphp
+    <style>
+        .delete_carusel_func{
+            height: 20px;
+            background-color: transparent;
+            border: 0px;
+            color: silver;
+        }
+        .carousel_image img{
+
+        }
+        .carousel_image{
+            margin-right: 4px;
+            transition: 0.4s;
+        }
+        .carousel_image:hover{
+            border: lightgrey;
+            transform: scale(1.02);
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+    </style>
     <div class="card">
         <div class="card-body">
             @if ($errors->any())
@@ -62,22 +82,27 @@
                             </div>
                         @endif
                     </div>
+                    <div class="mb-3 col-6">
+                        <input type="file" name="image" class="form-control" value="{{old('image')}}"/>
+                    </div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">{{translate('Carousel image')}}</label>
                     <div class="row">
                         @if(!is_array($banner_images))
                             @php
-                                if(!isset($banner_images->carousel) && count($banner_images->carousel)>0){
+                                if(!isset($banner_images->carousel) || count($banner_images->carousel)<0){
                                      $carousel_images[] = 'no';
                                 }else{
                                     $carousel_images = $banner_images->carousel;
                                 }
                             @endphp
-                            @foreach($carousel_images as $carousel_image)
+                            @foreach($carousel_images as $key => $carousel_image)
                                 @if(file_exists(storage_path('app/public/banner/carousel/'.$carousel_image)))
-                                    <div class="col-2 mb-3">
-                                        <img src="{{asset('storage/banner/carousel/'.$carousel_image)}}" alt="" height="200px">
+                                    <div class="col-2 mb-3 carousel_image">
+                                        <div class="d-flex justify-content-between">
+                                            <img src="{{asset('storage/banner/carousel/'.$carousel_image)}}" alt="" height="200px">
+                                            <button class="delete_carusel_func">X</button>
+                                        </div>
                                     </div>
                                 @endif
                             @endforeach
@@ -85,10 +110,6 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="mb-3 col-6">
-                        <label class="form-label">{{translate('Banner image')}}</label>
-                        <input type="file" name="image" class="form-control" value="{{old('image')}}"/>
-                    </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Carousel image')}}</label>
                         <input type="file" name="carusel_images[]" class="form-control" multiple  value="{{old('image')}}"/>
@@ -101,4 +122,45 @@
             </form>
         </div>
     </div>
+    <script>
+        let carousel_image = document.getElementsByClassName('carousel_image')
+        let delete_carusel_func = document.getElementsByClassName('delete_carusel_func')
+        let deleted_text = "{{translate('Carousel image was deleted')}}"
+        let carousel_images = []
+        @if(!is_array($banner_images))
+            @php
+                if(!isset($banner_images->carousel) || count($banner_images->carousel)<0){
+                     $carousel_images = [];
+                }else{
+                    $carousel_images = $banner_images->carousel;
+                }
+            @endphp
+            @foreach($carousel_images as $carousel_image)
+                carousel_images.push("{{$carousel_image}}")
+            @endforeach
+        @endif
+        function deleteCarouselFunc(item, val) {
+            delete_carusel_func[item].addEventListener('click', function (e) {
+                e.preventDefault()
+
+                $.ajax({
+                    url: '/api/delete-carousel',
+                    method: 'POST',
+                    dataType: 'json',
+                    data: {
+                        id:"{{$banner->id}}",
+                        carousel_name: carousel_images[item]
+                    },
+                    success: function(data){
+                        console.log(data)
+                    }
+                });
+                if(!carousel_image[item].classList.contains('display-none')){
+                    carousel_image[item].classList.add('display-none')
+                }
+                toastr.success(deleted_text)
+            })
+        }
+        Object.keys(delete_carusel_func).forEach(deleteCarouselFunc)
+    </script>
 @endsection

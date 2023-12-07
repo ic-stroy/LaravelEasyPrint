@@ -89,7 +89,6 @@ class BannerController extends Controller
     }
 
     public function imageSave($file, $banner, $carusel_images, $text){
-
         if($text == 'update'){
             if(isset($banner->image) && !is_array($banner->image)){
                 $banner_images = json_decode($banner->image);
@@ -111,37 +110,32 @@ class BannerController extends Controller
                     unlink($avatar_main);
                 }
             }
-            if(isset($carusel_images) && !is_array($banner_images)){
-                if(!isset($banner_images->carousel) && count($banner_images->carousel) == 0){
-                    $carousel_images_base[] = 'no';
-                }else{
-                    $carousel_images_base = $banner_images->carousel;
-                }
-                foreach ($carousel_images_base as $carousel_image_base){
-                    $carousel_main = storage_path('app/public/banner/carousel/'.$carousel_image_base);
-                    if(file_exists($carousel_main)){
-                        unlink($carousel_main);
-                    }
-                }
-            }
+
         }
-        if(isset($file)) {
+        if(isset($file)){
             $random = $this->setRandom();
             $banner_name = $random . '' . date('Y-m-dh-i-s') . '.' . $file->extension();
             $file->storeAs('public/banner/', $banner_name);
         }
         if(isset($carusel_images)){
-            foreach ($carusel_images as $carusel_image){
+            $carouselImage = [];
+            if(!isset($banner_images->carousel)){
+                $carousel_images_base = [];
+            }else{
+                $carousel_images_base = $banner_images->carousel;
+            }
+            foreach($carusel_images as $carusel_image){
                 $random = $this->setRandom();
                 $carusel_image_name = $random.''.date('Y-m-dh-i-s').'.'.$carusel_image->extension();
                 $carusel_image->storeAs('public/banner/carousel/', $carusel_image_name);
                 $carouselImage[] = $carusel_image_name;
             }
+            $all_carousel_images = array_values(array_merge($carousel_images_base, $carouselImage));
         }
         if($text == 'update'){
-            $banner = json_encode(['banner'=>$banner_name??$banner_image_name, 'carousel'=>$carouselImage??$carousel_image_names]);
+            $banner = json_encode(['banner'=>$banner_name??$banner_image_name, 'carousel'=>$all_carousel_images??$carousel_image_names]);
         }elseif($text == 'store'){
-            $banner = json_encode(['banner'=>$banner_name??$banner_image_name, 'carousel'=>$carouselImage??$carousel_image_names]);
+            $banner = json_encode(['banner'=>$banner_name??$banner_image_name, 'carousel'=>$all_carousel_images??$carousel_image_names]);
         }
         return $banner;
     }
@@ -151,16 +145,38 @@ class BannerController extends Controller
      */
     public function destroy(string $id)
     {
-        $model = Banner::find($id);
-        if(isset($model->image)) {
-            $sms_avatar = storage_path('app/public/banner/'.$model->image);
-        } else {
-            $sms_avatar = 'no';
+        $banner = Banner::find($id);
+        if(isset($banner->image) && !is_array($banner->image)){
+            $banner_images = json_decode($banner->image);
+        }else{
+            $banner_images = [];
         }
-        if (file_exists($sms_avatar)) {
-            unlink($sms_avatar);
+        if(!is_array($banner_images)){
+            if(!isset($banner_images->banner) || $banner_images->banner == ""){
+                $banner_image = 'no';
+            }else{
+                $banner_image = $banner_images->banner;
+            }
+            $avatar_main = storage_path('app/public/banner/'.$banner_image);
+            if(file_exists($avatar_main)){
+                unlink($avatar_main);
+            }
         }
-        $model->delete();
+        if(!is_array($banner_images)){
+            if(!isset($banner_images->carousel) && count($banner_images->carousel) == 0){
+                $carousel_images_base[] = 'no';
+            }else{
+                $carousel_images_base = $banner_images->carousel;
+            }
+            foreach ($carousel_images_base as $carousel_image_base){
+                $carousel_main = storage_path('app/public/banner/carousel/'.$carousel_image_base);
+                if(file_exists($carousel_main)){
+                    unlink($carousel_main);
+                }
+            }
+        }
+        $banner->delete();
         return redirect()->route('banner.index')->with('status', translate('Successfully deleted'));
     }
+
 }
