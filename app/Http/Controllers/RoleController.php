@@ -33,7 +33,7 @@ class RoleController extends Controller
         $model = new Role();
         $model->name = $request->name;
         $model->save();
-        return redirect()->route('role.index')->with('status', __('Successfully created'));
+        return redirect()->route('role.index')->with('status', translate('Successfully created'));
     }
 
     /**
@@ -62,7 +62,7 @@ class RoleController extends Controller
         $model = Role::find($id);
         $model->name = $request->name;
         $model->save();
-        return redirect()->route('role.index')->with('status', __('Successfully updated'));
+        return redirect()->route('role.index')->with('status', translate('Successfully updated'));
     }
 
     /**
@@ -72,6 +72,6 @@ class RoleController extends Controller
     {
         $model = Role::find($id);
         $model->delete();
-        return redirect()->route('role.index')->with('status', __('Successfully deleted'));
+        return redirect()->route('role.index')->with('status', translate('Successfully deleted'));
     }
 }

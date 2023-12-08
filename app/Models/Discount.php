@@ -15,12 +15,17 @@ class Discount extends Model
       'id',
       'percent',
       'product_id',
-      'category_id',
-      'company_id'
+      'warehouse_id',
+      'type',
+      'start_date',
+      'end_date',
     ];
 
     public function product(){
         return $this->hasOne(Products::class, 'id', 'product_id');
+    }
+    public function warehouse(){
+        return $this->hasOne(Warehouse::class, 'id', 'warehouse_id');
     }
     public function company(){
         return $this->hasOne(Company::class, 'id', 'company_id');

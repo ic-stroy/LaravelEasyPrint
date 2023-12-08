@@ -6,24 +6,24 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <h4 class="mt-0 header-title">{{__('Coupon lists')}}</h4>
+            <h4 class="mt-0 header-title">{{translate('Coupon lists')}}</h4>
             <div class="dropdown float-end">
-                <a class="form_functions btn btn-success" href="{{route('coupons.create')}}">{{__('Create')}}</a>
+                <a class="form_functions btn btn-success" href="{{route('coupons.create')}}">{{translate('Create')}}</a>
             </div>
             <table id="datatable-buttons" class="table dt-responsive nowrap table_show">
                 <thead>
                 <tr>
-                    <th>{{__('Attributes')}}</th>
-                    <th>{{__('Informations')}}</th>
+                    <th>{{translate('Attributes')}}</th>
+                    <th>{{translate('Informations')}}</th>
                 </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <th>{{__('Name')}}</th>
+                        <th>{{translate('Name')}}</th>
                         <td>{{$model->name??''}}</td>
                     </tr>
                     <tr>
-                        <th>{{__('Category')}}</th>
+                        <th>{{translate('Category')}}</th>
                         <td>
                             @if($category != '' || $subcategory != '')
                                 {{$category}} {{' '.$subcategory}}
@@ -31,7 +31,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>{{__('Coupon quantity')}}</th>
+                        <th>{{translate('Coupon quantity')}}</th>
                         <td>
                             @if ($model->price != null)
                                 {{$model->price}} {{translate(' sum')}}
@@ -41,18 +41,18 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>{{__('Company')}}</th>
+                        <th>{{translate('Company')}}</th>
                         <td>{{$model->company?$model->company->name:''}}</td>
                     </tr>
                     @if(isset($model->product))
                         <tr>
-                            <th>{{__('Product')}}</th>
+                            <th>{{translate('Product')}}</th>
                             <td>{{$model->product->name??''}}</td>
                         </tr>
                     @endif
                     @if(isset($model->warehouse))
                         <tr>
-                            <th>{{__('Warehouse')}}</th>
+                            <th>{{translate('Warehouse')}}</th>
                             <td>
                                 @if($model->warehouse->name != NULL)
                                     {{$model->warehouse->name}}
@@ -66,7 +66,7 @@
                         </tr>
                     @endif
                     <tr>
-                        <th>{{__('Updated at')}}</th>
+                        <th>{{translate('Updated at')}}</th>
                         <td>{{$model->updated_at??''}}</td>
                     </tr>
                 </tbody>

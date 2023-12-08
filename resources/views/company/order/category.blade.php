@@ -6,7 +6,7 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <h4 class="mt-0 header-title">{{__('Category lists')}}</h4>
+            <h4 class="mt-0 header-title">{{translate('Category lists')}}</h4>
             <table class="table table-striped table-bordered dt-responsive nowrap">
                 <thead>
                 <tr>

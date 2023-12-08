@@ -6,22 +6,22 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <h4 class="mt-0 header-title">{{__('Products lists')}}</h4>
+            <h4 class="mt-0 header-title">{{translate('Products lists')}}</h4>
             <div class="dropdown float-end">
-                <a class="form_functions btn btn-success" href="{{route('company_product.create')}}">{{__('Create')}}</a>
+                <a class="form_functions btn btn-success" href="{{route('company_product.create')}}">{{translate('Create')}}</a>
             </div>
             <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>{{__('Images')}}</th>
-                        <th>{{__('Name')}}</th>
-                        <th>{{__('Subcategory')}}</th>
-                        <th>{{__('Color')}}</th>
-                        <th>{{__('Size')}}</th>
-                        <th>{{__('Sum')}}</th>
-                        <th>{{__('Quentity')}}</th>
-                        <th class="text-center">{{__('Functions')}}</th>
+                        <th>{{translate('Images')}}</th>
+                        <th>{{translate('Name')}}</th>
+                        <th>{{translate('Subcategory')}}</th>
+                        <th>{{translate('Color')}}</th>
+                        <th>{{translate('Size')}}</th>
+                        <th>{{translate('Sum')}}</th>
+                        <th>{{translate('Quentity')}}</th>
+                        <th class="text-center">{{translate('Functions')}}</th>
                     </tr>
                 </thead>
                 <tbody class="table_body">
@@ -103,11 +103,7 @@
                             <td class="function_column">
                                 <div class="d-flex justify-content-center">
                                     <a class="form_functions btn btn-info" href="{{route('company_product.edit', $product->id)}}"><i class="fe-edit-2"></i></a>
-                                    <form action="{{route('product.destroy', $product->id)}}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="form_functions btn btn-danger" type="submit"><i class="fe-trash-2"></i></button>
-                                    </form>
+                                    <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-alert-modal" data-url="{{route('product.destroy', $product->id)}}"><i class="fe-trash-2"></i></button>
                                 </div>
                             </td>
                         </tr>

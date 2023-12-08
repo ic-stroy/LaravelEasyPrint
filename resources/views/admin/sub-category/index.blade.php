@@ -6,18 +6,18 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <h4 class="mt-0 header-title">{{__('Sub category lists')}}</h4>
+            <h4 class="mt-0 header-title">{{translate('Sub category lists')}}</h4>
             <div class="dropdown float-end">
-                <a class="form_functions btn btn-success" href="{{route('subcategory.create')}}">{{__('Create')}}</a>
+                <a class="form_functions btn btn-success" href="{{route('subcategory.create')}}">{{translate('Create')}}</a>
             </div>
             <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>{{__('Name')}}</th>
-                        <th>{{__('Category')}}</th>
-                        <th>{{__('Updated_at')}}</th>
-                        <th class="text-center">{{__('Functions')}}</th>
+                        <th>{{translate('Name')}}</th>
+                        <th>{{translate('Category')}}</th>
+                        <th>{{translate('Updated_at')}}</th>
+                        <th class="text-center">{{translate('Functions')}}</th>
                     </tr>
                 </thead>
                 <tbody class="table_body">
@@ -50,11 +50,7 @@
                             <td class="function_column">
                                 <div class="d-flex justify-content-center">
                                     <a class="form_functions btn btn-info" href="{{route('subcategory.edit', $subcategory->id)}}"><i class="fe-edit-2"></i></a>
-                                    <form action="{{route('subcategory.destroy', $subcategory->id)}}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="form_functions btn btn-danger" type="submit"><i class="fe-trash-2"></i></button>
-                                    </form>
+                                    <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-alert-modal" data-url="{{route('subcategory.destroy', $subcategory->id)}}"><i class="fe-trash-2"></i></button>
                                 </div>
                             </td>
                         </tr>

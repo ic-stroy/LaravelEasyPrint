@@ -6,36 +6,36 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <h4 class="mt-0 header-title">{{__('Products lists')}}</h4>
+            <h4 class="mt-0 header-title">{{translate('Products lists')}}</h4>
             <div class="dropdown float-end">
-                <a class="form_functions btn btn-success" href="{{route('product.create')}}">{{__('Create')}}</a>
+                <a class="form_functions btn btn-success" href="{{route('product.create')}}">{{translate('Create')}}</a>
             </div>
             <table id="datatable-buttons" class="table dt-responsive nowrap table_show">
                 <thead>
                 <tr>
-                    <th>{{__('Attributes')}}</th>
-                    <th>{{__('Informations')}}</th>
+                    <th>{{translate('Attributes')}}</th>
+                    <th>{{translate('Informations')}}</th>
                 </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <th>{{__('Name')}}</th>
+                        <th>{{translate('Name')}}</th>
                         <td>{{$warehouse->name??''}}</td>
                     </tr>
                     <tr>
-                        <th>{{__('Subcategory')}}</th>
+                        <th>{{translate('Subcategory')}}</th>
                         <td>@if(isset($warehouse->category_name)){{ $warehouse->category_name }}@endif</td>
                     </tr>
                     <tr>
-                        <th>{{__('Sum')}}</th>
+                        <th>{{translate('Sum')}}</th>
                         <td>{{$warehouse->price??''}}</td>
                     </tr>
                     <tr>
-                        <th>{{__('quantity')}}</th>
+                        <th>{{translate('quantity')}}</th>
                         <td>{{$warehouse->quantity??''}}</td>
                     </tr>
                     <tr>
-                        <th>{{__('image')}}</th>
+                        <th>{{translate('image')}}</th>
                         <td>
                             @if(isset($warehouse->images))
                                 @php
@@ -68,7 +68,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>{{__('Updated at')}}</th>
+                        <th>{{translate('Updated at')}}</th>
                         <td>{{$warehouse->updated_at??''}}</td>
                     </tr>
                 </tbody>

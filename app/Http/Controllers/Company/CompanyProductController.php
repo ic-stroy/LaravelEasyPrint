@@ -75,7 +75,7 @@ class CompanyProductController extends Controller
         // $images = $request->file('images');
 
         // $warehouse->save();
-        return redirect()->route('company_product.index')->with('status', __('Successfully created'));
+        return redirect()->route('company_product.index')->with('status', translate('Successfully created'));
     }
 
     /**
@@ -133,7 +133,7 @@ class CompanyProductController extends Controller
             'quantity'=>$request->quantity,
         ]);
         // dd($warehouse);
-        return redirect()->route('company_product.index')->with('status', __('Successfully updated'));
+        return redirect()->route('company_product.index')->with('status', translate('Successfully updated'));
 
 
 

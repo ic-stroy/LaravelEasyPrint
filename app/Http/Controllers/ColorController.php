@@ -30,11 +30,18 @@ class ColorController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'name'=>'required',
+            'code'=>'required'
+        ], [
+            'name.required'=>translate('Color name required'),
+            'code.required'=>translate('Please select a color'),
+        ]);
         $model = new Color();
         $model->name = $request->name;
         $model->code = $request->code;
         $model->save();
-        return redirect()->route('color.index')->with('status', __('Successfully created'));
+        return redirect()->route('color.index')->with('status', translate('Successfully created'));
     }
 
     /**
@@ -60,11 +67,18 @@ class ColorController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $this->validate($request, [
+            'name'=>'required',
+            'code'=>'required'
+        ], [
+            'name.required'=>translate('Color name required'),
+            'code.required'=>translate('Please select a color'),
+        ]);
         $model = Color::find($id);
         $model->name = $request->name;
         $model->code = $request->code;
         $model->save();
-        return redirect()->route('color.index')->with('status', __('Successfully updated'));
+        return redirect()->route('color.index')->with('status', translate('Successfully updated'));
     }
 
     /**
@@ -74,6 +88,6 @@ class ColorController extends Controller
     {
         $model = Color::find($id);
         $model->delete();
-        return redirect()->route('color.index')->with('status', __('Successfully deleted'));
+        return redirect()->route('color.index')->with('status', translate('Successfully deleted'));
     }
 }

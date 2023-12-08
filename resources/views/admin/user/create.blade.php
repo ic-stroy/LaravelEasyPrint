@@ -14,7 +14,7 @@
     <div class="card">
         <div class="card-body">
             <p class="text-muted font-14">
-                {{__('User create')}}
+                {{translate('User create')}}
             </p>
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -30,49 +30,49 @@
                 @method('POST')
                 <div class="row">
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('First name')}}</label>
+                        <label class="form-label">{{translate('First name')}}</label>
                         <input type="text" class="form-control" name="first_name" id="first_name" required value="{{old('first_name')}}"/>
                     </div>
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Last name')}}</label>
+                        <label class="form-label">{{translate('Last name')}}</label>
                         <input type="text" class="form-control" name="last_name" id="last_name" value="{{old('last_name')}}"/>
                     </div>
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Region')}}</label>
+                        <label class="form-label">{{translate('Region')}}</label>
                         <select name="region_id" class="form-control" id="region_id" required>
-                            <option disabled selected>{{__('Select region')}}</option>
+                            <option disabled selected>{{translate('Select region')}}</option>
                         </select>
                     </div>
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('District')}}</label>
+                        <label class="form-label">{{translate('District')}}</label>
                         <select name="district_id" class="form-control" id="district_id" required>
-                            <option disabled selected>{{__('Select district')}}</option>
+                            <option disabled selected>{{translate('Select district')}}</option>
                         </select>
                     </div>
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Middle name')}}</label>
+                        <label class="form-label">{{translate('Middle name')}}</label>
                         <input type="text" class="form-control" name="middle_name" value="{{old('middle_name')}}"/>
                     </div>
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Phone number')}}</label>
+                        <label class="form-label">{{translate('Phone number')}}</label>
                         <input type="text" class="form-control" name="phone_number" value="{{old('phone_number')}}"/>
                     </div>
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Avatar')}}</label>
+                        <label class="form-label">{{translate('Avatar')}}</label>
                         <input type="file" class="form-control" name="avatar"  value="{{old('avatar')}}"/>
                     </div>
                     <div class="mb-3 col-6">
-                        <label for="gender" class="form-label">{{__('Gender')}}</label>
+                        <label for="gender" class="form-label">{{translate('Gender')}}</label>
                         <select id="gender" class="form-select" name="gender">
-                            <option value="">{{__('Choose..')}}</option>
-                            <option value="1" {{old('gender')==1??'selected'}}>{{__('Man')}}</option>
-                            <option value="2" {{old('gender')==2??'selected'}}>{{__('Woman')}}</option>
+                            <option value="">{{translate('Choose..')}}</option>
+                            <option value="1" {{old('gender')==1??'selected'}}>{{translate('Man')}}</option>
+                            <option value="2" {{old('gender')==2??'selected'}}>{{translate('Woman')}}</option>
                         </select>
                     </div>
                 </div>
@@ -80,14 +80,14 @@
                     <div class="mb-3 col-6">
                         <label for="role_id" class="form-label">{{__("Users' role")}}</label><br>
                         <select id="role_id" class="form-select" name="role_id" required>
-                            <option value="" disabled selected>{{__('Choose..')}}</option>
+                            <option value="" disabled selected>{{translate('Choose..')}}</option>
                             @foreach($roles as $role)
                                 <option value="{{$role->id}}">{{$role->name}}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Birth date')}}</label>
+                        <label class="form-label">{{translate('Birth date')}}</label>
                         <input type="date" class="form-control" name="birth_date" value="{{old('birth_date')}}"/>
                     </div>
                 </div>
@@ -95,40 +95,40 @@
                     <div class="mb-3 col-6 display-none" id="company_content">
                         <label for="company_id" class="form-label">{{__("Select Company")}}</label><br>
                         <select id="company_id" class="form-select" name="company_id">
-                            <option value="">{{__('Choose..')}}</option>
+                            <option value="">{{translate('Choose..')}}</option>
                             @foreach($companies as $company)
                                 <option value="{{$company->id}}" {{old('company_id')==$company->id??'selected'}}>{{$company->name}}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Login')}}</label>
+                        <label class="form-label">{{translate('Login')}}</label>
                         <input type="email" class="form-control" name="email" required value="{{old('login')}}"/>
                     </div>
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Password')}}</label>
+                        <label class="form-label">{{translate('Password')}}</label>
                         <input type="password" class="form-control" name="password" required value="{{old('password')}}"/>
                     </div>
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Password confirmation')}}</label>
+                        <label class="form-label">{{translate('Password confirmation')}}</label>
                         <input type="password" class="form-control" name="password_confirmation" required value="{{old('password_confirmation')}}"/>
                     </div>
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Street, house')}}</label>
+                        <label class="form-label">{{translate('Street, house')}}</label>
                         <input type="text" class="form-control" name="address_name" value="{{old('address_name')}}"/>
                     </div>
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Postcode')}}</label>
+                        <label class="form-label">{{translate('Postcode')}}</label>
                         <input type="number" class="form-control" name="postcode" value="{{old('postcode')}}"/>
                     </div>
                 </div>
                 <div class="form-group google-map-lat-lng">
                     <div>
-                        <label for="map">{{__('Select a location')}}</label>
+                        <label for="map">{{translate('Select a location')}}</label>
                     </div>
                     <div>
                         <span>Lat: <b id="label_latitude">41.314560</b></span>&nbsp;&nbsp;
@@ -143,8 +143,8 @@
                 <input type="hidden" name="address_lat" id="address_lat" value="{{old('address_lat')}}">
                 <input type="hidden" name="address_long" id="address_long" value="{{old('address_long')}}">
                 <div class="mt-2">
-                    <button type="submit" class="btn btn-primary waves-effect waves-light">{{__('Create')}}</button>
-                    <button type="reset" class="btn btn-secondary waves-effect">{{__('Cancel')}}</button>
+                    <button type="submit" class="btn btn-primary waves-effect waves-light">{{translate('Create')}}</button>
+                    <button type="reset" class="btn btn-secondary waves-effect">{{translate('Cancel')}}</button>
                 </div>
             </form>
         </div>

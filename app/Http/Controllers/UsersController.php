@@ -147,7 +147,7 @@ class UsersController extends Controller
         $model->email =  $request->email;
         if (isset($request->new_password) && isset($request->password)) {
             if(!password_verify($request->password, $model->password)){
-                return redirect()->back()->with('error_status', __('Your password is incorrect'));
+                return redirect()->back()->with('error_status', translate('Your password is incorrect'));
             }
             if ($request->new_password == $request->new_password_confirmation) {
                 $model->password = Hash::make($request->new_password);
@@ -171,7 +171,7 @@ class UsersController extends Controller
         $address->longitude = $request->address_long;
         $address->user_id = $model->id;
         $address->save();
-        return redirect()->route('user.category.user', $request->role_id)->with('status', __('Successfully updated'));
+        return redirect()->route('user.category.user', $request->role_id)->with('status', translate('Successfully updated'));
     }
 
     public function imageSave($file, $personal_info, $text){
@@ -224,7 +224,7 @@ class UsersController extends Controller
         if(isset($address->id)){
             $address->delete();
         }
-        return redirect()->route('user.category.user', $model->role_id)->with('status', __('Successfully deleted'));
+        return redirect()->route('user.category.user', $model->role_id)->with('status', translate('Successfully deleted'));
     }
 
     public function category()

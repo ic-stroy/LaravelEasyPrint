@@ -16,18 +16,18 @@
                 </div>
             @endif
             <p class="text-muted font-14">
-                {{__('Products list create')}}
+                {{translate('Products list create')}}
             </p>
             <form action="{{route('company_product.store')}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method("POST")
                 <div class="mb-3">
-                    <label class="form-label">{{__('Name')}}</label>
+                    <label class="form-label">{{translate('Name')}}</label>
                     <input type="text" name="name" class="form-control" required value="{{old('name')}}"/>
                 </div>
 
                 {{-- <div class="mb-3">
-                    <label class="form-label">{{__('Category')}}</label>
+                    <label class="form-label">{{translate('Category')}}</label>
                     <select name="category_id" class="form-control" id="category_id">
                         @foreach($categories as $category)
                             <option value="{{$category->id}}">{{$category->name}} {{$category->category?$category->category->name:''}}</option>
@@ -35,7 +35,7 @@
                     </select>
                 </div> --}}
                 <div class="mb-3">
-                    <label class="form-label">{{__('Product')}}</label>
+                    <label class="form-label">{{translate('Product')}}</label>
                     <select name="product_id" class="form-control" id="product_id">
                         @if(isset($products))
                             @foreach($products as $product)
@@ -45,7 +45,7 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">{{__('Color')}}</label>
+                    <label class="form-label">{{translate('Color')}}</label>
                     <select name="color_id" class="form-control" id="color_id">
                         @foreach($colors as $color)
                             <option value="{{$color->id}}"> {{$color->name}}</option>
@@ -53,7 +53,7 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">{{__('Size')}}</label>
+                    <label class="form-label">{{translate('Size')}}</label>
                     <select name="size_id" class="form-control" id="size_id">
                         @foreach($sizes as $size)
                             <option value="{{$size->id}}"> {{$size->name}}</option>
@@ -61,25 +61,25 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">{{__('Price')}}</label>
+                    <label class="form-label">{{translate('Price')}}</label>
                     <input type="number" name="price" class="form-control" required value="{{old('price')}}"/>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">{{__('Quantity')}}</label>
+                    <label class="form-label">{{translate('Quantity')}}</label>
                     <input type="number" name="quantity" class="form-control" required value="{{old('quantity')}}"/>
                 </div>
                 {{-- <div class="mb-3">
-                    <label class="form-label">{{__('Company')}}</label>
+                    <label class="form-label">{{translate('Company')}}</label>
                     <input type="text" name="company" class="form-control" value="{{old('code')}}"/>
                 </div>
 
 {{--                <div class="mb-3">--}}
-{{--                    <label class="form-label">{{__('Images')}}</label>--}}
+{{--                    <label class="form-label">{{translate('Images')}}</label>--}}
 {{--                    <input type="file" name="images[]" class="form-control" value="{{old('images')}}" multiple/>--}}
 {{--                </div> --}}
                 <div>
-                    <button type="submit" class="btn btn-primary waves-effect waves-light">{{__('Create')}}</button>
-                    <button type="reset" class="btn btn-secondary waves-effect">{{__('Cancel')}}</button>
+                    <button type="submit" class="btn btn-primary waves-effect waves-light">{{translate('Create')}}</button>
+                    <button type="reset" class="btn btn-secondary waves-effect">{{translate('Cancel')}}</button>
                 </div>
             </form>
         </div>

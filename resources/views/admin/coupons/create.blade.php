@@ -37,22 +37,22 @@
                 <div class="row">
                     <div class="mb-3 col-6" id="coupon_price">
                         <label class="form-label">{{translate('Coupon price')}}</label>
-                        <input type="number" name="price" class="form-control" id="coupon_price_input"  min="0"  value="{{old('price')}}"/>
+                        <input type="number" name="price" class="form-control" id="coupon_price_input"  min="0" value="{{old('price')}}"/>
                     </div>
                     <div class="mb-3 col-6 display-none" id="coupon_percent">
                         <label class="form-label">{{translate('Coupon percent')}}</label>
-                        <input type="number" name="percent" class="form-control" id="coupon_percent_input" min="0" max="100"/>
+                        <input type="number" name="percent" class="form-control" id="coupon_percent_input" step="0.01" min="0" max="100" value="{{old('percent')}}"/>
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate("Order's min price")}}</label>
-                        <input type="number" name="min_price" class="form-control" min="0" max="100"/>
+                        <input type="number" name="min_price" class="form-control" min="0" value="{{old('min_price')}}"/>
                     </div>
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{translate('Category')}}</label>
-                        <select name="category_id" class="form-control" id="category_id" required>
-                            <option value="" selected disabled>{{translate('Select category')}}</option>
+                        <label class="form-label">{{translate('Companies')}}</label>
+                        <select name="company_id" class="form-control" id="company_id">
+                            <option value="" selected>{{translate('All company')}}</option>
                             @foreach($companies as $company)
                                 <option value="{{$company->id}}">{{$company->name}}</option>
                             @endforeach
@@ -60,7 +60,17 @@
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Number of orders')}}</label>
-                        <input type="number" name="order_number" class="form-control"/>
+                        <input type="number" name="order_count" class="form-control"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{translate('Start date')}}</label>
+                        <input type="date" name="start_date" class="form-control" required value="{{old('start_date')}}"/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{translate('End date')}}</label>
+                        <input type="date" name="end_date" class="form-control" required value="{{old('end_date')}}"/>
                     </div>
                 </div>
                 <div>

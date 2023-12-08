@@ -45,7 +45,7 @@ class SizesController extends Controller
         $model->category_id = $request->category_id;
         $model->status = $request->status;
         $model->save();
-        return redirect()->route('size.index')->with('status', __('Successfully created'));
+        return redirect()->route('size.index')->with('status', translate('Successfully created'));
     }
 
     /**
@@ -77,7 +77,7 @@ class SizesController extends Controller
         $model->category_id = $request->category_id;
         $model->status = $request->status;
         $model->save();
-        return redirect()->route('size.index')->with('status', __('Successfully updated'));
+        return redirect()->route('size.index')->with('status', translate('Successfully updated'));
     }
 
     /**
@@ -87,6 +87,6 @@ class SizesController extends Controller
     {
         $model = Sizes::find($id);
         $model->delete();
-        return redirect()->route('size.index')->with('status', __('Successfully deleted'));
+        return redirect()->route('size.index')->with('status', translate('Successfully deleted'));
     }
 }

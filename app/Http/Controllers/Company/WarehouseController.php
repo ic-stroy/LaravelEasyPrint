@@ -60,7 +60,7 @@ class WarehouseController extends Controller
             $model->images = json_encode($array_images);
         }
         $model->save();
-        return redirect()->route('warehouse.category.warehouse', $request->product_id)->with('status', __('Successfully created'));
+        return redirect()->route('warehouse.category.warehouse', $request->product_id)->with('status', translate('Successfully created'));
     }
 
     /**
@@ -129,7 +129,7 @@ class WarehouseController extends Controller
             $model->images = json_encode($array_images);
         }
         $model->save();
-        return redirect()->route('warehouse.category.warehouse', $request->product_id)->with('status', __('Successfully updated'));
+        return redirect()->route('warehouse.category.warehouse', $request->product_id)->with('status', translate('Successfully updated'));
     }
 
     /**
@@ -139,7 +139,7 @@ class WarehouseController extends Controller
     {
         $model = Warehouse::find($id);
         $model->delete();
-        return redirect()->route('warehouse.category.warehouse', $model->product_id)->with('status', __('Successfully deleted'));
+        return redirect()->route('warehouse.category.warehouse', $model->product_id)->with('status', translate('Successfully deleted'));
     }
 
     public function category()

@@ -23,48 +23,48 @@
                 </div>
             @endif
             <p class="text-muted font-14">
-                {{__('Company create')}}
+                {{translate('Company create')}}
             </p>
             <form action="{{route('company.store')}}" class="parsley-examples" method="POST">
                 @csrf
                 @method("POST")
                 <div class="row">
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Name')}}</label>
+                        <label class="form-label">{{translate('Name')}}</label>
                         <input id="company_name" type="text" name="name" class="form-control" required value="{{old('name')}}"/>
                     </div>
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Delivery price')}}</label>
+                        <label class="form-label">{{translate('Delivery price')}}</label>
                         <input id="company_delivery_price" type="text" name="delivery_price" class="form-control" required value="{{old('delivery_price')}}"/>
                     </div>
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Region')}}</label>
+                        <label class="form-label">{{translate('Region')}}</label>
                         <select name="region_id" class="form-control" id="region_id" required>
-                            <option disabled selected>{{__('Select region')}}</option>
+                            <option disabled selected>{{translate('Select region')}}</option>
                         </select>
                     </div>
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('District')}}</label>
+                        <label class="form-label">{{translate('District')}}</label>
                         <select name="district_id" class="form-control" id="district_id" required>
-                            <option disabled selected>{{__('Select district')}}</option>
+                            <option disabled selected>{{translate('Select district')}}</option>
                         </select>
                     </div>
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Street, house')}}</label>
+                        <label class="form-label">{{translate('Street, house')}}</label>
                         <input class="form-control" type="text" name="address_name">
                     </div>
                     <div class="mb-3 col-6">
-                        <label class="form-label">{{__('Postcode')}}</label>
+                        <label class="form-label">{{translate('Postcode')}}</label>
                         <input class="form-control" type="text" name="postcode">
                     </div>
                 </div>
                 <div class="form-group google-map-lat-lng">
                     <div>
-                        <label for="map">{{__('Select a location')}}</label>
+                        <label for="map">{{translate('Select a location')}}</label>
                     </div>
                     <div>
                         <span>Lat: <b id="label_latitude">41.314560</b></span>&nbsp;&nbsp;
@@ -79,8 +79,8 @@
                 <input type="hidden" name="address_lat" id="address_lat" value="{{old('address_lat')}}">
                 <input type="hidden" name="address_long" id="address_long" value="{{old('address_long')}}">
                 <div class="mt-2">
-                    <button type="submit" class="btn btn-primary waves-effect waves-light">{{__('Create')}}</button>
-                    <button type="reset" class="btn btn-secondary waves-effect">{{__('Cancel')}}</button>
+                    <button type="submit" class="btn btn-primary waves-effect waves-light">{{translate('Create')}}</button>
+                    <button type="reset" class="btn btn-secondary waves-effect">{{translate('Cancel')}}</button>
                 </div>
             </form>
         </div>

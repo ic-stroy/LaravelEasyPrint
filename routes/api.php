@@ -74,3 +74,4 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
     Route::post('logout', [AuthController::class, 'logout']);
 });
+Route::post('delete-carousel', [BannerController::class, 'deleteCarousel']);
