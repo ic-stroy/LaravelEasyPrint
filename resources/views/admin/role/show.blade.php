@@ -10,7 +10,8 @@
             <div class="dropdown float-end">
                 <a class="form_functions btn btn-success" href="{{route('role.create')}}">{{translate('Create')}}</a>
             </div>
-            <table id="datatable-buttons" class="table dt-responsive nowrap table_show">
+{{--            <table id="datatable-buttons" class="table dt-responsive nowrap table_show">--}}
+            <table class="table dt-responsive nowrap table_show">
                 <thead>
                 <tr>
                     <th>{{translate('Attributes')}}</th>
@@ -21,10 +22,6 @@
                     <tr>
                         <th>{{translate('Name')}}</th>
                         <td>{{$model->name??''}}</td>
-                    </tr>
-                    <tr>
-                        <th>{{translate('Color')}}</th>
-                        <td><div style="background-color: {{$model->code??''}}; height: 40px; width: 64px; border-radius: 4px; border: solid 1px"></div></td>
                     </tr>
                     <tr>
                         <th>{{translate('Updated at')}}</th>

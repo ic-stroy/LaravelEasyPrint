@@ -106,7 +106,8 @@
                 </div>
             </div>
         </div>
-        <table id="datatable-buttons" class="table dt-responsive nowrap table_show" style="display:none;">
+{{--        <table id="datatable-buttons" class="table dt-responsive nowrap table_show" style="display:none;">--}}
+        <table class="table dt-responsive nowrap table_show" style="display:none;">
             <thead>
                 <tr>
                     <th>{{translate('Attributes')}}</th>

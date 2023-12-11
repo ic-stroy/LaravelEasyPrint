@@ -19,7 +19,8 @@
                     @break
                 @endswitch
             </h4>
-            <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap">
+{{--            <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap">--}}
+            <table class="table table-striped table-bordered dt-responsive nowrap">
                 <thead>
                     <tr>
                         <th>#</th>
