@@ -168,16 +168,16 @@
             </tr>
             </tbody>
         </table>
-        <div class="d-flex justify-content-end">
-            <div class="hide_pagination"></div>
-        </div>
+{{--        <div class="d-flex justify-content-end">--}}
+{{--            <div class="hide_pagination"></div>--}}
+{{--        </div>--}}
     </div>
-    <script>
-        let hide_pagination = document.getElementsByClassName('hide_pagination')
-        if(localStorage.getItem('layout_local') == undefined || localStorage.getItem('layout_local') == null){
-            hide_pagination[0].style.backgroundColor = 'white'
-        }else{
-            hide_pagination[0].style.backgroundColor = '#313844'
-        }
-    </script>
+{{--    <script>--}}
+{{--        let hide_pagination = document.getElementsByClassName('hide_pagination')--}}
+{{--        if(localStorage.getItem('layout_local') == undefined || localStorage.getItem('layout_local') == null){--}}
+{{--            hide_pagination[0].style.backgroundColor = 'white'--}}
+{{--        }else{--}}
+{{--            hide_pagination[0].style.backgroundColor = '#313844'--}}
+{{--        }--}}
+{{--    </script>--}}
 @endsection
