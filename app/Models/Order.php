@@ -21,6 +21,7 @@ class Order extends Model
       'all_price',
       'user_id',
       'coupon_id',
+      'coupon_price',
       'address_id',
       'receiver_name',
       'phone_number',

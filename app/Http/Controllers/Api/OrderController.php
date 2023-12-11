@@ -156,7 +156,8 @@ class OrderController extends Controller
         }
 
         // dd($user->orderBasket->orderDetail);
-        $data = [];
+        $order=$user->orderBasket;
+        $order_detail_list = [];
         if(isset($user->orderBasket->orderDetail)){
             foreach ($user->orderBasket->orderDetail as $order_detail){
 
@@ -191,8 +192,9 @@ class OrderController extends Controller
                                 ->where('dt1.company_id', $warehouse_product->company_id)
                                 ->where('dt1.size_id', $size->size_id)
                                 ->select('dt4.id as color_id','dt4.code as color_code', 'dt4.name as color_name','dt1.images as images')
-                                // ->distinct('color_id')
+                                ->distinct('color_id')
                                 ->get();
+                                // dd($colors);
 
                                 $color_list=[];
                                 foreach ($colors as $color) {
@@ -237,7 +239,7 @@ class OrderController extends Controller
                                 ->where('dt1.company_id', $warehouse_product->company_id)
                                 ->where('dt1.color_id', $color->color_id)
                                 ->select('dt4.id as size_id','dt4.name as size_name')
-                                // ->distinct('color_id')
+                                ->distinct('size_id')
                                 ->get();
                                 // dd($sizes);
 
@@ -289,12 +291,6 @@ class OrderController extends Controller
                         "color_by_size"=>$size_list,
                         "size_by_color"=>$aaa_color_list
                     ];
-                    //  dd($list);
-                    //  return response()->json([
-                    //     'data'=>$list,
-                    //     'status'=>true,
-                    //     'message'=>'Success'
-                    // ]);
 
                 }
                 else {
@@ -338,9 +334,16 @@ class OrderController extends Controller
 
                 }
 
-                array_push($data,$list);
-
+                array_push($order_detail_list,$list);
             }
+
+            $data=[
+                'list'=>$order_detail_list,
+                'coupon_price'=>$order->coupon_price,
+                'price'=>$order->price,
+                'discount_price'=>$order->discount_price,
+                'grant_total'=>$order->all_price
+            ];
 
             $message=translate_api('success',$language);
             return $this->success($message, 200,$data);
@@ -431,10 +434,9 @@ class OrderController extends Controller
                 array_push($order_detail_list,$list);
             }
 
-            
             $data=[
                 'list'=>$order_detail_list,
-                // 'addresses'=>$addresses,
+                'coupon_price'=>$order->coupon_price,
                 'price'=>$order->price,
                 'discount_price'=>$order->discount_price,
                 'grant_total'=>$order->all_price
@@ -485,23 +487,28 @@ class OrderController extends Controller
                     elseif (count(Order::where('id',$request->order_id)->where('status','!=', Constants::BASKED)) == $coupon->order_count ) {
                         $order->coupon_id = $coupon->id;
                     }
-                    // dd($order->coupun_id);
-                    if ($order->coupun_id != null) {
+                    // dd($order);
+                    if ($order->coupun_id == null) {
+                        // dd('have a coupons');
                          if ($coupon->percent != null) {
                             // dd($order);
                             $order_coupon_price=(($order->all_price)/100)*($coupon->percent);
+                            $order->coupon_price=$order_coupon_price;
                             $order->all_price=$order->all_price - $order_coupon_price;
                          }
                          else {
                             $order->all_price=$order->all_price - $coupon->price;
+                            $order->coupon_price=$coupon->price;
                          }
                     }
                     $order->save();
                     $message=translate_api('success',$language);
                     return $this->success($message, 200);
                 }
-
-                // dd($order);
+                else {
+                    $message=translate_api('this order has a coupon',$language);
+                    return $this->error($message, 400);
+                }
 
             }
             else {
@@ -544,6 +551,7 @@ class OrderController extends Controller
             }
 
             $order->price=$order_price;
+            $order->discount_price=$order_discount_price;
             $order->all_price=$order_price-$order_discount_price;
             $order->save();
 
