@@ -80,6 +80,7 @@ class UsersController extends Controller
     public function show(string $id)
     {
         $model = User::find($id);
+        $year_old = '';
         if(isset($model->personalInfo->birth_date)){
             $birth_date_array = explode(' ', $model->personalInfo->birth_date);
             $now_time = strtotime('now');
