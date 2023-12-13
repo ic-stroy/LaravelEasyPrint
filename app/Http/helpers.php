@@ -96,7 +96,7 @@ if (!function_exists('translate_api')) {
     }
 }
 if (!function_exists('table_translate')) {
-    function table_translate($key,$type, $lang)
+    function table_translate($key, $type, $lang)
     {
         switch ($type) {
             case 'product':
@@ -108,10 +108,10 @@ if (!function_exists('table_translate')) {
                 break;
 
             case 'warehouse':
-                if ($warehouse_translation=DB::table('warehouse_translations')->where('warehouse_id',$key->id)->where('lang',$lang)->first()) {
-                    return $warehouse_translation->name;
+                if ($warehouse_translation=DB::table('warehouse_translations')->where('warehouse_id',$key->warehouse_product_id)->where('lang',$lang)->first()) {
+                    return $warehouse_translation->warehouse_product_name;
                 }else {
-                    return $key->name;
+                    return $key->warehouse_product_name;
                 }
                 break;
             case 'category':

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Color;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -247,10 +248,14 @@ class ProductController extends Controller
             // $relation_type='warehouse_product';
             // $relation_id=$order_detail->warehouse_id;
 
-            $warehouse_translate_name=table_translate($warehouse_product,'warehouse',$language);
-            $color_translate_name=table_translate($warehouse_product,'color',$language);
-
             if (isset($warehouse_product->warehouse_product_id)) {
+                if(isset($warehouse_product->color_id)) {
+                    $warehouse_color = Color::select('id', 'name')->find($warehouse_product->color_id);
+                    $color_translate_name=table_translate($warehouse_color,'color', $language);
+                }
+                if(isset($warehouse_product->warehouse_product_id)) {
+                    $warehouse_translate_name=table_translate($warehouse_product,'warehouse', $language);
+                }
                 $list = [
                     "id" => $warehouse_product->warehouse_product_id,
                     "name" => $warehouse_translate_name ?? $warehouse_product->product_name,
@@ -266,7 +271,7 @@ class ProductController extends Controller
                     "color" => [
                         "id" => $warehouse_product->color_id,
                         "code" => $warehouse_product->color_code,
-                        "name" => $color_translate_name,
+                        "name" => $color_translate_name??'',
                     ],
                     "size" => [
                         "id" => $warehouse_product->size_id,
