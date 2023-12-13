@@ -95,5 +95,45 @@ if (!function_exists('translate_api')) {
         // return tkram(Translation::class, $app, $function);
     }
 }
+if (!function_exists('table_translate')) {
+    function table_translate($key,$type, $lang)
+    {
+        switch ($type) {
+            case 'product':
+                if ($product_translation=DB::table('product_translations')->where('product_id',$key->id)->where('lang',$lang)->first()) {
+                    return $product_translation->name;
+                }else {
+                    return $key->name;
+                }
+                break;
+
+            case 'warehouse':
+                if ($warehouse_translation=DB::table('warehouse_translations')->where('warehouse_id',$key->id)->where('lang',$lang)->first()) {
+                    return $warehouse_translation->name;
+                }else {
+                    return $key->name;
+                }
+                break;
+            case 'category':
+                if ($category_translations=DB::table('category_translations')->where('category_id',$key->id)->where('lang',$lang)->first()) {
+                    return $category_translations->name;
+                }else {
+                    return $key->name;
+                }
+                break;
+            case 'color':
+                if ($color_translations=DB::table('color_translations')->where('color_id',$key->id)->where('lang',$lang)->first()) {
+                    return $color_translations->name;
+                }else {
+                    return $key->name;
+                }
+                break;
+            default:
+                break;
+        }
+
+
+    }
+}
 
 
