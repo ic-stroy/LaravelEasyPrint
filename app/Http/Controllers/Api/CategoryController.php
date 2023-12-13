@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Language;
 use App\Models\Products;
 use App\Models\User;
+use GuzzleHttp\Psr7\Request as GuzzleRequest;
+use http\Client;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Warehouse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 
 class CategoryController extends Controller
@@ -207,12 +210,11 @@ class CategoryController extends Controller
         return $products_data;
     }
 
-    public function profileInfo(Request $request){
+    public function profileInfoUser(Request $request){
         $language = $request->header('language');
         $languages = Language::select('id', 'name', 'code')->get();
         $user = Auth::user();
         $basket_count = count(isset($user->orderBasket->order_detail)?$user->orderBasket->order_detail:[]);
-        dd($user->orderBasket);
         $personalInfo = isset($user->personalInfo)?$user->personalInfo:[];
         if(isset($user->personalInfo)){
             $sms_avatar = storage_path('app/public/user/'.$user->personalInfo->avatar);
@@ -230,6 +232,66 @@ class CategoryController extends Controller
         ];
         $message = translate_api('Success', $language);
         return $this->success($message, 200, $data);
+    }
+
+    public function profileInfo(Request $request){
+        $language = $request->header('language');
+        $token = $request->header('token');
+        $languages = Language::select('id', 'name', 'code')->get();
+        $options = [
+            'headers'=>[
+                'Accept'        => 'application/json',
+                'Authorization' => "Bearer $token"
+            ]
+        ];
+        if(isset($token) && $token != ""){
+            $client = new \GuzzleHttp\Client();
+            $guzzle_request = new GuzzleRequest('GET', 'http://laraveleasyprint/api/user-info');
+            $res = $client->sendAsync($guzzle_request, $options)->wait();
+            $result = $res->getBody();
+            $result = json_decode($result);
+            $basket_count = $result->basket_count??0;
+            $profile = [
+                $result->name??null,
+                $result->avatar??null,
+            ];
+        }else{
+            $basket_count = 0;
+            $profile = [];
+        }
+
+        $data = [
+            'language'=>$languages,
+            'basket_count'=>$basket_count,
+            'profile'=>$profile
+        ];
+        $message = translate_api('Success', $language);
+        return $this->success($message, 200, $data);
+    }
+
+    public function userInfo(){
+        $user = Auth::user();
+        if(isset($user->orderBasket)){
+            $basket_count = count(isset($user->orderBasket->orderDetail)?$user->orderBasket->orderDetail:[]);
+        }else{
+            $basket_count = 0;
+        }
+        $personalInfo = isset($user->personalInfo)?$user->personalInfo:[];
+        if(isset($user->personalInfo)){
+            if(isset($user->personalInfo->avatar)){
+                $sms_avatar = storage_path('app/public/user/'.$user->personalInfo->avatar);
+            }else{
+                $sms_avatar = 'no';
+            }
+        }else{
+            $sms_avatar = 'no';
+        }
+        $profile = [
+            'name'=>isset($personalInfo->first_name)?$personalInfo->first_name:null,
+            'avatar'=>file_exists($sms_avatar)?asset('storage/user/'.$personalInfo->avatar):asset('assets/images/man.jpg'),
+            'basket_count'=>$basket_count
+        ];
+        return response()->json($profile);
     }
 
     public function getImages($model, $text)
