@@ -212,6 +212,7 @@ class CategoryController extends Controller
         $languages = Language::select('id', 'name', 'code')->get();
         $user = Auth::user();
         $basket_count = count(isset($user->orderBasket->order_detail)?$user->orderBasket->order_detail:[]);
+        dd($user->orderBasket);
         $personalInfo = isset($user->personalInfo)?$user->personalInfo:[];
         if(isset($user->personalInfo)){
             $sms_avatar = storage_path('app/public/user/'.$user->personalInfo->avatar);
