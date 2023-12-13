@@ -35,32 +35,34 @@ class OrderController extends Controller
         if(!Sizes::where('id', $request->size_id)->exists()){
             return $this->error(translate_api('Size not found', $language), 400);
         }
-        if(!Products::where('id', $request->product_id)->exists()){
-            return $this->error(translate_api('Product not found', $language), 400);
+        if(isset($request->product_id)){
+            if(!Products::where('id', $request->product_id)->exists()){
+                return $this->error(translate_api('Product not found', $language), 400);
+            }
         }
         if ($request->image_price) {
             if ($request->discount != null) {
-                $discount_price = (($request->price + $request->image_price)/100)*$request->discount;
+                $discount_price = (($request->price + $request->image_price)/100)*$request->discount*$request->quantity;
             }
             else {
-                $discount_price = null;
+                $discount_price = 0;
             }
             $order_price =(int)($request->price + $request->image_price)*$request->quantity;
             $order_all_price=$order_price - $discount_price;
         }else {
             if ($request->discount != null) {
-                $discount_price = (($request->price)/100)*$request->discount;
+                $discount_price = (($request->price)/100)*$request->discount*$request->quantity;
             }
             else {
-                $discount_price = null;
+                $discount_price = 0;
             }
             $order_price =(int)(($request->price)*($request->quantity));
-            $order_all_price=$order_price - $discount_price * $request->quantity;
+            $order_all_price=$order_price - $discount_price;
         }
 
         if(isset($user->orderBasket->id)){
             $order = $user->orderBasket;
-            $order->price =$order->price + $order_price;
+            $order->price = $order->price + $order_price;
             $order->all_price=$order->all_price + $order_all_price;
             $order->discount_price=$order->discount_price + ($order_price-$order_all_price);
         }else{
@@ -535,7 +537,7 @@ class OrderController extends Controller
         // dd($data['data']);
         $order_id=$data['order_id'];
 
-        if ($order_id  && $order=Order::where('id',$order_id)->first()) {
+        if ($order_id  && $order=Order::where('id',$order_id)->where('status', Constants::BASKED)->first()) {
             $order_price=0;
             $order_discount_price=0;
 
@@ -570,7 +572,7 @@ class OrderController extends Controller
             return $this->success($message, 200);
         }
         else {
-            $message=translate_api('order  not found',$language);
+            $message=translate_api('this order not in the basket or not exist',$language);
             return $this->error($message, 400);
         }
 
@@ -581,7 +583,7 @@ class OrderController extends Controller
         $data=$request->all();
         $order_id=$data['order_id'];
 
-        if ($order_id  && $order=Order::where('id',$order_id)->first()) {
+        if ($order_id  && $order=Order::where('id',$order_id)->where('status', Constants::ORDERED)->first()) {
             $address = Address::find($data['address_id']);
             if(!isset($address->id)){
                 $message=translate_api('Address not found', $language);
@@ -600,7 +602,7 @@ class OrderController extends Controller
             return $this->success($message, 200);
         }
         else {
-            $message=translate_api('order  not found',$language);
+            $message=translate_api('this order not ordered or not exist',$language);
             return $this->error($message, 400);
         }
 
