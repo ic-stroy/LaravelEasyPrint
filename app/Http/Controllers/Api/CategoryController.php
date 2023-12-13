@@ -246,7 +246,8 @@ class CategoryController extends Controller
         ];
         if(isset($token) && $token != ""){
             $client = new \GuzzleHttp\Client();
-            $guzzle_request = new GuzzleRequest('GET', 'http://laraveleasyprint/api/user-info');
+            $url = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https://' : 'http://'.$_SERVER['HTTP_HOST'];
+            $guzzle_request = new GuzzleRequest('GET', $url);
             $res = $client->sendAsync($guzzle_request, $options)->wait();
             $result = $res->getBody();
             $result = json_decode($result);
