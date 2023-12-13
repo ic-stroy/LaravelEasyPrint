@@ -450,6 +450,10 @@ class OrderController extends Controller
             $message=translate_api('success',$language);
             return $this->success($message, 200,$data);
         }
+        else {
+            $message=translate_api('order not found ',$language);
+            return $this->error($message, 400);
+        }
 
 
     }
