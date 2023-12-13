@@ -17,7 +17,6 @@ class CardController extends Controller
         $language = $request->header('language');
         $user = Auth::user();
         $user_cards = UserCard::where('user_id', $user->id)->get();
-        $data = [];
         foreach ($user_cards as $user_card){
             $data[] = [
               'id'=>$user_card->id,
@@ -27,8 +26,13 @@ class CardController extends Controller
               'user_id'=>$user_card->user_id??null,
             ];
         }
-        $message = translate_api('Success', $language);
-        return $this->success($message, 200, $data);
+        if(isset($data)){
+            $message = translate_api('Success', $language);
+            return $this->success($message, 200, $data);
+        }else{
+            $message = translate_api('No cards', $language);
+            return $this->error($message, 400);
+        }
     }
 
 
@@ -65,11 +69,14 @@ class CardController extends Controller
                 'validity_period'=>$user_card->validity_period??null,
                 'user_id'=>$user_card->user_id??null,
             ];
-        }else{
-            $data = [];
         }
-        $message = translate_api('Success', $language);
-        return $this->success($message, 200, $data);
+        if(isset($data)){
+            $message = translate_api('Success', $language);
+            return $this->success($message, 200, $data);
+        }else{
+            $message = translate_api('No cards', $language);
+            return $this->error($message, 400);
+        }
     }
 
     /**

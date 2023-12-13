@@ -3,9 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Address;
+use App\Models\Color;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\Products;
+use App\Models\Sizes;
 use App\Models\Uploads;
+use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,10 +21,23 @@ use function response;
 
 class OrderController extends Controller
 {
+    public function __construct()
+    {
+        date_default_timezone_set("Asia/Tashkent");
+    }
+
     public function setWarehouse(Request $request){
         $language = $request->header('language');
         $user = Auth::user();
-
+        if(!Color::where('id', $request->color_id)->exists()){
+            return $this->error(translate_api('Color not found', $language), 400);
+        }
+        if(!Sizes::where('id', $request->size_id)->exists()){
+            return $this->error(translate_api('Size not found', $language), 400);
+        }
+        if(!Products::where('id', $request->product_id)->exists()){
+            return $this->error(translate_api('Product not found', $language), 400);
+        }
         if ($request->image_price) {
             if ($request->discount != null) {
                 $discount_price = (($request->price + $request->image_price)/100)*$request->discount;
@@ -29,8 +47,7 @@ class OrderController extends Controller
             }
             $order_price =(int)($request->price + $request->image_price)*$request->quantity;
             $order_all_price=$order_price - $discount_price;
-        }
-        else {
+        }else {
             if ($request->discount != null) {
                 $discount_price = (($request->price)/100)*$request->discount;
             }
@@ -39,12 +56,7 @@ class OrderController extends Controller
             }
             $order_price =(int)(($request->price)*($request->quantity));
             $order_all_price=$order_price - $discount_price * $request->quantity;
-            // dd($order_price);
-            // dd($order_all_price);
         }
-
-
-
 
         if(isset($user->orderBasket->id)){
             $order = $user->orderBasket;
@@ -59,18 +71,13 @@ class OrderController extends Controller
             $order->discount_price=(int)($order_price-$order_all_price);
             $order->all_price=(int)$order_all_price;
         }
-        // dd($order);
         $order->save();
         $message = translate_api('Success', $language);
-
-
-
-        if ($request->warehouse_product_id && DB::table('warehouses')->where('id',$request->warehouse_product_id)->exists()) {
-
-            // dd($message);
-
+        if ($request->warehouse_product_id) {
+            if(!DB::table('warehouses')->where('id', $request->warehouse_product_id)->exists()){
+                return $this->error(translate_api('warehouse not found', $language), 400);
+            }
             $order_detail = DB::table('order_details')->where('order_id', $order->id)->where('warehouse_id', $request->warehouse_product_id)->where('color_id', $request->color_id)->where('size_id', $request->size_id);
-
             if ($order_detail->exists()) {
                 $order_detail->update([
                     'quantity' =>$request->quantity,
@@ -86,21 +93,15 @@ class OrderController extends Controller
                     'price' => $request->price,
                     'discount'=>$request->discount,
                     'discount_price'=>$discount_price,
-                    'warehouse_id'=>$request->warehouse_product_id
+                    'warehouse_id'=>$request->warehouse_product_id,
+                    'created_at'=>date("Y-m-d h:i:s"),
+                    'updated_at'=>date("Y-m-d h:i:s")
                     // Add more columns and their respective default values
                 ]);
             }
 
-             return response()->json([
-                        'status'=>true,
-                        'message'=>$message
-                    ]);
-
-            // return $this->success($message, 200);
+             return $this->success($message, 200);
         }
-
-
-
 
         $order_detail = new OrderDetail();
         $order_detail->product_id = $request->product_id ?? null;
@@ -130,10 +131,7 @@ class OrderController extends Controller
             }
         }
 
-        return response()->json([
-            'status'=>true,
-            'message'=>$message
-        ]);
+        return $this->success($message, 200);
     }
 
     public function saveImage($file, $url){
@@ -454,8 +452,13 @@ class OrderController extends Controller
             $message=translate_api('order not found ',$language);
             return $this->error($message, 400);
         }
+    }
 
-
+    public function getMyOrders(){
+        $user = Auth::user();
+        return response()->json([
+            $user->orders
+        ]);
     }
 
     public function addCoupon(Request $request){
@@ -537,9 +540,13 @@ class OrderController extends Controller
             $order_discount_price=0;
 
             foreach ($order_inner as  $update_order_detail) {
-                // dd($update_order_detail['order_detail_id']);
                 if ($order_detail=OrderDetail::where('id',$update_order_detail['order_detail_id'])->where('order_id',$order_id)->first()) {
-                    // dd($order_detail);
+                    if(!Color::where('id', $update_order_detail['color_id'])->exists()){
+                        return $this->error(translate_api('Color not found', $language), 400);
+                    }
+                    if(!Sizes::where('id', $update_order_detail['size_id'])->exists()){
+                        return $this->error(translate_api('Size not found', $language), 400);
+                    }
                     $order_detail->update([
                             'color_id'=>$update_order_detail['color_id'],
                             'size_id'=>$update_order_detail['size_id'],
@@ -557,8 +564,8 @@ class OrderController extends Controller
             $order->price=$order_price;
             $order->discount_price=$order_discount_price;
             $order->all_price=$order_price-$order_discount_price;
+            $order->status=Constants::ORDERED;
             $order->save();
-
             $message=translate_api('success',$language);
             return $this->success($message, 200);
         }
@@ -567,17 +574,19 @@ class OrderController extends Controller
             return $this->error($message, 400);
         }
 
-
     }
 
     public function acceptedOrder(Request $request){
         $language = $request->header('language');
         $data=$request->all();
-
-        // dd($data);
         $order_id=$data['order_id'];
 
         if ($order_id  && $order=Order::where('id',$order_id)->first()) {
+            $address = Address::find($data['address_id']);
+            if(!isset($address->id)){
+                $message=translate_api('Address not found', $language);
+                return $this->error($message, 400);
+            }
             $order->update([
                 'address_id'=>$data['address_id'],
                 'receiver_name'=>$data['receiver_name'],

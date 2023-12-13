@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Constants;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -61,9 +62,12 @@ class User extends Authenticatable
         return $this->hasOne(Company::class, 'id', 'company_id');
     }
     public function orderBasket(){
-        return $this->hasOne(Order::class, 'user_id', 'id')->where('status', 1);
+        return $this->hasOne(Order::class, 'user_id', 'id')->where('status', Constants::BASKED);
     }
     public function order(){
-        return $this->hasOne(Order::class, 'user_id', 'id')->where('status', 2);
+        return $this->hasOne(Order::class, 'user_id', 'id')->where('status', Constants::ORDERED);
+    }
+    public function orders(){
+        return $this->hasMany(Order::class, 'user_id', 'id')->whereIn('status', [Constants::ACCEPTED, Constants::ON_THE_WAY, Constants::FINISHED]);
     }
 }

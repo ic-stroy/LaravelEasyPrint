@@ -71,6 +71,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('delete/order-detail', [OrderController::class, 'deleteOrderDetail']);
         Route::get('/get-basket', [OrderController::class, 'getBasket']);
         Route::get('/get-order', [OrderController::class, 'getOrder']);
+        Route::get('/get-my-orders', [OrderController::class, 'getMyOrders']);
     });
     Route::post('logout', [AuthController::class, 'logout']);
 });
