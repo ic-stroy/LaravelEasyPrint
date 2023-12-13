@@ -18,6 +18,7 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
+        // dd('sjrfigsr');
         $language=$request->header('language');
         if ($language == null) {
             $language=env("DEFAULT_LANGUAGE", 'ru');
@@ -29,35 +30,19 @@ class ProductController extends Controller
 
         $products_ = Products::select('id','name','price','images')->with('discount')->get();
 
+
         foreach ($products_ as $product_) {
+            $translate_name=table_translate($product_,'product',$language);
+            // dd($translate_name);
             $products[] = [
                 'id' => $product_->id,
-                'name' => $product_->name,
+                'name' => $translate_name,
                 'price' => $product_->price,
                 'discount' => (isset($product_->discount)) > 0 ? $product_->discount->percent : NULL,
                 'price_discount' => (isset($product_->discount)) > 0 ? $product_->price - ($product_->price / 100 * $product_->discount->percent) : NULL,
                 'images' => $this->getImages($product_, 'product')
             ];
         }
-        // $warehouse_products_=DB::table('warehouses')
-        //     ->select('product_id', 'id', 'name', 'price', 'images')
-        //     ->distinct('product_id')
-        //     ->get();
-        // $warehouse_products = [];
-        // foreach ($warehouse_products_ as $warehouse_product_){
-        //     if(count($this->getImages($warehouse_product_, 'warehouse'))>0){
-        //         $warehouseProducts = $this->getImages($warehouse_product_, 'warehouse');
-        //     }else{
-        //         $warehouseProducts = $this->getImages($product_, 'product');
-        //     }
-        //     $warehouse_products[] = [
-        //         'product_id' => $warehouse_product_->product_id,
-        //         'id' => $warehouse_product_->id,
-        //         'name' => $warehouse_product_->name,
-        //         'price' => $warehouse_product_->price,
-        //         'images' => $warehouseProducts
-        //     ];
-        // }
         $data=[
             'product_list'=>$products
         ];
@@ -68,6 +53,7 @@ class ProductController extends Controller
 
     public function getWarehouses(Request $request)
     {
+        // dd('dsfdfs');
         $language = $request->header('language');
         $warehouse_products_ = Warehouse::distinct('product_id')->get();
         $warehouse_products = [];
@@ -79,12 +65,13 @@ class ProductController extends Controller
             } else {
                 $warehouseProducts = $this->getImages($warehouse_product_->product, 'product');
             }
-
+            $translate_name=table_translate($warehouse_product_,'warehouse',$language);
+            // dd($translate_name);
             //  join qilish kere
             $warehouse_products[] = [
                 // 'product_id' => $warehouse_product_->product_id,
                 'id' => $warehouse_product_->id,
-                'name' => $warehouse_product_->name ?? $warehouse_product_->product->name,
+                'name' => $translate_name ?? $warehouse_product_->product->name,
                 'price' => $warehouse_product_->price,
                 'discount' => (isset($warehouse_product_->discount)) > 0 ? $warehouse_product_->discount->percent : NULL,
                 'price_discount' => (isset($warehouse_product_->discount)) > 0 ? $warehouse_product_->price - ($warehouse_product_->price / 100 * $warehouse_product_->discount->percent) : NULL,
@@ -192,7 +179,7 @@ class ProductController extends Controller
                         ->where('dt1.company_id', $warehouse_product->company_id)
                         ->where('dt1.size_id', $size->size_id)
                         ->select('dt4.id as color_id','dt4.code as color_code', 'dt4.name as color_name','dt1.images as images')
-                        // ->distinct('color_id')
+                        ->distinct('color_id')
                         ->get();
 
                     $color_list=[];
@@ -231,7 +218,7 @@ class ProductController extends Controller
                         ->where('dt1.company_id', $warehouse_product->company_id)
                         ->where('dt1.color_id', $color->color_id)
                         ->select('dt4.id as size_id','dt4.name as size_name')
-                        // ->distinct('color_id')
+                        ->distinct('size_id')
                         ->get();
 
                     $aaa_size_list = [];
@@ -259,10 +246,14 @@ class ProductController extends Controller
 
             // $relation_type='warehouse_product';
             // $relation_id=$order_detail->warehouse_id;
+
+            $warehouse_translate_name=table_translate($warehouse_product,'warehouse',$language);
+            $color_translate_name=table_translate($warehouse_product,'color',$language);
+
             if (isset($warehouse_product->warehouse_product_id)) {
                 $list = [
                     "id" => $warehouse_product->warehouse_product_id,
-                    "name" => $warehouse_product->warehouse_product_name ?? $warehouse_product->product_name,
+                    "name" => $warehouse_translate_name ?? $warehouse_product->product_name,
                     // "relation_id" => $relation_id,
                     "price" => $warehouse_product->price,
                     'discount' => (isset($warehouse_product->discount)) > 0 ? $warehouse_product->discount : NULL,
@@ -275,7 +266,7 @@ class ProductController extends Controller
                     "color" => [
                         "id" => $warehouse_product->color_id,
                         "code" => $warehouse_product->color_code,
-                        "name" => $warehouse_product->color_name,
+                        "name" => $color_translate_name,
                     ],
                     "size" => [
                         "id" => $warehouse_product->size_id,
@@ -411,6 +402,7 @@ class ProductController extends Controller
         $product = Products::find($id);
         if(isset($product->id)){
             $current_category = $this->getProductCategory($product);
+            dd($current_category);
             $respone = [
                 'data'=>$current_category->sizes??[],
                 'category'=>$current_category->name??null,

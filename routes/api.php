@@ -40,7 +40,7 @@ Route::group(['prefix' => 'product'], function () {
     Route::get('/show/warehouse_product', [ProductController::class, 'show']);
 });
 
-Route::get('get-categories-by-product/{id}', [ProductController::class, 'getCategoriesByProduct'])->name('get_categories_by_product');
+// Route::get('get-categories-by-product/{id}', [ProductController::class, 'getCategoriesByProduct'])->name('get_categories_by_product');
 Route::get('profile-info', [CategoryController::class, 'profileInfo']);
 Route::get('get-banner', [BannerController::class, 'getBanner']);
 Route::get('get-products-by-categories', [CategoryController::class, 'getProductsByCategories']);
