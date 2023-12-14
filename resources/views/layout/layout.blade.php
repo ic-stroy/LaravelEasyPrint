@@ -428,12 +428,6 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('role.index') }}">
-                                <i class="mdi mdi-account-check-outline"></i>
-                                <span> {{ translate('Role') }} </span>
-                            </a>
-                        </li>
-                        <li>
                             <a href="{{ route('user.category') }}">
                                 <i class="mdi mdi-account-star-outline"></i>
                                 <span> {{ translate('Users') }} </span>
@@ -510,10 +504,25 @@
                             </div>
                         </li>
                         <li>
-                            <a href="{{route('language.index')}}">
-                                <i class="mdi mdi-flag-outline"></i>
-                                <span>{{translate('Language')}}</span>
+                            <a href="#settings" data-bs-toggle="collapse">
+                                <i class="fe-settings noti-icon"></i>
+
+                                <span> {{translate('Settings')}} </span>
+                                <span class="menu-arrow"></span>
                             </a>
+                            <div class="collapse" id="settings">
+                                <ul class="nav-second-level">
+                                    <li>
+                                        <a href="{{route('language.index')}}"> {{translate('Language')}}  </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{route('table.index')}}"> {{translate('Table translations')}}  </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{route('role.index')}}">{{translate('Role')}}</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
                     </ul>
 

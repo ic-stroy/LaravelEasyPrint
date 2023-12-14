@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CategoryTranslations;
+use App\Models\CompanyTranslations;
+use App\Models\ProductTranslations;
+use App\Models\SizeTranslations;
+use App\Models\WarehouseTranslations;
 use Illuminate\Http\Request;
 use App\Models\Language;
 use App\Models\Translation;
 use App\Models\CityTranslations;
-use App\Models\ClassTranslations;
-use App\Models\ColorTranslations;
-use App\Models\CountryTranslations;
-use App\Models\OptionTranslations;
-use App\Models\RoleTranslations;
-use App\Models\StaffTranslations;
-use App\Models\StatusTranslations;
 use Illuminate\Support\Facades\DB;
 
 
@@ -25,12 +23,12 @@ class TableTranslationController extends Controller
     {
         return view('language.tables');
     }
-    
+
     public function show($type){
         $languages = Language::orderBy('id', 'ASC')->get();
         return view('language.table_lang', ['type'=>$type, 'languages'=>$languages]);
     }
-    
+
     public function tableShow(Request $request ){
         // dd($request->all());
         $type=$request->type;
@@ -50,8 +48,8 @@ class TableTranslationController extends Controller
                 }
                 return view('language.table_show', ['lang_keys'=>$lang_keys, 'language'=>$language , 'sort_search' => $sort_search, 'type'=>$type]);
                 break;
-            case 'class':
-                $lang_keys = ClassTranslations::where('lang', env('DEFAULT_LANGUAGE', 'en'))->get();
+            case 'category':
+                $lang_keys = CategoryTranslations::where('lang', env('DEFAULT_LANGUAGE', 'en'))->get();
                 if ($request->has('search')) {
                     $sort_search = $request->search;
                     // dd($sort_search);
@@ -72,8 +70,8 @@ class TableTranslationController extends Controller
                 }
                 return view('language.table_show', ['lang_keys'=>$lang_keys, 'language'=>$language , 'sort_search' => $sort_search, 'type'=>$type]);
                 break;
-            case 'country':
-                $lang_keys = CountryTranslations::where('lang', env('DEFAULT_LANGUAGE', 'en'))->get();
+            case 'company':
+                $lang_keys = CompanyTranslations::where('lang', env('DEFAULT_LANGUAGE', 'en'))->get();
                 if ($request->has('search')) {
                     $sort_search = $request->search;
                     // dd($sort_search);
@@ -84,8 +82,8 @@ class TableTranslationController extends Controller
                 // dd($lang_keys);
                 return view('language.table_show', ['lang_keys'=>$lang_keys, 'language'=>$language , 'sort_search' => $sort_search, 'type'=>$type]);
                 break;
-            case 'option':
-                $lang_keys = OptionTranslations::where('lang', env('DEFAULT_LANGUAGE', 'en'))->get();
+            case 'product':
+                $lang_keys = ProductTranslations::where('lang', env('DEFAULT_LANGUAGE', 'en'))->get();
                 if ($request->has('search')) {
                     $sort_search = $request->search;
                     // dd($sort_search);
@@ -106,8 +104,19 @@ class TableTranslationController extends Controller
                 }
                 return view('language.table_show', ['lang_keys'=>$lang_keys, 'language'=>$language , 'sort_search' => $sort_search, 'type'=>$type]);
                 break;
-            case 'status':
-                $lang_keys = StatusTranslations::where('lang', env('DEFAULT_LANGUAGE', 'en'))->get();
+            case 'size':
+                $lang_keys = SizeTranslations::where('lang', env('DEFAULT_LANGUAGE', 'en'))->get();
+                if ($request->has('search')) {
+                    $sort_search = $request->search;
+                    // dd($sort_search);
+                    // $lang_keys = $lang_keys->where('lang_key', 'like', '%' . $sort_search . '%');
+                    $lang_keys = $lang_keys->where('lang_key', request()->input('search'));
+                    // dd(request()->input('search'));
+                }
+                return view('language.table_show', ['lang_keys'=>$lang_keys, 'language'=>$language , 'sort_search' => $sort_search, 'type'=>$type]);
+                break;
+            case 'warehouse':
+                $lang_keys = WarehouseTranslations::where('lang', env('DEFAULT_LANGUAGE', 'en'))->get();
                 if ($request->has('search')) {
                     $sort_search = $request->search;
                     // dd($sort_search);
@@ -134,22 +143,22 @@ class TableTranslationController extends Controller
                     if ($translation_def) {
                         $translation_def->name = $value;
                         $translation_def->save();
-                    } 
+                    }
                 }
-        
+
                 return back();
                 break;
             case 'class':
                 $language = Language::findOrFail($request->id);
                 foreach ($request->values as $key => $value) {
                     // dd($value);
-                    $translation_def = ClassTranslations::where('class_list_id', $key)->where('lang', $language->code)->first();
+                    $translation_def = CategoryTranslations::where('category_id', $key)->where('lang', $language->code)->first();
                     if ($translation_def) {
                         $translation_def->name = $value;
                         $translation_def->save();
-                    } 
+                    }
                 }
-        
+
                 return back();
                 break;
             case 'color':
@@ -160,39 +169,39 @@ class TableTranslationController extends Controller
                     if ($translation_def) {
                         $translation_def->name = $value;
                         $translation_def->save();
-                    } 
+                    }
                 }
-        
+
                 return back();
                 break;
-            case 'country':
+            case 'company':
                 // dd($request->all());
                 $language = Language::findOrFail($request->id);
                 // dd($language);
                 foreach ($request->values as $key => $value) {
                     // dd($key);
-                    $translation_def = CountryTranslations::where('country_id', $key)->where('lang', $language->code)->first();
+                    $translation_def = CompanyTranslations::where('country_id', $key)->where('lang', $language->code)->first();
                     // dd($translation_def);
-                    // dd($translation_def);    
+                    // dd($translation_def);
                     if ($translation_def) {
                         $translation_def->name = $value;
                         $translation_def->save();
-                    } 
+                    }
                 }
-        
+
                 return back();
                 break;
-            case 'option':
+            case 'product':
                 $language = Language::findOrFail($request->id);
                     foreach ($request->values as $key => $value) {
                         // dd($value);
-                        $translation_def = OptionTranslations::where('option_id', $key)->where('lang', $language->code)->first();
+                        $translation_def = ProductTranslations::where('option_id', $key)->where('lang', $language->code)->first();
                         if ($translation_def) {
                             $translation_def->name = $value;
                             $translation_def->save();
-                        } 
+                        }
                     }
-            
+
                     return back();
                     break;
             case 'role':
@@ -203,40 +212,40 @@ class TableTranslationController extends Controller
                         if ($translation_def) {
                             $translation_def->name = $value;
                             $translation_def->save();
-                        } 
+                        }
                 }
-        
+
                 return back();
                 break;
-            case 'staff':
+            case 'size':
                 $language = Language::findOrFail($request->id);
                 foreach ($request->values as $key => $value) {
                     // dd($value);
-                    $translation_def = StaffTranslations::where('staff_id', $key)->where('lang', $language->code)->first();
+                    $translation_def = SizeTranslations::where('staff_id', $key)->where('lang', $language->code)->first();
                     if ($translation_def) {
                         $translation_def->name = $value;
                         $translation_def->save();
-                    } 
+                    }
                 }
-        
+
                 return back();
                 break;
-            case 'status':
+            case 'warehouse':
                 $language = Language::findOrFail($request->id);
                 foreach ($request->values as $key => $value) {
                     // dd($value);
-                    $translation_def = StatusTranslations::where('status_id', $key)->where('lang', $language->code)->first();
+                    $translation_def = WarehouseTranslations::where('status_id', $key)->where('lang', $language->code)->first();
                     if ($translation_def) {
                         $translation_def->name = $value;
                         $translation_def->save();
-                    } 
+                    }
                 }
-        
+
                 return back();
                 break;
-            
+
             default:
         }
-        
+
     }
 }
