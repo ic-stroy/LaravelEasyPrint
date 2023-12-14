@@ -40,17 +40,28 @@ class OrderController extends Controller
                 return $this->error(translate_api('Product not found', $language), 400);
             }
         }
-        if ($request->image_price) {
-            if ($request->discount != null) {
-                $discount_price = (($request->price + $request->image_price)/100)*$request->discount*$request->quantity;
+        if (isset($request->image_price) && $request->image_price !='') {
+            if(!isset($request->warehouse_product_id) || $request->warehouse_product_id == ""){
+                if ($request->discount != null) {
+                    $discount_price = (($request->price + $request->image_price)/100)*$request->discount*$request->quantity;
+                }
+                else {
+                    $discount_price = 0;
+                }
+                $order_price =(int)($request->price + $request->image_price)*$request->quantity;
+                $order_all_price=$order_price - $discount_price;
+            }else{
+                if ($request->discount != null && $request->discount != "") {
+                    $discount_price = (($request->price)/100)*$request->discount*$request->quantity;
+                }
+                else {
+                    $discount_price = 0;
+                }
+                $order_price =(int)(($request->price)*($request->quantity));
+                $order_all_price=$order_price - $discount_price;
             }
-            else {
-                $discount_price = 0;
-            }
-            $order_price =(int)($request->price + $request->image_price)*$request->quantity;
-            $order_all_price=$order_price - $discount_price;
         }else {
-            if ($request->discount != null) {
+            if ($request->discount != null && $request->discount != "") {
                 $discount_price = (($request->price)/100)*$request->discount*$request->quantity;
             }
             else {
@@ -75,7 +86,7 @@ class OrderController extends Controller
         }
         $order->save();
         $message = translate_api('Success', $language);
-        if ($request->warehouse_product_id) {
+        if (isset($request->warehouse_product_id) && $request->warehouse_product_id != "") {
             if(!DB::table('warehouses')->where('id', $request->warehouse_product_id)->exists()){
                 return $this->error(translate_api('warehouse not found', $language), 400);
             }
@@ -103,33 +114,32 @@ class OrderController extends Controller
             }
 
              return $this->success($message, 200);
-        }
-
-        $order_detail = new OrderDetail();
-        $order_detail->product_id = $request->product_id ?? null;
-        //warehouse_product_id:45
-        $order_detail->quantity = $request->quantity;
-        $order_detail->color_id = $request->color_id;
-        $order_detail->size_id = $request->size_id;
-        $images_print = $request->file('imagesPrint');
-        $order_detail->price = $request->price + $request->image_price ;
-        $order_detail->image_price = $request->image_price;
-        $image_front = $request->file('image_front');
-        $image_back = $request->file('image_back');
-        $order_detail->image_front = $this->saveImage($image_front, 'warehouse');
-        $order_detail->image_back = $this->saveImage($image_back, 'warehouse');
-        $order_detail->order_id = $order->id;
-        $order_detail->discount = $request->discount;
-        $order_detail->discount_price = $discount_price;
-
-        $order_detail->save();
-        if (isset($images_print)) {
-            foreach ($images_print as $image_print){
-                $uploads = new Uploads();
-                $uploads->image = $this->saveImage($image_print, 'print');
-                $uploads->relation_type = Constants::PRODUCT;
-                $uploads->relation_id = $request->product_id;
-                $uploads->save();
+        }else{
+            $order_detail = new OrderDetail();
+            $order_detail->product_id = $request->product_id ?? null;
+            //warehouse_product_id:45
+            $order_detail->quantity = $request->quantity;
+            $order_detail->color_id = $request->color_id;
+            $order_detail->size_id = $request->size_id;
+            $images_print = $request->file('imagesPrint');
+            $order_detail->price = $request->price + $request->image_price ;
+            $order_detail->image_price = $request->image_price;
+            $image_front = $request->file('image_front');
+            $image_back = $request->file('image_back');
+            $order_detail->image_front = $this->saveImage($image_front, 'warehouse');
+            $order_detail->image_back = $this->saveImage($image_back, 'warehouse');
+            $order_detail->order_id = $order->id;
+            $order_detail->discount = $request->discount;
+            $order_detail->discount_price = $discount_price;
+            $order_detail->save();
+            if (isset($images_print)) {
+                foreach ($images_print as $image_print){
+                    $uploads = new Uploads();
+                    $uploads->image = $this->saveImage($image_print, 'print');
+                    $uploads->relation_type = Constants::PRODUCT;
+                    $uploads->relation_id = $request->product_id;
+                    $uploads->save();
+                }
             }
         }
 
@@ -665,6 +675,5 @@ class OrderController extends Controller
         return $this->error($message, 400);
 
     }
-
 
 }
