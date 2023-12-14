@@ -8,6 +8,7 @@ use \App\Http\Controllers\Company\CompanyUsersController;
 use \App\Http\Controllers\Company\CompanyOrderController;
 use \App\Http\Controllers\BannerController;
 use \App\Http\Controllers\UsersController;
+use \App\Http\Controllers\TableTranslationController;
 use \App\Http\Controllers\CategoryController;
 use \App\Http\Controllers\SubCategoryController;
 use \App\Http\Controllers\SubSubCategoryController;
@@ -62,6 +63,14 @@ Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcatego
         Route::get('slide-show', [ProductsController::class, 'SlideShow'])->name('slide_show.index');
         Route::get('slide-show/show/{id}', [ProductsController::class, 'SlideShowShow'])->name('slide_show.show');
         Route::get('/slide-show/status/', [ProductsController::class, 'SlideShowStatus'])->name('slide_show.status');
+
+         Route::group(['prefix' => 'table'], function () {
+             Route::get('translation', [TableTranslationController::class, 'index'])->name('table.index');
+             Route::get('show/{type}', [TableTranslationController::class, 'show'])->name('table.show');
+             Route::get('table-show', [TableTranslationController::class, 'tableShow'])->name('table.tableShow');
+             Route::post('/translation/save/', [TableTranslationController::class, 'translation_save'])->name('table_translation.save');
+
+         });
 
         Route::group(['prefix' => 'language'], function () {
             Route::get('/', [LanguageController::class, 'index'])->name('language.index');

@@ -210,30 +210,6 @@ class CategoryController extends Controller
         return $products_data;
     }
 
-    public function profileInfoUser(Request $request){
-        $language = $request->header('language');
-        $languages = Language::select('id', 'name', 'code')->get();
-        $user = Auth::user();
-        $basket_count = count(isset($user->orderBasket->order_detail)?$user->orderBasket->order_detail:[]);
-        $personalInfo = isset($user->personalInfo)?$user->personalInfo:[];
-        if(isset($user->personalInfo)){
-            $sms_avatar = storage_path('app/public/user/'.$user->personalInfo->avatar);
-        }else{
-            $sms_avatar = 'no';
-        }
-        $profile = [
-            'name'=>isset($personalInfo->first_name)?$personalInfo->first_name:null,
-            'avatar'=>file_exists($sms_avatar)?asset('storage/user/'.$personalInfo->avatar):asset('assets/images/man.jpg')
-        ];
-        $data = [
-            'language'=>$languages,
-            'basket_count'=>$basket_count,
-            'profile'=>$profile,
-        ];
-        $message = translate_api('Success', $language);
-        return $this->success($message, 200, $data);
-    }
-
     public function profileInfo(Request $request){
         $language = $request->header('language');
         $token = $request->header('token');
@@ -247,7 +223,7 @@ class CategoryController extends Controller
         if(isset($token) && $token != ""){
             $client = new \GuzzleHttp\Client();
             $url = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https://' : 'http://'.$_SERVER['HTTP_HOST'];
-            $guzzle_request = new GuzzleRequest('GET', $url);
+            $guzzle_request = new GuzzleRequest('GET', $url.'/api/user-info');
             $res = $client->sendAsync($guzzle_request, $options)->wait();
             $result = $res->getBody();
             $result = json_decode($result);
