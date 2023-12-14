@@ -100,6 +100,7 @@ if (!function_exists('table_translate')) {
     {
         switch ($type) {
             case 'product':
+                // dd($key);
                 if ($product_translation=DB::table('product_translations')->where('product_id',$key->id)->where('lang',$lang)->first()) {
                     return $product_translation->name;
                 }else {
@@ -108,8 +109,10 @@ if (!function_exists('table_translate')) {
                 break;
 
             case 'warehouse':
+                // dd($key);
                 if ($warehouse_translation=DB::table('warehouse_translations')->where('warehouse_id',$key->warehouse_product_id)->where('lang',$lang)->first()) {
-                    return $warehouse_translation->warehouse_product_name;
+                    // dd($warehouse_translation);
+                    return $warehouse_translation->name;
                 }else {
                     return $key->warehouse_product_name;
                 }
