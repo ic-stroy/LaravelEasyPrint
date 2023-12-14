@@ -51,46 +51,46 @@
 
                                     @break
 
-                                @case('class')
+                                @case('category')
                                     @php
-                                       $translate_lang = \App\Models\ClassTranslations::where('lang', $language->code??'')->where('class_list_id', $translation->class_list_id??'')->first();
+                                       $translate_lang = \App\Models\CategoryTranslations::where('lang', $language->code??'')->where('category_id', $translation->category_id??'')->first();
                                     @endphp
                                     <input type="text" class="checkboxDivPerewvod value" id="input"
-                                    style="width:100%" name="values[{{ $translation->class_list_id }}]"
+                                    style="width:100%" name="values[{{ $translation->category_id }}]"
                                     @if (($translate_lang) != null) value="{{ $translate_lang->name }}" @endif>
-                                    
+
                                     @break
-                                
+
                                 @case('color')
                                     @php
-                                        $translate_lang = \App\Models\ColorTranslations::where('lang', $language->code??'')->where('color_list_id', $translation->color_list_id??'')->first();
+                                        $translate_lang = \App\Models\ColorTranslations::where('lang', $language->code??'')->where('color_id', $translation->color_id??'')->first();
                                     @endphp
                                     <input type="text" class="checkboxDivPerewvod value" id="input"
-                                    style="width:100%" name="values[{{ $translation->color_list_id }}]"
+                                    style="width:100%" name="values[{{ $translation->color_id }}]"
                                     @if (($translate_lang) != null) value="{{ $translate_lang->name }}" @endif>
-                                    
+
                                     @break
 
-                                @case('country')
+                                @case('company')
                                     @php
-                                       $translate_lang = \App\Models\CountryTranslations::where('lang', $language->code??'')->where('country_id', $translation->country_id??'')->first();
+                                       $translate_lang = \App\Models\CompanyTranslations::where('lang', $language->code??'')->where('company_id', $translation->company_id??'')->first();
                                     @endphp
                                     <input type="text" class="checkboxDivPerewvod value" id="input"
-                                    style="width:100%" name="values[{{ $translation->country_id }}]"
+                                    style="width:100%" name="values[{{ $translation->company_id }}]"
                                     @if (($translate_lang) != null) value="{{ $translate_lang->name }}" @endif>
-                                    
+
                                     @break
 
-                                @case('option')
+                                @case('product')
                                     @php
-                                        $translate_lang = \App\Models\OptionTranslations::where('lang', $language->code??'')->where('option_id', $translation->option_id??'')->first();
+                                        $translate_lang = \App\Models\ProductTranslations::where('lang', $language->code??'')->where('product_id', $translation->product_id??'')->first();
                                     @endphp
                                     <input type="text" class="checkboxDivPerewvod value" id="input"
                                     style="width:100%" name="values[{{ $translation->option_id }}]"
                                     @if (($translate_lang) != null) value="{{ $translate_lang->name }}" @endif>
-                                    
+
                                     @break
-                                
+
                                 @case('role')
                                     @php
                                        $translate_lang = \App\Models\RoleTranslations::where('lang', $language->code??'')->where('role_id', $translation->role_id??'')->first();
@@ -98,21 +98,21 @@
                                     <input type="text" class="checkboxDivPerewvod value" id="input"
                                     style="width:100%" name="values[{{ $translation->role_id }}]"
                                     @if (($translate_lang) != null) value="{{ $translate_lang->name }}" @endif>
-                                    
+
                                     @break
-                                @case('status')
+                                @case('warehouse')
                                     @php
-                                    $translate_lang = \App\Models\StatusTranslations::where('lang', $language->code??'')->where('status_id', $translation->status_id??'')->first();
+                                    $translate_lang = \App\Models\WarehouseTranslations::where('lang', $language->code??'')->where('warehouse_id', $translation->warehouse_id??'')->first();
                                     @endphp
                                     <input type="text" class="checkboxDivPerewvod value" id="input"
-                                    style="width:100%" name="values[{{ $translation->status_id }}]"
+                                    style="width:100%" name="values[{{ $translation->warehouse_id }}]"
                                     @if (($translate_lang) != null) value="{{ $translate_lang->name }}" @endif>
-                                    
+
                                     @break
                                 @default
                                     <span>Something went wrong, please try again</span>
-                            @endswitch                    
-                            
+                            @endswitch
+
                         </td>
                     </tr>
                 @endforeach

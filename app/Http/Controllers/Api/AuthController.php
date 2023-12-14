@@ -94,7 +94,7 @@ class AuthController extends Controller
         if(isset($result)){
             $user_verify->verify_code = $random;
             $user_verify->save();
-            return $this->success("Success", 200, ['Verify_code'=>$random]);
+            return $this->success("Success", 200);
         }else{
             return $this->error(translate_api("Fail message not sent. Try again", $language), 400);
         }
