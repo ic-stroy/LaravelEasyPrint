@@ -195,7 +195,7 @@ class OrderController extends Controller
                         ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
                         // ->leftJoin('coupons as dt5', 'dt5.warehouse_product_id', '=', 'dt2.id')
                         ->where('dt1.id' , $order_detail->id)
-                        ->select('dt2.name as warehouse_product_name','dt2.quantity as max_quantity',
+                        ->select('dt2.id as warehouse_product_id','dt2.name as warehouse_product_name','dt2.quantity as max_quantity',
                             'dt2.images as images', 'dt2.description as description', 'dt2.product_id as product_id',
                             'dt2.company_id as company_id','dt3.id as size_id','dt3.name as size_name',
                             'dt4.id as color_id','dt4.name as color_name','dt4.code as color_code')
@@ -296,16 +296,22 @@ class OrderController extends Controller
                     $relation_id=$order_detail->warehouse_id;
                     $list_product = Products::find($warehouse_product->product_id);
                     $list_images = count($this->getImages($warehouse_product, 'warehouse'))>0?$this->getImages($warehouse_product, 'warehouse'):$this->getImages($list_product, 'product');
+
+                    $translate_name=table_translate($warehouse_product,'warehouse',$language);
+                    $total_price=$order_detail->price - $order_detail->discount_price;
+
                     $list=[
                         "id"=>$order_detail->id,
                         "relation_type"=>$relation_type,
                         "relation_id"=>$relation_id,
+                        'name'=>$translate_name,
                         "price"=>$order_detail->price,
                         "quantity"=>$order_detail->quantity,
                         "max_quantity"=>$warehouse_product->max_quantity,
                         "description"=>$warehouse_product->description,
                         "discount"=>$order_detail->discount,
                         "discount_price"=>$order_detail->discount_price,
+                        "total_price"=>$total_price,
                         "images"=>$list_images,
                         "color"=>[
                            "id"=>$warehouse_product->color_id,
@@ -330,18 +336,24 @@ class OrderController extends Controller
                         ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
                         ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
                         ->where('dt1.id' , $order_detail->id)
-                        ->select('dt2.id as product_id','dt2.name as product_name','dt2.images as images', 'dt2.description as description','dt3.id as size_id','dt3.name as size_name','dt4.id as color_id','dt4.code as color_code','dt4.name as color_name',)
+                        ->select('dt2.id','dt2.name as product_name','dt2.images as images', 'dt2.description as description','dt3.id as size_id','dt3.name as size_name','dt4.id as color_id','dt4.code as color_code','dt4.name as color_name',)
                         ->first();
 
-                    if(isset($product->product_id)){
+                    if(isset($product->id)){
+
+                        $translate_name=table_translate($product,'product',$language);
+                        $total_price=$order_detail->price - $order_detail->discount_price;
+
                         $list=[
                             "id"=>$order_detail->id,
                             "relation_type"=>$relation_type,
                             "relation_id"=>$relation_id,
                             "price"=>$order_detail->price,
+                            "name"=>$translate_name ,
                             "quantity"=>$order_detail->quantity,
                             "discount"=>$order_detail->discount,
                             "discount_price"=>$order_detail->discount_price,
+                            "total_price"=>$total_price,
                             "description"=>$product->description??'',
                             "images"=>$this->getImages($product, 'product'),
                             "color"=>[
@@ -582,14 +594,18 @@ class OrderController extends Controller
                     if(!Sizes::where('id', $update_order_detail['size_id'])->exists()){
                         return $this->error(translate_api('Size not found', $language), 400);
                     }
+
+
+                    $one_order_detail_discount_price = $order_detail->discount_price/$order_detail->quantity;
                     $order_detail->update([
                             'color_id'=>$update_order_detail['color_id'],
                             'size_id'=>$update_order_detail['size_id'],
-                            'quantity'=>$update_order_detail['quantity']
+                            'quantity'=>$update_order_detail['quantity'],
+                            'discount_price'=>$one_order_detail_discount_price*$update_order_detail['quantity'],
                     ]);
 
                     $order_price +=(($order_detail->price)*($order_detail->quantity));
-                    $order_discount_price +=(($order_detail->discount_price)*($order_detail->quantity));
+                    $order_discount_price +=(($order_detail->discount_price));
                 }else {
                     $message=translate_api('order detail not found',$language);
                     return $this->error($message, 400);
