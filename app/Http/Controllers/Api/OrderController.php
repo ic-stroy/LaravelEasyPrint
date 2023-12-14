@@ -336,7 +336,7 @@ class OrderController extends Controller
                         ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
                         ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
                         ->where('dt1.id' , $order_detail->id)
-                        ->select('dt2.id','dt2.name as product_name','dt2.images as images', 'dt2.description as description','dt3.id as size_id','dt3.name as size_name','dt4.id as color_id','dt4.code as color_code','dt4.name as color_name',)
+                        ->select('dt2.id','dt2.name','dt2.images as images', 'dt2.description as description','dt3.id as size_id','dt3.name as size_name','dt4.id as color_id','dt4.code as color_code','dt4.name as color_name',)
                         ->first();
 
                     if(isset($product->id)){
