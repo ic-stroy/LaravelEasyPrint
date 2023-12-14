@@ -41,22 +41,25 @@
                 <a href="{{ route('table.show', 'city') }}"><div class="translation_menu">{{translate('City translate')}}</div></a>
             </li>
             <li class="translation_list">
-                <a href="{{ route('table.show', 'class') }}"><div class="translation_menu">{{translate('Class translate')}}</div></a>
+                <a href="{{ route('table.show', 'category') }}"><div class="translation_menu">{{translate('Category translate')}}</div></a>
             </li>
             <li class="translation_list">
                 <a href="{{ route('table.show', 'color') }}"><div class="translation_menu">{{translate('Color translate')}}</div></a>
             </li>
             <li class="translation_list">
-                <a href="{{ route('table.show', 'country') }}"><div class="translation_menu">{{translate('Country translate')}}</div></a>
+                <a href="{{ route('table.show', 'company') }}"><div class="translation_menu">{{translate('Company translate')}}</div></a>
             </li>
             <li class="translation_list">
-                <a href="{{ route('table.show', 'option') }}"><div class="translation_menu">{{translate('Option translate')}}</div></a>
+                <a href="{{ route('table.show', 'product') }}"><div class="translation_menu">{{translate('Product translate')}}</div></a>
             </li>
             <li class="translation_list">
                 <a href="{{ route('table.show', 'role') }}"><div class="translation_menu">{{translate('Role translate')}}</div></a>
             </li>
             <li class="translation_list">
-                <a href="{{ route('table.show', 'status') }}"><div class="translation_menu">{{translate('Status translate')}}</div></a>
+                <a href="{{ route('table.show', 'size') }}"><div class="translation_menu">{{translate('Size translate')}}</div></a>
+            </li>
+            <li class="translation_list">
+                <a href="{{ route('table.show', 'warehouse') }}"><div class="translation_menu">{{translate('Warehouse translate')}}</div></a>
             </li>
         </ul>
     </div>
