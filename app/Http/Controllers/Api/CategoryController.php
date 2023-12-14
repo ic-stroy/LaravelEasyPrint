@@ -13,6 +13,8 @@ use App\Models\Category;
 use App\Models\Warehouse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
+
 
 
 class CategoryController extends Controller
@@ -21,16 +23,18 @@ class CategoryController extends Controller
         $language = $request->header('language');
         $categories = Category::where('step', 0)->get();
         foreach ($categories as $category){
+            $translate_category_name=table_translate($category,'category',$language);
             $subcategory = [];
             foreach ($category->subcategory as $subcategory_){
+                $translate_subcategory_name=table_translate($subcategory_,'category',$language);
                 $subcategory[] = [
                     'id'=>$subcategory_->id,
-                    'name'=>$subcategory_->name,
+                    'name'=>$translate_subcategory_name,
                 ];
             }
             $all_categories[] = [
                 'id'=>$category->id,
-                'name'=>$category->name,
+                'name'=>$translate_category_name,
                 'sub_category'=>$subcategory
             ];
         }
@@ -45,6 +49,7 @@ class CategoryController extends Controller
 
     public function getProductsByCategory(Request $request)
     {
+        // dd($request->all());
         $language = $request->header('language');
         $category = Category::find($request->category_id);
         $data = [];
@@ -54,14 +59,18 @@ class CategoryController extends Controller
         $productId = [];
 
         if (isset($category->id)) {
+            $translate_category_name=table_translate($category,'category',$language);
             if ($category->step == 0) {
+
+                // $translate_category_name=table_translate($warehouse_product,'category',$language);
                 $category_ = [
                     'id' => $category->id,
-                    'name' => $category->name,
+                    'name' => $translate_category_name,
                 ];
 
                 $subCategory = [];
             } elseif ($category->step == 1) {
+                $translate_category_name=table_translate($category->category,'category',$language);
                 $category_ = [
                     'id' => $category->category->id,
                     'name' => $category->category->name,
@@ -69,7 +78,7 @@ class CategoryController extends Controller
 
                 $subCategory = [
                     'id' => $category->id,
-                    'name' => $category->name,
+                    'name' => $translate_category_name,
                 ];
             }
 
@@ -98,10 +107,12 @@ class CategoryController extends Controller
                 }
             }
 
+            $translate_product_name=table_translate($product,'product',$language);
+
             $productId[] = $product->id;
             $products_data[] = [
                 'id' => $product->id,
-                'name' => $product->name,
+                'name' => $translate_product_name,
                 'category_id' => $product->category_id,
                 'images' => $images_array,
                 'material_id' => $product->material_id,
@@ -115,6 +126,7 @@ class CategoryController extends Controller
         }
 
         $warehouse_products_ = Warehouse::where('product_id', $productId)->with('discount')->get();
+        // dd($warehouse_products_);
         $warehouse_products = [];
 
         foreach ($warehouse_products_ as $warehouse_product_) {
@@ -125,9 +137,12 @@ class CategoryController extends Controller
             }
 
             //  join qilish kere
+
+            $translate_warehouse_product_name=table_translate($warehouse_product_,'warehouse_category',$language);
+
             $warehouse_products[] = [
                 'id' => $warehouse_product_->id,
-                'name' => $warehouse_product_->name ?? $warehouse_product_->product->name,
+                'name' => $translate_warehouse_product_name ?? $warehouse_product_->product->name,
                 'price' => $warehouse_product_->price,
                 'discount' => (isset($warehouse_product_->discount)) > 0 ? $warehouse_product_->discount->percent : NULL,
                 'price_discount' => (isset($warehouse_product_->discount)) > 0 ? $warehouse_product_->price - ($warehouse_product_->price / 100 * $warehouse_product_->discount->percent) : NULL,
