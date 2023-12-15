@@ -67,6 +67,18 @@ class User extends Authenticatable
     public function order(){
         return $this->hasOne(Order::class, 'user_id', 'id')->where('status', Constants::ORDERED);
     }
+    public function ordersOrdered(){
+        return $this->hasMany(Order::class, 'user_id', 'id')->where('status', Constants::ORDERED);
+    }
+    public function ordersAccepted(){
+        return $this->hasMany(Order::class, 'user_id', 'id')->where('status', Constants::ACCEPTED);
+    }
+    public function ordersOnTheWay(){
+        return $this->hasMany(Order::class, 'user_id', 'id')->where('status', Constants::ON_THE_WAY);
+    }
+    public function ordersFinished(){
+        return $this->hasMany(Order::class, 'user_id', 'id')->where('status', Constants::FINISHED);
+    }
     public function orders(){
         return $this->hasMany(Order::class, 'user_id', 'id')->whereIn('status', [Constants::ACCEPTED, Constants::ON_THE_WAY, Constants::FINISHED]);
     }
