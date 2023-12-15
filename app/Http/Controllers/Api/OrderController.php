@@ -674,12 +674,12 @@ class OrderController extends Controller
                return $this->success($message, 200);
 
            }
-           //    dd($order_detail);
-           $upload=Uploads::where('relation_type',Constants::PRODUCT)
-           ->where('relation_id',$order_detail->product_id)
-           ->first();
+
+           if ($upload=Uploads::where('relation_type',Constants::PRODUCT)->where('relation_id',$order_detail->product_id)->first()) {
+            $upload->delete();
+           }
            //    dd($upload);
-           $upload->delete();
+
            $order_detail->delete();
 
            $message=translate_api('order detail deleted',$language);
