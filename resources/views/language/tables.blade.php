@@ -53,13 +53,10 @@
                 <a href="{{ route('table.show', 'product') }}"><div class="translation_menu">{{translate('Product translate')}}</div></a>
             </li>
             <li class="translation_list">
-                <a href="{{ route('table.show', 'role') }}"><div class="translation_menu">{{translate('Role translate')}}</div></a>
-            </li>
-            <li class="translation_list">
-                <a href="{{ route('table.show', 'size') }}"><div class="translation_menu">{{translate('Size translate')}}</div></a>
-            </li>
-            <li class="translation_list">
                 <a href="{{ route('table.show', 'warehouse') }}"><div class="translation_menu">{{translate('Warehouse translate')}}</div></a>
+            </li>
+            <li class="translation_list">
+                <a href="{{ route('table.show', 'role') }}"><div class="translation_menu">{{translate('Role translate')}}</div></a>
             </li>
         </ul>
     </div>
