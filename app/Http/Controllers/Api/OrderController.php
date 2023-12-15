@@ -665,7 +665,7 @@ class OrderController extends Controller
         if ($order_detail=OrderDetail::where('id',$order_detail_id)->first()) {
 
            if ($order_detail->warehouse_id != null) {
-               $warehouse=DB::table('warehouses')->where('id',$order_detail->warehouse_id)->first();
+               $warehouse=Warehouse::where('id',$order_detail->warehouse_id)->first();
                $warehouse->quantity=$warehouse->quantity + $order_detail->quantity;
                if ($warehouse->save()) {
                    $order_detail->delete();
