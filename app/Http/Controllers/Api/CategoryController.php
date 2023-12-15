@@ -5,16 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Language;
 use App\Models\Products;
-use App\Models\User;
 use GuzzleHttp\Psr7\Request as GuzzleRequest;
-use http\Client;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Warehouse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\DB;
-
 
 
 class CategoryController extends Controller
@@ -23,7 +18,7 @@ class CategoryController extends Controller
         $language = $request->header('language');
         $categories = Category::where('step', 0)->get();
         foreach ($categories as $category){
-            $translate_category_name=table_translate($category,'category',$language);
+            $translate_category_name = table_translate($category,'category',$language);
             $subcategory = [];
             foreach ($category->subcategory as $subcategory_){
                 $translate_subcategory_name=table_translate($subcategory_,'category',$language);

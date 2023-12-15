@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Color;
+use App\Models\Language;
 use App\Models\Role;
+use App\Models\RoleTranslations;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
@@ -33,6 +34,13 @@ class RoleController extends Controller
         $model = new Role();
         $model->name = $request->name;
         $model->save();
+        foreach (Language::all() as $language) {
+            $role_translations = RoleTranslations::firstOrNew(['lang' => $language->code, 'role_id' => $model->id]);
+            $role_translations->code = $language->code;
+            $role_translations->name = $model->name;
+            $role_translations->role_id = $model->id;
+            $role_translations->save();
+        }
         return redirect()->route('role.index')->with('status', translate('Successfully created'));
     }
 
@@ -71,6 +79,12 @@ class RoleController extends Controller
     public function destroy(string $id)
     {
         $model = Role::find($id);
+        foreach (Language::all() as $language) {
+            $role_translations = RoleTranslations::where(['lang' => $language->code, 'role_id' => $model->id])->get();
+            foreach ($role_translations as $role_translation){
+                $role_translation->delete();
+            }
+        }
         $model->delete();
         return redirect()->route('role.index')->with('status', translate('Successfully deleted'));
     }

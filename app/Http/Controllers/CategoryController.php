@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\CategoryTranslations;
+use App\Models\ColorTranslations;
+use App\Models\Language;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -34,6 +37,13 @@ class CategoryController extends Controller
         $model->parent_id = 0;
         $model->step = 0;
         $model->save();
+        foreach (Language::all() as $language) {
+            $category_translations = CategoryTranslations::firstOrNew(['lang' => $language->code, 'category_id' => $model->id]);
+            $category_translations->code = $language->code;
+            $category_translations->name = $model->name;
+            $category_translations->category_id = $model->id;
+            $category_translations->save();
+        }
         return redirect()->route('category.index')->with('status', translate('Successfully created'));
     }
 
@@ -73,6 +83,12 @@ class CategoryController extends Controller
     public function destroy(string $id)
     {
         $model = Category::where('step', 0)->find($id);
+        foreach (Language::all() as $language) {
+            $categories_translations = CategoryTranslations::where(['lang' => $language->code, 'category_id' => $model->id])->get();
+            foreach ($categories_translations as $category_translation){
+                $category_translation->delete();
+            }
+        }
         $model->delete();
         return redirect()->route('category.index')->with('status', translate('Successfully deleted'));
     }

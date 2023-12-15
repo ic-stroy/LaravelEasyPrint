@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
+use App\Models\Language;
 use App\Models\Category;
+use App\Models\RoleTranslations;
 use App\Models\Warehouse;
 use App\Models\Color;
 use App\Models\Products;
 use App\Models\Sizes;
+use App\Models\WarehouseTranslations;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -60,6 +63,13 @@ class WarehouseController extends Controller
             $model->images = json_encode($array_images);
         }
         $model->save();
+        foreach (Language::all() as $language) {
+            $warehouse_translations = WarehouseTranslations::firstOrNew(['lang' => $language->code, 'warehouse_id' => $model->id]);
+            $warehouse_translations->code = $language->code;
+            $warehouse_translations->name = $model->name;
+            $warehouse_translations->warehouse_id = $model->id;
+            $warehouse_translations->save();
+        }
         return redirect()->route('warehouse.category.warehouse', $request->product_id)->with('status', translate('Successfully created'));
     }
 
@@ -138,6 +148,12 @@ class WarehouseController extends Controller
     public function destroy(string $id)
     {
         $model = Warehouse::find($id);
+        foreach (Language::all() as $language) {
+            $warehouse_translations = WarehouseTranslations::where(['lang' => $language->code, 'warehouse_id' => $model->id])->get();
+            foreach ($warehouse_translations as $warehouse_translation){
+                $warehouse_translation->delete();
+            }
+        }
         $model->delete();
         return redirect()->route('warehouse.category.warehouse', $model->product_id)->with('status', translate('Successfully deleted'));
     }

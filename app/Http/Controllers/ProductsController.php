@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Constants;
-use App\Models\Color;
+use App\Models\Language;
 use App\Models\Products;
+use App\Models\ProductTranslations;
 use App\Models\Sizes;
 use App\Models\Category;
 use App\Models\Warehouse;
@@ -60,6 +61,13 @@ class ProductsController extends Controller
             $model->images = json_encode($array_images);
         }
         $model->save();
+        foreach (Language::all() as $language) {
+            $product_translations = ProductTranslations::firstOrNew(['lang' => $language->code, 'product_id' => $model->id]);
+            $product_translations->code = $language->code;
+            $product_translations->name = $model->name;
+            $product_translations->product_id = $model->id;
+            $product_translations->save();
+        }
         return redirect()->route('product.category.product', $request->category_id)->with('status', translate('Successfully created'));
     }
 
@@ -150,6 +158,12 @@ class ProductsController extends Controller
                 }
             }
         }
+        foreach (Language::all() as $language) {
+            $product_translations = ProductTranslations::where(['lang' => $language->code, 'product_id' => $model->id])->get();
+            foreach ($product_translations as $product_translation){
+                $product_translation->delete();
+            }
+        }
         $model->delete();
         return redirect()->route('product.category')->with('status', translate('Successfully deleted'));
     }
@@ -162,6 +176,7 @@ class ProductsController extends Controller
         ];
         return response()->json($respone, 200);
     }
+
     public function category()
     {
         $category = Category::where('step', 0)->get();
