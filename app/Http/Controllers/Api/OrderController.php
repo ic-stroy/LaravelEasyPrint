@@ -92,9 +92,16 @@ class OrderController extends Controller
             }
             $order_detail = DB::table('order_details')->where('order_id', $order->id)->where('warehouse_id', $request->warehouse_product_id)->where('color_id', $request->color_id)->where('size_id', $request->size_id);
             if ($order_detail->exists()) {
+
+                $quantity=$order_detail->quantity + $request->quantity;
+                $discount_price = ($request->price/100)*$request->discount*$quantity;
+
+
                 $order_detail->update([
-                    'quantity' =>$request->quantity,
-                    'price'=>($request->quantity * $request->price)
+                    'quantity' =>$quantity,
+                    'price'=>($quantity * ($request->price)),
+                    'discount'=>$request->discount,
+                    'discount_price'=>$discount_price
                 ]);
             } else {
 
