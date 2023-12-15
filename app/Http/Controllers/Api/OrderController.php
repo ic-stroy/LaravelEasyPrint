@@ -90,8 +90,7 @@ class OrderController extends Controller
             if(!DB::table('warehouses')->where('id', $request->warehouse_product_id)->exists()){
                 return $this->error(translate_api('warehouse not found', $language), 400);
             }
-            $order_detail = DB::table('order_details')->where('order_id', $order->id)->where('warehouse_id', $request->warehouse_product_id)->where('color_id', $request->color_id)->where('size_id', $request->size_id);
-            if ($order_detail->exists()) {
+            if ($order_detail = OrderDetail::where('order_id', $order->id)->where('warehouse_id', $request->warehouse_product_id)->where('color_id', $request->color_id)->where('size_id', $request->size_id)->first()) {
 
                 $quantity=$order_detail->quantity + $request->quantity;
                 $discount_price = ($request->price/100)*$request->discount*$quantity;
