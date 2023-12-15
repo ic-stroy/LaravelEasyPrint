@@ -99,16 +99,4 @@ class UsersController extends Controller
         }
     }
 
-    public function getMyOrders(){
-        $user = Auth::user();
-        $orderBasked = $user->orderBasked;
-        $ordersOrdered = $user->ordersOrdered;
-        $ordersAccepted = $user->ordersAccepted;
-        $ordersOnTheWay = $user->ordersOnTheWay;
-        $ordersFinished = $user->ordersFinished;
-        return response()->json([
-            $orderBasked, $ordersOrdered, $ordersAccepted, $ordersOnTheWay, $ordersFinished
-        ]);
-        return $this->success('Success', 200, [$user]);
-    }
 }

@@ -509,13 +509,6 @@ class OrderController extends Controller
         }
     }
 
-    public function getMyOrders(){
-        $user = Auth::user();
-        return response()->json([
-            $user->orders
-        ]);
-    }
-
     public function addCoupon(Request $request){
         // dd($request->all());
         $language=$request->language;
@@ -717,6 +710,70 @@ class OrderController extends Controller
         $message=translate_api('order_detail not found',$language);
         return $this->error($message, 400);
 
+    }
+
+    public function getMyOrders(){
+        $user = Auth::user();
+        $orderBasket = $this->orderToArray($user->orderBasket, 'object');
+        $ordersOrdered = $this->orderToArray($user->ordersOrdered, 'array');
+        $ordersAccepted = $this->orderToArray($user->ordersAccepted, 'array');
+        $ordersOnTheWay = $this->orderToArray($user->ordersOnTheWay, 'array');
+        $ordersFinished = $this->orderToArray($user->ordersFinished, 'array');
+        $data = [
+            'basked'=>$orderBasket,
+            'ordered'=>$ordersOrdered,
+            'accepted'=>$ordersAccepted,
+            'on-the-way'=>$ordersOnTheWay,
+            'finished'=>$ordersFinished
+        ];
+        return $this->success('Success', 200, $data);
+    }
+
+    public function orderToArray($modal, $type){
+        $response = [];
+        if($type == 'object'){
+            if(isset($modal->id)){
+                $response = [
+                    "id" => $modal->id,
+                    "price" => $modal->price,
+                    "status" => $modal->id,
+                    "delivery_date" => $modal->delivery_date,
+                    "delivery_price" => $modal->delivery_price,
+                    "all_price" => $modal->all_price,
+                    "updated_at" => $modal->updated_at,
+                    "coupon_id" => $modal->coupon_id,
+                    "address_id" => $modal->address_id,
+                    "receiver_name" => $modal->receiver_name,
+                    "phone_number" => $modal->phone_number,
+                    "payment_method" => $modal->payment_method,
+                    "user_card_id" => $modal->user_card_id,
+                    "discount_price" => $modal->discount_price,
+                    "coupon_price" => $modal->coupon_price
+                ];
+            }
+        }else{
+            foreach ($modal as $data){
+                $response[] = [
+                    "id" => $data->id,
+                    "price" => $data->price,
+                    "status" => $data->id,
+                    "delivery_date" => $data->delivery_date,
+                    "delivery_price" => $data->delivery_price,
+                    "all_price" => $data->all_price,
+                    "updated_at" => $data->updated_at,
+                    "coupon_id" => $data->coupon_id,
+                    "address_id" => $data->address_id,
+                    "receiver_name" => $data->receiver_name,
+                    "phone_number" => $data->phone_number,
+                    "payment_method" => $data->payment_method,
+                    "user_card_id" => $data->user_card_id,
+                    "discount_price" => $data->discount_price,
+                    "coupon_price" => $data->coupon_price
+                ];
+            }
+        }
+
+        return $response;
     }
 
 }

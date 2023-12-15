@@ -54,7 +54,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('personal-information', [UsersController::class, 'setPersonalInformation']);
     Route::get('personal-information', [UsersController::class, 'getPersonalInformation']);
-    Route::get('get-my-orders', [UsersController::class, 'getMyOrders']);
     Route::post('set-address', [AddressController::class, 'setAddress']);
     Route::post('edit-address', [AddressController::class, 'editAddress']);
     Route::get('get-address', [AddressController::class, 'getAddress']);
