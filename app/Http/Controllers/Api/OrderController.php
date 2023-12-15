@@ -386,11 +386,12 @@ class OrderController extends Controller
             }
 
             $data=[
-                'list'=>$order_detail_list,
+                'id'=>$order->id,
                 'coupon_price'=>$order->coupon_price,
                 'price'=>$order->price,
                 'discount_price'=>$order->discount_price,
-                'grant_total'=>$order->all_price
+                'grant_total'=>$order->all_price,
+                'list'=>$order_detail_list
             ];
 
             $message=translate_api('success',$language);
@@ -486,11 +487,12 @@ class OrderController extends Controller
             }
 
             $data=[
-                'list'=>$order_detail_list,
+                'id'=>$order->id,
                 'coupon_price'=>$order->coupon_price,
                 'price'=>$order->price,
                 'discount_price'=>$order->discount_price,
-                'grant_total'=>$order->all_price
+                'grant_total'=>$order->all_price,
+                'list'=>$order_detail_list
             ];
 
             // array_push($data,$addresses);
@@ -562,8 +564,18 @@ class OrderController extends Controller
                          }
                     }
                     $order->save();
+
+
+                    $data=[
+                        'id'=>$order->id,
+                        'coupon_price'=>$order->coupon_price,
+                        'price'=>$order->price,
+                        'discount_price'=>$order->discount_price,
+                        'grant_total'=>$order->all_price
+                    ];
+
                     $message=translate_api('success',$language);
-                    return $this->success($message, 200);
+                    return $this->success($message, 200,$data);
                 }
                 else {
                     $message=translate_api('this order has a coupon',$language);
@@ -670,7 +682,15 @@ class OrderController extends Controller
 
         if ($order_detail=OrderDetail::where('id',$order_detail_id)->first()) {
 
-           if ($order_detail->warehouse_id != null) {
+
+            $order=$order_detail->order;
+            $order->price=$order->price-($order_detail->price * $order_detail->quantity);
+            $order->discount_price=$order->discount_price - $order_detail->discount_price;
+            // if ($order->coupon_id) {
+
+            // }
+            $order->save();
+            if ($order_detail->warehouse_id != null) {
                $warehouse=Warehouse::where('id',$order_detail->warehouse_id)->first();
                $warehouse->quantity=$warehouse->quantity + $order_detail->quantity;
                if ($warehouse->save()) {
@@ -679,7 +699,8 @@ class OrderController extends Controller
                $message=translate_api('order detail deleted',$language);
                return $this->success($message, 200);
 
-           }
+            }
+
 
            if ($upload=Uploads::where('relation_type',Constants::PRODUCT)->where('relation_id',$order_detail->product_id)->first()) {
             $upload->delete();
