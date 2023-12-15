@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Address;
 use App\Models\Cities;
 use App\Models\Color;
+use App\Models\ColorTranslations;
 use App\Models\Company;
+use App\Models\CompanyTranslations;
+use App\Models\Language;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -63,6 +66,13 @@ class CompanyController extends Controller
         $model->delivery_price = $request->delivery_price;
         $model->address_id = $address->id;
         $model->save();
+        foreach (Language::all() as $language) {
+            $company_translations = CompanyTranslations::firstOrNew(['lang' => $language->code, 'company_id' => $model->id]);
+            $company_translations->code = $language->code;
+            $company_translations->name = $model->name;
+            $company_translations->company_id = $model->id;
+            $company_translations->save();
+        }
         return redirect()->route('company.index')->with('status', translate('Successfully created'));
     }
 
@@ -115,6 +125,12 @@ class CompanyController extends Controller
     {
         $model = Company::find($id);
         $address = $model->address;
+        foreach (Language::all() as $language) {
+            $company_translations = CompanyTranslations::where(['lang' => $language->code, 'company_id' => $model->id])->get();
+            foreach ($company_translations as $company_translation){
+                $company_translation->delete();
+            }
+        }
         $model->delete();
         if(isset($address->id)){
             $address->delete();

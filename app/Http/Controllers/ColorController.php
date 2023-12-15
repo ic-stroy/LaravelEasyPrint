@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ColorTranslations;
+use App\Models\Language;
 use App\Models\Color;
 use Illuminate\Http\Request;
 
@@ -41,6 +43,13 @@ class ColorController extends Controller
         $model->name = $request->name;
         $model->code = $request->code;
         $model->save();
+        foreach (Language::all() as $language) {
+            $color_translations = ColorTranslations::firstOrNew(['lang' => $language->code, 'color_id' => $model->id]);
+            $color_translations->code = $language->code;
+            $color_translations->name = $model->name;
+            $color_translations->color_id = $model->id;
+            $color_translations->save();
+        }
         return redirect()->route('color.index')->with('status', translate('Successfully created'));
     }
 
@@ -87,6 +96,12 @@ class ColorController extends Controller
     public function destroy(string $id)
     {
         $model = Color::find($id);
+        foreach (Language::all() as $language) {
+            $color_translations = ColorTranslations::where(['lang' => $language->code, 'color_id' => $model->id])->get();
+            foreach ($color_translations as $color_translation){
+                $color_translation->delete();
+            }
+        }
         $model->delete();
         return redirect()->route('color.index')->with('status', translate('Successfully deleted'));
     }
