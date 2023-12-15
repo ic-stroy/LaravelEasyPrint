@@ -665,7 +665,7 @@ class OrderController extends Controller
         if ($order_detail=OrderDetail::where('id',$order_detail_id)->first()) {
 
            if ($order_detail->warehouse_id != null) {
-               $warehouse=DB::table('warehouses')->where('id',$order_detail->warehouse_id)->first();
+               $warehouse=Warehouse::where('id',$order_detail->warehouse_id)->first();
                $warehouse->quantity=$warehouse->quantity + $order_detail->quantity;
                if ($warehouse->save()) {
                    $order_detail->delete();
@@ -674,12 +674,12 @@ class OrderController extends Controller
                return $this->success($message, 200);
 
            }
-           //    dd($order_detail);
-           $upload=Uploads::where('relation_type',Constants::PRODUCT)
-           ->where('relation_id',$order_detail->product_id)
-           ->first();
+
+           if ($upload=Uploads::where('relation_type',Constants::PRODUCT)->where('relation_id',$order_detail->product_id)->first()) {
+            $upload->delete();
+           }
            //    dd($upload);
-           $upload->delete();
+
            $order_detail->delete();
 
            $message=translate_api('order detail deleted',$language);
