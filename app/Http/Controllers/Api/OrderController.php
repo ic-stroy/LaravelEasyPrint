@@ -790,8 +790,6 @@ class OrderController extends Controller
                 $response[] = [
                     "id"=>$order_detail->id,
                     "order_id"=>$order_detail->order_id,
-                    "warehouse"=>count($warehouse)>0?$warehouse:null,
-                    "product"=>count($product)>0?$product:null,
                     "quantity"=>$order_detail->quantity,
                     "price"=>$order_detail->price,
                     "image_front"=>$image_front,
@@ -804,7 +802,9 @@ class OrderController extends Controller
                     "image_price"=>$order_detail->image_price,
                     "total_price"=>$order_detail->total_price,
                     "discount"=>$order_detail->discount,
-                    "discount_price"=>$order_detail->discount_price
+                    "discount_price"=>$order_detail->discount_price,
+                    "warehouse"=>count($warehouse)>0?$warehouse:null,
+                    "product"=>count($product)>0?$product:null,
                 ];
             }
             $message=translate_api('Success',$language);
