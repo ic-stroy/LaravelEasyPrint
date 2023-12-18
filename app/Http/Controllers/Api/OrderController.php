@@ -722,49 +722,25 @@ class OrderController extends Controller
 
     public function orderToArray($modal){
         $response = [];
-        if(count($modal) == 1){
-            if(isset($modal->id)){
-                $response = [
-                    "id" => $modal->id,
-                    "price" => $modal->price,
-                    "status" => $this->getOrderStatus($modal->status),
-                    "delivery_date" => $modal->delivery_date,
-                    "delivery_price" => $modal->delivery_price,
-                    "all_price" => $modal->all_price,
-                    "updated_at" => $modal->updated_at,
-                    "coupon_id" => $modal->coupon_id,
-                    "address_id" => $modal->address_id,
-                    "receiver_name" => $modal->receiver_name,
-                    "phone_number" => $modal->phone_number,
-                    "payment_method" => $modal->payment_method,
-                    "user_card_id" => $modal->user_card_id,
-                    "discount_price" => $modal->discount_price,
-                    "coupon_price" => $modal->coupon_price
-                ];
-            }
-        }else{
-            foreach ($modal as $data){
-                $response[] = [
-                    "id" => $data->id,
-                    "price" => $data->price,
-                    "status" => $this->getOrderStatus($data->status),
-                    "delivery_date" => $data->delivery_date,
-                    "delivery_price" => $data->delivery_price,
-                    "all_price" => $data->all_price,
-                    "updated_at" => $data->updated_at,
-                    "coupon_id" => $data->coupon_id,
-                    "address_id" => $data->address_id,
-                    "receiver_name" => $data->receiver_name,
-                    "phone_number" => $data->phone_number,
-                    "payment_method" => $data->payment_method,
-                    "user_card_id" => $data->user_card_id,
-                    "discount_price" => $data->discount_price,
-                    "coupon_price" => $data->coupon_price
-                ];
-            }
-
+        foreach ($modal as $data){
+            $response[] = [
+                "id" => $data->id,
+                "price" => $data->price,
+                "status" => $this->getOrderStatus($data->status),
+                "delivery_date" => $data->delivery_date,
+                "delivery_price" => $data->delivery_price,
+                "all_price" => $data->all_price,
+                "updated_at" => $data->updated_at,
+                "coupon_id" => $data->coupon_id,
+                "address_id" => $data->address_id,
+                "receiver_name" => $data->receiver_name,
+                "phone_number" => $data->phone_number,
+                "payment_method" => $data->payment_method,
+                "user_card_id" => $data->user_card_id,
+                "discount_price" => $data->discount_price,
+                "coupon_price" => $data->coupon_price
+            ];
         }
-
         return $response;
     }
 
