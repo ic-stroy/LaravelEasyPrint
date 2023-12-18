@@ -820,8 +820,24 @@ class OrderController extends Controller
         $warehouse = Warehouse::find($warehouse_id);
         if (isset($warehouse->id)) {
             if(isset($warehouse->color_id)) {
-                $warehouse_color = Color::select('id', 'name')->find($warehouse->color_id);
+                $warehouse_color = Color::select('id', 'name', 'code')->find($warehouse->color_id);
                 $color_translate_name=table_translate($warehouse_color,'color', $language);
+                if(isset($warehouse_color->id)){
+                    $color = [
+                        "id" => $warehouse_color->id,
+                        "code" => $warehouse_color->code,
+                        "name" => $color_translate_name??'',
+                    ];
+                }
+            }
+            if(isset($warehouse->size_id)) {
+                $warehouse_size = Sizes::select('id', 'name')->find($warehouse->size_id);
+                if(isset($warehouse_size->id)){
+                    $size = [
+                        "id" => $warehouse_size->id,
+                        "name" => $warehouse_size->name??'',
+                    ];
+                }
             }
             if($warehouse->name){
                 $warehouse_translate_name=table_translate($warehouse,'warehouse', $language);
@@ -841,21 +857,15 @@ class OrderController extends Controller
             } else {
                 $images = [];
             }
+
             $list = [
                 "id" => $warehouse->id,
                 "name" => $warehouse_translate_name ?? $warehouse->product?$warehouse->product->name:null,
                 "price" => $warehouse->price,
                 "description" => $warehouse->description ?? $warehouse->product_description,
                 "images" => $images,
-                "color" => [
-                    "id" => $warehouse_color->color_id,
-                    "code" => $warehouse_color->color_code,
-                    "name" => $color_translate_name??'',
-                ],
-                "size" => [
-                    "id" => $warehouse_color->size_id,
-                    "name" => $warehouse_color->size_name,
-                ],
+                "color" => $color??null,
+                "size" => $size??null,
             ];
         } else {
             $list = [];
