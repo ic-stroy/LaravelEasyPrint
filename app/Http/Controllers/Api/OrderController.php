@@ -712,68 +712,186 @@ class OrderController extends Controller
 
     }
 
-    public function getMyOrders(){
+    public function getMyOrders(Request $request){
+        $language = $request->header('language');
         $user = Auth::user();
-        $orderBasket = $this->orderToArray($user->orderBasket, 'object');
-        $ordersOrdered = $this->orderToArray($user->ordersOrdered, 'array');
-        $ordersAccepted = $this->orderToArray($user->ordersAccepted, 'array');
-        $ordersOnTheWay = $this->orderToArray($user->ordersOnTheWay, 'array');
-        $ordersFinished = $this->orderToArray($user->ordersFinished, 'array');
-        $data = [
-            'basked'=>$orderBasket,
-            'ordered'=>$ordersOrdered,
-            'accepted'=>$ordersAccepted,
-            'on-the-way'=>$ordersOnTheWay,
-            'finished'=>$ordersFinished
-        ];
-        return $this->success('Success', 200, $data);
+        $allOrders = $this->orderToArray($user->allOrders);
+        $message = translate_api('Success', $language);
+        return $this->success($message, 200, $allOrders);
     }
 
-    public function orderToArray($modal, $type){
+    public function orderToArray($modal){
         $response = [];
-        if($type == 'object'){
-            if(isset($modal->id)){
-                $response = [
-                    "id" => $modal->id,
-                    "price" => $modal->price,
-                    "status" => $modal->id,
-                    "delivery_date" => $modal->delivery_date,
-                    "delivery_price" => $modal->delivery_price,
-                    "all_price" => $modal->all_price,
-                    "updated_at" => $modal->updated_at,
-                    "coupon_id" => $modal->coupon_id,
-                    "address_id" => $modal->address_id,
-                    "receiver_name" => $modal->receiver_name,
-                    "phone_number" => $modal->phone_number,
-                    "payment_method" => $modal->payment_method,
-                    "user_card_id" => $modal->user_card_id,
-                    "discount_price" => $modal->discount_price,
-                    "coupon_price" => $modal->coupon_price
-                ];
-            }
-        }else{
-            foreach ($modal as $data){
+        foreach ($modal as $data){
+            $response[] = [
+                "id" => $data->id,
+                "price" => $data->price,
+                "status" => $this->getOrderStatus($data->status),
+                "delivery_date" => $data->delivery_date,
+                "delivery_price" => $data->delivery_price,
+                "all_price" => $data->all_price,
+                "updated_at" => $data->updated_at,
+                "coupon_id" => $data->coupon_id,
+                "address_id" => $data->address_id,
+                "receiver_name" => $data->receiver_name,
+                "phone_number" => $data->phone_number,
+                "payment_method" => $data->payment_method,
+                "user_card_id" => $data->user_card_id,
+                "discount_price" => $data->discount_price,
+                "coupon_price" => $data->coupon_price
+            ];
+        }
+        return $response;
+    }
+
+    public function getOrderStatus($id){
+        switch ($id){
+            case 1:
+                $status = 'Basked';
+                break;
+            case 2:
+                $status = 'Ordered';
+                break;
+            case 3:
+                $status = 'Accepted';
+                break;
+            case 4:
+                $status = 'On the way';
+                break;
+            case 5:
+                $status = 'Finished';
+                break;
+            default:
+                $status = null;
+        }
+        return $status;
+    }
+
+    public function getOrderDetailByOrderId(Request $request){
+        $language = $request->header('language');
+        $user = Auth::user();
+        $order = Order::where('user_id', $user->id)->find($request->id);
+        if(isset($order->id)){
+            $order_details = $order->orderDetail;
+            $response = [];
+            foreach ($order_details as $order_detail){
+                $warehouse = $this->getWarehouseByOrderDetail($order_detail->warehouse_id, $language);
+                $product = $this->getProductByOrderDetail($order_detail->product_id, $language);
+                if(isset($order_detail->image_front)){
+                    $image_front = asset('storage/warehouse/'.$order_detail->image_front);
+                }else{
+                    $image_front = null;
+                }
+                if(isset($order_detail->image_back)){
+                    $image_back = asset('storage/warehouse/'.$order_detail->image_back);
+                }else{
+                    $image_back = null;
+                }
                 $response[] = [
-                    "id" => $data->id,
-                    "price" => $data->price,
-                    "status" => $data->id,
-                    "delivery_date" => $data->delivery_date,
-                    "delivery_price" => $data->delivery_price,
-                    "all_price" => $data->all_price,
-                    "updated_at" => $data->updated_at,
-                    "coupon_id" => $data->coupon_id,
-                    "address_id" => $data->address_id,
-                    "receiver_name" => $data->receiver_name,
-                    "phone_number" => $data->phone_number,
-                    "payment_method" => $data->payment_method,
-                    "user_card_id" => $data->user_card_id,
-                    "discount_price" => $data->discount_price,
-                    "coupon_price" => $data->coupon_price
+                    "id"=>$order_detail->id,
+                    "order_id"=>$order_detail->order_id,
+                    "quantity"=>$order_detail->quantity,
+                    "price"=>$order_detail->price,
+                    "image_front"=>$image_front,
+                    "image_back"=>$image_back,
+                    "created_at"=>$order_detail->created_at,
+                    "updated_at"=>$order_detail->updated_at,
+                    "coupon_id"=>$order_detail->coupon_id,
+                    "size_id"=>$order_detail->size_id,
+                    "color_id"=>$order_detail->color_id,
+                    "image_price"=>$order_detail->image_price,
+                    "total_price"=>$order_detail->total_price,
+                    "discount"=>$order_detail->discount,
+                    "discount_price"=>$order_detail->discount_price,
+                    "warehouse"=>count($warehouse)>0?$warehouse:null,
+                    "product"=>count($product)>0?$product:null,
                 ];
             }
+            $message=translate_api('Success',$language);
+            return $this->success($message, 500, $response);
+        }else{
+            $message=translate_api('Order not found',$language);
+            return $this->error($message, 500);
         }
 
-        return $response;
+    }
+
+    public function getWarehouseByOrderDetail($warehouse_id, $language){
+        $warehouse = Warehouse::find($warehouse_id);
+        if (isset($warehouse->id)) {
+            if(isset($warehouse->color_id)) {
+                $warehouse_color = Color::select('id', 'name', 'code')->find($warehouse->color_id);
+                $color_translate_name=table_translate($warehouse_color,'color', $language);
+                if(isset($warehouse_color->id)){
+                    $color = [
+                        "id" => $warehouse_color->id,
+                        "code" => $warehouse_color->code,
+                        "name" => $color_translate_name??'',
+                    ];
+                }
+            }
+            if(isset($warehouse->size_id)) {
+                $warehouse_size = Sizes::select('id', 'name')->find($warehouse->size_id);
+                if(isset($warehouse_size->id)){
+                    $size = [
+                        "id" => $warehouse_size->id,
+                        "name" => $warehouse_size->name??'',
+                    ];
+                }
+            }
+            if($warehouse->name){
+                $warehouse_translate_name=table_translate($warehouse,'warehouse', $language);
+            }
+            if (isset($warehouse->images)) {
+                $images_ = json_decode($warehouse->images);
+                $images = [];
+                foreach ($images_ as $image_) {
+                    $images[] = asset('storage/warehouses/' . $image_);
+                }
+            } elseif (isset($warehouse->product->images)) {
+                $images_ = json_decode($warehouse->product->images);
+                $images = [];
+                foreach ($images_ as $image_){
+                    $images[] = asset('storage/products/' . $image_);
+                }
+            } else {
+                $images = [];
+            }
+
+            $list = [
+                "id" => $warehouse->id,
+                "name" => $warehouse_translate_name ?? $warehouse->product?$warehouse->product->name:null,
+                "price" => $warehouse->price,
+                "description" => $warehouse->description ?? $warehouse->product_description,
+                "images" => $images,
+                "color" => $color??null,
+                "size" => $size??null,
+            ];
+        } else {
+            $list = [];
+        }
+
+        return $list;
+    }
+
+    public function getProductByOrderDetail($product_id, $language){
+        $product = Products::find($product_id);
+        if (isset($product->id)) {
+            if($product->name){
+                $product_translate_name=table_translate($product,'product', $language);
+            }
+            $images = $this->getImages($product, 'product');
+            $list = [
+                "id" => $product->id,
+                "name" => $product_translate_name??null,
+                "description" => $product->description??'',
+                "images" => $images,
+            ];
+        } else {
+            $list = [];
+        }
+
+        return $list;
     }
 
 }
