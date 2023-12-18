@@ -844,13 +844,7 @@ class OrderController extends Controller
             $list = [
                 "id" => $warehouse->id,
                 "name" => $warehouse_translate_name ?? $warehouse->product?$warehouse->product->name:null,
-                // "relation_id" => $relation_id,
                 "price" => $warehouse->price,
-                'discount' => (isset($warehouse->discount->id)) ? $warehouse->discount : NULL,
-                'price_discount' => (isset($warehouse->discount->id)) ? $warehouse->price - ($warehouse->price / 100 * $warehouse->discount) : NULL,
-                // "discounts" => $warehouse_product->price,
-                "quantity" => $warehouse->quantity,
-                // "max_quantity" => $warehouse_product->max_quantity,
                 "description" => $warehouse->description ?? $warehouse->product_description,
                 "images" => $images,
                 "color" => [
@@ -880,8 +874,6 @@ class OrderController extends Controller
             $list = [
                 "id" => $product->id,
                 "name" => $product_translate_name??null,
-                // "relation_id" => $relation_id,
-
                 "description" => $product->description??'',
                 "images" => $images,
             ];
