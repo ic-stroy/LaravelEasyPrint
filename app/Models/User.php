@@ -61,6 +61,9 @@ class User extends Authenticatable
     public function company(){
         return $this->hasOne(Company::class, 'id', 'company_id');
     }
+    public function allOrders(){
+        return $this->hasMany(Order::class, 'user_id', 'id');
+    }
     public function orderBasket(){
         return $this->hasOne(Order::class, 'user_id', 'id')->where('status', Constants::BASKED);
     }

@@ -72,6 +72,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/get-basket', [OrderController::class, 'getBasket']);
         Route::get('/get-order', [OrderController::class, 'getOrder']);
         Route::get('/get-my-orders', [OrderController::class, 'getMyOrders']);
+        Route::get('/get-order-detail-by-order-id', [OrderController::class, 'getOrderDetailByOrderId']);
     });
     Route::post('logout', [AuthController::class, 'logout']);
 });
