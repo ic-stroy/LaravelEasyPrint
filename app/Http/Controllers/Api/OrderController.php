@@ -168,10 +168,17 @@ class OrderController extends Controller
             $images_ = json_decode($model->images);
             $images = [];
             foreach ($images_ as $image_){
-                if($text == 'warehouse'){
-                    $images[] = asset('storage/warehouses/'.$image_);
-                }elseif($text == 'product'){
-                    $images[] = asset('storage/products/'.$image_);
+                switch($text){
+                    case 'warehouse':
+                        $images[] = asset('storage/warehouse/'.$image_);
+                        break;
+                    case 'product':
+                        $images[] = asset('storage/products/'.$image_);
+                        break;
+                    case 'warehouses':
+                        $images[] = asset('storage/warehouses/'.$image_);
+                        break;
+                    default:
                 }
             }
         }else{
@@ -301,7 +308,7 @@ class OrderController extends Controller
                     $relation_type='warehouse_product';
                     $relation_id=$order_detail->warehouse_id;
                     $list_product = Products::find($warehouse_product->product_id);
-                    $list_images = count($this->getImages($warehouse_product, 'warehouse'))>0?$this->getImages($warehouse_product, 'warehouse'):$this->getImages($list_product, 'product');
+                    $list_images = count($this->getImages($warehouse_product, 'warehouses'))>0?$this->getImages($warehouse_product, 'warehouses'):$this->getImages($list_product, 'product');
 
                     $translate_name=table_translate($warehouse_product,'warehouse',$language);
                     $total_price=$order_detail->price - $order_detail->discount_price;
@@ -430,12 +437,12 @@ class OrderController extends Controller
                         ->where('dt1.id' , $order_detail->id)
                         ->select('dt2.name as warehouse_product_name','dt2.quantity as max_quantity', 'dt2.images as images', 'dt2.description as description', 'dt2.product_id as product_id', 'dt2.company_id as company_id','dt3.id as size_id','dt3.name as size_name','dt4.id as color_id','dt4.name as color_name','dt4.code as color_code')
                         ->first();
+                    $product = Products::find($warehouse_product->product_id);
                     // dd($warehouse_product->company_id);
 
                     $relation_type='warehouse_product';
                     $relation_id=$order_detail->warehouse_id;
-                    $images = $this->getImages($order_detail, 'warehouses');
-
+                    $images = count($this->getImages($order_detail, 'warehouses'))>0?$this->getImages($order_detail, 'warehouses'):$this->getImages($product, 'product');
                     $list=[
                         "id"=>$order_detail->id,
                         "relation_type"=>$relation_type,
