@@ -434,6 +434,7 @@ class OrderController extends Controller
 
                     $relation_type='warehouse_product';
                     $relation_id=$order_detail->warehouse_id;
+                    $images = $this->getImages($order_detail, 'warehouses');
 
                     $list=[
                         "id"=>$order_detail->id,
@@ -445,7 +446,8 @@ class OrderController extends Controller
                         "discount_price"=>$order_detail->discount_price,
                         "quantity"=>$order_detail->quantity,
                         "description"=>$warehouse_product->description,
-                        "images"=>$warehouse_product->images,
+                        "images"=>$images,
+                        "color_code"=>$warehouse_product->color_code,
                         "color_name"=>$warehouse_product->color_name,
                         "size_name"=>$warehouse_product->size_name
                     ];
@@ -462,7 +464,7 @@ class OrderController extends Controller
                         ->select('dt2.name as product_name','dt2.images as images', 'dt2.description as description','dt3.id as size_id','dt3.name as size_name','dt4.id as color_id','dt4.code as color_code','dt4.name as color_name',)
                         ->first();
                         // dd($product);
-
+                    $images = $this->getImages($product, 'product');
 
 
                     $list=[
@@ -474,8 +476,9 @@ class OrderController extends Controller
                         "discount_price"=>$order_detail->discount_price,
                         "quantity"=>$order_detail->quantity,
                         "description"=>$product->description,
-                        "images"=>$product->images,
+                        "images"=>$images,
                         "color_name"=>$product->color_name,
+                        "color_code"=>$product->color_code,
                         "size_name"=>$product->size_name
                     ];
                     // dd($list);
