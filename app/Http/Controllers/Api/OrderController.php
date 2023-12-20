@@ -592,7 +592,7 @@ class OrderController extends Controller
         $order_inner=$data['data'];
         // dd($data['data']);
         $order_id=$data['order_id'];
-
+        return response()->json($data, 200);
         if ($order_id  && $order=Order::where('id',$order_id)->where('status', Constants::BASKED)->first()) {
             $order_price=0;
             $order_discount_price=0;
