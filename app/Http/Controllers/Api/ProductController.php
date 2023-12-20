@@ -66,7 +66,7 @@ class ProductController extends Controller
             } else {
                 $warehouseProducts = $this->getImages($warehouse_product_->product, 'product');
             }
-            $translate_name=table_translate($warehouse_product_,'warehouse',$language);
+            $translate_name=table_translate($warehouse_product_,'warehouse_category',$language);
             // dd($translate_name);
             //  join qilish kere
             $warehouse_products[] = [
