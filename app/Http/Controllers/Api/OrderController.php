@@ -733,6 +733,10 @@ class OrderController extends Controller
     public function orderToArray($modal){
         $response = [];
         foreach ($modal as $data){
+            $product_quantity = 0;
+            foreach ($data->orderDetail as $order_detail){
+                $product_quantity = $product_quantity + $order_detail->quantity;
+            }
             $response[] = [
                 "id" => $data->id,
                 "price" => $data->price,
@@ -747,8 +751,9 @@ class OrderController extends Controller
                 "phone_number" => $data->phone_number,
                 "payment_method" => $data->payment_method,
                 "user_card_id" => $data->user_card_id,
-                "discount_price" => $data->discount_price,
-                "coupon_price" => $data->coupon_price
+                "discount_price" => $data->discount_price?(int)$data->discount_price:0,
+                "coupon_price" => $data->coupon_price?(int)$data->coupon_price:0,
+                "product_quantity" => $product_quantity
             ];
         }
         return $response;
