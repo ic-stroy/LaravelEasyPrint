@@ -737,6 +737,26 @@ class OrderController extends Controller
             foreach ($data->orderDetail as $order_detail){
                 $product_quantity = $product_quantity + $order_detail->quantity;
             }
+            $region = null;
+            $city = null;
+            $street = null;
+            if($data->address){
+                $street = $data->address->name;
+                if($data->address->cities){
+                    if($data->address->cities->region){
+                        $region = $data->address->cities->region?$data->address->cities->region->name:null;
+                        $city = $data->address->cities->name;
+                    }else{
+                        $region = $data->address->cities->name;
+                        $city = null;
+                    }
+                }
+            }
+            $address = [
+                'street'=>$street,
+                'region'=>$region,
+                'city'=>$city,
+            ];
             $response[] = [
                 "id" => $data->id,
                 "price" => $data->price,
@@ -746,7 +766,7 @@ class OrderController extends Controller
                 "all_price" => $data->all_price,
                 "updated_at" => $data->updated_at,
                 "coupon_id" => $data->coupon_id,
-                "address_id" => $data->address_id,
+                "address" => $address,
                 "receiver_name" => $data->receiver_name,
                 "phone_number" => $data->phone_number,
                 "payment_method" => $data->payment_method,

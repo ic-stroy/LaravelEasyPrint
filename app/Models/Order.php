@@ -21,6 +21,7 @@ class Order extends Model
       'all_price',
       'user_id',
       'coupon_id',
+      'address_id',
       'coupon_price',
       'address_id',
       'receiver_name',
@@ -39,5 +40,8 @@ class Order extends Model
 
     public function user(){
         return $this->hasOne(User::class, 'id', 'user_id');
+    }
+    public function address(){
+        return $this->hasOne(Address::class, 'id', 'address_id');
     }
 }
