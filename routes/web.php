@@ -87,7 +87,7 @@ Auth::routes();
         });
 
     //  });
-    Route::group(['middleware'=>'company_auth'], function (){
+    // Route::group(['middleware'=>'company_auth'], function (){
         Route::group(['prefix' => 'companies'], function () {
             Route::get('/', [CompanyHomeController::class, 'index'])->name('company_dashboard');
             Route::group(['prefix' => 'product'], function () {
@@ -108,7 +108,7 @@ Auth::routes();
                 Route::get('/destroy/{id}', [CompanyOrderController::class, 'destroy'])->name('company_order.destroy');
             });
         });
-    });
+    // });
 
 
 
