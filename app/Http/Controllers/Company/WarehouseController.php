@@ -42,11 +42,11 @@ class WarehouseController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        $IsExistWarehouse = Warehouse::where(['size_id', 'color_id', 'product_id'])->first();
+        $IsExistWarehouse = Warehouse::where(['size_id'=>$request->size_id, 'color_id'=>$request->color_id, 'product_id'=>$request->product_id])->first();
         if($IsExistWarehouse){
             $model = $IsExistWarehouse;
             if($request->quantity){
-                $model->quantity = $model->quantity??0 + $request->quantity;
+                $model->quantity = (int)$IsExistWarehouse->quantity + (int)$request->quantity;
             }
         }else{
             $model = new Warehouse();
@@ -55,14 +55,22 @@ class WarehouseController extends Controller
         $model->size_id = $request->size_id;
         $model->color_id = $request->color_id;
         $model->product_id = $request->product_id;
-
-        $model->name = $request->name;
+        if($request->name){
+            $model->name = $request->name;
+        }
         $model->company_id = $user->company_id;
-        $model->price = $request->price;
-        $model->quantity = $request->quantity;
-        $model->description = $request->description;
-        $model->manufacturer_country = $request->manufacturer_country;
-        $model->material_composition = $request->material_composition;
+        if($request->price){
+            $model->price = $request->price;
+        }
+        if($request->description){
+            $model->description = $request->description;
+        }
+        if($request->manufacturer_country){
+            $model->manufacturer_country = $request->manufacturer_country;
+        }
+        if($request->material_composition){
+            $model->material_composition = $request->material_composition;
+        }
         $model->material_id = $request->material_id;
         $images = $request->file('images');
         if(isset($request->images)){
@@ -130,7 +138,6 @@ class WarehouseController extends Controller
         $model->name = $request->name;
         $model->company_id = $user->company_id;
         $model->price = $request->price;
-        $model->quantity = $request->quantity;
         $model->description = $request->description;
         $model->manufacturer_country = $request->manufacturer_country;
         $model->material_composition = $request->material_composition;
