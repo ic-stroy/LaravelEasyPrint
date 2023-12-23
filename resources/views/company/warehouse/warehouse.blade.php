@@ -39,7 +39,13 @@
                         </th>
                         <td>
                             <a class="show_page" href="{{route('warehouse.show', $product->id)}}">
-                                @if(isset($product->product->name))
+                                @if ($product->name)
+                                    @if(strlen($product->name)>34)
+                                        {{ substr($product->name, 0, 34) }}...
+                                    @else
+                                        {{$product->name}}
+                                    @endif
+                                @elseif(isset($product->product->name))
                                     @if(strlen($product->product->name)>34)
                                         {{ substr($product->product->name, 0, 34) }}...
                                     @else
