@@ -137,10 +137,12 @@ class ProductController extends Controller
                     ->where('start_date', '<=', date('Y-m-d H:i:s'))
                     ->where('end_date', '>=', date('Y-m-d H:i:s'));
                 })
+                ->leftJoin('materials as dt7', 'dt7.id', '=','dt2.material_id')
+                ->join('companies as dt8', 'dt8.id', '=','dt2.company_id')
                 // ->leftJoin('coupons as dt5', 'dt5.warehouse_product_id', '=', 'dt2.id')
                 ->where('dt2.id' , $warehouse_product_id)
                 ->select('dt2.id as warehouse_product_id','dt2.name as warehouse_product_name','dt2.quantity as quantity', 'dt2.images as images', 'dt2.description as description',
-                    'dt2.product_id as product_id', 'dt2.company_id as company_id', 'dt2.price as price', 'dt3.id as size_id',
+                    'dt2.product_id as product_id', 'dt2.company_id as company_id', 'dt2.price as price','dt2.material_composition','dt2.manufacturer_country','dt8.name as company_name','dt7.name as material_name', 'dt3.id as size_id',
                     'dt3.name as size_name','dt4.id as color_id','dt4.name as color_name','dt4.code as color_code',
                     'dt5.name as product_name', 'dt5.images as product_images', 'dt5.description as product_description', 'dt6.percent AS discount')
                 ->first();
@@ -266,6 +268,10 @@ class ProductController extends Controller
                     // "discounts" => $warehouse_product->price,
                     "quantity" => $warehouse_product->quantity,
                     // "max_quantity" => $warehouse_product->max_quantity,
+                    "material_name"=>$warehouse_product->material_name,
+                    "company_name"=>$warehouse_product->company_name,
+                    "manufacturer_country"=>$warehouse_product->manufacturer_country,
+                    "material_composition"=>$warehouse_product->material_composition,
                     "description" => $warehouse_product->description ?? $warehouse_product->product_description,
                     "images" => $images,
                     "color" => [
