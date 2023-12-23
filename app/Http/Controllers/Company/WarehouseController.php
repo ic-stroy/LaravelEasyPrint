@@ -42,14 +42,28 @@ class WarehouseController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        $model = new Warehouse();
-        $model->company_id = $user->company_id;
-        $model->product_id = $request->product_id;
-        $model->price = $request->price;
+        $IsExistWarehouse = Warehouse::where(['size_id', 'color_id', 'product_id'])->first();
+        if($IsExistWarehouse){
+            $model = $IsExistWarehouse;
+            if($request->quantity){
+                $model->quantity = $model->quantity??0 + $request->quantity;
+            }
+        }else{
+            $model = new Warehouse();
+            $model->quantity = $request->quantity;
+        }
         $model->size_id = $request->size_id;
         $model->color_id = $request->color_id;
+        $model->product_id = $request->product_id;
+
+        $model->name = $request->name;
+        $model->company_id = $user->company_id;
+        $model->price = $request->price;
         $model->quantity = $request->quantity;
         $model->description = $request->description;
+        $model->manufacturer_country = $request->manufacturer_country;
+        $model->material_composition = $request->material_composition;
+        $model->material_id = $request->material_id;
         $images = $request->file('images');
         if(isset($request->images)){
             foreach ($images as $image){
@@ -64,8 +78,8 @@ class WarehouseController extends Controller
         }
         $model->save();
         foreach (Language::all() as $language) {
-            $warehouse_translations = WarehouseTranslations::firstOrNew(['lang' => $language->code, 'warehouse_id' => $model->id]);
-            $warehouse_translations->code = $language->code;
+            $warehouse_translations = WarehouseTranslations::where(['lang' => $language->code, 'warehouse_id' => $model->id])->firstOrNew();
+            $warehouse_translations->lang = $language->code;
             $warehouse_translations->name = $model->name;
             $warehouse_translations->warehouse_id = $model->id;
             $warehouse_translations->save();
@@ -110,13 +124,17 @@ class WarehouseController extends Controller
     {
         $user = Auth::user();
         $model = Warehouse::find($id);
-        $model->company_id = $user->company_id;
-        $model->product_id = $request->product_id;
-        $model->price = $request->price;
         $model->size_id = $request->size_id;
         $model->color_id = $request->color_id;
+        $model->product_id = $request->product_id;
+        $model->name = $request->name;
+        $model->company_id = $user->company_id;
+        $model->price = $request->price;
         $model->quantity = $request->quantity;
         $model->description = $request->description;
+        $model->manufacturer_country = $request->manufacturer_country;
+        $model->material_composition = $request->material_composition;
+        $model->material_id = $request->material_id;
         $images = $request->file('images');
         if(isset($request->images)){
             if(isset($model->images)){
@@ -222,7 +240,6 @@ class WarehouseController extends Controller
         }
         return $current_category;
     }
-
 
     // backend json api
 

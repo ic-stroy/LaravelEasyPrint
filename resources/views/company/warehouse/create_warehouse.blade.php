@@ -34,10 +34,16 @@
                 </div>
                 <div class="mb-3 d-flex justify-content-between">
                     <div style="width: 45%">
+                        <label class="form-label">{{translate('Name')}}</label>
+                        <input name="name" value="" type="text" class="form-control" id="name">
+                    </div>
+                    <div style="width: 45%">
                         <label class="form-label">{{translate('Category')}}</label>
                         <input name="category_id" value="{{$product->category_id??''}}" type="hidden" class="form-control" id="category_id">
                         <input value="{{$product->getCategory->name??''}}" class="form-control" readonly>
                     </div>
+                </div>
+                <div class="mb-3 d-flex justify-content-between">
                     <div style="width: 45%">
                         <label class="form-label">{{translate('Sizes')}}</label>
                         <select name="size_id" required class="form-control" id="size_types">
@@ -46,8 +52,6 @@
                             @endforeach
                         </select>
                     </div>
-                </div>
-                <div class="mb-3 d-flex justify-content-between">
                     <div style="width: 45%">
                         <label class="form-label">{{translate('Color')}}</label>
                         <select name="color_id" class="form-control" required id="colors_id">
@@ -57,16 +61,28 @@
                             @endforeach
                         </select>
                     </div>
+                </div>
+                <div class="mb-3 d-flex justify-content-between">
                     <div style="width: 45%">
                         <label class="form-label">{{translate('Count')}}</label>
                         <input type="number" name="quantity" class="form-control" required value="{{old('quantity')}}"/>
                     </div>
-                </div>
-                <div class="mb-3 d-flex justify-content-between">
                     <div style="width: 45%">
                         <label class="form-label">{{translate('Images')}}</label>
                         <input type="file" name="images[]" class="form-control" value="{{old('images')}}" multiple/>
                     </div>
+                </div>
+                <div class="mb-3 d-flex justify-content-between">
+                    <div style="width: 45%">
+                        <label class="form-label">{{translate('Manufacturer country')}}</label>
+                        <input type="text" name="manufacturer_country" class="form-control" value="{{old('manufacturer_country')}}"/>
+                    </div>
+                    <div style="width: 45%">
+                        <label class="form-label">{{translate('Material composition')}}</label>
+                        <input type="text" name="material_composition" class="form-control" value="{{old('material_composition')}}"/>
+                    </div>
+                </div>
+                <div class="mb-3 d-flex justify-content-between">
                     <div style="width: 45%">
                         <label class="form-label">{{translate('Description')}}</label>
                         <textarea class="form-control" name="description" id="description" cols="20" rows="2"></textarea>
