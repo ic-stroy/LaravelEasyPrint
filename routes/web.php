@@ -33,7 +33,7 @@ use \App\Http\Controllers\DiscountController;
 
 Auth::routes();
 
-Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcategory'])->name('get_subcategory');
+        Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcategory'])->name('get_subcategory');
      Route::group(['middleware'=>'authed'], function(){
         Route::get('/', [HomeController::class, 'index'])->name('dashboard');
         Route::resource('banner', BannerController::class);
