@@ -137,6 +137,7 @@ class WarehouseController extends Controller
         $model->product_id = $request->product_id;
         $model->name = $request->name;
         $model->company_id = $user->company_id;
+        $model->quantity = $request->quantity;
         $model->price = $request->price;
         $model->description = $request->description;
         $model->manufacturer_country = $request->manufacturer_country;
