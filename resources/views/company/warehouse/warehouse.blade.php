@@ -15,7 +15,7 @@
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>{{translate('Product')}}</th>
+                    <th>{{translate('Warehouse')}}</th>
                     <th>{{translate('Size')}}</th>
                     <th>{{translate('Images')}}</th>
                     <th>{{translate('Price')}}</th>
