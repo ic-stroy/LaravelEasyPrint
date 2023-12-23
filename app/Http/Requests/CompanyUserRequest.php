@@ -3,11 +3,10 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Validator;
+use \Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rule;
 
-class UserRequest extends BaseFormRequest
+class CompanyUserRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -17,11 +16,6 @@ class UserRequest extends BaseFormRequest
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
-     */
 //    public function rules(): array
 //    {
 //        return [
@@ -33,8 +27,6 @@ class UserRequest extends BaseFormRequest
 //            'birth_date' => 'nullable|date',
 //            'email' => 'required|string|unique:users',
 //            'password' => 'required|string|min:8|confirmed',
-//            'role_id' => 'required|integer',
-//            'company_id' => 'nullable|integer',
 //            'avatar' => 'nullable|mimes:jpeg,jpg,png,webp|max:10240',
 //            'district' => 'nullable|string',
 //            'address_name' => 'nullable|string',
@@ -43,6 +35,11 @@ class UserRequest extends BaseFormRequest
 //        ];
 //    }
 
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
     public function store()
     {
         return [
@@ -54,8 +51,6 @@ class UserRequest extends BaseFormRequest
             'birth_date' => 'nullable|date',
             'email' => 'required|string|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'role_id' => 'required|integer',
-            'company_id' => 'nullable|integer',
             'avatar' => 'nullable|mimes:jpeg,jpg,png,webp|max:10240',
             'district' => 'nullable|string',
             'address_name' => 'nullable|string',
@@ -77,8 +72,6 @@ class UserRequest extends BaseFormRequest
             'password' => 'nullable|string|min:8',
             'new_password' => 'nullable|string|min:8',
             'new_password_confirmation' => 'nullable|string|min:8|confirmed',
-            'role_id' => 'required|integer',
-            'company_id' => 'nullable|integer',
             'avatar' => 'nullable|mimes:jpeg,jpg,png,webp|max:10240',
             'district' => 'nullable|string',
             'address_name' => 'nullable|string',

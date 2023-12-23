@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
 
+use App\Http\Requests\CompanyUserRequest;
 use App\Models\Company;
 use App\Models\PersonalInfo;
 use App\Models\User;
@@ -43,7 +44,8 @@ class CompanyUsersController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+
+    public function store(CompanyUserRequest $request)
     {
         $user = Auth::user();
         $personal_info = new PersonalInfo();
@@ -131,7 +133,7 @@ class CompanyUsersController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CompanyUserRequest $request, string $id)
     {
         $user = Auth::user();
         $model = User::find($id);

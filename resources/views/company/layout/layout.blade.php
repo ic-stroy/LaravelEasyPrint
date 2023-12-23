@@ -320,7 +320,7 @@
     <!-- ========== Left Sidebar Start ========== -->
     <div class="left-side-menu" style="overflow: scroll; z-index: 1004; margin-top: -70px">
 
-        <div class="h-100">
+        <div class="vh-100">
 
             <!-- User box -->
             <div class="user-box text-center">
