@@ -59,6 +59,12 @@ class UsersController extends Controller
                 default:
                     $gender = null;
             }
+            if($user->personalInfo->birth_date){
+                $birth_date = date("d.m.Y", strtotime($user->personalInfo->birth_date));
+            }else{
+                $birth_date = null;
+            }
+
             $data = [
                 "id"=>$user->id,
                 "first_name" => $user->personalInfo->first_name??null,
@@ -67,7 +73,7 @@ class UsersController extends Controller
                 "gender" => $gender,
                 "email" => $user->personalInfo->email??null,
                 "image"=>$user_image,
-                "birth_date"=>explode(' ', $user->personalInfo->birth_date??' ')[0]
+                "birth_date"=>$birth_date
             ];
         }else{
             $data = [];
