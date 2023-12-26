@@ -156,37 +156,6 @@ class CategoryController extends Controller
         return $this->success($message, 200, $data);
     }
 
-    public function getProductsByCategories(Request $request){
-        $language = $request->header('language');
-        $categories = Category::where('step', 0)->get();
-        $data = [];
-        $products_data = [];
-        $category_ = [];
-        $subCategory = [];
-        foreach ($categories as $category) {
-            $subCategory = [];
-            $category_products = Products::select('id', 'name', 'category_id', 'images', 'material_id', 'manufacturer_country', 'material_composition', 'price', 'description')->where('category_id', $category->id)->get();
-            $category_products_data = $this->getProductsList($category_products);
-            foreach ($category->subcategory as $subcategory_){
-                $products = Products::select('id', 'name', 'category_id', 'images', 'material_id', 'manufacturer_country', 'material_composition', 'price', 'description')->where('category_id', $subcategory_->id)->get();
-                $products_data = $this->getProductsList($products);
-                $subCategory = [
-                    'id' => $subcategory_->id,
-                    'name' => $subcategory_->name,
-                    'products'=>$products_data
-                ];
-            }
-            $data[] = [
-                'id' => $category->id,
-                'name' => $category->name,
-                'products'=>$category_products_data,
-                'subcategory'=>$subCategory
-            ];
-        }
-
-        $message = translate_api('Success', $language);
-        return $this->success($message, 200, $data);
-    }
     public function getProductsList($products){
         $products_data = [];
         foreach ($products as $product) {

@@ -25,7 +25,9 @@ class OrderController extends Controller
     {
         date_default_timezone_set("Asia/Tashkent");
     }
-
+    /**
+     * bu funksiya savatchaga qo'shilgan product va warehouse larni saxranit qilishda qollaniladi (Order status Backet bo'ladi Post zapros)
+     */
     public function setWarehouse(Request $request){
         $language = $request->header('language');
         $user = Auth::user();
@@ -187,6 +189,9 @@ class OrderController extends Controller
         return $images;
     }
 
+    /**
+     * bu funksiya savatchaga qo'shilgan products va warehouses larni frontga chiqarib berishda qollaniladi (Order status Backet bo'ladi Get zapros)
+     */
     public function getBasket(Request $request){
         $user = Auth::user();
 
@@ -409,7 +414,9 @@ class OrderController extends Controller
         }
 
     }
-
+    /**
+     * bu funksiya savatchaga qo'shilgan products va warehouses larni frontga chiqarib berishda qollaniladi (Order status Ordered bo'ladi Get zapros) Farqi bunda Orderni ichidagi productlarni o'zgartirib bo'lmaydi
+     */
     public function getOrder(Request $request){
 
         $language=$request->language;
@@ -518,7 +525,63 @@ class OrderController extends Controller
             return $this->error($message, 400);
         }
     }
+    /**
+     * bu funksiya savatchaga qo'shilgan product va warehouse larni Order xolatiga o'tkazishda   qollaniladi (Order status Ordered bo'ladi Post zapros)
+     */
+    public function connectOrder(Request $request){
+        $language = $request->header('language');
+        $data=$request->all();
+        $order_inner=$data['data'];
+        // dd($data['data']);
+        $order_id=$data['order_id'];
+        // return response()->json($data, 200);
+        if ($order_id  && $order=Order::where('id',$order_id)->where('status', Constants::BASKED)->first()) {
+            $order_price=0;
+            $order_discount_price=0;
 
+            foreach ($order_inner as  $update_order_detail) {
+                if ($order_detail=OrderDetail::where('id',$update_order_detail['order_detail_id'])->where('order_id',$order_id)->first()) {
+                    if(!Color::where('id', $update_order_detail['color_id'])->exists()){
+                        return $this->error(translate_api('Color not found', $language), 400);
+                    }
+                    if(!Sizes::where('id', $update_order_detail['size_id'])->exists()){
+                        return $this->error(translate_api('Size not found', $language), 400);
+                    }
+
+
+                    $one_order_detail_discount_price = $order_detail->discount_price/$order_detail->quantity;
+                    $order_detail->update([
+                            'color_id'=>$update_order_detail['color_id'],
+                            'size_id'=>$update_order_detail['size_id'],
+                            'quantity'=>$update_order_detail['quantity'],
+                            'discount_price'=>$one_order_detail_discount_price*$update_order_detail['quantity'],
+                    ]);
+
+                    $order_price +=(($order_detail->price)*($order_detail->quantity));
+                    $order_discount_price +=(($order_detail->discount_price));
+                }else {
+                    $message=translate_api('order detail not found',$language);
+                    return $this->error($message, 400);
+                }
+            }
+
+            $order->price=$order_price;
+            $order->discount_price=$order_discount_price;
+            $order->all_price=$order_price-$order_discount_price;
+            $order->status=Constants::ORDERED;
+            $order->save();
+            $message=translate_api('success',$language);
+            return $this->success($message, 200);
+        }
+        else {
+            $message=translate_api('this order not in the basket or not exist',$language);
+            return $this->error($message, 400);
+        }
+
+    }
+    /**
+     * bu funksiya  orderga Coupon qo'shishda qollaniladi (Order status Ordered bo'ladi Post zapros) productlarga tegishli faqat bitta coupon active bo'ladi
+     */
     public function addCoupon(Request $request){
         // dd($request->all());
         $language=$request->language;
@@ -596,58 +659,9 @@ class OrderController extends Controller
         return $this->error($message, 400);
     }
 
-    public function connectOrder(Request $request){
-        $language = $request->header('language');
-        $data=$request->all();
-        $order_inner=$data['data'];
-        // dd($data['data']);
-        $order_id=$data['order_id'];
-        // return response()->json($data, 200);
-        if ($order_id  && $order=Order::where('id',$order_id)->where('status', Constants::BASKED)->first()) {
-            $order_price=0;
-            $order_discount_price=0;
-
-            foreach ($order_inner as  $update_order_detail) {
-                if ($order_detail=OrderDetail::where('id',$update_order_detail['order_detail_id'])->where('order_id',$order_id)->first()) {
-                    if(!Color::where('id', $update_order_detail['color_id'])->exists()){
-                        return $this->error(translate_api('Color not found', $language), 400);
-                    }
-                    if(!Sizes::where('id', $update_order_detail['size_id'])->exists()){
-                        return $this->error(translate_api('Size not found', $language), 400);
-                    }
-
-
-                    $one_order_detail_discount_price = $order_detail->discount_price/$order_detail->quantity;
-                    $order_detail->update([
-                            'color_id'=>$update_order_detail['color_id'],
-                            'size_id'=>$update_order_detail['size_id'],
-                            'quantity'=>$update_order_detail['quantity'],
-                            'discount_price'=>$one_order_detail_discount_price*$update_order_detail['quantity'],
-                    ]);
-
-                    $order_price +=(($order_detail->price)*($order_detail->quantity));
-                    $order_discount_price +=(($order_detail->discount_price));
-                }else {
-                    $message=translate_api('order detail not found',$language);
-                    return $this->error($message, 400);
-                }
-            }
-
-            $order->price=$order_price;
-            $order->discount_price=$order_discount_price;
-            $order->all_price=$order_price-$order_discount_price;
-            $order->status=Constants::ORDERED;
-            $order->save();
-            $message=translate_api('success',$language);
-            return $this->success($message, 200);
-        }
-        else {
-            $message=translate_api('this order not in the basket or not exist',$language);
-            return $this->error($message, 400);
-        }
-
-    }
-
+    /**
+     * bu funksiya Buyurtmani tastiqlash uchun qollaniladi (Order status ACCEPTED bo'ladi Post zapros)
+     */
     public function acceptedOrder(Request $request){
         $language = $request->header('language');
         $data=$request->all();
@@ -678,6 +692,9 @@ class OrderController extends Controller
 
 
     }
+    /**
+     * bu funksiya Orderning ichidagi orderDetail ni o'chirishda qo'llaniladi  (Order status ACCEPTED gacha ishlaydi Post zapros)
+     */
     public function deleteOrderDetail(Request $request){
         $language = $request->header('language');
 
@@ -908,6 +925,7 @@ class OrderController extends Controller
 
         return $list;
     }
+
 
     public function getProductByOrderDetail($product_id, $language){
         $product = Products::find($product_id);
