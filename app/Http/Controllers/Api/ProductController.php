@@ -15,19 +15,14 @@ use App\Models\Products;
 class ProductController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * bu funksiya frontga product list(shablonlar ro'yxati) ni berishda   qo'llaniladi
      */
     public function index(Request $request)
     {
-        // dd('sjrfigsr');
         $language=$request->header('language');
         if ($language == null) {
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
-
-        // $products_ = DB::table('products')
-        //     ->select('id','name','price','images')
-        //     ->get();
 
         $products_ = Products::select('id','name','price','images')->with('discount')->get();
 
@@ -52,6 +47,9 @@ class ProductController extends Controller
 
     }
 
+    /**
+     * bu funksiya frontga getWarehouses(Kompaniyalarga tegishli tavarlar  ro'yxati) ni  va slide_show active bo'lgan product(shablonlar) ni berishda qo'llaniladi
+     */
     public function getWarehouses(Request $request)
     {
         // dd('dsfdfs');
@@ -115,7 +113,7 @@ class ProductController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * bu funksiya frontga Kompaniyaga tegishli bitta productni show qilingandagi malumotlarni  berishda   qo'llaniladi
      */
     public function show(Request $request)
     {
@@ -426,28 +424,6 @@ class ProductController extends Controller
         return $this->success($message, 200, $good);
     }
 
-    public function getCategoriesByProduct(Request $request, $id){
-        $language = $request->header('language');
-        $product = Products::find($id);
-        if(isset($product->id)){
-            $current_category = $this->getProductCategory($product);
-            dd($current_category);
-            $respone = [
-                'data'=>$current_category->sizes??[],
-                'category'=>$current_category->name??null,
-                'price'=>$product->price??null
-            ];
-        }else{
-            $respone = [
-                'data'=>[],
-                'category'=>null,
-                'price'=>null
-            ];
-        }
-         $message = translate_api('Success', $language);
-        return $this->success($message, 200, $respone);
-    }
-
     public function getProductCategory($product){
         if(isset($product->subSubCategory->id)){
             $category_product = $product->subSubCategory;
@@ -477,6 +453,10 @@ class ProductController extends Controller
         }
         return $current_category;
     }
+
+    /**
+     * bu funksiya warehouse va product ga tegishli images ni yig'ib beradi
+     */
 
     public function getImages($model, $text){
         if(isset($model->images)){

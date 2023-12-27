@@ -42,7 +42,7 @@ Route::group(['prefix' => 'product'], function () {
 
 // Route::get('get-categories-by-product/{id}', [ProductController::class, 'getCategoriesByProduct'])->name('get_categories_by_product');
 Route::get('get-banner', [BannerController::class, 'getBanner']);
-Route::get('get-products-by-categories', [CategoryController::class, 'getProductsByCategories']);
+// Route::get('get-products-by-categories', [CategoryController::class, 'getProductsByCategories']);
 Route::get('get-products-by-category', [CategoryController::class, 'getProductsByCategory']);
 Route::get('get-categories', [CategoryController::class, 'getCategories']);
 Route::get('get-warehouses', [ProductController::class, 'getWarehouses']);
