@@ -88,31 +88,14 @@ class OrderController extends Controller
             $order->all_price=(int)$order_all_price;
 
         }
-        if(!$order->code){
-            $the_last_order = Order::withTrashed()->orderBy('created_at', 'DESC')->first();
-            if(isset($the_last_order) && isset($the_last_order->code)){
-                $true = true;
-                $n = 1;
-                while ($true) {
-                    $per_code = $the_last_order->code + $n;
-
-                    $old_user_check = Order::withTrashed()->where('code', $per_code)->first();
-
-                    if (!$old_user_check) {
-                        $true = false;
-                    }
-
-                    if ($n > 50) {
-                        $true = false;
-                    }
-                    $n++;
-                }
-                $order->code = $per_code;
-            }else{
-                $order->code = 10000000;
-            }
-        }
         $order->save();
+        if(!$order->code){
+            $length = 8;
+            $order_code = str_pad($order->id, $length, '0', STR_PAD_LEFT);
+            $order->code=$order_code;
+            $order->save();
+        }
+
         $message = translate_api('Success', $language);
         if (isset($request->warehouse_product_id) && $request->warehouse_product_id != "") {
             if(!DB::table('warehouses')->where('id', $request->warehouse_product_id)->exists()){
