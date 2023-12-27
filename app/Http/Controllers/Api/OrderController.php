@@ -805,7 +805,8 @@ class OrderController extends Controller
                 "user_card_id" => $data->user_card_id,
                 "discount_price" => $data->discount_price?(int)$data->discount_price:0,
                 "coupon_price" => $data->coupon_price?(int)$data->coupon_price:0,
-                "product_quantity" => $product_quantity
+                "product_quantity" => $product_quantity,
+                "code" => $data->code
             ];
         }
         return $response;
