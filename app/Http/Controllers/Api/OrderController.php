@@ -10,6 +10,7 @@ use App\Models\OrderDetail;
 use App\Models\Products;
 use App\Models\Sizes;
 use App\Models\Uploads;
+use App\Models\User;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -74,8 +75,8 @@ class OrderController extends Controller
         if(isset($user->orderBasket->id)){
             $order = $user->orderBasket;
             $order->price = $order->price + $order_price;
-            $order->all_price=$order->all_price + $order_all_price;
-            $order->discount_price=$order->discount_price + ($order_price-$order_all_price);
+            $order->all_price = $order->all_price + $order_all_price;
+            $order->discount_price = $order->discount_price + ($order_price - $order_all_price);
         }else{
             $order = new Order();
             $order->user_id = $user->id;
@@ -83,6 +84,31 @@ class OrderController extends Controller
             $order->price = (int)$order_price;
             $order->discount_price=(int)($order_price-$order_all_price);
             $order->all_price=(int)$order_all_price;
+
+        }
+        if(!$order->code){
+            $the_last_order = Order::withTrashed()->orderBy('created_at', 'DESC')->first();
+            if(isset($the_last_order) && isset($the_last_order->code)){
+                $true = true;
+                $n = 1;
+                while ($true) {
+                    $per_code = $the_last_order->code + $n;
+
+                    $old_user_check = Order::withTrashed()->where('code', $per_code)->first();
+
+                    if (!$old_user_check) {
+                        $true = false;
+                    }
+
+                    if ($n > 50) {
+                        $true = false;
+                    }
+                    $n++;
+                }
+                $order->code = $per_code;
+            }else{
+                $order->code = 10000000;
+            }
         }
         $order->save();
         $message = translate_api('Success', $language);
@@ -94,8 +120,6 @@ class OrderController extends Controller
 
                 $quantity=$order_detail->quantity + $request->quantity;
                 $discount_price = ($request->price/100)*$request->discount*$quantity;
-
-
                 $order_detail->update([
                     'quantity' =>$quantity,
                     'price'=>($quantity * ($request->price)),
@@ -201,7 +225,6 @@ class OrderController extends Controller
         if(isset($user->orderBasket->orderDetail)){
             foreach ($user->orderBasket->orderDetail as $order_detail){
                 if ($order_detail->warehouse_id != null) {
-
                     $warehouse_product = DB::table('order_details as dt1')
                         ->join('warehouses as dt2', 'dt2.id', '=', 'dt1.warehouse_id')
                         ->join('sizes as dt3', 'dt3.id', '=', 'dt2.size_id')
@@ -256,10 +279,8 @@ class OrderController extends Controller
                                 array_push($size_list,$aa_size);
 
                                 // dd($colors);
-
                         }
                         // dd($size_list);
-
 
                     $colors = DB::table('warehouses as dt1')
                         ->join('colors as dt3', 'dt3.id', '=', 'dt1.color_id')
@@ -384,9 +405,6 @@ class OrderController extends Controller
                     }
 
                     // dd($list);
-
-
-
                 }
 
                 array_push($order_detail_list,$list);
@@ -472,7 +490,6 @@ class OrderController extends Controller
                         ->first();
                         // dd($product);
                     $images = $this->getImages($product, 'product');
-
 
                     $list=[
                         "id"=>$order_detail->id,
@@ -675,8 +692,6 @@ class OrderController extends Controller
             $message=translate_api('this order not ordered or not exist',$language);
             return $this->error($message, 400);
         }
-
-
     }
     public function deleteOrderDetail(Request $request){
         $language = $request->header('language');
