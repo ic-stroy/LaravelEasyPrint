@@ -31,13 +31,13 @@
                             $i++;
                             $category = '';
                             $subcategory = '';
-                            if(isset($discount_data['discount']->product->id)){
-                                if(isset($discount_data['discount']->category->id)){
+                            if($discount_data['discount']->product){
+                                if($discount_data['discount']->product->category){
                                     $category = $discount_data['discount']->product->category->name;
                                     $subcategory = '';
-                                }elseif(isset($discount_data['discount']->subCategory->id)){
-                                    $category = isset($discount_data['discount']->subCategory->category)?$discount_data['discount']->subCategory->category->name:'';
-                                    $subcategory = $discount_data['discount']->subCategory->name;
+                                }elseif($discount_data['discount']->product->subCategory){
+                                    $category = $discount_data['discount']->product->subCategory->category?$discount_data['discount']->product->subCategory->category->name:'';
+                                    $subcategory = $discount_data['discount']->product->subCategory->name;
                                 }
                             }
                         @endphp

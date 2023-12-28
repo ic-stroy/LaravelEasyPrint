@@ -24,15 +24,7 @@
                         <td>{{$model->name??''}}</td>
                     </tr>
                     <tr>
-                        <th>{{translate('Category')}}</th>
-                        <td>
-                            @if($category != '' || $subcategory != '')
-                                {{$category}} {{' '.$subcategory}}
-                            @endif
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>{{translate('Coupon quantity')}}</th>
+                        <th>{{translate('Quantity')}}</th>
                         <td>
                             @if ($model->price != null)
                                 {{$model->price}} {{translate(' sum')}}
@@ -41,29 +33,32 @@
                             @endif
                         </td>
                     </tr>
-                    <tr>
-                        <th>{{translate('Company')}}</th>
-                        <td>{{$model->company?$model->company->name:''}}</td>
-                    </tr>
-                    @if(isset($model->product))
+                    @if($model->min_price)
                         <tr>
-                            <th>{{translate('Product')}}</th>
-                            <td>{{$model->product->name??''}}</td>
+                            <th>{{translate('Minimum price')}}</th>
+                            <td>{{$model->min_price??''}}</td>
                         </tr>
                     @endif
-                    @if(isset($model->warehouse))
+                    @if($model->company)
                         <tr>
-                            <th>{{translate('Warehouse')}}</th>
-                            <td>
-                                @if($model->warehouse->name != NULL)
-                                    {{$model->warehouse->name}}
-                                @else
-                                    {{$model->product?$model->product->name:''}}
-                                @endif
-                               {{translate('Color: ')}} {{$model->warehouse->color?$model->warehouse->color->name.' ':''}}
-                               {{translate('Size: ')}}{{$model->warehouse->size?$model->warehouse->size->name.' ':''}}
-                               {{translate('Quantity: ')}}{{$model->warehouse->quantity}}
-                            </td>
+                            <th>{{translate('Company')}}</th>
+                            <td>{{$model->company->name??''}}</td>
+                        </tr>
+                    @endif
+                    <tr>
+                        <th>{{translate('Number of orders')}}</th>
+                        <td>{{$model->order_count??''}}</td>
+                    </tr>
+                    @if($model->start_date)
+                        <tr>
+                            <th>{{translate('Start date')}}</th>
+                            <td>{{$model->start_date}}</td>
+                        </tr>
+                    @endif
+                    @if($model->end_date)
+                        <tr>
+                            <th>{{translate('End date')}}</th>
+                            <td>{{$model->end_date}}</td>
                         </tr>
                     @endif
                     <tr>
