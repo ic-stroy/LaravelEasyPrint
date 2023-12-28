@@ -86,7 +86,6 @@ class OrderController extends Controller
             $order->price = (int)$order_price;
             $order->discount_price=(int)($order_price-$order_all_price);
             $order->all_price=(int)$order_all_price;
-
         }
         if(!$order->code){
             $the_last_order = Order::withTrashed()->orderBy('created_at', 'DESC')->first();
@@ -144,7 +143,6 @@ class OrderController extends Controller
                     // Add more columns and their respective default values
                 ]);
             }
-
              return $this->success($message, 200);
         }else{
             $order_detail = new OrderDetail();

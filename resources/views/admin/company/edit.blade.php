@@ -74,8 +74,12 @@
                 <div class="form-group">
                     <div id="map" class="google_maps"></div>
                 </div>
-                <input type="hidden" name="region" id="region" value="{{$company->address?$company->address->region:''}}">
-                <input type="hidden" name="district" id="district" value="{{$company->address?$company->address->district:''}}">
+                @if($company->address && $company->address->cities && $company->address->cities->region)
+                    <input type="hidden" name="region" id="region" value="{{$company->address?$company->address->cities->region->id:''}}">
+                @else
+                    <input type="hidden" name="region" id="region" value="">
+                @endif
+                <input type="hidden" name="district" id="district" value="{{$company->address?$company->address->city_id:''}}">
                 <input type="hidden" name="address_lat" id="address_lat" value="{{$company->address?$company->address->latitude:''}}">
                 <input type="hidden" name="address_long" id="address_long" value="{{$company->address?$company->address->longitude:''}}">
                 <div class="mt-2">
@@ -89,7 +93,7 @@
     <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
     <script>
         let page = true
-        @if(isset($company->address) && isset($company->address->cities))
+        @if($company->address && $company->address->cities && $company->address->cities->region)
             let current_region = "{{$company->address->cities->region->id??''}}"
             let current_district = "{{$company->address->cities->id??''}}"
         @else
