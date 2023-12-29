@@ -49,7 +49,7 @@ Route::get('get-warehouses', [ProductController::class, 'getWarehouses']);
 Route::get('profile-info', [CategoryController::class, 'profileInfo']);
 Route::get('product', [ProductController::class, 'getProduct']);
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
     Route::get('user-info', [CategoryController::class, 'userInfo']);
     Route::post('register', [AuthController::class, 'register']);
     Route::post('personal-information', [UsersController::class, 'setPersonalInformation']);
