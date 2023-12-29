@@ -675,8 +675,8 @@ class OrderController extends Controller
                 'address_id'=>$data['address_id'],
                 'receiver_name'=>$data['receiver_name'],
                 'phone_number'=>$data['receiver_phone'],
-                'payment_method'=>$data['payment_method'],
-                'user_card_id'=>$data['user_card_id'],
+                // 'payment_method'=>$data['payment_method'],
+                // 'user_card_id'=>$data['user_card_id'],
                 'status'=>Constants::ACCEPTED,
             ]);
 
