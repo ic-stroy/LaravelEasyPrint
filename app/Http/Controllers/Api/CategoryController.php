@@ -84,8 +84,8 @@ class CategoryController extends Controller
             $products = [];
             $category_= [];
         }
-        $images_array = [];
         foreach ($products as $product) {
+            $images_array = [];
             if (!is_array($product->images)) {
                 $images = json_decode($product->images);
             }
