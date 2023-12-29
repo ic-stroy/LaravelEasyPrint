@@ -149,8 +149,16 @@ class DiscountController extends Controller
             $category_id = '';
             $subcategory_id = '';
         }
+        if($discount->company){
+            $discount_company = $discount->company;
+        }else{
+            $discount_company = json_decode(json_encode([
+                'id'=>null,
+                'name'=>null,
+            ]));
+        }
         $companies = Company::all();
-        return view('admin.discount.edit', ['discount'=> $discount, 'companies'=>$companies, 'categories'=>$categories, 'category_id'=>$category_id, 'subcategory_id'=>$subcategory_id]);
+        return view('admin.discount.edit', ['discount'=> $discount, 'companies'=>$companies, 'categories'=>$categories, 'discount_company'=>$discount_company, 'category_id'=>$category_id, 'subcategory_id'=>$subcategory_id]);
     }
 
     /**

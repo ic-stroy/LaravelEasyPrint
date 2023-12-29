@@ -13,9 +13,9 @@
     </style>
     <div class="card">
         <div class="card-body">
-            <h4 class="mt-0 header-title">{{translate('Color lists')}}</h4>
+            <h4 class="mt-0 header-title">{{translate('Company informations')}}</h4>
             <div class="dropdown float-end">
-                <a class="form_functions btn btn-success" href="{{route('color.create')}}">{{translate('Create')}}</a>
+                <a class="form_functions btn btn-success" href="{{route('company.create')}}">{{translate('Create')}}</a>
             </div>
 {{--            <table id="datatable-buttons" class="table dt-responsive nowrap table_show">--}}
             <table class="table dt-responsive nowrap table_show">

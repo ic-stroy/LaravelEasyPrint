@@ -29,9 +29,9 @@
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Companies')}}</label>
                         <select name="company_id" class="form-control" id="company_id">
-                            <option value="" selected>{{translate('All company')}}</option>
+                            <option value="">{{translate('All company')}}</option>
                             @foreach($companies as $company)
-                                <option value="{{$company->id}}" {{$discount->company->id == $company->id?'selected':''}}>{{$company->name}}</option>
+                                <option value="{{$company->id}}" {{$company->id == $discount_company->id ?'selected':''}}>{{$company->name}}</option>
                             @endforeach
                         </select>
                     </div>
