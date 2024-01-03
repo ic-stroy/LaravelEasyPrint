@@ -68,12 +68,13 @@ class CategoryController extends Controller
                 $translate_category_name=table_translate($category->category,'category',$language);
                 $category_ = [
                     'id' => $category->category->id,
-                    'name' => $category->category->name,
+                    'name' => $translate_category_name,
                 ];
 
+                $translate_sub_category_name=table_translate($category,'category',$language);
                 $subCategory = [
                     'id' => $category->id,
-                    'name' => $translate_category_name,
+                    'name' => $translate_sub_category_name,
                 ];
             }
 
@@ -83,12 +84,11 @@ class CategoryController extends Controller
             $products = [];
             $category_= [];
         }
-
         foreach ($products as $product) {
+            $images_array = [];
             if (!is_array($product->images)) {
                 $images = json_decode($product->images);
             }
-
             foreach ($images as $image) {
                 if (!isset($image)) {
                     $product_image = 'no';
@@ -102,7 +102,7 @@ class CategoryController extends Controller
                 }
             }
 
-            $translate_product_name=table_translate($product,'product',$language);
+            $translate_product_name=table_translate($product,'product', $language);
 
             $productId[] = $product->id;
             $products_data[] = [

@@ -5,26 +5,34 @@
 @endsection
 @section('content')
     @php
-        switch ($is_category){
-            case 1:
-                $current_category = $category_product;
-                $current_sub_category_id = 'no';
-                $current_sub_sub_category_id = 'no';
-                break;
-            case 2:
-                $current_category = isset($category_product->category)?$category_product->category:'no';
-                $current_sub_category_id = isset($category_product->id)?$category_product->id:'no';
-                $current_sub_sub_category_id = 'no';
-                break;
-            case 3:
-                $current_category = isset($category_product->sub_category->category)?$category_product->sub_category->category:'no';
-                $current_sub_category_id = isset($category_product->sub_category->id)?$category_product->sub_category->id:'no';
-                $current_sub_sub_category_id = isset($category_product->id)?$category_product->id:'no';
-                break;
-                default:
-                    $current_category = 'no';
+        if($product->images){
+            $images = json_decode($product->images);
+        }else{
+            $images = [];
         }
     @endphp
+    <style>
+        .delete_product_func{
+            height: 20px;
+            background-color: transparent;
+            border: 0px;
+            color: silver;
+        }
+        .product_image img{
+
+        }
+        .product_image{
+            margin-right: 4px;
+            transition: 0.4s;
+            padding:10px;
+            border-radius: 4px;
+        }
+        .product_image:hover{
+            border: lightgrey;
+            transform: scale(1.02);
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+    </style>
     <div class="card">
         <div class="card-body">
             @if ($errors->any())
@@ -86,17 +94,17 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    @php
-                        $images = json_decode($product->images)??[];
-                    @endphp
                     <div class="row">
                         @foreach($images as $image)
                             @php
                                 $avatar_main = storage_path('app/public/products/'.$image);
                             @endphp
-                            @if(file_exists($avatar_main))
-                                <div class="col-2 mb-3">
-                                    <img src="{{asset('storage/products/'.$image)}}" alt="" height="200px">
+                            @if(file_exists(storage_path('app/public/products/'.$image)))
+                                <div class="col-2 mb-3 product_image">
+                                    <div class="d-flex justify-content-between">
+                                        <img src="{{asset('storage/products/'.$image)}}" alt="" height="200px">
+                                        <button class="delete_product_func">X</button>
+                                    </div>
                                 </div>
                             @endif
                         @endforeach
@@ -134,8 +142,42 @@
         </div>
     </div>
     <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
-    <script>
 
+    <script>
+        let product_image = document.getElementsByClassName('product_image')
+        let delete_product_func = document.getElementsByClassName('delete_product_func')
+        let deleted_text = "{{translate('Product image was deleted')}}"
+        let product_images = []
+        @if(is_array($images))
+            @foreach($images as $image)
+                product_images.push("{{$image}}")
+            @endforeach
+        @endif
+        function deleteProductFunc(item, val) {
+            delete_product_func[item].addEventListener('click', function (e) {
+                e.preventDefault()
+                $.ajax({
+                    url: '/api/delete-product',
+                    method: 'POST',
+                    dataType: 'json',
+                    data: {
+                        id:"{{$product->id}}",
+                        product_name: product_images[item]
+                    },
+                    success: function(data){
+                        if(data.status == true){
+                            toastr.success(deleted_text)
+                        }
+                    }
+                });
+                if(!product_image[item].classList.contains('display-none')){
+                    product_image[item].classList.add('display-none')
+                }
+            })
+        }
+        Object.keys(delete_product_func).forEach(deleteProductFunc)
+    </script>
+    <script>
         let size_type = document.getElementById('size_type')
         let sizes_leg = document.getElementById('sizes_leg')
 

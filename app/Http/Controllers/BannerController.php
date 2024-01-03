@@ -81,13 +81,6 @@ class BannerController extends Controller
         return redirect()->route('banner.index')->with('status', translate('Successfully updated'));
     }
 
-    public function setRandom(){
-        $letters = range('a', 'z');
-        $random_array = [$letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)]];
-        $random = implode("", $random_array);
-        return $random;
-    }
-
     public function imageSave($file, $banner, $carusel_images, $text){
         if($text == 'update'){
             if(isset($banner->image) && !is_array($banner->image)){
@@ -132,11 +125,7 @@ class BannerController extends Controller
             }
             $all_carousel_images = array_values(array_merge($carousel_images_base, $carouselImage));
         }
-        if($text == 'update'){
-            $banner = json_encode(['banner'=>$banner_name??$banner_image_name, 'carousel'=>$all_carousel_images??$carousel_image_names]);
-        }elseif($text == 'store'){
-            $banner = json_encode(['banner'=>$banner_name??$banner_image_name, 'carousel'=>$all_carousel_images??$carousel_image_names]);
-        }
+        $banner = json_encode(['banner'=>$banner_name??$banner_image_name, 'carousel'=>$all_carousel_images??$carousel_image_names]);
         return $banner;
     }
 

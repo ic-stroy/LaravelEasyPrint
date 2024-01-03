@@ -36,7 +36,7 @@ class RoleController extends Controller
         $model->save();
         foreach (Language::all() as $language) {
             $role_translations = RoleTranslations::firstOrNew(['lang' => $language->code, 'role_id' => $model->id]);
-            $role_translations->code = $language->code;
+            $role_translations->lang = $language->code;
             $role_translations->name = $model->name;
             $role_translations->role_id = $model->id;
             $role_translations->save();

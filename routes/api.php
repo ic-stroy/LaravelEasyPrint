@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\CardController;
+use \App\Http\Controllers\Company\WarehouseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -49,7 +50,7 @@ Route::get('get-warehouses', [ProductController::class, 'getWarehouses']);
 Route::get('profile-info', [CategoryController::class, 'profileInfo']);
 Route::get('product', [ProductController::class, 'getProduct']);
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
     Route::get('user-info', [CategoryController::class, 'userInfo']);
     Route::post('register', [AuthController::class, 'register']);
     Route::post('personal-information', [UsersController::class, 'setPersonalInformation']);
@@ -77,3 +78,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('logout', [AuthController::class, 'logout']);
 });
 Route::post('delete-carousel', [BannerController::class, 'deleteCarousel']);
+Route::post('delete-product', [ProductController::class, 'deleteProductImage']);
+Route::post('delete-warehouse', [WarehouseController::class, 'deleteWarehouseImage']);
