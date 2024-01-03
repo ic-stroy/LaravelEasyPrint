@@ -20,7 +20,6 @@ class ProductsController extends Controller
     public function index()
     {
         $products = Products::orderBy('created_at', 'desc')->get();
-
         return view('admin.products.index', ['products'=> $products]);
     }
 
@@ -49,17 +48,7 @@ class ProductsController extends Controller
         $model->price = $request->price;
         $model->description = $request->description;
         $images = $request->file('images');
-        if(isset($request->images)){
-            foreach ($images as $image){
-                $letters_new = range('a', 'z');
-                $random_array_new = [$letters_new[rand(0,25)], $letters_new[rand(0,25)], $letters_new[rand(0,25)], $letters_new[rand(0,25)], $letters_new[rand(0,25)]];
-                $random_new = implode("", $random_array_new);
-                $image_name = $random_new . '' . date('Y-m-dh-i-s') . '.' . $image->extension();
-                $image->storeAs('public/products/'.$image_name);
-                $array_images[] = $image_name;
-            }
-            $model->images = json_encode($array_images);
-        }
+        $model->images = $this->imageSave($model, $images, 'store');
         $model->save();
         foreach (Language::all() as $language) {
             $product_translations = ProductTranslations::firstOrNew(['lang' => $language->code, 'product_id' => $model->id]);
@@ -92,15 +81,45 @@ class ProductsController extends Controller
        if(isset($product->subCategory->id)){
             $category_product = $product->subCategory;
             $is_category = 2;
+           $current_category = isset($category_product->category)?$category_product->category:'no';
+           $current_sub_category_id = isset($category_product->id)?$category_product->id:'no';
+           $current_sub_sub_category_id = 'no';
         }elseif(isset($product->category->id)){
             $category_product = $product->category;
             $is_category = 1;
-        }else{
+           $current_category = $category_product;
+           $current_sub_category_id = 'no';
+           $current_sub_sub_category_id = 'no';
+        }elseif(isset($product->subSubCategory->id)) {
+           $category_product = $product->subSubCategory;
+           $is_category = 3;
+           if(isset($category_product->subSubCategory->subCategory)){
+               if(isset($category_product->subSubCategory->subCategory->category)){
+                   $current_category = $category_product->subSubCategory->subCategory->category;
+               }else{
+                   $current_category = 'no';
+               }
+               $current_sub_category_id = isset($category_product->subSubCategory->subCategory->id) ? $category_product->subSubCategory->subCategory : 'no';
+           }else{
+               $current_category = 'no';
+               $current_sub_category_id = 'no';
+           }
+           $current_sub_sub_category_id = isset($category_product->id) ? $category_product->id : 'no';
+       }else{
             $category_product = 'no';
             $is_category = 0;
-        }
+           $current_category = 'no';
+           $current_sub_category_id = 'no';
+           $current_sub_sub_category_id = 'no';
+       }
         $categories = Category::where('parent_id', 0)->orderBy('id', 'asc')->get();
-        return view('admin.products.edit', ['product'=> $product, 'categories'=> $categories, 'category_product'=> $category_product, 'is_category'=>$is_category]);
+        return view('admin.products.edit', [
+            'product'=> $product, 'categories'=> $categories,
+            'category_product'=> $category_product, 'is_category'=>$is_category,
+            'current_category' => $current_category,
+            'current_sub_category_id' => $current_sub_category_id,
+            'current_sub_sub_category_id' => $current_sub_sub_category_id,
+        ]);
     }
 
     /**
@@ -119,26 +138,7 @@ class ProductsController extends Controller
         $model->price = $request->price;
         $model->description = $request->description;
         $images = $request->file('images');
-        if(isset($request->images)){
-            if(isset($model->images)){
-                $images_ = json_decode($model->images);
-                foreach ($images_ as $image_){
-                    $avatar_main = storage_path('app/public/products/'.$image_);
-                    if(file_exists($avatar_main)){
-                        unlink($avatar_main);
-                    }
-                }
-            }
-            foreach ($images as $image){
-                $letters_new = range('a', 'z');
-                $random_array_new = [$letters_new[rand(0,25)], $letters_new[rand(0,25)], $letters_new[rand(0,25)], $letters_new[rand(0,25)], $letters_new[rand(0,25)]];
-                $random_new = implode("", $random_array_new);
-                $image_name = $random_new . '' . date('Y-m-dh-i-s') . '.' . $image->extension();
-                $image->storeAs('public/products/'.$image_name);
-                $array_images[] = $image_name;
-            }
-            $model->images = json_encode($array_images);
-        }
+        $model->images = $this->imageSave($model, $images, 'update');
         $model->save();
         return redirect()->route('product.category.product', $request->category_id)->with('status', translate('Successfully updated'));
     }
@@ -244,6 +244,30 @@ class ProductsController extends Controller
             $product->save();
         }
         return $this->success($message, 200);
+    }
+
+    public function imageSave($product, $images, $text){
+        if($text == 'update'){
+            if(isset($product->images) && !is_array($product->images)){
+                $product_images = json_decode($product->images);
+            }else{
+                $product_images = [];
+            }
+        }else{
+            $product_images = [];
+        }
+        if(isset($images)){
+            $ProductImage = [];
+            foreach($images as $image){
+                $random = $this->setRandom();
+                $product_image_name = $random.''.date('Y-m-dh-i-s').'.'.$image->extension();
+                $image->storeAs('public/products/', $product_image_name);
+                $ProductImage[] = $product_image_name;
+            }
+            $all_product_images = array_values(array_merge($product_images, $ProductImage));
+        }
+        $productImages = json_encode($all_product_images??$product_images);
+        return $productImages;
     }
 
     // Backend api json

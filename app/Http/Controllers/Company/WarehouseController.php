@@ -73,17 +73,7 @@ class WarehouseController extends Controller
         }
         $model->material_id = $request->material_id;
         $images = $request->file('images');
-        if(isset($request->images)){
-            foreach ($images as $image){
-                $letters_new = range('a', 'z');
-                $random_array_new = [$letters_new[rand(0,25)], $letters_new[rand(0,25)], $letters_new[rand(0,25)], $letters_new[rand(0,25)], $letters_new[rand(0,25)]];
-                $random_new = implode("", $random_array_new);
-                $image_name = $random_new . '' . date('Y-m-dh-i-s') . '.' . $image->extension();
-                $image->storeAs('public/warehouses/'.$image_name);
-                $array_images[] = $image_name;
-            }
-            $model->images = json_encode($array_images);
-        }
+        $model->images = $this->imageSave($model, $images, 'store');
         $model->save();
         foreach (Language::all() as $language) {
             $warehouse_translations = WarehouseTranslations::where(['lang' => $language->code, 'warehouse_id' => $model->id])->firstOrNew();
@@ -144,26 +134,7 @@ class WarehouseController extends Controller
         $model->material_composition = $request->material_composition;
         $model->material_id = $request->material_id;
         $images = $request->file('images');
-        if(isset($request->images)){
-            if(isset($model->images)){
-                $images_ = json_decode($model->images);
-                foreach ($images_ as $image_){
-                    $avatar_main = storage_path('app/warehouses/products/'.$image_);
-                    if(file_exists($avatar_main)){
-                        unlink($avatar_main);
-                    }
-                }
-            }
-            foreach ($images as $image){
-                $letters_new = range('a', 'z');
-                $random_array_new = [$letters_new[rand(0,25)], $letters_new[rand(0,25)], $letters_new[rand(0,25)], $letters_new[rand(0,25)], $letters_new[rand(0,25)]];
-                $random_new = implode("", $random_array_new);
-                $image_name = $random_new . '' . date('Y-m-dh-i-s') . '.' . $image->extension();
-                $image->storeAs('public/warehouses/'.$image_name);
-                $array_images[] = $image_name;
-            }
-            $model->images = json_encode($array_images);
-        }
+        $model->images = $this->imageSave($model, $images, 'update');
         $model->save();
         return redirect()->route('warehouse.category.warehouse', $request->product_id)->with('status', translate('Successfully updated'));
     }
@@ -249,6 +220,30 @@ class WarehouseController extends Controller
         return $current_category;
     }
 
+    public function imageSave($warehouse, $images, $text){
+        if($text == 'update'){
+            if(isset($warehouse->images) && !is_array($warehouse->images)){
+                $warehouse_images = json_decode($warehouse->images);
+            }else{
+                $warehouse_images = [];
+            }
+        }else{
+            $warehouse_images = [];
+        }
+        if(isset($images)){
+            $WarehouseImage = [];
+            foreach($images as $image){
+                $random = $this->setRandom();
+                $warehouse_image_name = $random.''.date('Y-m-dh-i-s').'.'.$image->extension();
+                $image->storeAs('public/warehouses/', $warehouse_image_name);
+                $WarehouseImage[] = $warehouse_image_name;
+            }
+            $all_warehouse_images = array_values(array_merge($warehouse_images, $WarehouseImage));
+        }
+        $warehouseImages = json_encode($all_warehouse_images??$warehouse_images);
+        return $warehouseImages;
+    }
+
     // backend json api
 
     public function getWarehousesByProduct(Request $request){
@@ -268,5 +263,30 @@ class WarehouseController extends Controller
             'status'=>true,
             'message'=>'Success'
         ]);
+    }
+
+    public function deleteWarehouseImage(Request $request){
+        $warehouse = Warehouse::find($request->id);
+        if(isset($warehouse->images) && !is_array($warehouse->images)){
+            $warehouse_images_base = json_decode($warehouse->images);
+        }else{
+            $warehouse_images_base = [];
+        }
+        if(is_array($warehouse_images_base)){
+            if(isset($request->warehouse_name)){
+                $selected_warehouse_key = array_search($request->warehouse_name, $warehouse_images_base);
+                $warehouse_main = storage_path('app/public/warehouses/'.$request->warehouse_name);
+                if(file_exists($warehouse_main)){
+                    unlink($warehouse_main);
+                }
+                unset($warehouse_images_base[$selected_warehouse_key]);
+            }
+            $warehouse->images = json_encode(array_values($warehouse_images_base));
+            $warehouse->save();
+        }
+        return response()->json([
+            'status'=>true,
+            'message'=>'Success'
+        ], 200);
     }
 }

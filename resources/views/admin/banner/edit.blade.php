@@ -152,7 +152,9 @@
                         carousel_name: carousel_images[item]
                     },
                     success: function(data){
-                        console.log(data)
+                        if(data.status == true){
+                            toastr.success(deleted_text)
+                        }
                     }
                 });
                 if(!carousel_image[item].classList.contains('display-none')){

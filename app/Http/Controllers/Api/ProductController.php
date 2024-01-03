@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Banner;
 use App\Models\Color;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
@@ -475,4 +476,33 @@ class ProductController extends Controller
         return $images;
     }
 
+    /**
+     * bu yerda adminka uchun api qilindadi
+     */
+
+    public function deleteProductImage(Request $request){
+
+        $product = Products::find($request->id);
+        if(isset($product->images) && !is_array($product->images)){
+            $product_images_base = json_decode($product->images);
+        }else{
+            $product_images_base = [];
+        }
+        if(is_array($product_images_base)){
+            if(isset($request->product_name)){
+                $selected_product_key = array_search($request->product_name, $product_images_base);
+                $product_main = storage_path('app/public/products/'.$request->product_name);
+                if(file_exists($product_main)){
+                    unlink($product_main);
+                }
+                unset($product_images_base[$selected_product_key]);
+            }
+            $product->images = json_encode(array_values($product_images_base));
+            $product->save();
+        }
+        return response()->json([
+            'status'=>true,
+            'message'=>'Success'
+        ], 200);
+    }
 }

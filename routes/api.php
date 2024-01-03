@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\CardController;
+use \App\Http\Controllers\Company\WarehouseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -77,3 +78,5 @@ Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
     Route::post('logout', [AuthController::class, 'logout']);
 });
 Route::post('delete-carousel', [BannerController::class, 'deleteCarousel']);
+Route::post('delete-product', [ProductController::class, 'deleteProductImage']);
+Route::post('delete-warehouse', [WarehouseController::class, 'deleteWarehouseImage']);

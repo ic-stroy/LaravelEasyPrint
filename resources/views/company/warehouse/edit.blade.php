@@ -4,6 +4,28 @@
     {{-- Your page title --}}
 @endsection
 @section('content')
+    <style>
+        .delete_warehouse_func{
+            height: 20px;
+            background-color: transparent;
+            border: 0px;
+            color: silver;
+        }
+        .product_image img{
+
+        }
+        .warehouse_image{
+            margin-right: 4px;
+            transition: 0.4s;
+            padding:10px;
+            border-radius: 4px;
+        }
+        .warehouse_image:hover{
+            border: lightgrey;
+            transform: scale(1.02);
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+    </style>
     <div class="card">
         <div class="card-body">
             @if ($errors->any())
@@ -70,16 +92,23 @@
                 </div>
                 <div class="mb-3">
                     @php
-                        $images = json_decode($warehouse->images)??[];
+                        if(isset($warehouse->images) && !is_array($warehouse->images)){
+                            $images = json_decode($warehouse->images);
+                        }else{
+                            $images = [];
+                        }
                     @endphp
                     <div class="row">
                         @foreach($images as $image)
                             @php
                                 $avatar_main = storage_path('app/public/warehouses/'.$image);
                             @endphp
-                            @if(file_exists($avatar_main))
-                                <div class="col-2 mb-3">
-                                    <img src="{{asset('storage/warehouses/'.$image)}}" alt="" height="200px">
+                            @if(file_exists(storage_path('app/public/warehouses/'.$image)))
+                                <div class="col-2 mb-3 warehouse_image">
+                                    <div class="d-flex justify-content-between">
+                                        <img src="{{asset('storage/warehouses/'.$image)}}" alt="" height="200px">
+                                        <button class="delete_warehouse_func">X</button>
+                                    </div>
                                 </div>
                             @endif
                         @endforeach
@@ -118,4 +147,45 @@
             </form>
         </div>
     </div>
+    <script>
+        let warehouse_image = document.getElementsByClassName('warehouse_image')
+        let delete_warehouse_func = document.getElementsByClassName('delete_warehouse_func')
+        let deleted_text = "{{translate('Warehouse image was deleted')}}"
+        let warehouse_images = []
+        @if(is_array($images))
+        @php
+            if(!isset($images) || count($images)<0){
+                 $warehouse_images = [];
+            }else{
+                $warehouse_images = $images;
+            }
+        @endphp
+        @foreach($warehouse_images as $warehouse_image)
+            warehouse_images.push("{{$warehouse_image}}")
+        @endforeach
+        @endif
+        function deleteWarehouseFunc(item, val) {
+            delete_warehouse_func[item].addEventListener('click', function (e) {
+                e.preventDefault()
+                $.ajax({
+                    url: '/api/delete-warehouse',
+                    method: 'POST',
+                    dataType: 'json',
+                    data: {
+                        id:"{{$warehouse->id}}",
+                        warehouse_name: warehouse_images[item]
+                    },
+                    success: function(data){
+                        if(data.status == true){
+                            toastr.success(deleted_text)
+                        }
+                    }
+                });
+                if(!warehouse_image[item].classList.contains('display-none')){
+                    warehouse_image[item].classList.add('display-none')
+                }
+            })
+        }
+        Object.keys(delete_warehouse_func).forEach(deleteWarehouseFunc)
+    </script>
 @endsection

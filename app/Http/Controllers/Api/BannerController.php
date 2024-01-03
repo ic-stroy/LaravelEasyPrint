@@ -87,6 +87,9 @@ class BannerController extends Controller
             ]);
             $banner->save();
         }
-        return response()->json($request->all());
+        return response()->json([
+            'status'=>true,
+            'message'=>'Success'
+        ], 200);
     }
 }
