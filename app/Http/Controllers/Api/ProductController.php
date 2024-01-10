@@ -16,7 +16,7 @@ use App\Models\Products;
 class ProductController extends Controller
 {
     /**
-     * bu funksiya frontga product list(shablonlar ro'yxati) ni berishda   qo'llaniladi
+     * bu funksiya frontga product list(shablonlar ro'yxati) ni berishda   qo'llaniladi sartirofka qilinadi
      */
     public function index(Request $request)
     {
@@ -25,23 +25,30 @@ class ProductController extends Controller
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
 
-        $products_ = Products::select('id','name','price','images')->with('discount')->get();
+        // $products_ = Products::select('id','name')->with('discount')->get();
+        $products_ = DB::table('products')
+        ->select('id','name')
+        ->get();
 
+        $colors = DB::table('colors')
+        ->select('id','code','name')
+        ->get();
+
+        $sizes = DB::table('sizes')
+        ->select('id','name')
+        ->get();
 
         foreach ($products_ as $product_) {
             $translate_name=table_translate($product_,'product',$language);
-            // dd($translate_name);
             $products[] = [
                 'id' => $product_->id,
-                'name' => $translate_name,
-                'price' => $product_->price,
-                'discount' => (isset($product_->discount)) > 0 ? $product_->discount->percent : NULL,
-                'price_discount' => (isset($product_->discount)) > 0 ? $product_->price - ($product_->price / 100 * $product_->discount->percent) : NULL,
-                'images' => $this->getImages($product_, 'product')
+                'name' => $translate_name
             ];
         }
         $data=[
-            'product_list'=>$products
+            'product_list'=>$products,
+            'colors'=>$colors,
+            'sizes'=>$sizes
         ];
         $message=translate_api('success',$language);
         return $this->success($message, 200,$data);
