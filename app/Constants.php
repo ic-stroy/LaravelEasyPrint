@@ -14,12 +14,13 @@ class Constants {
    const ACCEPTED = 3;
    const ON_THE_WAY = 4;
    const FINISHED = 5;
-
-
    // 1 basked 2 ordered 3 accepted 4 on_the_way 5 finished
 
-    //Personal info
+   // Order    payment_method
+   const CASH_ON_DELIVERY = 0;
+   const BANK_CARD = 1;
 
+    //Personal info
     const MALE = 1;
     const FEMALE = 2;
 

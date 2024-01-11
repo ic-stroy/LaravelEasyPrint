@@ -705,6 +705,15 @@ class OrderController extends Controller
             $order=$order_detail->order;
             $order->price=$order->price-($order_detail->price * $order_detail->quantity);
             $order->discount_price=$order->discount_price - $order_detail->discount_price;
+            $order->all_price= $order->all_price - ($order_detail->price * $order_detail->quantity) + $order_detail->discount_price;
+            if ($order->coupon_id) {
+                if ($order_detail->warehouse_id) {
+                    if (DB::table('warehouses')->where('id',$order_detail->warehouse_id)->first()->company_id == $coupon=DB::table('coupons')->where('id',$order->coupon_id)->first()->company_id) {
+                        $order->all_price = $order->all_price + $order->coupon_price;
+                        $order->coupon_price = null;
+                    }
+                }
+            }
             // if ($order->coupon_id) {
 
             // }
