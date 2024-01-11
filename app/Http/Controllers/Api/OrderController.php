@@ -724,8 +724,8 @@ class OrderController extends Controller
                if ($warehouse->save()) {
                    $order_detail->delete();
                }
-               $message=translate_api('order detail deleted',$language);
-               return $this->success($message, 200);
+            //    $message=translate_api('order detail deleted',$language);
+            //    return $this->success($message, 200);
 
             }
 
@@ -738,7 +738,7 @@ class OrderController extends Controller
            $order_detail->delete();
 
            $test_order_detail=DB::table('order_details')->where('order_id',$order->id)->first();
-           dd($test_order_detail);
+        //    dd($test_order_detail);
            if ($test_order_detail) {
                 $order->save();
            }
