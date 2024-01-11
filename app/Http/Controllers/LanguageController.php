@@ -119,7 +119,7 @@ class LanguageController extends Controller
         $sort_search = null;
         // dd($id);
         $language = Language::findOrFail($id);
-        $lang_keys = Translation::where('lang', env('DEFAULT_LANGUAGE', 'en'))->get();
+        $lang_keys = Translation::where('lang', env('DEFAULT_LANGUAGE', 'uz'))->get();
         if ($request->has('search')) {
             $sort_search = $request->search;
             // dd($sort_search);

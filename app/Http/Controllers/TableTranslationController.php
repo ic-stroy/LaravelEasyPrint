@@ -40,7 +40,7 @@ class TableTranslationController extends Controller
         $sort_search = null;
         switch ($type){
             case 'city':
-                $lang_keys = CityTranslations::where('lang', env('DEFAULT_LANGUAGE', 'en'))->get();
+                $lang_keys = CityTranslations::where('lang', env('DEFAULT_LANGUAGE', 'uz'))->get();
                 if ($request->has('search')) {
                     $sort_search = $request->search;
                     // dd($sort_search);
@@ -51,7 +51,7 @@ class TableTranslationController extends Controller
                 return view('language.table_show', ['lang_keys'=>$lang_keys, 'language'=>$language , 'sort_search' => $sort_search, 'type'=>$type]);
                 break;
             case 'category':
-                $lang_keys = CategoryTranslations::where('lang', env('DEFAULT_LANGUAGE', 'en'))->get();
+                $lang_keys = CategoryTranslations::where('lang', env('DEFAULT_LANGUAGE', 'uz'))->get();
                 if ($request->has('search')) {
                     $sort_search = $request->search;
                     // dd($sort_search);
@@ -62,7 +62,7 @@ class TableTranslationController extends Controller
                 return view('language.table_show', ['lang_keys'=>$lang_keys, 'language'=>$language , 'sort_search' => $sort_search, 'type'=>$type]);
                 break;
             case 'color':
-                $lang_keys = ColorTranslations::where('lang', env('DEFAULT_LANGUAGE', 'en'))->get();
+                $lang_keys = ColorTranslations::where('lang', env('DEFAULT_LANGUAGE', 'uz'))->get();
                 if ($request->has('search')) {
                     $sort_search = $request->search;
                     // dd($sort_search);
@@ -73,7 +73,7 @@ class TableTranslationController extends Controller
                 return view('language.table_show', ['lang_keys'=>$lang_keys, 'language'=>$language , 'sort_search' => $sort_search, 'type'=>$type]);
                 break;
             case 'company':
-                $lang_keys = CompanyTranslations::where('lang', env('DEFAULT_LANGUAGE', 'en'))->get();
+                $lang_keys = CompanyTranslations::where('lang', env('DEFAULT_LANGUAGE', 'uz'))->get();
                 if ($request->has('search')) {
                     $sort_search = $request->search;
                     // dd($sort_search);
@@ -85,7 +85,7 @@ class TableTranslationController extends Controller
                 return view('language.table_show', ['lang_keys'=>$lang_keys, 'language'=>$language , 'sort_search' => $sort_search, 'type'=>$type]);
                 break;
             case 'product':
-                $lang_keys = ProductTranslations::where('lang', env('DEFAULT_LANGUAGE', 'en'))->get();
+                $lang_keys = ProductTranslations::where('lang', env('DEFAULT_LANGUAGE', 'uz'))->get();
                 if ($request->has('search')) {
                     $sort_search = $request->search;
                     // dd($sort_search);
@@ -96,7 +96,7 @@ class TableTranslationController extends Controller
                 return view('language.table_show', ['lang_keys'=>$lang_keys, 'language'=>$language , 'sort_search' => $sort_search, 'type'=>$type]);
                 break;
             case 'role':
-                $lang_keys = RoleTranslations::where('lang', env('DEFAULT_LANGUAGE', 'en'))->get();
+                $lang_keys = RoleTranslations::where('lang', env('DEFAULT_LANGUAGE', 'uz'))->get();
                 if ($request->has('search')) {
                     $sort_search = $request->search;
                     // dd($sort_search);
@@ -107,7 +107,7 @@ class TableTranslationController extends Controller
                 return view('language.table_show', ['lang_keys'=>$lang_keys, 'language'=>$language , 'sort_search' => $sort_search, 'type'=>$type]);
                 break;
             case 'warehouse':
-                $lang_keys = WarehouseTranslations::where('lang', env('DEFAULT_LANGUAGE', 'en'))->get();
+                $lang_keys = WarehouseTranslations::where('lang', env('DEFAULT_LANGUAGE', 'uz'))->get();
                 if ($request->has('search')) {
                     $sort_search = $request->search;
                     // dd($sort_search);
