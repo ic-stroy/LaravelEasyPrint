@@ -737,7 +737,10 @@ class OrderController extends Controller
 
            $order_detail->delete();
 
-           if (!(DB::table('order_details')->where('order_id',$order->id)->exists())) {
+           if (DB::table('order_details')->where('order_id',$order->id)->first()) {
+                $order->save();
+           }
+           else {
                 $order->delete();
            }
 
