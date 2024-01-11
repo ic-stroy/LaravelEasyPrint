@@ -717,7 +717,7 @@ class OrderController extends Controller
             // if ($order->coupon_id) {
 
             // }
-            $order->save();
+            // $order->save();
             if ($order_detail->warehouse_id != null) {
                $warehouse=Warehouse::where('id',$order_detail->warehouse_id)->first();
                $warehouse->quantity=$warehouse->quantity + $order_detail->quantity;
@@ -737,7 +737,9 @@ class OrderController extends Controller
 
            $order_detail->delete();
 
-           if (DB::table('order_details')->where('order_id',$order->id)->first()) {
+           $test_order_detail=DB::table('order_details')->where('order_id',$order->id)->first();
+           dd($test_order_detail);
+           if ($test_order_detail) {
                 $order->save();
            }
            else {
