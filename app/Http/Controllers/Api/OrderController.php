@@ -737,6 +737,10 @@ class OrderController extends Controller
 
            $order_detail->delete();
 
+           if (!(DB::table('order_details')->where('order_id',$order->id)->exists())) {
+                $order->delete();
+           }
+
            $message=translate_api('order detail deleted',$language);
            return $this->success($message, 200);
             // dd($order_detail);
