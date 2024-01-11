@@ -17,7 +17,7 @@ return new class extends Migration
 
             $table->dropColumn('category_id');
             $table->dropColumn('warehouse_product_id');
-            $table->dropColumn('product_id');
+            // $table->dropColumn('product_id');
 
 
             $table->double('min_price', 15, 8)->nullable();
