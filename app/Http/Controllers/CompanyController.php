@@ -31,11 +31,14 @@ class CompanyController extends Controller
 //        $response = Http::get(asset("assets/json/cities.json"));
 //        $cities = json_decode($response);
 //        foreach ($cities as $city){
-//            $model_region = new Cities();
-//            $model_region->name = $city->region;
-//            $model_region->type = 'region';
-//            $model_region->parent_id = 0;
-//            $model_region->save();
+//            if(!Cities::where('name', $city->region)->exists()){
+//                $model_region = new Cities();
+//                $model_region->name = $city->region;
+//                $model_region->type = 'region';
+//                $model_region->parent_id = 0;
+//                $model_region->lng = $city->long;
+//                $model_region->lat = $city->lat;
+//                $model_region->save();
 //            foreach ($city->cities as $city_district){
 //                $model = new Cities();
 //                $model->name = $city_district->name;
@@ -45,6 +48,13 @@ class CompanyController extends Controller
 //                $model->lat = $city_district->lat;
 //                $model->save();
 //            }
+//            }else{
+//                $model_region = Cities::where('name', $city->region)->first();
+//                $model_region->lng = $city->long;
+//                $model_region->lat = $city->lat;
+//                $model_region->save();
+//            }
+//
 //        }
          return view('admin.company.create');
     }

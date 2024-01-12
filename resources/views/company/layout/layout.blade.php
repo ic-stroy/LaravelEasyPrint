@@ -429,7 +429,7 @@
                             </ul>
                         </div>
                     </li>
-                    @if(isset($current_user->id))
+                    @if(isset($current_user->id) && $current_user->role_id == 2)
                         <li>
                             <a href="{{ route('company_user.index') }}">
                                 <i class="mdi mdi-account-star-outline"></i>
