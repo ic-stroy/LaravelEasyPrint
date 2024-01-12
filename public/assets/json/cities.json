@@ -1,6 +1,8 @@
 [
     {
         "region": "Toshkent shahri",
+        "lat": 41.311081,
+        "long": 69.240562,
         "cities": [
             {
                 "name": "Bektemir tumani",
@@ -61,6 +63,8 @@
     },
     {
         "region": "Andijon viloyati",
+        "lat": 40.73615,
+        "long": 72.43336,
         "cities": [
             {
                 "name": "Andijon",
@@ -176,6 +180,8 @@
     },
     {
         "region": "Buxoro viloyati",
+        "lat": 40.229366,
+        "long": 63.5470584,
         "cities": [
             {
                 "name": "Olot tumani",
@@ -241,6 +247,8 @@
     },
     {
         "region": "Fargʻona viloyati",
+        "lat": 40.5000,
+        "long": 71.2500,
         "cities": [
             {
                 "name": "Beshariq tumani",
@@ -341,6 +349,8 @@
     },
     {
         "region": "Jizzax viloyati",
+        "lat": 40.33191,
+        "long": 67.4551198,
         "cities": [
             {
                 "name": "Jizzax shahri",
@@ -411,6 +421,8 @@
     },
     {
         "region": "Qoraqalpogʻiston",
+        "lat": 43.7738841,
+        "long": 57.6234617,
         "cities": [
             {
                 "name": "Nukus shahri",
@@ -501,6 +513,8 @@
     },
     {
         "region": "Namangan viloyati",
+        "lat": 41.0036287,
+        "long": 71.2611952,
         "cities": [
             {
                 "name": "Namangan shahri",
@@ -566,6 +580,8 @@
     },
     {
         "region": "Navoiy viloyati",
+        "lat": 42.000,
+        "long": 64.0000,
         "cities": [
             {
                 "name": "Navoiy shahri",
@@ -621,6 +637,8 @@
     },
     {
         "region": "Qashqadaryo viloyati",
+        "lat": 38.5639397,
+        "long": 65.5311095,
         "cities": [
             {
                 "name": "Qarshi shahri",
@@ -706,6 +724,8 @@
     },
     {
         "region": "Samarqand viloyati",
+        "lat": 39.7337023,
+        "long": 66.1282889,
         "cities": [
             {
                 "name": "Samarqand shahri",
@@ -791,6 +811,8 @@
     },
     {
         "region": "Sirdaryo viloyati",
+        "lat": 40.5018473,
+        "long": 68.7426643,
         "cities": [
             {
                 "name": "Guliston shahri",
@@ -851,6 +873,8 @@
     },
     {
         "region": "Surxondaryo viloyati",
+        "lat": 37.9520843,
+        "long": 67.1265996,
         "cities": [
             {
                 "name": "Termiz shahri",
@@ -925,67 +949,9 @@
         ]
     },
     {
-        "region": "Jizzax viloyati",
-        "cities": [
-            {
-                "name": "Bektemir tumani",
-                "lat": 41.223643,
-                "long": 69.334327
-            },
-            {
-                "name": "Mirzo Ulug‘bek tumani",
-                "lat": 41.326219,
-                "long": 69.326916
-            },
-            {
-                "name": "Mirobod tumani",
-                "lat": 41.292562,
-                "long": 69.285692
-            },
-            {
-                "name": "Olmazor tumani",
-                "lat": 41.354356,
-                "long": 69.223358
-            },
-            {
-                "name": "Sirg‘ali tumani",
-                "lat": 41.235070,
-                "long": 69.247361
-            },
-            {
-                "name": "Uchtepa tumani",
-                "lat": 41.295991,
-                "long": 69.175200
-            },
-            {
-                "name": "Chilonzor tumani",
-                "lat": 41.281410,
-                "long": 69.212668
-            },
-            {
-                "name": "Shayxontohur tumani",
-                "lat": 41.317653,
-                "long": 69.230581
-            },
-            {
-                "name": "Yunusobod tumani",
-                "lat": 41.364664,
-                "long": 69.287696
-            },
-            {
-                "name": "Yakkasaroy tumani",
-                "lat": 41.286004,
-                "long": 69.253748
-            },
-            {
-                "name": "Yashnobod tumani",
-                "lat": 41.283463,
-                "long": 69.339798
-            }
-        ]
-    },
-    {
         "region": "Toshkent viloyati",
+        "lat": 41.0496815,
+        "long": 69.3711365,
         "cities": [
             {
                 "name": "Nurafshon shahri",
@@ -1101,6 +1067,8 @@
     },
     {
         "region": "Xorazm viloyati",
+        "lat": 41.2902835,
+        "long": 60.5428537,
         "cities": [
             {
                 "name": "Urganch shahri",
