@@ -26,18 +26,18 @@
                         <label class="form-label">{{translate('Coupon name')}}</label>
                         <input type="text" name="name" class="form-control" required value="{{$coupon->name}}"/>
                     </div>
-                    <div class="mb-3 col-3">
+                    <div class="mb-3 col-2">
                         <label class="form-label">{{translate('Coupon type')}}</label>
                         <select name="coupon_type" class="form-control" id="coupon_type" required>
                             <option value="price" class="form-control" {{$coupon->price != NULL?'selected':''}}>{{translate('Price')}}</option>
                             <option value="percent" class="form-control" {{$coupon->percent != NULL?'selected':''}}>{{translate('Percent')}}</option>
                         </select>
                     </div>
-                    <div class="mb-3 col-3" id="coupon_price">
+                    <div class="mb-3 col-2" id="coupon_price">
                         <label class="form-label">{{translate('Coupon price')}}</label>
                         <input type="number" name="price" class="form-control" id="coupon_price_input" required min="0"  value="{{$coupon->price}}"/>
                     </div>
-                    <div class="mb-3 col-3 display-none" id="coupon_percent">
+                    <div class="mb-3 col-2 display-none" id="coupon_percent">
                         <label class="form-label">{{translate('Coupon percent')}}</label>
                         <input type="number" name="percent" value="{{$coupon->percent??''}}" class="form-control" required id="coupon_percent_input" min="0" max="100"/>
                     </div>
@@ -48,6 +48,13 @@
                             @foreach($companies as $company)
                                 <option value="{{$company->id}}" {{$coupon->company_id == $company->id?'selected':''}}>{{$company->name}}</option>
                             @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3 col-2">
+                        <label class="form-label">{{translate('Status')}}</label>
+                        <select name="status" class="form-control" required>
+                            <option value="{{\App\Constants::ACTIVE}}" {{$coupon->status == \App\Constants::ACTIVE?'selected':''}} class="form-control">{{translate('Active')}}</option>
+                            <option value="{{\App\Constants::NOT_ACTIVE}}" {{$coupon->status == \App\Constants::NOT_ACTIVE?'selected':''}} class="form-control">{{translate('Not active')}}</option>
                         </select>
                     </div>
                 </div>

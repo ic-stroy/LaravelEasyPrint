@@ -18,6 +18,7 @@
                         <th>{{translate('Name')}}</th>
                         <th>{{translate('Coupon quantity')}}</th>
                         <th>{{translate('Minimum price')}}</th>
+                        <th>{{translate('Active')}}</th>
                         <th>{{translate('Quantity of orders')}}</th>
                         <th>{{translate('The number of order')}}</th>
                         <th class="text-center">{{translate('Functions')}}</th>
@@ -54,6 +55,15 @@
                                        {{$coupon->percent}} {{translate(' %')}}
                                     @else
                                         <div class="no_text"></div>
+                                    @endif
+                                </a>
+                            </td>
+                            <td>
+                                <a class="show_page" href="{{route('coupons.show', $coupon->id)}}">
+                                    @if ($coupon->status == 1)
+                                        {{translate('Active')}}
+                                    @else
+                                        {{translate('Not active')}}
                                     @endif
                                 </a>
                             </td>
