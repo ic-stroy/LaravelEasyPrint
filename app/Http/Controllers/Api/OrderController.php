@@ -603,14 +603,14 @@ class OrderController extends Controller
                                 // dd($order_detail->warehouse_id);
                                $company_id=DB::table('warehouses')->where('id',$order_detail->warehouse_id)->first()->company_id;
                                if ($coupon->company_id == $company_id) {
-                                dd($coupon);
-                                    if ($coupon->min_price && $order->all_price > $coupon->min_price && $coupon->type == 0 && $order_count =< $coupon->order_count) {
+                                // dd($coupon);
+                                    if ($coupon->min_price && $order->all_price > $coupon->min_price && $coupon->type == 0 && $order_count <= $coupon->order_count) {
                                         $order->coupon_id = $coupon->id;
                                     }
                                     elseif ($coupon->min_price && $order->all_price > $coupon->min_price && $coupon->type == 1 && ($order_count - 1) = $coupon->order_count) {
                                         $order->coupon_id = $coupon->id;
                                     }
-                                    elseif ($coupon->type == 0 && $order_count =< $coupon->order_count) {
+                                    elseif ($coupon->type == 0 && $order_count <= $coupon->order_count) {
                                         $order->coupon_id = $coupon->id;
                                     }
                                     elseif ($coupon->type == 1 && ($order_count - 1) = $coupon->order_count) {
@@ -628,13 +628,13 @@ class OrderController extends Controller
                         }
 
                     }
-                    elseif ($order->all_price > $coupon->min_price && $coupon->type == 0 && $order_count =< $coupon->order_count) {
+                    elseif ($order->all_price > $coupon->min_price && $coupon->type == 0 && $order_count <= $coupon->order_count) {
                         $order->coupon_id = $coupon->id;
                     }
                     elseif ($order->all_price > $coupon->min_price && $coupon->type == 1 && ($order_count - 1) = $coupon->order_count) {
                         $order->coupon_id = $coupon->id;
                     }
-                    elseif ($coupon->type == 0 && $order_count =< $coupon->order_count) {
+                    elseif ($coupon->type == 0 && $order_count <= $coupon->order_count) {
                         $order->coupon_id = $coupon->id;
                     }
                     elseif ($coupon->type == 1 && ($order_count - 1) = $coupon->order_count) {
@@ -684,7 +684,6 @@ class OrderController extends Controller
                 return $this->error($message, 400);
             }
         }
-        // dd($coupon);
         $message=translate_api('coupon not found',$language);
         return $this->error($message, 400);
     }
