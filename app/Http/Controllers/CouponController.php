@@ -93,6 +93,9 @@ class CouponController extends Controller
         if(isset($request->order_count)){
             $coupon->order_count = $request->order_count;
         }
+        if(isset($request->type)){
+            $coupon->type = $request->type;
+        }
         if(isset($request->start_date)){
             $coupon->start_date = $request->start_date;
         }
