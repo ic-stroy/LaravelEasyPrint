@@ -594,6 +594,7 @@ class OrderController extends Controller
             // dd('dfhsdg');
             if ($order=Order::where('id',$request->order_id)->first()) {
                 // dd($order);
+                $order_count=count(Order::where('user_id',$order->user_id)->where('status','!=', Constants::BASKED));
                 if ($order->coupon_id == null) {
                     // dd($order->orderDetail);
                     if ($coupon->company_id != null) {
@@ -602,7 +603,16 @@ class OrderController extends Controller
                                 // dd($order_detail->warehouse_id);
                                $company_id=DB::table('warehouses')->where('id',$order_detail->warehouse_id)->first()->company_id;
                                if ($coupon->company_id == $company_id) {
-                                $order->coupon_id = $coupon->id;
+                                    if ($coupon->min_price && $order->all_price > $coupon->min_price && $coupon->type == 0 && $order_count =< $coupon->order_count) {
+                                        $order->coupon_id = $coupon->id;
+                                    }
+                                    if ($coupon->min_price && $order->all_price > $coupon->min_price && $coupon->type == 1 && ($order_count - 1) = $coupon->order_count) {
+                                        $order->coupon_id = $coupon->id;
+                                    }
+                                    else {
+
+                                    }
+                                    $order->coupon_id = $coupon->id;
                                 // dd($order);
                                }
                             }
@@ -610,14 +620,25 @@ class OrderController extends Controller
                         }
 
                     }
-                    elseif ($order->all_price > $coupon->min_price ) {
+                    elseif ($order->all_price > $coupon->min_price && $coupon->type == 0 && $order_count =< $coupon->order_count) {
                         $order->coupon_id = $coupon->id;
                     }
-                    elseif (count(Order::where('id',$request->order_id)->where('status','!=', Constants::BASKED)) == $coupon->order_count ) {
+                    elseif ($order->all_price > $coupon->min_price && $coupon->type == 1 && ($order_count - 1) = $coupon->order_count) {
                         $order->coupon_id = $coupon->id;
                     }
+                    elseif ($coupon->type == 0 && $order_count =< $coupon->order_count) {
+                        $order->coupon_id = $coupon->id;
+                    }
+                    elseif ($coupon->type == 1 && ($order_count - 1) = $coupon->order_count) {
+                        $order->coupon_id = $coupon->id;
+                    }
+                    else {
+                        $message=translate_api('This coupon has not been verified',$language);
+                    return $this->error($message, 400);
+                    }
+
                     // dd($order);
-                    if ($order->coupun_id == null) {
+                    if ($order->coupun_id != null) {
                         // dd('have a coupons');
                          if ($coupon->percent != null) {
                             // dd($order);
