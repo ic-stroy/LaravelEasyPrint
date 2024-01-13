@@ -590,7 +590,7 @@ class OrderController extends Controller
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
 
-        if ($coupon=DB::table('coupons')->where('name',$request->coupon_name)->first()) {
+        if ($coupon=DB::table('coupons')->where('name',$request->coupon_name)->where('status',1)->first()) {
             // dd('dfhsdg');
             if ($order=Order::where('id',$request->order_id)->first()) {
                 // dd($order);
@@ -603,16 +603,24 @@ class OrderController extends Controller
                                 // dd($order_detail->warehouse_id);
                                $company_id=DB::table('warehouses')->where('id',$order_detail->warehouse_id)->first()->company_id;
                                if ($coupon->company_id == $company_id) {
+                                dd($coupon);
                                     if ($coupon->min_price && $order->all_price > $coupon->min_price && $coupon->type == 0 && $order_count =< $coupon->order_count) {
                                         $order->coupon_id = $coupon->id;
                                     }
-                                    if ($coupon->min_price && $order->all_price > $coupon->min_price && $coupon->type == 1 && ($order_count - 1) = $coupon->order_count) {
+                                    elseif ($coupon->min_price && $order->all_price > $coupon->min_price && $coupon->type == 1 && ($order_count - 1) = $coupon->order_count) {
+                                        $order->coupon_id = $coupon->id;
+                                    }
+                                    elseif ($coupon->type == 0 && $order_count =< $coupon->order_count) {
+                                        $order->coupon_id = $coupon->id;
+                                    }
+                                    elseif ($coupon->type == 1 && ($order_count - 1) = $coupon->order_count) {
                                         $order->coupon_id = $coupon->id;
                                     }
                                     else {
-
+                                        $message=translate_api('This coupon has not been verified',$language);
+                                        return $this->error($message, 400);
                                     }
-                                    $order->coupon_id = $coupon->id;
+                                    // $order->coupon_id = $coupon->id;
                                 // dd($order);
                                }
                             }
@@ -634,7 +642,7 @@ class OrderController extends Controller
                     }
                     else {
                         $message=translate_api('This coupon has not been verified',$language);
-                    return $this->error($message, 400);
+                        return $this->error($message, 400);
                     }
 
                     // dd($order);
