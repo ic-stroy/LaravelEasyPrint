@@ -645,7 +645,7 @@ class OrderController extends Controller
                         return $this->error($message, 400);
                     }
 
-                    // dd($order);
+                    dd($order);
                     if ($order->coupun_id != null) {
                         // dd('have a coupons');
                          if ($coupon->percent != null) {
