@@ -594,7 +594,7 @@ class OrderController extends Controller
             // dd('dfhsdg');
             if ($order=Order::where('id',$request->order_id)->first()) {
                 // dd($order);
-                $order_count=count(Order::where('user_id',$order->user_id)->where('status','!=', Constants::BASKED));
+                $order_count = Order::where('user_id', $order->user_id)->where('status', '!=', Constants::BASKED)->count();
                 if ($order->coupon_id == null) {
                     // dd($order->orderDetail);
                     if ($coupon->company_id != null) {
