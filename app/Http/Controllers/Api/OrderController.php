@@ -646,7 +646,7 @@ class OrderController extends Controller
                     }
 
                     // dd($order);
-                    if ($order->coupun_id !== null) {
+                    if ($order->coupun_id == null) {
                         // dd('have a coupons');
                          if ($coupon->percent != null) {
                             // dd($order);
