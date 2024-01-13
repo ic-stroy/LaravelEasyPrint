@@ -52,7 +52,7 @@
     <div class="navbar-custom">
         <ul class="list-unstyled topnav-menu float-end mb-0">
             @if($current_user->company)
-                <li><strong>{{$current_user->company->name?$current_user->company->name:''}}</strong></li>
+                <li style="height: 70px; margin-right:44px; font-size: 22px" class="d-flex align-items-center"><strong>{{$current_user->company->name?$current_user->company->name:''}}</strong></li>
             @endif
             <li class="d-none d-lg-block">
                 <form class="app-search">
