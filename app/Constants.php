@@ -20,6 +20,10 @@ class Constants {
    const CASH_ON_DELIVERY = 0;
    const BANK_CARD = 1;
 
+   // coupon type
+   const TO_ORDER_COUNT = 0; //maslan 10 ta ordarga
+   const FOR_ORDER_NUMBER = 1; // masalan 10 - ordarga  // agar typy null bosa demak coupon order countga berilmagan
+
     //Personal info
     const MALE = 1;
     const FEMALE = 2;
