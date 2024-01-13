@@ -60,19 +60,19 @@
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('coupons.show', $coupon->id)}}">
-                                    @if ($coupon->status == 1)
-                                        {{translate('Active')}}
+                                    @if(isset($coupon->min_price))
+                                        {{$coupon->min_price}}
                                     @else
-                                        {{translate('Not active')}}
+                                        <div class="no_text"></div>
                                     @endif
                                 </a>
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('coupons.show', $coupon->id)}}">
-                                    @if(isset($coupon->min_price))
-                                        {{$coupon->min_price}}
+                                    @if ($coupon->status == 1)
+                                        {{translate('Active')}}
                                     @else
-                                        <div class="no_text"></div>
+                                        {{translate('Not active')}}
                                     @endif
                                 </a>
                             </td>
