@@ -603,6 +603,7 @@ class OrderController extends Controller
                                 // dd($order_detail->warehouse_id);
                                $company_id=DB::table('warehouses')->where('id',$order_detail->warehouse_id)->first()->company_id;
                                if ($coupon->company_id == $company_id) {
+                                dd($coupon);
                                     if ($coupon->min_price && $order->all_price > $coupon->min_price && $coupon->type == 0 && $order_count =< $coupon->order_count) {
                                         $order->coupon_id = $coupon->id;
                                     }
