@@ -35,11 +35,11 @@
                     </div>
                     <div class="mb-3 col-3" id="coupon_price">
                         <label class="form-label">{{translate('Coupon price')}}</label>
-                        <input type="number" name="price" class="form-control" id="coupon_price_input" min="0" value="{{old('price')}}"/>
+                        <input type="number" name="price" class="form-control" id="coupon_price_input" required min="0" value="{{old('price')}}"/>
                     </div>
                     <div class="mb-3 col-3 display-none" id="coupon_percent">
                         <label class="form-label">{{translate('Coupon percent')}}</label>
-                        <input type="number" name="percent" class="form-control" id="coupon_percent_input" step="0.01" min="0" max="100" value="{{old('percent')}}"/>
+                        <input type="number" name="percent" class="form-control" id="coupon_percent_input" required step="0.01" min="0" max="100" value="{{old('percent')}}"/>
                     </div>
                     <div class="mb-3 col-3">
                         <label class="form-label">{{translate('Companies')}}</label>

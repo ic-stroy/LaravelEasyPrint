@@ -18,7 +18,7 @@
             <p class="text-muted font-14">
                 {{translate('Coupon list edit')}}
             </p>
-            <form action="{{route('coupons.update', $coupon->id)}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
+            <form action="{{route('company_coupons.update', $coupon->id)}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method("PUT")
                 <div class="row">
@@ -35,24 +35,19 @@
                     </div>
                     <div class="mb-3 col-3" id="coupon_price">
                         <label class="form-label">{{translate('Coupon price')}}</label>
-                        <input type="number" name="price" class="form-control" id="coupon_price_input"  min="0"  value="{{$coupon->price}}"/>
+                        <input type="number" name="price" class="form-control" id="coupon_price_input" required min="0"  value="{{$coupon->price}}"/>
                     </div>
                     <div class="mb-3 col-3 display-none" id="coupon_percent">
                         <label class="form-label">{{translate('Coupon percent')}}</label>
-                        <input type="number" name="percent" value="{{$coupon->percent??''}}" class="form-control" id="coupon_percent_input" min="0" max="100"/>
+                        <input type="number" name="percent" value="{{$coupon->percent??''}}" class="form-control" id="coupon_percent_input" required min="0" max="100"/>
                     </div>
                     <div class="mb-3 col-3">
-                        <label class="form-label">{{translate('Companies')}}</label>
-                        <select name="company" class="form-control">
-                            <option value="" {{$coupon->company_id == ''?'selected':''}}>{{translate('All company')}}</option>
-                            @foreach($companies as $company)
-                                <option value="{{$company->id}}" {{$coupon->company_id == $company->id?'selected':''}}>{{$company->name}}</option>
-                            @endforeach
-                        </select>
+                        <label class="form-label">{{translate("Order's min price")}}</label>
+                        <input type="number" name="min_price" class="form-control" min="0" value="{{$coupon->min_price??''}}"/>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="mb-3 col-2">
+                    <div class="mb-3 col-3">
                         <label class="form-label">{{translate('Type')}}</label>
                         <select name="type" class="form-control" id="type" required>
                             <option value="{{\App\Constants::TO_ORDER_COUNT}}" {{$coupon->type == \App\Constants::TO_ORDER_COUNT?'selected':''}} class="form-control">{{translate('Quantity')}}</option>
@@ -60,19 +55,15 @@
                         </select>
                     </div>
                     <div class="mb-3 col-3">
-                        <label class="form-label">{{translate("Order's min price")}}</label>
-                        <input type="number" name="min_price" class="form-control" min="0" value="{{$coupon->min_price??''}}"/>
-                    </div>
-                    <div class="mb-3 col-3">
                         <label class="form-label {{$coupon->type == 1?'display-none':''}}" id="quantity_orders">{{translate('Quantity of orders')}}</label>
                         <label class="form-label {{$coupon->type == 0?'display-none':''}}" id="number_order">{{translate('The number of order')}}</label>
                         <input type="number" name="order_count" class="form-control" value="{{$coupon->order_count}}" required/>
                     </div>
-                    <div class="mb-3 col-2">
+                    <div class="mb-3 col-3">
                         <label class="form-label">{{translate('Start date')}}</label>
                         <input type="date" name="start_date" class="form-control" required value="{{explode(' ', $coupon->start_date)[0]}}"/>
                     </div>
-                    <div class="mb-3 col-2">
+                    <div class="mb-3 col-3">
                         <label class="form-label">{{translate('End date')}}</label>
                         <input type="date" name="end_date" class="form-control" required value="{{explode(' ', $coupon->end_date)[0]}}"/>
                     </div>
