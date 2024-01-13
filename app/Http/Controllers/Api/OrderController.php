@@ -607,13 +607,13 @@ class OrderController extends Controller
                                     if ($coupon->min_price && $order->all_price > $coupon->min_price && $coupon->type == 0 && $order_count <= $coupon->order_count) {
                                         $order->coupon_id = $coupon->id;
                                     }
-                                    elseif ($coupon->min_price && $order->all_price > $coupon->min_price && $coupon->type == 1 && ($order_count - 1) = $coupon->order_count) {
+                                    elseif ($coupon->min_price && $order->all_price > $coupon->min_price && $coupon->type == 1 && ($order_count - 1) == $coupon->order_count) {
                                         $order->coupon_id = $coupon->id;
                                     }
                                     elseif ($coupon->type == 0 && $order_count <= $coupon->order_count) {
                                         $order->coupon_id = $coupon->id;
                                     }
-                                    elseif ($coupon->type == 1 && ($order_count - 1) = $coupon->order_count) {
+                                    elseif ($coupon->type == 1 && ($order_count - 1) == $coupon->order_count) {
                                         $order->coupon_id = $coupon->id;
                                     }
                                     else {
@@ -631,13 +631,13 @@ class OrderController extends Controller
                     elseif ($order->all_price > $coupon->min_price && $coupon->type == 0 && $order_count <= $coupon->order_count) {
                         $order->coupon_id = $coupon->id;
                     }
-                    elseif ($order->all_price > $coupon->min_price && $coupon->type == 1 && ($order_count - 1) = $coupon->order_count) {
+                    elseif ($order->all_price > $coupon->min_price && $coupon->type == 1 && ($order_count - 1) == $coupon->order_count) {
                         $order->coupon_id = $coupon->id;
                     }
                     elseif ($coupon->type == 0 && $order_count <= $coupon->order_count) {
                         $order->coupon_id = $coupon->id;
                     }
-                    elseif ($coupon->type == 1 && ($order_count - 1) = $coupon->order_count) {
+                    elseif ($coupon->type == 1 && ($order_count - 1) == $coupon->order_count) {
                         $order->coupon_id = $coupon->id;
                     }
                     else {
