@@ -653,6 +653,7 @@ class OrderController extends Controller
                             $order_coupon_price=(($order->all_price)/100)*($coupon->percent);
                             $order->coupon_price=$order_coupon_price;
                             $order->all_price=$order->all_price - $order_coupon_price;
+                            dd($order);
                          }
                          else {
                             $order->all_price=$order->all_price - $coupon->price;
