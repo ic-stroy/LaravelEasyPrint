@@ -45,6 +45,17 @@
                             <td>{{$model->company->name??''}}</td>
                         </tr>
                     @endif
+                    @if($model->status == 1)
+                        <tr>
+                            <th>{{translate('Status')}}</th>
+                            <td>{{translate('Active')}}</td>
+                        </tr>
+                    @else
+                        <tr>
+                            <th>{{translate('Status')}}</th>
+                            <td>{{translate('Not active')}}</td>
+                        </tr>
+                    @endif
                     @if($model->type == 0)
                         <tr>
                             <th>{{translate('Quantity of orders')}}</th>

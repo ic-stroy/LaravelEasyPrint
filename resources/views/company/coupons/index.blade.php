@@ -18,6 +18,7 @@
                         <th>{{translate('Name')}}</th>
                         <th>{{translate('Coupon quantity')}}</th>
                         <th>{{translate('Minimum price')}}</th>
+                        <th>{{translate('Active')}}</th>
                         <th>{{translate('Quantity of orders')}}</th>
                         <th>{{translate('The number of order')}}</th>
                         <th class="text-center">{{translate('Functions')}}</th>
@@ -63,6 +64,15 @@
                                         {{$coupon->min_price}}
                                     @else
                                         <div class="no_text"></div>
+                                    @endif
+                                </a>
+                            </td>
+                            <td>
+                                <a class="show_page" href="{{route('company_coupons.show', $coupon->id)}}">
+                                    @if ($coupon->status == 1)
+                                        {{translate('Active')}}
+                                    @else
+                                        {{translate('Not active')}}
                                     @endif
                                 </a>
                             </td>

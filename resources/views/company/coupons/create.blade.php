@@ -26,24 +26,31 @@
                         <label class="form-label">{{translate('Coupon name')}}</label>
                         <input type="text" name="name" class="form-control" required value="{{old('name')}}"/>
                     </div>
-                    <div class="mb-3 col-3">
+                    <div class="mb-3 col-2">
                         <label class="form-label">{{translate('Coupon type')}}</label>
                         <select name="coupon_type" class="form-control" id="coupon_type" required>
                             <option value="price" class="form-control">{{translate('Price')}}</option>
                             <option value="percent" class="form-control">{{translate('Percent')}}</option>
                         </select>
                     </div>
-                    <div class="mb-3 col-3" id="coupon_price">
+                    <div class="mb-3 col-2" id="coupon_price">
                         <label class="form-label">{{translate('Coupon price')}}</label>
                         <input type="number" name="price" class="form-control" id="coupon_price_input" required min="0" value="{{old('price')}}"/>
                     </div>
-                    <div class="mb-3 col-3 display-none" id="coupon_percent">
+                    <div class="mb-3 col-2 display-none" id="coupon_percent">
                         <label class="form-label">{{translate('Coupon percent')}}</label>
                         <input type="number" name="percent" class="form-control" id="coupon_percent_input" required step="0.01" min="0" max="100" value="{{old('percent')}}"/>
                     </div>
                     <div class="mb-3 col-3">
                         <label class="form-label">{{translate("Order's min price")}}</label>
                         <input type="number" name="min_price" class="form-control" min="0" value="{{old('min_price')}}"/>
+                    </div>
+                    <div class="mb-3 col-2">
+                        <label class="form-label">{{translate('Status')}}</label>
+                        <select name="status" class="form-control" required>
+                            <option value="{{\App\Constants::ACTIVE}}" class="form-control">{{translate('Active')}}</option>
+                            <option value="{{\App\Constants::NOT_ACTIVE}}" class="form-control">{{translate('Not active')}}</option>
+                        </select>
                     </div>
                 </div>
                 <div class="row">

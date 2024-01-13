@@ -47,6 +47,7 @@ class CompanyCouponController extends Controller
         $coupon->min_price = $request->min_price;
         $coupon->company_id = $user->company_id;
         $coupon->type = $request->type;
+        $coupon->status = $request->status;
         $coupon->order_count = $request->order_count;
         $coupon->start_date = $request->start_date;
         $coupon->end_date = $request->end_date;
@@ -94,6 +95,7 @@ class CompanyCouponController extends Controller
         $coupon->company_id = $user->company_id;
         $coupon->order_count = $request->order_count;
         $coupon->type = $request->type;
+        $coupon->status = $request->status;
         $coupon->start_date = $request->start_date;
         $coupon->end_date = $request->end_date;
         $coupon->save();
