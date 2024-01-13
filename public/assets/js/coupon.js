@@ -1,4 +1,7 @@
 let coupon_type = document.getElementById('coupon_type')
+let quantity_orders = document.getElementById('quantity_orders')
+let number_order = document.getElementById('number_order')
+let type = document.getElementById('type')
 let coupon_percent = document.getElementById('coupon_percent')
 let coupon_price = document.getElementById('coupon_price')
 let coupon_price_input = document.getElementById('coupon_price_input')
@@ -37,5 +40,22 @@ coupon_type.addEventListener('change', function () {
             coupon_percent.classList.add('display-none')
         }
         coupon_price_input.value = ''
+    }
+})
+type.addEventListener('change', function () {
+    if(type.value == 0){
+        if(quantity_orders.classList.contains('display-none')){
+            quantity_orders.classList.remove('display-none')
+        }
+        if(!number_order.classList.contains('display-none')){
+            number_order.classList.add('display-none')
+        }
+    }else if(type.value == 1){
+        if(number_order.classList.contains('display-none')){
+            number_order.classList.remove('display-none')
+        }
+        if(!quantity_orders.classList.contains('display-none')){
+            quantity_orders.classList.add('display-none')
+        }
     }
 })
