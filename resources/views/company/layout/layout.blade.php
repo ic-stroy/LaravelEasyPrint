@@ -51,7 +51,9 @@
     <!-- Topbar Start -->
     <div class="navbar-custom">
         <ul class="list-unstyled topnav-menu float-end mb-0">
-
+            @if($current_user->company)
+                <li style="height: 70px; margin-right:44px; font-size: 22px" class="d-flex align-items-center"><strong>{{$current_user->company->name?$current_user->company->name:''}}</strong></li>
+            @endif
             <li class="d-none d-lg-block">
                 <form class="app-search">
                     <div class="app-search-box">
@@ -441,6 +443,12 @@
                         <a href="{{ route('company_order.category') }}">
                             <i class="mdi mdi-account-check-outline"></i>
                             <span> {{ translate('Orders') }} </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('company_coupons.index') }}">
+                            <i class="mdi mdi-cart-minus"></i>
+                            <span> {{ translate('Coupon') }} </span>
                         </a>
                     </li>
                 </ul>

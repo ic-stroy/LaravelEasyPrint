@@ -1,4 +1,4 @@
-@extends('layout.layout')
+@extends('company.layout.layout')
 
 @section('title')
     {{-- Your page title --}}
@@ -8,7 +8,7 @@
         <div class="card-body">
             <h4 class="mt-0 header-title">{{translate('Coupon lists')}}</h4>
             <div class="dropdown float-end">
-                <a class="form_functions btn btn-success" href="{{route('coupons.create')}}">{{translate('Create')}}</a>
+                <a class="form_functions btn btn-success" href="{{route('company_coupons.create')}}">{{translate('Create')}}</a>
             </div>
 {{--            <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap">--}}
             <table class="table table-striped table-bordered dt-responsive nowrap">
@@ -33,12 +33,12 @@
                         @endphp
                         <tr>
                             <td>
-                                <a class="show_page" href="{{route('coupons.show', $coupon->id)}}">
+                                <a class="show_page" href="{{route('company_coupons.show', $coupon->id)}}">
                                     {{$i}}
                                 </a>
                             </td>
                             <td>
-                                <a class="show_page" href="{{route('coupons.show', $coupon->id)}}">
+                                <a class="show_page" href="{{route('company_coupons.show', $coupon->id)}}">
                                     @if(isset($coupon->name))
                                         {{$coupon->name}}
                                     @else
@@ -47,7 +47,7 @@
                                 </a>
                             </td>
                             <td>
-                                <a class="show_page" href="{{route('coupons.show', $coupon->id)}}">
+                                <a class="show_page" href="{{route('company_coupons.show', $coupon->id)}}">
                                     @if ($coupon->price != null)
                                        {{$coupon->price}} {{translate(' sum')}}
                                     @elseif($coupon->percent != null)
@@ -58,7 +58,7 @@
                                 </a>
                             </td>
                             <td>
-                                <a class="show_page" href="{{route('coupons.show', $coupon->id)}}">
+                                <a class="show_page" href="{{route('company_coupons.show', $coupon->id)}}">
                                     @if(isset($coupon->min_price))
                                         {{$coupon->min_price}}
                                     @else
@@ -67,7 +67,7 @@
                                 </a>
                             </td>
                             <td>
-                                <a class="show_page" href="{{route('coupons.show', $coupon->id)}}">
+                                <a class="show_page" href="{{route('company_coupons.show', $coupon->id)}}">
                                     @if($coupon->type == 0)
                                         @if(isset($coupon->order_count))
                                             {{$coupon->order_count}}
@@ -80,7 +80,7 @@
                                 </a>
                             </td>
                             <td>
-                                <a class="show_page" href="{{route('coupons.show', $coupon->id)}}">
+                                <a class="show_page" href="{{route('company_coupons.show', $coupon->id)}}">
                                     @if($coupon->type == 1)
                                         @if(isset($coupon->order_count))
                                             {{$coupon->order_count}}
@@ -94,8 +94,8 @@
                             </td>
                             <td class="function_column">
                                 <div class="d-flex justify-content-center">
-                                    <a class="form_functions btn btn-info" href="{{route('coupons.edit', $coupon->id)}}"><i class="fe-edit-2"></i></a>
-                                    <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-alert-modal" data-url="{{route('coupons.destroy', $coupon->id)}}"><i class="fe-trash-2"></i></button>
+                                    <a class="form_functions btn btn-info" href="{{route('company_coupons.edit', $coupon->id)}}"><i class="fe-edit-2"></i></a>
+                                    <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-alert-modal" data-url="{{route('company_coupons.destroy', $coupon->id)}}"><i class="fe-trash-2"></i></button>
                                 </div>
                             </td>
                         </tr>
