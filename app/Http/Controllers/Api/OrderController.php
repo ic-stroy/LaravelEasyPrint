@@ -590,7 +590,7 @@ class OrderController extends Controller
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
 
-        if ($coupon=DB::table('coupons')->where('name',$request->coupon_name)->first()) {
+        if ($coupon=DB::table('coupons')->where('name',$request->coupon_name)->where('status',1)->first()) {
             // dd('dfhsdg');
             if ($order=Order::where('id',$request->order_id)->first()) {
                 // dd($order);
