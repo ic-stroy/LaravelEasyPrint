@@ -51,7 +51,9 @@
     <!-- Topbar Start -->
     <div class="navbar-custom">
         <ul class="list-unstyled topnav-menu float-end mb-0">
-
+            @if($current_user->company)
+                <li><strong>{{$current_user->company->name?$current_user->company->name:''}}</strong></li>
+            @endif
             <li class="d-none d-lg-block">
                 <form class="app-search">
                     <div class="app-search-box">
