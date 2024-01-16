@@ -709,7 +709,7 @@ class OrderController extends Controller
                 'phone_number'=>$data['receiver_phone'],
                 // 'payment_method'=>$data['payment_method'],
                 // 'user_card_id'=>$data['user_card_id'],
-                'status'=>Constants::ACCEPTED,
+                'status'=>Constants::PERFORMED,
             ]);
 
             $message=translate_api('success',$language);
@@ -852,13 +852,13 @@ class OrderController extends Controller
                 $status = 'Ordered';
                 break;
             case 3:
-                $status = 'Accepted';
+                $status = 'Performed';
                 break;
             case 4:
-                $status = 'On the way';
+                $status = 'Cancelled';
                 break;
             case 5:
-                $status = 'Finished';
+                $status = 'Accepted by recipient';
                 break;
             default:
                 $status = null;
