@@ -1220,9 +1220,9 @@ textarea:focus, input:focus{
   width: 156px;
   margin-left: -43px !important;
   margin-top: 7px;
-  height: 120px;
+  height: 104px;
   border-radius: 20px;
-  padding-top: 5px;
+  padding-top: 14px;
   box-shadow: 2px 4px 14px silver;
 }
 
@@ -9681,16 +9681,6 @@ a:hover {
   position: absolute;
   z-index: 1;
   margin-top: 70px;
-}
-.dropdownMenyApplyUzbFlag {
-  background-color: #F9FBFF;
-  width: 155px;
-  margin-left: -43px !important;
-  margin-top: 7px;
-  height: 120px;
-  border-radius: 20px;
-  padding-top: 5px;
-  box-shadow: 2px 4px 14px silver;
 }
 .dropdownRegionBayroq {
   width: 40px;

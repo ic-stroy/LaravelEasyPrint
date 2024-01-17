@@ -202,8 +202,20 @@ class AuthController extends Controller
         }
         $user->role_id = 4;
         $user->save();
+        if($user->personalInfo){
+            $first_name = $user->personalInfo ?$user->personalInfo->first_name:null;
+        }else{
+            $first_name = null;
+        }
         $data = [
-            'user' => $user,
+            'user' => [
+                "first_name"=>$first_name,
+                "email"=> $user->email,
+                "role_id"=> $user->role_id,
+                "updated_at"=> $user->updated_at,
+                "created_at"=>$user->created_at,
+                "id"=>$user->id,
+                ],
             'token' => $user->token??null
         ];
         $message = translate_api('success', $language);

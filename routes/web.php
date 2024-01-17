@@ -6,6 +6,7 @@ use \App\Http\Controllers\Company\CompanyHomeController;
 use \App\Http\Controllers\Company\WarehouseController;
 use \App\Http\Controllers\Company\CompanyUsersController;
 use \App\Http\Controllers\Company\CompanyOrderController;
+use \App\Http\Controllers\Company\CompanyCouponController;
 use \App\Http\Controllers\BannerController;
 use \App\Http\Controllers\UsersController;
 use \App\Http\Controllers\TableTranslationController;
@@ -101,6 +102,7 @@ Auth::routes();
             Route::group(['prefix' => 'user'], function () {
                 Route::resource('company_user', CompanyUsersController::class)->middleware('is_admin');
             });
+            Route::resource('company_coupons', CompanyCouponController::class);
             Route::group(['prefix' => 'order'], function () {
                 Route::get('/index/{id}', [CompanyOrderController::class, 'index'])->name('company_order.index');
                 Route::get('/category', [CompanyOrderController::class, 'category'])->name('company_order.category');

@@ -1,21 +1,24 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Company;
 
 use App\Models\Company;
 use App\Models\Coupon;
+use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class CouponController extends Controller
+class CompanyCouponController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $coupons = Coupon::all();
-        return view('admin.coupons.index', ['coupons'=> $coupons]);
+        $user = Auth::user();
+        $coupons = Coupon::where('company_id', $user->company_id)->get();
+        return view('company.coupons.index', ['coupons'=> $coupons]);
     }
 
     /**
@@ -23,8 +26,7 @@ class CouponController extends Controller
      */
     public function create()
     {
-        $companies = Company::all();
-        return view('admin.coupons.create', ['companies'=> $companies]);
+        return view('company.coupons.create');
     }
 
     /**
@@ -32,6 +34,7 @@ class CouponController extends Controller
      */
     public function store(Request $request)
     {
+        $user = Auth::user();
         $coupon = new Coupon();
         $coupon->name = $request->name;
         if ($request->coupon_type == "price") {
@@ -42,14 +45,14 @@ class CouponController extends Controller
             $coupon->percent = $request->percent;
         }
         $coupon->min_price = $request->min_price;
-        $coupon->company_id = $request->company_id;
+        $coupon->company_id = $user->company_id;
         $coupon->type = $request->type;
         $coupon->status = $request->status;
         $coupon->order_count = $request->order_count;
         $coupon->start_date = $request->start_date;
         $coupon->end_date = $request->end_date;
         $coupon->save();
-        return redirect()->route('coupons.index')->with('status', translate('Successfully created'));
+        return redirect()->route('company_coupons.index')->with('status', translate('Successfully created'));
     }
 
     /**
@@ -58,7 +61,7 @@ class CouponController extends Controller
     public function show(string $id)
     {
         $model = Coupon::find($id);
-        return view('admin.coupons.show', ['model'=>$model]);
+        return view('company.coupons.show', ['model'=>$model]);
     }
 
     /**
@@ -68,7 +71,7 @@ class CouponController extends Controller
     {
         $coupon = Coupon::find($id);
         $companies = Company::all();
-        return view('admin.coupons.edit', ['coupon'=> $coupon, 'companies'=>$companies]);
+        return view('company.coupons.edit', ['coupon'=> $coupon, 'companies'=>$companies]);
     }
 
     /**
@@ -76,6 +79,7 @@ class CouponController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $user = Auth::user();
         $coupon = Coupon::find($id);
         $coupon->name = $request->name;
         if ($request->coupon_type == "price") {
@@ -88,16 +92,14 @@ class CouponController extends Controller
         if(isset($request->min_price)){
             $coupon->min_price = $request->min_price;
         }
-        if(isset($request->company_id)){
-            $coupon->company_id = $request->company_id;
-        }
+        $coupon->company_id = $user->company_id;
         $coupon->order_count = $request->order_count;
         $coupon->type = $request->type;
         $coupon->status = $request->status;
         $coupon->start_date = $request->start_date;
         $coupon->end_date = $request->end_date;
         $coupon->save();
-        return redirect()->route('coupons.index')->with('status', translate('Successfully created'));
+        return redirect()->route('company_coupons.index')->with('status', translate('Successfully created'));
     }
 
 
@@ -108,6 +110,6 @@ class CouponController extends Controller
     {
         $model = Coupon::find($id);
         $model->delete();
-        return redirect()->route('coupons.index')->with('status', translate('Successfully created'));
+        return redirect()->route('company_coupons.index')->with('status', translate('Successfully created'));
     }
 }

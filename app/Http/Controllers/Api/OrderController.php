@@ -590,10 +590,11 @@ class OrderController extends Controller
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
 
-        if ($coupon=DB::table('coupons')->where('name',$request->coupon_name)->first()) {
+        if ($coupon=DB::table('coupons')->where('name',$request->coupon_name)->where('status',1)->first()) {
             // dd('dfhsdg');
             if ($order=Order::where('id',$request->order_id)->first()) {
                 // dd($order);
+                $order_count = Order::where('user_id', $order->user_id)->where('status', '!=', Constants::BASKED)->count();
                 if ($order->coupon_id == null) {
                     // dd($order->orderDetail);
                     if ($coupon->company_id != null) {
@@ -602,7 +603,24 @@ class OrderController extends Controller
                                 // dd($order_detail->warehouse_id);
                                $company_id=DB::table('warehouses')->where('id',$order_detail->warehouse_id)->first()->company_id;
                                if ($coupon->company_id == $company_id) {
-                                $order->coupon_id = $coupon->id;
+                                // dd($coupon);
+                                    if ($coupon->min_price && $order->all_price > $coupon->min_price && $coupon->type == 0 && $order_count <= $coupon->order_count) {
+                                        $order->coupon_id = $coupon->id;
+                                    }
+                                    elseif ($coupon->min_price && $order->all_price > $coupon->min_price && $coupon->type == 1 && ($order_count - 1) == $coupon->order_count) {
+                                        $order->coupon_id = $coupon->id;
+                                    }
+                                    elseif ($coupon->type == 0 && $order_count <= $coupon->order_count) {
+                                        $order->coupon_id = $coupon->id;
+                                    }
+                                    elseif ($coupon->type == 1 && ($order_count - 1) == $coupon->order_count) {
+                                        $order->coupon_id = $coupon->id;
+                                    }
+                                    else {
+                                        $message=translate_api('This coupon has not been verified',$language);
+                                        return $this->error($message, 400);
+                                    }
+                                    // $order->coupon_id = $coupon->id;
                                 // dd($order);
                                }
                             }
@@ -610,12 +628,23 @@ class OrderController extends Controller
                         }
 
                     }
-                    elseif ($order->all_price > $coupon->min_price ) {
+                    elseif ($order->all_price > $coupon->min_price && $coupon->type == 0 && $order_count <= $coupon->order_count) {
                         $order->coupon_id = $coupon->id;
                     }
-                    elseif (count(Order::where('id',$request->order_id)->where('status','!=', Constants::BASKED)) == $coupon->order_count ) {
+                    elseif ($order->all_price > $coupon->min_price && $coupon->type == 1 && ($order_count - 1) == $coupon->order_count) {
                         $order->coupon_id = $coupon->id;
                     }
+                    elseif ($coupon->type == 0 && $order_count <= $coupon->order_count) {
+                        $order->coupon_id = $coupon->id;
+                    }
+                    elseif ($coupon->type == 1 && ($order_count - 1) == $coupon->order_count) {
+                        $order->coupon_id = $coupon->id;
+                    }
+                    else {
+                        $message=translate_api('This coupon has not been verified',$language);
+                        return $this->error($message, 400);
+                    }
+
                     // dd($order);
                     if ($order->coupun_id == null) {
                         // dd('have a coupons');
@@ -624,6 +653,7 @@ class OrderController extends Controller
                             $order_coupon_price=(($order->all_price)/100)*($coupon->percent);
                             $order->coupon_price=$order_coupon_price;
                             $order->all_price=$order->all_price - $order_coupon_price;
+                            // dd($order);
                          }
                          else {
                             $order->all_price=$order->all_price - $coupon->price;
@@ -655,7 +685,6 @@ class OrderController extends Controller
                 return $this->error($message, 400);
             }
         }
-        // dd($coupon);
         $message=translate_api('coupon not found',$language);
         return $this->error($message, 400);
     }
@@ -680,7 +709,7 @@ class OrderController extends Controller
                 'phone_number'=>$data['receiver_phone'],
                 // 'payment_method'=>$data['payment_method'],
                 // 'user_card_id'=>$data['user_card_id'],
-                'status'=>Constants::ACCEPTED,
+                'status'=>Constants::PERFORMED,
             ]);
 
             $message=translate_api('success',$language);
@@ -705,18 +734,27 @@ class OrderController extends Controller
             $order=$order_detail->order;
             $order->price=$order->price-($order_detail->price * $order_detail->quantity);
             $order->discount_price=$order->discount_price - $order_detail->discount_price;
+            $order->all_price= $order->all_price - ($order_detail->price * $order_detail->quantity) + $order_detail->discount_price;
+            if ($order->coupon_id) {
+                if ($order_detail->warehouse_id) {
+                    if (DB::table('warehouses')->where('id',$order_detail->warehouse_id)->first()->company_id == $coupon=DB::table('coupons')->where('id',$order->coupon_id)->first()->company_id) {
+                        $order->all_price = $order->all_price + $order->coupon_price;
+                        $order->coupon_price = null;
+                    }
+                }
+            }
             // if ($order->coupon_id) {
 
             // }
-            $order->save();
+            // $order->save();
             if ($order_detail->warehouse_id != null) {
                $warehouse=Warehouse::where('id',$order_detail->warehouse_id)->first();
                $warehouse->quantity=$warehouse->quantity + $order_detail->quantity;
                if ($warehouse->save()) {
                    $order_detail->delete();
                }
-               $message=translate_api('order detail deleted',$language);
-               return $this->success($message, 200);
+            //    $message=translate_api('order detail deleted',$language);
+            //    return $this->success($message, 200);
 
             }
 
@@ -727,6 +765,15 @@ class OrderController extends Controller
            //    dd($upload);
 
            $order_detail->delete();
+
+           $test_order_detail=DB::table('order_details')->where('order_id',$order->id)->first();
+        //    dd($test_order_detail);
+           if ($test_order_detail) {
+                $order->save();
+           }
+           else {
+                $order->delete();
+           }
 
            $message=translate_api('order detail deleted',$language);
            return $this->success($message, 200);
@@ -805,13 +852,13 @@ class OrderController extends Controller
                 $status = 'Ordered';
                 break;
             case 3:
-                $status = 'Accepted';
+                $status = 'Performed';
                 break;
             case 4:
-                $status = 'On the way';
+                $status = 'Cancelled';
                 break;
             case 5:
-                $status = 'Finished';
+                $status = 'Accepted by recipient';
                 break;
             default:
                 $status = null;

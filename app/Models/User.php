@@ -73,16 +73,16 @@ class User extends Authenticatable
     public function ordersOrdered(){
         return $this->hasMany(Order::class, 'user_id', 'id')->where('status', Constants::ORDERED);
     }
-    public function ordersAccepted(){
-        return $this->hasMany(Order::class, 'user_id', 'id')->where('status', Constants::ACCEPTED);
+    public function ordersPerformed(){
+        return $this->hasMany(Order::class, 'user_id', 'id')->where('status', Constants::PERFORMED);
     }
-    public function ordersOnTheWay(){
-        return $this->hasMany(Order::class, 'user_id', 'id')->where('status', Constants::ON_THE_WAY);
+    public function ordersCancelled(){
+        return $this->hasMany(Order::class, 'user_id', 'id')->where('status', Constants::CANCELLED);
     }
-    public function ordersFinished(){
-        return $this->hasMany(Order::class, 'user_id', 'id')->where('status', Constants::FINISHED);
+    public function ordersAcceptedByRecipient(){
+        return $this->hasMany(Order::class, 'user_id', 'id')->where('status', Constants::ACCEPTED_BY_RECIPIENT);
     }
     public function orders(){
-        return $this->hasMany(Order::class, 'user_id', 'id')->whereIn('status', [Constants::ACCEPTED, Constants::ON_THE_WAY, Constants::FINISHED]);
+        return $this->hasMany(Order::class, 'user_id', 'id')->whereIn('status', [Constants::PERFORMED, Constants::CANCELLED, Constants::ACCEPTED_BY_RECIPIENT]);
     }
 }

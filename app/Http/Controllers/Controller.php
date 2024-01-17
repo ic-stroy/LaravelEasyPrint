@@ -36,6 +36,7 @@ class Controller extends BaseController
         ], 200, [], JSON_INVALID_UTF8_SUBSTITUTE); // $error_type
 
     }
+
     public function setRandom(){
         $letters = range('a', 'z');
         $random_array = [$letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)]];

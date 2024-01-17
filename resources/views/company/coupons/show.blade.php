@@ -1,4 +1,4 @@
-@extends('layout.layout')
+@extends('company.layout.layout')
 
 @section('title')
     {{-- Your page title --}}
@@ -8,7 +8,7 @@
         <div class="card-body">
             <h4 class="mt-0 header-title">{{translate('Coupon lists')}}</h4>
             <div class="dropdown float-end">
-                <a class="form_functions btn btn-success" href="{{route('coupons.create')}}">{{translate('Create')}}</a>
+                <a class="form_functions btn btn-success" href="{{route('company_coupons.create')}}">{{translate('Create')}}</a>
             </div>
 {{--            <table id="datatable-buttons" class="table dt-responsive nowrap table_show">--}}
             <table class="table dt-responsive nowrap table_show">

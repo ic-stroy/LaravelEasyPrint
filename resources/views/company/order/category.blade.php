@@ -31,7 +31,21 @@
                     <tr>
                         <td>
                             <a class="show_page" href="{{route('company_order.index', 3)}}">
-                                {{translate('Finished')}}
+                                {{translate('Performed')}}
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a class="show_page" href="{{route('company_order.index', 4)}}">
+                                {{translate('Cancelled')}}
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a class="show_page" href="{{route('company_order.index', 5)}}">
+                                {{translate('Accepted by recipient')}}
                             </a>
                         </td>
                     </tr>

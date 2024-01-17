@@ -27,6 +27,8 @@ class AddressController extends Controller
             $data[] = [
                 'id'=>$city->id,
                 'region'=>$city->name,
+                'lat'=>$city->lat,
+                'long'=>$city->lng,
                 'cities'=>$cities_,
             ];
         }

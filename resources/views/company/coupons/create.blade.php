@@ -1,4 +1,4 @@
-@extends('layout.layout')
+@extends('company.layout.layout')
 
 @section('title')
     {{-- Your page title --}}
@@ -18,7 +18,7 @@
             <p class="text-muted font-14">
                 {{translate('Coupon list create')}}
             </p>
-            <form action="{{route('coupons.store')}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
+            <form action="{{route('company_coupons.store')}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method("POST")
                 <div class="row">
@@ -42,13 +42,8 @@
                         <input type="number" name="percent" class="form-control" id="coupon_percent_input" required step="0.01" min="0" max="100" value="{{old('percent')}}"/>
                     </div>
                     <div class="mb-3 col-3">
-                        <label class="form-label">{{translate('Companies')}}</label>
-                        <select name="company_id" class="form-control" id="company_id">
-                            <option value="" selected>{{translate('All company')}}</option>
-                            @foreach($companies as $company)
-                                <option value="{{$company->id}}">{{$company->name}}</option>
-                            @endforeach
-                        </select>
+                        <label class="form-label">{{translate("Order's min price")}}</label>
+                        <input type="number" name="min_price" class="form-control" min="0" value="{{old('min_price')}}"/>
                     </div>
                     <div class="mb-3 col-2">
                         <label class="form-label">{{translate('Status')}}</label>
@@ -59,7 +54,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="mb-3 col-2">
+                    <div class="mb-3 col-3">
                         <label class="form-label">{{translate('Type')}}</label>
                         <select name="type" class="form-control" id="type" required>
                             <option value="{{\App\Constants::TO_ORDER_COUNT}}" class="form-control">{{translate('Quantity')}}</option>
@@ -67,19 +62,15 @@
                         </select>
                     </div>
                     <div class="mb-3 col-3">
-                        <label class="form-label">{{translate("Order's min price")}}</label>
-                        <input type="number" name="min_price" class="form-control" min="0" value="{{old('min_price')}}"/>
-                    </div>
-                    <div class="mb-3 col-3">
                         <label class="form-label" id="quantity_orders">{{translate('Quantity of orders')}}</label>
                         <label class="form-label display-none" id="number_order">{{translate('The number of order')}}</label>
                         <input type="number" name="order_count" class="form-control" required/>
                     </div>
-                    <div class="mb-3 col-2">
+                    <div class="mb-3 col-3">
                         <label class="form-label">{{translate('Start date')}}</label>
                         <input type="date" name="start_date" class="form-control" required value="{{old('start_date')}}"/>
                     </div>
-                    <div class="mb-3 col-2">
+                    <div class="mb-3 col-3">
                         <label class="form-label">{{translate('End date')}}</label>
                         <input type="date" name="end_date" class="form-control" required value="{{old('end_date')}}"/>
                     </div>
