@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('user_cards', function (Blueprint $table) {
             $table->id();
-            
+
             $table->string('name', 100)->nullable();
             $table->bigInteger('card_number')->nullable();
             $table->string('validity_period', 100)->nullable();

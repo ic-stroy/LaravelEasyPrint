@@ -64,7 +64,12 @@ Auth::routes();
         Route::get('slide-show', [ProductsController::class, 'SlideShow'])->name('slide_show.index');
         Route::get('slide-show/show/{id}', [ProductsController::class, 'SlideShowShow'])->name('slide_show.show');
         Route::get('/slide-show/status/', [ProductsController::class, 'SlideShowStatus'])->name('slide_show.status');
-
+        Route::group(['prefix' => 'order'], function () {
+             Route::get('/index/{id}', [OrderController::class, 'index'])->name('order.index');
+             Route::get('/category', [OrderController::class, 'category'])->name('order.category');
+             Route::get('/show/{id}', [OrderController::class, 'show'])->name('order.show');
+             Route::get('/destroy/{id}', [OrderController::class, 'destroy'])->name('order.destroy');
+        });
          Route::group(['prefix' => 'table'], function () {
              Route::get('translation', [TableTranslationController::class, 'index'])->name('table.index');
              Route::get('show/{type}', [TableTranslationController::class, 'show'])->name('table.show');
@@ -103,7 +108,7 @@ Auth::routes();
                 Route::resource('company_user', CompanyUsersController::class)->middleware('is_admin');
             });
             Route::resource('company_coupons', CompanyCouponController::class);
-            Route::group(['prefix' => 'order'], function () {
+            Route::group(['prefix' => 'company-order'], function () {
                 Route::get('/index/{id}', [CompanyOrderController::class, 'index'])->name('company_order.index');
                 Route::get('/category', [CompanyOrderController::class, 'category'])->name('company_order.category');
                 Route::get('/show/{id}', [CompanyOrderController::class, 'show'])->name('company_order.show');
