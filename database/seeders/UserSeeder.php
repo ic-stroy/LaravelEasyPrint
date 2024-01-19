@@ -31,7 +31,7 @@ class UserSeeder extends Seeder
                 'role_id'=>1,
                 'language'=>'ru',
                 'password'=>Hash::make('12345678'),
-                'personal_info_id'=>$last_id
+                'personal_info_id'=>(int)$last_id+1
             ];
             PersonalInfo::create($personal_info);
             User::create($user);

@@ -11,9 +11,10 @@ class Constants {
    // Order    type_ids
    const BASKED = 1;
    const ORDERED = 2;
-   const PERFORMED = 3;
-   const CANCELLED = 4;
-   const ACCEPTED_BY_RECIPIENT = 5;
+   const ACCEPTED = 3;
+   const PERFORMED = 4;
+   const CANCELLED = 5;
+   const ACCEPTED_BY_RECIPIENT = 6;
    // 1 basked 2 ordered 3 accepted 4 on_the_way 5 finished
 
    // Order    payment_method
