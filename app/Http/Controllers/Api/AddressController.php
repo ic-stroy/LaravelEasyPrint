@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Address;
 use App\Models\Cities;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -146,4 +147,34 @@ class AddressController extends Controller
             return $this->error($message, 400);
         }
     }
+
+
+
+    // get company products
+    public function getCompanyProducts($id){
+        $language = $request->header('language');
+        $user = Auth::user();
+        
+        $id = (int)$request->id;
+
+        $company = Company::where('id',$id)->first();
+        $response = [];
+        
+        if(isset($company) && $company != NULL){
+        
+            $response[] = [
+                'id' =>$company->id
+            ];    
+
+            $message=translate_api('Success',$language);
+            return $this->success($message, 200, $response);
+        }
+        else{
+            $message=translate_api('Company not found',$language);
+            return $this->error($message, 500);
+        }
+
+    }
+
+
 }
