@@ -13,7 +13,7 @@ class LanguageSeeder extends Seeder
      */
     public function run(): void
     {
-        $language = Language::withTrashed()->first();
+        $language = Language::first();
         if(!isset($language->id)){
             $datas = [
                 [
@@ -26,11 +26,6 @@ class LanguageSeeder extends Seeder
                     'name'=>'ru',
                     'code'=>'ru',
                 ],
-                [
-                    'id'=>3,
-                    'name'=>'en',
-                    'code'=>'en',
-                ]
             ];
             foreach ($datas as $data){
                 Language::create($data);
