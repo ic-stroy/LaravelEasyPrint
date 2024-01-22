@@ -62,10 +62,10 @@ class User extends Authenticatable
         return $this->hasOne(Company::class, 'id', 'company_id');
     }
     public function allOrders(){
-        return $this->hasMany(Order::class, 'user_id', 'id')->where('status', '!=', Constants::ACCEPTED);
+        return $this->hasMany(Order::class, 'user_id', 'id');
     }
     public function orderBasket(){
-        return $this->hasMany(Order::class, 'user_id', 'id')->whereIn('status', [Constants::BASKED, Constants::ORDERED]);
+        return $this->hasOne(Order::class, 'user_id', 'id')->where('status', Constants::BASKED);
     }
     public function order(){
         return $this->hasOne(Order::class, 'user_id', 'id')->where('status', Constants::ORDERED);

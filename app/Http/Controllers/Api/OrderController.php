@@ -73,7 +73,6 @@ class OrderController extends Controller
             $order_price =(int)(($request->price)*($request->quantity));
             $order_all_price=$order_price - $discount_price;
         }
-
         if(isset($user->orderBasket->id)){
             $order = $user->orderBasket;
             $order->price = $order->price + $order_price;
@@ -84,8 +83,8 @@ class OrderController extends Controller
             $order->user_id = $user->id;
             $order->status = Constants::BASKED;
             $order->price = (int)$order_price;
-            $order->discount_price=(int)($order_price-$order_all_price);
-            $order->all_price=(int)$order_all_price;
+            $order->discount_price = (int)($order_price-$order_all_price);
+            $order->all_price = (int)$order_all_price;
         }
         $order->save();
         if(!$order->code){
@@ -197,147 +196,140 @@ class OrderController extends Controller
     /**
      * bu funksiya savatchaga qo'shilgan products va warehouses larni frontga chiqarib berishda qollaniladi (Order status Backet bo'ladi Get zapros)
      */
-    public function getBasket(Request $request){
+    public function getBasket(Request $request)
+    {
         $user = Auth::user();
-        $language=$request->language;
+        $language = $request->language;
         if ($language == null) {
-            $language=env("DEFAULT_LANGUAGE", 'ru');
+            $language = env("DEFAULT_LANGUAGE", 'ru');
         }
+        $order = $user->orderBasket;
         $order_detail_list = [];
-        $all_coupon_price = 0;
-        $all_price = 0;
-        $all_discount_price = 0;
-        $all_grant_total = 0;
-        foreach($user->orderBasket as $orderBasket){
-            foreach ($orderBasket->orderDetail as $order_detail){
+        if (isset($user->orderBasket->orderDetail)) {
+            foreach ($user->orderBasket->orderDetail as $order_detail) {
                 if ($order_detail->warehouse_id != null) {
                     $warehouse_product = DB::table('order_details as dt1')
                         ->join('warehouses as dt2', 'dt2.id', '=', 'dt1.warehouse_id')
                         ->join('sizes as dt3', 'dt3.id', '=', 'dt2.size_id')
                         ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
                         // ->leftJoin('coupons as dt5', 'dt5.warehouse_product_id', '=', 'dt2.id')
-                        ->where('dt1.id' , $order_detail->id)
-                        ->join('companies as dt5', 'dt5.id', '=','dt2.company_id')
-                        ->select('dt2.id as warehouse_product_id','dt2.name as warehouse_product_name','dt2.quantity as max_quantity',
+                        ->where('dt1.id', $order_detail->id)
+                        ->join('companies as dt5', 'dt5.id', '=', 'dt2.company_id')
+                        ->select('dt2.id as warehouse_product_id', 'dt2.name as warehouse_product_name', 'dt2.quantity as max_quantity',
                             'dt2.images as images', 'dt2.description as description', 'dt2.product_id as product_id',
-                            'dt2.company_id as company_id','dt3.id as size_id','dt3.name as size_name',
-                            'dt4.id as color_id','dt4.name as color_name','dt4.code as color_code','dt5.name as company_name')
+                            'dt2.company_id as company_id', 'dt3.id as size_id', 'dt3.name as size_name',
+                            'dt4.id as color_id', 'dt4.name as color_name', 'dt4.code as color_code', 'dt5.name as company_name')
                         ->first();
 
-                    $relation_type='warehouse_product';
-                    $relation_id=$order_detail->warehouse_id;
+                    $relation_type = 'warehouse_product';
+                    $relation_id = $order_detail->warehouse_id;
                     $list_product = Products::find($warehouse_product->product_id);
-                    $list_images = count($this->getImages($warehouse_product, 'warehouses'))>0?$this->getImages($warehouse_product, 'warehouses'):$this->getImages($list_product, 'product');
+                    $list_images = count($this->getImages($warehouse_product, 'warehouses')) > 0 ? $this->getImages($warehouse_product, 'warehouses') : $this->getImages($list_product, 'product');
 
-                    $translate_name=table_translate($warehouse_product,'warehouse',$language);
-                    $total_price=$order_detail->price - $order_detail->discount_price;
+                    $translate_name = table_translate($warehouse_product, 'warehouse', $language);
+                    $total_price = $order_detail->price - $order_detail->discount_price;
 
-                    $list=[
-                        "id"=>$order_detail->id,
-                        "relation_type"=>$relation_type,
-                        "relation_id"=>$relation_id,
-                        'name'=>$translate_name,
-                        "price"=>$order_detail->price,
-                        "quantity"=>$order_detail->quantity,
-                        "max_quantity"=>$warehouse_product->max_quantity,
-                        "description"=>$warehouse_product->description,
-                        "discount"=>$order_detail->discount,
-                        "discount_price"=>$order_detail->discount_price,
-                        "total_price"=>$total_price,
-                        "company_name"=>$warehouse_product->company_name,
-                        "images"=>$list_images,
-                        "color"=>[
-                            "id"=>$warehouse_product->color_id,
-                            "code"=>$warehouse_product->color_code,
-                            "name"=>$warehouse_product->color_name,
+                    $list = [
+                        "id" => $order_detail->id,
+                        "relation_type" => $relation_type,
+                        "relation_id" => $relation_id,
+                        'name' => $translate_name,
+                        "price" => $order_detail->price,
+                        "quantity" => $order_detail->quantity,
+                        "max_quantity" => $warehouse_product->max_quantity,
+                        "description" => $warehouse_product->description,
+                        "discount" => $order_detail->discount,
+                        "discount_price" => $order_detail->discount_price,
+                        "total_price" => $total_price,
+                        "company_name" => $warehouse_product->company_name,
+                        "images" => $list_images,
+                        "color" => [
+                            "id" => $warehouse_product->color_id,
+                            "code" => $warehouse_product->color_code,
+                            "name" => $warehouse_product->color_name,
                         ],
-                        "size"=>[
-                            "id"=>$warehouse_product->size_id,
-                            "name"=>$warehouse_product->size_name,
+                        "size" => [
+                            "id" => $warehouse_product->size_id,
+                            "name" => $warehouse_product->size_name,
                         ]
                     ];
 
-                }
-                else {
-                    $relation_type='product';
-                    $relation_id=$order_detail->product_id;
+                } else {
+                    $relation_type = 'product';
+                    $relation_id = $order_detail->product_id;
 
                     $product = DB::table('order_details as dt1')
                         ->join('products as dt2', 'dt2.id', '=', 'dt1.product_id')
                         ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
                         ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
-                        ->where('dt1.id' , $order_detail->id)
-                        ->select('dt2.id','dt2.name','dt2.images as images', 'dt2.description as description','dt3.id as size_id','dt3.name as size_name','dt4.id as color_id','dt4.code as color_code','dt4.name as color_name',)
+                        ->where('dt1.id', $order_detail->id)
+                        ->select('dt2.id', 'dt2.name', 'dt2.images as images', 'dt2.description as description', 'dt3.id as size_id', 'dt3.name as size_name', 'dt4.id as color_id', 'dt4.code as color_code', 'dt4.name as color_name',)
                         ->first();
 
-                    if(isset($product->id)){
+                    if (isset($product->id)) {
 
-                        $translate_name=table_translate($product,'product',$language);
-                        $total_price=$order_detail->price - $order_detail->discount_price;
+                        $translate_name = table_translate($product, 'product', $language);
+                        $total_price = $order_detail->price - $order_detail->discount_price;
 
-                        $list=[
-                            "id"=>$order_detail->id,
-                            "relation_type"=>$relation_type,
-                            "relation_id"=>$relation_id,
-                            "price"=>$order_detail->price,
-                            "name"=>$translate_name ,
-                            "quantity"=>$order_detail->quantity,
-                            "discount"=>$order_detail->discount,
-                            "discount_price"=>$order_detail->discount_price,
-                            "total_price"=>$total_price,
-                            "description"=>$product->description??'',
-                            "company_name"=>null,
-                            "images"=>$this->getImages($product, 'product'),
-                            "color"=>[
-                                "id"=>$product->color_id,
-                                "code"=>$product->color_code,
-                                "name"=>$product->color_name,
+                        $list = [
+                            "id" => $order_detail->id,
+                            "relation_type" => $relation_type,
+                            "relation_id" => $relation_id,
+                            "price" => $order_detail->price,
+                            "name" => $translate_name,
+                            "quantity" => $order_detail->quantity,
+                            "discount" => $order_detail->discount,
+                            "discount_price" => $order_detail->discount_price,
+                            "total_price" => $total_price,
+                            "description" => $product->description ?? '',
+                            "company_name" => null,
+                            "images" => $this->getImages($product, 'product'),
+                            "color" => [
+                                "id" => $product->color_id,
+                                "code" => $product->color_code,
+                                "name" => $product->color_name,
                             ],
-                            "size"=>[
-                                "id"=>$product->size_id,
-                                "name"=>$product->size_name,
+                            "size" => [
+                                "id" => $product->size_id,
+                                "name" => $product->size_name,
                             ]
                         ];
-                    }else{
+                    } else {
                         $list = [];
                     }
                 }
-                array_push($order_detail_list,$list);
+                array_push($order_detail_list, $list);
             }
-            $all_coupon_price = $all_coupon_price + (int)$orderBasket->coupon_price;
-            $all_price = $all_price + (int)$orderBasket->price;
-            $all_discount_price = $all_discount_price + (int)$orderBasket->discount_price;
-            $all_grant_total = $all_grant_total + (int)$orderBasket->all_price;
-        }
+            $data = [
+                'id' => $order->id,
+                'coupon_price' => $order->coupon_price,
+                'price' => $order->price,
+                'discount_price' => $order->discount_price,
+                'grant_total' => $order->all_price,
+                'list' => $order_detail_list
+            ];
 
-        $data=[
-            'id'=>$orderBasket->id,
-            'coupon_price'=>$all_coupon_price,
-            'price'=>$all_price,
-            'discount_price'=>$all_discount_price,
-            'grant_total'=>$all_grant_total,
-            'list'=>$order_detail_list
-        ];
-        $message=translate_api('success',$language);
-        return $this->success($message, 200,$data);
+            $message = translate_api('success', $language);
+            return $this->success($message, 200, $data);
+        } else {
+            return $this->error(translate_api('You do not have an order', $language), 400);
+        }
     }
     /**
      * bu funksiya savatchaga qo'shilgan products va warehouses larni frontga chiqarib berishda qollaniladi (Order status Ordered bo'ladi Get zapros) Farqi bunda Orderni ichidagi productlarni o'zgartirib bo'lmaydi
      */
     public function getOrder(Request $request){
 
-        $language=$request->language;
+        $language = $request->language;
         if ($language == null) {
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
 
-        $order_id=$request->order_id;
+        $order_id = $request->order_id;
 
-        if ($order_id  && $order=Order::where('id',$order_id)->first()) {
+        if ($order_id  && $order = Order::where('id',$order_id)->first()) {
             $data=[];
             $order_detail_list=[];
-            // $order_price=0;
-            // $order_discount_price=0;
             foreach ($order->orderDetail as $order_detail){
 
                 if ($order_detail->warehouse_id != null) {
@@ -411,8 +403,6 @@ class OrderController extends Controller
                 'list'=>$order_detail_list
             ];
 
-            // array_push($data,$addresses);
-
             $message=translate_api('success',$language);
             return $this->success($message, 200,$data);
         }
@@ -429,12 +419,12 @@ class OrderController extends Controller
         $data=$request->all();
         $order_inner=$data['data'];
         $order_id=$data['order_id'];
-        if ($order_id  && $order=Order::where('id',$order_id)->whereIn('status', [Constants::BASKED, Constants::ORDERED])->first()) {
+        if ($order_id  && $order=Order::where('id',$order_id)->where('status', Constants::BASKED)->first()) {
             $order_price=0;
             $order_discount_price=0;
 
             foreach ($order_inner as  $update_order_detail) {
-                if ($order_detail=OrderDetail::where('id',$update_order_detail['order_detail_id'])->where('order_id',$order_id)->first()) {
+                if ($order_detail=OrderDetail::where('id', $update_order_detail['order_detail_id'])->where('order_id',$order_id)->first()) {
                     if(!Color::where('id', $update_order_detail['color_id'])->exists()){
                         return $this->error(translate_api('Color not found', $language), 400);
                     }
@@ -460,7 +450,7 @@ class OrderController extends Controller
             $order->price=$order_price;
             $order->discount_price=$order_discount_price;
             $order->all_price=$order_price-$order_discount_price;
-            $order->status=Constants::ORDERED;
+            $order->status=Constants::BASKED;
             $order->save();
             $message=translate_api('success',$language);
             return $this->success($message, 200);
@@ -475,26 +465,20 @@ class OrderController extends Controller
      * bu funksiya  orderga Coupon qo'shishda qollaniladi (Order status Ordered bo'ladi Post zapros) productlarga tegishli faqat bitta coupon active bo'ladi
      */
     public function addCoupon(Request $request){
-        // dd($request->all());
         $language=$request->language;
         if ($language == null) {
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
 
         if ($coupon=DB::table('coupons')->where('name',$request->coupon_name)->where('status',1)->first()) {
-            // dd('dfhsdg');
             if ($order=Order::where('id',$request->order_id)->first()) {
-                // dd($order);
                 $order_count = Order::where('user_id', $order->user_id)->where('status', '!=', Constants::BASKED)->count();
                 if ($order->coupon_id == null) {
-                    // dd($order->orderDetail);
                     if ($coupon->company_id != null) {
                         foreach ($order->orderDetail as $order_detail) {
                             if ($order_detail->warehouse_id) {
-                                // dd($order_detail->warehouse_id);
                                $company_id=DB::table('warehouses')->where('id',$order_detail->warehouse_id)->first()->company_id;
                                if ($coupon->company_id == $company_id) {
-                                // dd($coupon);
                                     if ($coupon->min_price && $order->all_price > $coupon->min_price && $coupon->type == 0 && $order_count <= $coupon->order_count) {
                                         $order->coupon_id = $coupon->id;
                                     }
@@ -511,8 +495,6 @@ class OrderController extends Controller
                                         $message=translate_api('This coupon has not been verified',$language);
                                         return $this->error($message, 400);
                                     }
-                                    // $order->coupon_id = $coupon->id;
-                                // dd($order);
                                }
                             }
 
@@ -536,15 +518,12 @@ class OrderController extends Controller
                         return $this->error($message, 400);
                     }
 
-                    // dd($order);
                     if ($order->coupun_id == null) {
                         // dd('have a coupons');
                          if ($coupon->percent != null) {
-                            // dd($order);
                             $order_coupon_price=(($order->all_price)/100)*($coupon->percent);
                             $order->coupon_price=$order_coupon_price;
                             $order->all_price=$order->all_price - $order_coupon_price;
-                            // dd($order);
                          }
                          else {
                             $order->all_price=$order->all_price - $coupon->price;
@@ -581,14 +560,14 @@ class OrderController extends Controller
     }
 
     /**
-     * bu funksiya Buyurtmani tastiqlash uchun qollaniladi (Order status ACCEPTED bo'ladi Post zapros)
+     * bu funksiya Buyurtmani tastiqlash uchun qollaniladi (Order status ORDERED bo'ladi Post zapros)
      */
     public function acceptedOrder(Request $request){
         $language = $request->header('language');
         $data=$request->all();
         $order_id=$data['order_id'];
 
-        if ($order_id  && $order=Order::where('id',$order_id)->where('status', Constants::ORDERED)->first()) {
+        if ($order_id  && $order=Order::where('id',$order_id)->where('status', Constants::BASKED)->first()) {
             $address = Address::find($data['address_id']);
             if(!isset($address->id)){
                 $message=translate_api('Address not found', $language);
@@ -598,9 +577,7 @@ class OrderController extends Controller
                 'address_id'=>$data['address_id'],
                 'receiver_name'=>$data['receiver_name'],
                 'phone_number'=>$data['receiver_phone'],
-                // 'payment_method'=>$data['payment_method'],
-                // 'user_card_id'=>$data['user_card_id'],
-                'status'=>Constants::ACCEPTED,
+                'status'=>Constants::ORDERED,
             ]);
 
             $message=translate_api('success',$language);
@@ -612,7 +589,7 @@ class OrderController extends Controller
         }
     }
     /**
-     * bu funksiya Orderning ichidagi orderDetail ni o'chirishda qo'llaniladi  (Order status ACCEPTED gacha ishlaydi Post zapros)
+     * bu funksiya Orderning ichidagi orderDetail ni o'chirishda qo'llaniladi  (Order status ORDERED gacha ishlaydi Post zapros)
      */
     public function deleteOrderDetail(Request $request){
         $language = $request->header('language');
@@ -620,7 +597,6 @@ class OrderController extends Controller
         $order_detail_id=$request->order_detail_id;
 
         if ($order_detail=OrderDetail::where('id',$order_detail_id)->first()) {
-
 
             $order=$order_detail->order;
             $order->price=$order->price-($order_detail->price * $order_detail->quantity);
@@ -634,18 +610,12 @@ class OrderController extends Controller
                     }
                 }
             }
-            // if ($order->coupon_id) {
-
-            // }
-            // $order->save();
             if ($order_detail->warehouse_id != null) {
                $warehouse=Warehouse::where('id',$order_detail->warehouse_id)->first();
                $warehouse->quantity=$warehouse->quantity + $order_detail->quantity;
                if ($warehouse->save()) {
                    $order_detail->delete();
                }
-            //    $message=translate_api('order detail deleted',$language);
-            //    return $this->success($message, 200);
 
             }
 
@@ -653,12 +623,10 @@ class OrderController extends Controller
            if ($upload=Uploads::where('relation_type',Constants::PRODUCT)->where('relation_id',$order_detail->product_id)->first()) {
             $upload->delete();
            }
-           //    dd($upload);
 
            $order_detail->delete();
 
            $test_order_detail=DB::table('order_details')->where('order_id',$order->id)->first();
-        //    dd($test_order_detail);
            if ($test_order_detail) {
                 $order->save();
            }
@@ -668,7 +636,6 @@ class OrderController extends Controller
 
            $message=translate_api('order detail deleted',$language);
            return $this->success($message, 200);
-            // dd($order_detail);
         }
 
         $message=translate_api('order_detail not found',$language);
