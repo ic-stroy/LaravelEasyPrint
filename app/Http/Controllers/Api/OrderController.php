@@ -991,17 +991,17 @@ class OrderController extends Controller
         return $list;
     }
 
-    public function performOrder(Request $request){
-        $language = $request->header('language');
-        $order = Order::where('status', Constants::ACCEPTED)->find($request->id);
-        if($order){
-            $response
-            Notification::send($order);
-            $message=translate_api('Success', $language);
-            return $this->success($message, 500, $response);
-        }else{
-            $message=translate_api('Order not found',$language);
-            return $this->error($message, 500);
-        }
-    }
+//    public function performOrder(Request $request){
+//        $language = $request->header('language');
+//        $order = Order::where('status', Constants::ACCEPTED)->find($request->id);
+//        if($order){
+//            $response
+//            Notification::send($order);
+//            $message=translate_api('Success', $language);
+//            return $this->success($message, 500, $response);
+//        }else{
+//            $message=translate_api('Order not found',$language);
+//            return $this->error($message, 500);
+//        }
+//    }
 }
