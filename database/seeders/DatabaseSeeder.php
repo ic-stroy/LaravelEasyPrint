@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CategorySeeder::class,
             SizeSeeder::class,
+            LanguageSeeder::class,
             CityTranslationSeeder::class,
             ColorTranslationSeeder::class,
             CategoryTranslationSeeder::class,
