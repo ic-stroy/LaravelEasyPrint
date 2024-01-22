@@ -203,8 +203,11 @@ class OrderController extends Controller
         if ($language == null) {
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
-        $order = $user->orderBasket;
         $order_detail_list = [];
+        $all_coupon_price = 0;
+        $all_price = 0;
+        $all_discount_price = 0;
+        $all_grant_total = 0;
         foreach($user->orderBasket as $orderBasket){
             foreach ($orderBasket->orderDetail as $order_detail){
                 if ($order_detail->warehouse_id != null) {
@@ -229,7 +232,7 @@ class OrderController extends Controller
                     $translate_name=table_translate($warehouse_product,'warehouse',$language);
                     $total_price=$order_detail->price - $order_detail->discount_price;
 
-                    $list=[
+                    $list[]=[
                         "id"=>$order_detail->id,
                         "relation_type"=>$relation_type,
                         "relation_id"=>$relation_id,
@@ -272,7 +275,7 @@ class OrderController extends Controller
                         $translate_name=table_translate($product,'product',$language);
                         $total_price=$order_detail->price - $order_detail->discount_price;
 
-                        $list=[
+                        $list[]=[
                             "id"=>$order_detail->id,
                             "relation_type"=>$relation_type,
                             "relation_id"=>$relation_id,
@@ -301,15 +304,20 @@ class OrderController extends Controller
                 }
                 array_push($order_detail_list,$list);
             }
-            $data[]=[
-                'id'=>$orderBasket->id,
-                'coupon_price'=>$orderBasket->coupon_price,
-                'price'=>$orderBasket->price,
-                'discount_price'=>$orderBasket->discount_price,
-                'grant_total'=>$orderBasket->all_price,
-                'list'=>$order_detail_list
-            ];
+            $all_coupon_price = $all_coupon_price + (int)$orderBasket->coupon_price;
+            $all_price = $all_price + (int)$orderBasket->price;
+            $all_discount_price = $all_discount_price + (int)$orderBasket->discount_price;
+            $all_grant_total = $all_grant_total + (int)$orderBasket->all_price;
         }
+
+        $data=[
+            'id'=>$orderBasket->id,
+            'coupon_price'=>$all_coupon_price,
+            'price'=>$all_price,
+            'discount_price'=>$all_discount_price,
+            'grant_total'=>$all_grant_total,
+            'list'=>$order_detail_list
+        ];
         $message=translate_api('success',$language);
         return $this->success($message, 200,$data);
     }
