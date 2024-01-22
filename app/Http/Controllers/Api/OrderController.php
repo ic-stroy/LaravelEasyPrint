@@ -203,6 +203,7 @@ class OrderController extends Controller
         if ($language == null) {
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
+        $order_detail_list = [];
         $all_coupon_price = 0;
         $all_price = 0;
         $all_discount_price = 0;
@@ -231,7 +232,7 @@ class OrderController extends Controller
                     $translate_name=table_translate($warehouse_product,'warehouse',$language);
                     $total_price=$order_detail->price - $order_detail->discount_price;
 
-                    $list[]=[
+                    $list=[
                         "id"=>$order_detail->id,
                         "relation_type"=>$relation_type,
                         "relation_id"=>$relation_id,
@@ -274,7 +275,7 @@ class OrderController extends Controller
                         $translate_name=table_translate($product,'product',$language);
                         $total_price=$order_detail->price - $order_detail->discount_price;
 
-                        $list[]=[
+                        $list=[
                             "id"=>$order_detail->id,
                             "relation_type"=>$relation_type,
                             "relation_id"=>$relation_id,
@@ -301,6 +302,7 @@ class OrderController extends Controller
                         $list = [];
                     }
                 }
+                array_push($order_detail_list,$list);
             }
             $all_coupon_price = $all_coupon_price + (int)$orderBasket->coupon_price;
             $all_price = $all_price + (int)$orderBasket->price;
@@ -314,7 +316,7 @@ class OrderController extends Controller
             'price'=>$all_price,
             'discount_price'=>$all_discount_price,
             'grant_total'=>$all_grant_total,
-            'list'=>$list
+            'list'=>$order_detail_list
         ];
         $message=translate_api('success',$language);
         return $this->success($message, 200,$data);
