@@ -206,103 +206,101 @@ class OrderController extends Controller
         $order = $user->orderBasket;
         $order_detail_list = [];
         foreach($user->orderBasket as $orderBasket){
-            if($orderBasket->orderDetail){
-                foreach ($orderBasket->orderDetail as $order_detail){
-                    if ($order_detail->warehouse_id != null) {
-                        $warehouse_product = DB::table('order_details as dt1')
-                            ->join('warehouses as dt2', 'dt2.id', '=', 'dt1.warehouse_id')
-                            ->join('sizes as dt3', 'dt3.id', '=', 'dt2.size_id')
-                            ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
-                            // ->leftJoin('coupons as dt5', 'dt5.warehouse_product_id', '=', 'dt2.id')
-                            ->where('dt1.id' , $order_detail->id)
-                            ->join('companies as dt5', 'dt5.id', '=','dt2.company_id')
-                            ->select('dt2.id as warehouse_product_id','dt2.name as warehouse_product_name','dt2.quantity as max_quantity',
-                                'dt2.images as images', 'dt2.description as description', 'dt2.product_id as product_id',
-                                'dt2.company_id as company_id','dt3.id as size_id','dt3.name as size_name',
-                                'dt4.id as color_id','dt4.name as color_name','dt4.code as color_code','dt5.name as company_name')
-                            ->first();
+            foreach ($orderBasket->orderDetail as $order_detail){
+                if ($order_detail->warehouse_id != null) {
+                    $warehouse_product = DB::table('order_details as dt1')
+                        ->join('warehouses as dt2', 'dt2.id', '=', 'dt1.warehouse_id')
+                        ->join('sizes as dt3', 'dt3.id', '=', 'dt2.size_id')
+                        ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
+                        // ->leftJoin('coupons as dt5', 'dt5.warehouse_product_id', '=', 'dt2.id')
+                        ->where('dt1.id' , $order_detail->id)
+                        ->join('companies as dt5', 'dt5.id', '=','dt2.company_id')
+                        ->select('dt2.id as warehouse_product_id','dt2.name as warehouse_product_name','dt2.quantity as max_quantity',
+                            'dt2.images as images', 'dt2.description as description', 'dt2.product_id as product_id',
+                            'dt2.company_id as company_id','dt3.id as size_id','dt3.name as size_name',
+                            'dt4.id as color_id','dt4.name as color_name','dt4.code as color_code','dt5.name as company_name')
+                        ->first();
 
-                        $relation_type='warehouse_product';
-                        $relation_id=$order_detail->warehouse_id;
-                        $list_product = Products::find($warehouse_product->product_id);
-                        $list_images = count($this->getImages($warehouse_product, 'warehouses'))>0?$this->getImages($warehouse_product, 'warehouses'):$this->getImages($list_product, 'product');
+                    $relation_type='warehouse_product';
+                    $relation_id=$order_detail->warehouse_id;
+                    $list_product = Products::find($warehouse_product->product_id);
+                    $list_images = count($this->getImages($warehouse_product, 'warehouses'))>0?$this->getImages($warehouse_product, 'warehouses'):$this->getImages($list_product, 'product');
 
-                        $translate_name=table_translate($warehouse_product,'warehouse',$language);
+                    $translate_name=table_translate($warehouse_product,'warehouse',$language);
+                    $total_price=$order_detail->price - $order_detail->discount_price;
+
+                    $list=[
+                        "id"=>$order_detail->id,
+                        "relation_type"=>$relation_type,
+                        "relation_id"=>$relation_id,
+                        'name'=>$translate_name,
+                        "price"=>$order_detail->price,
+                        "quantity"=>$order_detail->quantity,
+                        "max_quantity"=>$warehouse_product->max_quantity,
+                        "description"=>$warehouse_product->description,
+                        "discount"=>$order_detail->discount,
+                        "discount_price"=>$order_detail->discount_price,
+                        "total_price"=>$total_price,
+                        "company_name"=>$warehouse_product->company_name,
+                        "images"=>$list_images,
+                        "color"=>[
+                            "id"=>$warehouse_product->color_id,
+                            "code"=>$warehouse_product->color_code,
+                            "name"=>$warehouse_product->color_name,
+                        ],
+                        "size"=>[
+                            "id"=>$warehouse_product->size_id,
+                            "name"=>$warehouse_product->size_name,
+                        ]
+                    ];
+
+                }
+                else {
+                    $relation_type='product';
+                    $relation_id=$order_detail->product_id;
+
+                    $product = DB::table('order_details as dt1')
+                        ->join('products as dt2', 'dt2.id', '=', 'dt1.product_id')
+                        ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
+                        ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
+                        ->where('dt1.id' , $order_detail->id)
+                        ->select('dt2.id','dt2.name','dt2.images as images', 'dt2.description as description','dt3.id as size_id','dt3.name as size_name','dt4.id as color_id','dt4.code as color_code','dt4.name as color_name',)
+                        ->first();
+
+                    if(isset($product->id)){
+
+                        $translate_name=table_translate($product,'product',$language);
                         $total_price=$order_detail->price - $order_detail->discount_price;
 
                         $list=[
                             "id"=>$order_detail->id,
                             "relation_type"=>$relation_type,
                             "relation_id"=>$relation_id,
-                            'name'=>$translate_name,
                             "price"=>$order_detail->price,
+                            "name"=>$translate_name ,
                             "quantity"=>$order_detail->quantity,
-                            "max_quantity"=>$warehouse_product->max_quantity,
-                            "description"=>$warehouse_product->description,
                             "discount"=>$order_detail->discount,
                             "discount_price"=>$order_detail->discount_price,
                             "total_price"=>$total_price,
-                            "company_name"=>$warehouse_product->company_name,
-                            "images"=>$list_images,
+                            "description"=>$product->description??'',
+                            "company_name"=>null,
+                            "images"=>$this->getImages($product, 'product'),
                             "color"=>[
-                                "id"=>$warehouse_product->color_id,
-                                "code"=>$warehouse_product->color_code,
-                                "name"=>$warehouse_product->color_name,
+                                "id"=>$product->color_id,
+                                "code"=>$product->color_code,
+                                "name"=>$product->color_name,
                             ],
                             "size"=>[
-                                "id"=>$warehouse_product->size_id,
-                                "name"=>$warehouse_product->size_name,
+                                "id"=>$product->size_id,
+                                "name"=>$product->size_name,
                             ]
                         ];
-
+                    }else{
+                        $list = [];
                     }
-                    else {
-                        $relation_type='product';
-                        $relation_id=$order_detail->product_id;
-
-                        $product = DB::table('order_details as dt1')
-                            ->join('products as dt2', 'dt2.id', '=', 'dt1.product_id')
-                            ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
-                            ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
-                            ->where('dt1.id' , $order_detail->id)
-                            ->select('dt2.id','dt2.name','dt2.images as images', 'dt2.description as description','dt3.id as size_id','dt3.name as size_name','dt4.id as color_id','dt4.code as color_code','dt4.name as color_name',)
-                            ->first();
-
-                        if(isset($product->id)){
-
-                            $translate_name=table_translate($product,'product',$language);
-                            $total_price=$order_detail->price - $order_detail->discount_price;
-
-                            $list=[
-                                "id"=>$order_detail->id,
-                                "relation_type"=>$relation_type,
-                                "relation_id"=>$relation_id,
-                                "price"=>$order_detail->price,
-                                "name"=>$translate_name ,
-                                "quantity"=>$order_detail->quantity,
-                                "discount"=>$order_detail->discount,
-                                "discount_price"=>$order_detail->discount_price,
-                                "total_price"=>$total_price,
-                                "description"=>$product->description??'',
-                                "company_name"=>null,
-                                "images"=>$this->getImages($product, 'product'),
-                                "color"=>[
-                                    "id"=>$product->color_id,
-                                    "code"=>$product->color_code,
-                                    "name"=>$product->color_name,
-                                ],
-                                "size"=>[
-                                    "id"=>$product->size_id,
-                                    "name"=>$product->size_name,
-                                ]
-                            ];
-                        }else{
-                            $list = [];
-                        }
-                    }
-                    array_push($order_detail_list,$list);
                 }
-                $data=[
+                array_push($order_detail_list,$list);
+                $data[]=[
                     'id'=>$orderBasket->id,
                     'coupon_price'=>$orderBasket->coupon_price,
                     'price'=>$orderBasket->price,
@@ -310,13 +308,11 @@ class OrderController extends Controller
                     'grant_total'=>$orderBasket->all_price,
                     'list'=>$order_detail_list
                 ];
+            }
 
-                $message=translate_api('success',$language);
-                return $this->success($message, 200,$data);
-            }
-            else {
-                return $this->error(translate_api('You do not have an order', $language), 400);
-            }
+
+            $message=translate_api('success',$language);
+            return $this->success($message, 200,$data);
         }
 
 
