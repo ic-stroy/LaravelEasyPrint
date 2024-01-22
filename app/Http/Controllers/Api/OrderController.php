@@ -300,22 +300,18 @@ class OrderController extends Controller
                     }
                 }
                 array_push($order_detail_list,$list);
-                $data[]=[
-                    'id'=>$orderBasket->id,
-                    'coupon_price'=>$orderBasket->coupon_price,
-                    'price'=>$orderBasket->price,
-                    'discount_price'=>$orderBasket->discount_price,
-                    'grant_total'=>$orderBasket->all_price,
-                    'list'=>$order_detail_list
-                ];
             }
-
-
-            $message=translate_api('success',$language);
-            return $this->success($message, 200,$data);
+            $data[]=[
+                'id'=>$orderBasket->id,
+                'coupon_price'=>$orderBasket->coupon_price,
+                'price'=>$orderBasket->price,
+                'discount_price'=>$orderBasket->discount_price,
+                'grant_total'=>$orderBasket->all_price,
+                'list'=>$order_detail_list
+            ];
         }
-
-
+        $message=translate_api('success',$language);
+        return $this->success($message, 200,$data);
     }
     /**
      * bu funksiya savatchaga qo'shilgan products va warehouses larni frontga chiqarib berishda qollaniladi (Order status Ordered bo'ladi Get zapros) Farqi bunda Orderni ichidagi productlarni o'zgartirib bo'lmaydi
