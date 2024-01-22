@@ -203,7 +203,6 @@ class OrderController extends Controller
         if ($language == null) {
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
-        $order_detail_list = [];
         $all_coupon_price = 0;
         $all_price = 0;
         $all_discount_price = 0;
@@ -302,7 +301,6 @@ class OrderController extends Controller
                         $list = [];
                     }
                 }
-                array_push($order_detail_list,$list);
             }
             $all_coupon_price = $all_coupon_price + (int)$orderBasket->coupon_price;
             $all_price = $all_price + (int)$orderBasket->price;
@@ -316,7 +314,7 @@ class OrderController extends Controller
             'price'=>$all_price,
             'discount_price'=>$all_discount_price,
             'grant_total'=>$all_grant_total,
-            'list'=>$order_detail_list
+            'list'=>$list
         ];
         $message=translate_api('success',$language);
         return $this->success($message, 200,$data);
