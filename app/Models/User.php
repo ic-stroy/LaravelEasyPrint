@@ -65,7 +65,7 @@ class User extends Authenticatable
         return $this->hasMany(Order::class, 'user_id', 'id')->where('status', '!=', Constants::ACCEPTED);
     }
     public function orderBasket(){
-        return $this->hasOne(Order::class, 'user_id', 'id')->where('status', Constants::BASKED);
+        return $this->hasMany(Order::class, 'user_id', 'id')->whereIn('status', [Constants::BASKED, Constants::BASKED]);
     }
     public function order(){
         return $this->hasOne(Order::class, 'user_id', 'id')->where('status', Constants::ORDERED);
