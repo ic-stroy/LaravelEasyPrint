@@ -47,8 +47,7 @@ class OrderController extends Controller
             if(!isset($request->warehouse_product_id) || $request->warehouse_product_id == ""){
                 if ($request->discount != null) {
                     $discount_price = (($request->price + $request->image_price)/100)*$request->discount*$request->quantity;
-                }
-                else {
+                }else {
                     $discount_price = 0;
                 }
                 $order_price =(int)($request->price + $request->image_price)*$request->quantity;
@@ -392,13 +391,9 @@ class OrderController extends Controller
                     }else{
                         $list = [];
                     }
-
-                    // dd($list);
                 }
-
                 array_push($order_detail_list,$list);
             }
-
             $data=[
                 'id'=>$order->id,
                 'coupon_price'=>$order->coupon_price,
@@ -426,11 +421,9 @@ class OrderController extends Controller
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
 
-        // dd($request->order_id);
         $order_id=$request->order_id;
 
         if ($order_id  && $order=Order::where('id',$order_id)->first()) {
-            // dd($order->orderDetail);
             $data=[];
             $order_detail_list=[];
             // $order_price=0;
@@ -447,7 +440,6 @@ class OrderController extends Controller
                         ->select('dt2.name as warehouse_product_name','dt2.quantity as max_quantity', 'dt2.images as images', 'dt2.description as description', 'dt2.product_id as product_id', 'dt2.company_id as company_id','dt3.id as size_id','dt3.name as size_name','dt4.id as color_id','dt4.name as color_name','dt4.code as color_code')
                         ->first();
                     $product = Products::find($warehouse_product->product_id);
-                    // dd($warehouse_product->company_id);
 
                     $relation_type='warehouse_product';
                     $relation_id=$order_detail->warehouse_id;
@@ -496,10 +488,6 @@ class OrderController extends Controller
                         "color_code"=>$product->color_code,
                         "size_name"=>$product->size_name
                     ];
-                    // dd($list);
-
-
-
                 }
                 array_push($order_detail_list,$list);
             }
@@ -514,9 +502,6 @@ class OrderController extends Controller
             ];
 
             // array_push($data,$addresses);
-
-            // dd($data);
-
 
             $message=translate_api('success',$language);
             return $this->success($message, 200,$data);
@@ -709,7 +694,7 @@ class OrderController extends Controller
                 'phone_number'=>$data['receiver_phone'],
                 // 'payment_method'=>$data['payment_method'],
                 // 'user_card_id'=>$data['user_card_id'],
-                'status'=>Constants::PERFORMED,
+                'status'=>Constants::ACCEPTED,
             ]);
 
             $message=translate_api('success',$language);
@@ -796,10 +781,22 @@ class OrderController extends Controller
     public function orderToArray($modal){
         $response = [];
         foreach ($modal as $data){
-            $product_quantity = 0;
-            foreach ($data->orderDetail as $order_detail){
-                $product_quantity = $product_quantity + $order_detail->quantity;
-            }
+            $order_date_year = date('Y', strtotime($data->created_at));
+            $order_date_month = date('F', strtotime($data->created_at));
+            $order_date_week = date('l', strtotime($data->created_at));
+            $order_date_day = date('d', strtotime($data->created_at));
+            $order_date_hour = date('H', strtotime($data->created_at));
+            $order_date_minute = date('i', strtotime($data->created_at));
+            $order_date = "$order_date_week, $order_date_day $order_date_month $order_date_year ".translate('Y').'.'.translate('at').' '."$order_date_hour:$order_date_minute";
+
+            $order_status_date_year = date('Y', strtotime($data->created_at));
+            $order_status_date_month = date('F', strtotime($data->updated_at));
+            $order_status_date_week = date('l', strtotime($data->created_at));
+            $order_status_date_day = date('d', strtotime($data->created_at));
+            $order_status_date_hour = date('H', strtotime($data->updated_at));
+            $order_status_date_minute = date('i', strtotime($data->updated_at));
+            $order_status_date = "$order_status_date_week, $order_status_date_day $order_status_date_month $order_status_date_year ".translate('Y').'.'.translate('at').' '."$order_status_date_hour:$order_status_date_minute";
+
             $region = null;
             $city = null;
             $street = null;
@@ -824,10 +821,11 @@ class OrderController extends Controller
                 "id" => $data->id,
                 "price" => $data->price,
                 "status" => $this->getOrderStatus($data->status),
+                "order_status_date"=>$order_status_date,
+                "order_date"=>$order_date,
                 "delivery_date" => $data->delivery_date,
                 "delivery_price" => $data->delivery_price,
                 "all_price" => $data->all_price,
-                "updated_at" => $data->updated_at,
                 "coupon_id" => $data->coupon_id,
                 "address" => $address,
                 "receiver_name" => $data->receiver_name,
@@ -836,7 +834,7 @@ class OrderController extends Controller
                 "user_card_id" => $data->user_card_id,
                 "discount_price" => $data->discount_price?(int)$data->discount_price:0,
                 "coupon_price" => $data->coupon_price?(int)$data->coupon_price:0,
-                "product_quantity" => $product_quantity,
+                "product_quantity" => count($data->orderDetail),
                 "code" => $data->code
             ];
         }

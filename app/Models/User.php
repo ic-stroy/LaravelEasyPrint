@@ -62,7 +62,7 @@ class User extends Authenticatable
         return $this->hasOne(Company::class, 'id', 'company_id');
     }
     public function allOrders(){
-        return $this->hasMany(Order::class, 'user_id', 'id');
+        return $this->hasMany(Order::class, 'user_id', 'id')->where('status', '!=', Constants::ACCEPTED);
     }
     public function orderBasket(){
         return $this->hasOne(Order::class, 'user_id', 'id')->where('status', Constants::BASKED);
@@ -75,6 +75,9 @@ class User extends Authenticatable
     }
     public function ordersPerformed(){
         return $this->hasMany(Order::class, 'user_id', 'id')->where('status', Constants::PERFORMED);
+    }
+    public function ordersAccepted(){
+        return $this->hasMany(Order::class, 'user_id', 'id')->where('status', Constants::ACCEPTED);
     }
     public function ordersCancelled(){
         return $this->hasMany(Order::class, 'user_id', 'id')->where('status', Constants::CANCELLED);
