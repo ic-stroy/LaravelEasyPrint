@@ -247,9 +247,25 @@ class OrderController extends Controller
 
                     $translate_name = table_translate($warehouse_product, 'warehouse', $language);
 
+                    if($order_detail->warehouse){
+                        if($order_detail->warehouse->discount){
+
+                        }
+                    }
+                    if($order_detail->product){
+                        if($order_detail->product->discount){
+
+                        }
+                    }
+
                     if($order_detail->price != $warehouse_product->warehouse_price){
                         $order_detail->price = $warehouse_product->warehouse_price;
                         $order_price = $order_price + $order_detail->price * $order_detail->quantity;
+                        if($order->warehouse){
+                            if($order->warehouse->discount){
+
+                            }
+                        }
                         if($order_detail->discount){
                             $order_detail->discount_price = ($warehouse_product->warehouse_price*$order_detail->discount)/100*$order_detail->quantity;
                             $order_discount_price = $order_discount_price + $order_detail->discount_price;
@@ -264,6 +280,7 @@ class OrderController extends Controller
                             $order_detail->discount_price = 0;
                         }
                     }
+
                     $order_detail->save();
                     $total_price = $order_detail->price - $order_detail->discount_price??0;
 
@@ -344,6 +361,7 @@ class OrderController extends Controller
                     $order->coupon_id = NULL;
                 }
             }
+
             $order->price = $order_price;
             $order->discount_price = $order_discount_price;
             $order->all_price = $order->price - $order->discount_price - $order->coupon_price??0;
@@ -929,6 +947,7 @@ class OrderController extends Controller
         foreach($white_black_colors as $white_black){
             $color_translate_name = table_translate($white_black,'category', $language);
             $white_black_[] = [
+                'id'=>$white_black->id,
                 'name'=>$color_translate_name,
                 'code'=>$white_black->code
             ];

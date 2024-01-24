@@ -42,6 +42,14 @@ class Order extends Model
         return $this->hasOne(User::class, 'id', 'user_id');
     }
 
+    public function warehouse(){
+        return $this->hasOne(Warehouse::class, 'id', 'warehouse_id');
+    }
+
+    public function product(){
+        return $this->hasOne(Warehouse::class, 'id', 'product_id');
+    }
+
     public function coupon(){
         return $this->hasOne(Coupon::class, 'id', 'coupon_id');
     }

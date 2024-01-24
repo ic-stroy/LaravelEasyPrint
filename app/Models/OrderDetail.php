@@ -34,8 +34,11 @@ class OrderDetail extends Model
     public function order(){
         return $this->hasOne(Order::class, 'id', 'order_id');
     }
-    public function warehouse_product(){
+    public function warehouse(){
         return $this->hasOne(Warehouse::class, 'id', 'warehouse_id');
+    }
+    public function product(){
+        return $this->hasOne(Warehouse::class, 'id', 'product_id');
     }
 
 }
