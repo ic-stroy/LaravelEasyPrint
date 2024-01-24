@@ -123,7 +123,7 @@ class OrderController extends Controller
                 $discount_price = ($request->price/100)*$request->discount*$quantity;
                 $order_detail->update([
                     'quantity' =>$quantity,
-                    'price'=>($quantity * ($request->price)),
+                    'price'=>$request->price,
                     'discount'=>$request->discount,
                     'discount_price'=>$discount_price
                 ]);
@@ -223,6 +223,8 @@ class OrderController extends Controller
         $order = $user->orderBasket;
         $order_detail_list = [];
         if (isset($user->orderBasket->orderDetail)) {
+            $order_price = 0;
+            $order_discount_price = 0;
             foreach ($user->orderBasket->orderDetail as $order_detail) {
                 if ($order_detail->warehouse_id != null) {
                     $warehouse_product = DB::table('order_details as dt1')
@@ -234,7 +236,7 @@ class OrderController extends Controller
                         ->join('companies as dt5', 'dt5.id', '=', 'dt2.company_id')
                         ->select('dt2.id as warehouse_product_id', 'dt2.name as warehouse_product_name', 'dt2.quantity as max_quantity',
                             'dt2.images as images', 'dt2.description as description', 'dt2.product_id as product_id',
-                            'dt2.company_id as company_id', 'dt3.id as size_id', 'dt3.name as size_name',
+                            'dt2.company_id as company_id', 'dt2.price as warehouse_price', 'dt3.id as size_id', 'dt3.name as size_name',
                             'dt4.id as color_id', 'dt4.name as color_name', 'dt4.code as color_code', 'dt5.name as company_name')
                         ->first();
 
@@ -244,7 +246,26 @@ class OrderController extends Controller
                     $list_images = count($this->getImages($warehouse_product, 'warehouses')) > 0 ? $this->getImages($warehouse_product, 'warehouses') : $this->getImages($list_product, 'product');
 
                     $translate_name = table_translate($warehouse_product, 'warehouse', $language);
-                    $total_price = $order_detail->price - $order_detail->discount_price;
+
+                    if($order_detail->price != $warehouse_product->warehouse_price){
+                        $order_detail->price = $warehouse_product->warehouse_price;
+                        $order_price = $order_price + $order_detail->price * $order_detail->quantity;
+                        if($order_detail->discount){
+                            $order_detail->discount_price = ($warehouse_product->warehouse_price*$order_detail->discount)/100*$order_detail->quantity;
+                            $order_discount_price = $order_discount_price + $order_detail->discount_price;
+                        }else{
+                            $order_detail->discount_price = 0;
+                        }
+                    }else{
+                        $order_price = $order_price + $order_detail->price * $order_detail->quantity;
+                        if($order_detail->discount) {
+                            $order_discount_price = $order_discount_price + $order_detail->discount_price;
+                        }else{
+                            $order_detail->discount_price = 0;
+                        }
+                    }
+                    $order_detail->save();
+                    $total_price = $order_detail->price - $order_detail->discount_price??0;
 
                     $list = [
                         "id" => $order_detail->id,
@@ -317,6 +338,16 @@ class OrderController extends Controller
                 }
                 array_push($order_detail_list, $list);
             }
+            if($order->coupon){
+                if(!$order->coupon_price || $order->coupon->start_date > date('Y-m-d') || date('Y-m-d') > $order->coupon->end_date){
+                    $order->coupon_price = 0;
+                    $order->coupon_id = NULL;
+                }
+            }
+            $order->price = $order_price;
+            $order->discount_price = $order_discount_price;
+            $order->all_price = $order->price - $order->discount_price - $order->coupon_price??0;
+            $order->save();
             $data = [
                 'id' => $order->id,
                 'coupon_price' => $order->coupon_price,
@@ -325,7 +356,6 @@ class OrderController extends Controller
                 'grant_total' => $order->all_price,
                 'list' => $order_detail_list
             ];
-
             $message = translate_api('success', $language);
             return $this->success($message, 200, $data);
         } else {
@@ -434,14 +464,13 @@ class OrderController extends Controller
     public function connectOrder(Request $request){
         $language = $request->header('language');
         $data=$request->all();
-        $order_inner=$data['data'];
-        $order_id=$data['order_id'];
-        if ($order_id  && $order=Order::where('id',$order_id)->where('status', Constants::BASKED)->first()) {
-            $order_price=0;
-            $order_discount_price=0;
-
-            foreach ($order_inner as  $update_order_detail) {
-                if ($order_detail=OrderDetail::where('id', $update_order_detail['order_detail_id'])->where('order_id',$order_id)->first()) {
+        $order_inner = $data['data'];
+        $order_id = $data['order_id'];
+        if ($order_id  && $order = Order::where('id', $order_id)->where('status', Constants::BASKED)->first()) {
+            $order_price = 0;
+            $order_discount_price = 0;
+            foreach ($order_inner as $update_order_detail) {
+                if ($order_detail=OrderDetail::where('id', $update_order_detail['order_detail_id'])->where('order_id', $order_id)->first()) {
                     if(!Color::where('id', $update_order_detail['color_id'])->exists()){
                         return $this->error(translate_api('Color not found', $language), 400);
                     }
@@ -450,10 +479,10 @@ class OrderController extends Controller
                     }
                     $one_order_detail_discount_price = $order_detail->discount_price/$order_detail->quantity;
                     $order_detail->update([
-                            'color_id'=>$update_order_detail['color_id'],
-                            'size_id'=>$update_order_detail['size_id'],
-                            'quantity'=>$update_order_detail['quantity'],
-                            'discount_price'=>$one_order_detail_discount_price*$update_order_detail['quantity'],
+                        'color_id'=>$update_order_detail['color_id'],
+                        'size_id'=>$update_order_detail['size_id'],
+                        'quantity'=>$update_order_detail['quantity'],
+                        'discount_price'=>$one_order_detail_discount_price*$update_order_detail['quantity'],
                     ]);
 
                     $order_price +=(($order_detail->price)*($order_detail->quantity));
@@ -463,7 +492,6 @@ class OrderController extends Controller
                     return $this->error($message, 400);
                 }
             }
-
             $order->price=$order_price;
             $order->discount_price=$order_discount_price;
             $order->all_price=$order_price-$order_discount_price;
@@ -473,10 +501,9 @@ class OrderController extends Controller
             return $this->success($message, 200);
         }
         else {
-            $message=translate_api('this order not in the basket or not exist',$language);
+            $message=translate_api('this order not in the basket or not exist', $language);
             return $this->error($message, 400);
         }
-
     }
     /**
      * bu funksiya  orderga Coupon qo'shishda qollaniladi (Order status Ordered bo'ladi Post zapros) productlarga tegishli faqat bitta coupon active bo'ladi
@@ -487,7 +514,7 @@ class OrderController extends Controller
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
 
-        if ($coupon=DB::table('coupons')->where('name',$request->coupon_name)->where('status',1)->first()) {
+        if ($coupon=DB::table('coupons')->where('name', $request->coupon_name)->where('status',1)->first()) {
             if ($order=Order::where('id',$request->order_id)->first()) {
                 $order_count = Order::where('user_id', $order->user_id)->where('status', '!=', Constants::BASKED)->count();
                 if ($order->coupon_id == null) {
@@ -548,7 +575,6 @@ class OrderController extends Controller
                          }
                     }
                     $order->save();
-
 
                     $data=[
                         'id'=>$order->id,
