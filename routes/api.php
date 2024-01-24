@@ -49,6 +49,7 @@ Route::get('get-categories', [CategoryController::class, 'getCategories']);
 Route::get('get-warehouses', [ProductController::class, 'getWarehouses']);
 Route::get('profile-info', [CategoryController::class, 'profileInfo']);
 Route::get('product', [ProductController::class, 'getProduct']);
+Route::get('/anime-category-size-color', [OrderController::class, 'AnimeCategorySizeColor']);
 
 Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
     Route::get('user-info', [CategoryController::class, 'userInfo']);
@@ -74,6 +75,7 @@ Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
         Route::get('/get-basket', [OrderController::class, 'getBasket']);
         Route::get('/get-order', [OrderController::class, 'getOrder']);
         Route::get('/get-my-orders', [OrderController::class, 'getMyOrders']);
+        Route::get('/perform-order', [OrderController::class, 'performOrder'])->name('order.perform');
         Route::get('/get-order-detail-by-order-id', [OrderController::class, 'getOrderDetailByOrderId']);
     });
     Route::post('logout', [AuthController::class, 'logout']);

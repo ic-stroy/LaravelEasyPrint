@@ -9,6 +9,7 @@ use \App\Http\Controllers\Company\CompanyOrderController;
 use \App\Http\Controllers\Company\CompanyCouponController;
 use \App\Http\Controllers\BannerController;
 use \App\Http\Controllers\UsersController;
+use \App\Http\Controllers\OrderController;
 use \App\Http\Controllers\TableTranslationController;
 use \App\Http\Controllers\CategoryController;
 use \App\Http\Controllers\SubCategoryController;

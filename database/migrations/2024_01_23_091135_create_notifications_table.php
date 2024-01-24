@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_cards', function (Blueprint $table) {
-            $table->id();
-            
-            $table->string('name', 100)->nullable();
-            $table->bigInteger('card_number')->nullable();
-            $table->string('validity_period', 100)->nullable();
+        Schema::create('notifications', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('type');
+            $table->morphs('notifiable');
+            $table->text('data');
+            $table->timestamp('read_at')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_cards');
+        Schema::dropIfExists('notifications');
     }
 };

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Address;
+use App\Models\Category;
 use App\Models\Color;
 use App\Models\Order;
 use App\Models\OrderDetail;
@@ -12,6 +13,7 @@ use App\Models\Sizes;
 use App\Models\Uploads;
 use App\Models\User;
 use App\Models\Warehouse;
+use App\Notifications\OrderNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -51,13 +53,12 @@ class OrderController extends Controller
                 }else {
                     $discount_price = 0;
                 }
-                $order_price =(int)($request->price + $request->image_price)*$request->quantity;
-                $order_all_price=$order_price - $discount_price;
+                $order_price = (int)($request->price + $request->image_price)*$request->quantity;
+                $order_all_price = $order_price - $discount_price;
             }else{
                 if ($request->discount != null && $request->discount != "") {
                     $discount_price = (($request->price)/100)*$request->discount*$request->quantity;
-                }
-                else {
+                }else {
                     $discount_price = 0;
                 }
                 $order_price =(int)(($request->price)*($request->quantity));
@@ -66,41 +67,58 @@ class OrderController extends Controller
         }else {
             if ($request->discount != null && $request->discount != "") {
                 $discount_price = (($request->price)/100)*$request->discount*$request->quantity;
-            }
-            else {
+            }else {
                 $discount_price = 0;
             }
-            $order_price =(int)(($request->price)*($request->quantity));
-            $order_all_price=$order_price - $discount_price;
+            $order_price = (int)(($request->price)*($request->quantity));
+            $order_all_price = $order_price - $discount_price;
         }
         if(isset($user->orderBasket->id)){
             $order = $user->orderBasket;
             $order->price = $order->price + $order_price;
             $order->all_price = $order->all_price + $order_all_price;
-            $order->discount_price = $order->discount_price + ($order_price - $order_all_price);
+            $order->discount_price = $order->discount_price + $discount_price;
         }else{
             $order = new Order();
             $order->user_id = $user->id;
             $order->status = Constants::BASKED;
             $order->price = (int)$order_price;
-            $order->discount_price = (int)($order_price-$order_all_price);
+            $order->discount_price = (int)$discount_price;
             $order->all_price = (int)$order_all_price;
+            $order->save();
         }
-        $order->save();
         if(!$order->code){
             $length = 8;
             $order_code = str_pad($order->id, $length, '0', STR_PAD_LEFT);
             $order->code=$order_code;
-            $order->save();
         }
-
+        $orderDetailWarehouses_id = [];
+        $orderDetailsDiscountPrice = 0;
+        $orderDetailsPrice = 0;
+        foreach($order->orderDetail as $orderDetail){
+            if($request->warehouse_product_id == $orderDetail->warehouse_id){
+                if($request->discount){
+                    $orderDetail->discount_price = (($request->price)/100)*$request->discount*$orderDetail->quantity;
+                }else{
+                    $orderDetail->discount_price = 0;
+                }
+            }
+            $orderDetailWarehouses_id[] = $orderDetail->warehouse_id;
+            $orderDetailsDiscountPrice = $orderDetailsDiscountPrice + $orderDetail->discount_price;
+            $orderDetailsPrice = $orderDetailsPrice + $orderDetail->price;
+        }
+        if(in_array($request->warehouse_product_id, $orderDetailWarehouses_id)){
+            $order->discount_price = (int)$orderDetailsDiscountPrice + $discount_price;
+            $order->all_price = (int)$orderDetailsPrice - (int)$orderDetailsDiscountPrice + $order_all_price;
+        }
+        $order->save();
         $message = translate_api('Success', $language);
         if (isset($request->warehouse_product_id) && $request->warehouse_product_id != "") {
             if(!DB::table('warehouses')->where('id', $request->warehouse_product_id)->exists()){
                 return $this->error(translate_api('warehouse not found', $language), 400);
             }
-            if ($order_detail = OrderDetail::where('order_id', $order->id)->where('warehouse_id', $request->warehouse_product_id)->where('color_id', $request->color_id)->where('size_id', $request->size_id)->first()) {
-
+            $order_detail = OrderDetail::where('order_id', $order->id)->where('warehouse_id', $request->warehouse_product_id)->where('color_id', $request->color_id)->where('size_id', $request->size_id)->first();
+            if ($order_detail) {
                 $quantity=$order_detail->quantity + $request->quantity;
                 $discount_price = ($request->price/100)*$request->discount*$quantity;
                 $order_detail->update([
@@ -110,7 +128,6 @@ class OrderController extends Controller
                     'discount_price'=>$discount_price
                 ]);
             } else {
-
                 DB::table('order_details')->insert([
                     'order_id' => $order->id,
                     'quantity' => $request->quantity,
@@ -125,6 +142,7 @@ class OrderController extends Controller
                     // Add more columns and their respective default values
                 ]);
             }
+
              return $this->success($message, 200);
         }else{
             $order_detail = new OrderDetail();
@@ -154,7 +172,6 @@ class OrderController extends Controller
                 }
             }
         }
-
         return $this->success($message, 200);
     }
 
@@ -564,10 +581,10 @@ class OrderController extends Controller
      */
     public function acceptedOrder(Request $request){
         $language = $request->header('language');
-        $data=$request->all();
-        $order_id=$data['order_id'];
+        $data = $request->all();
+        $order_id = $data['order_id'];
 
-        if ($order_id  && $order=Order::where('id',$order_id)->where('status', Constants::BASKED)->first()) {
+        if ($order_id  && $order = Order::where('id',$order_id)->where('status', Constants::BASKED)->first()) {
             $address = Address::find($data['address_id']);
             if(!isset($address->id)){
                 $message=translate_api('Address not found', $language);
@@ -579,12 +596,10 @@ class OrderController extends Controller
                 'phone_number'=>$data['receiver_phone'],
                 'status'=>Constants::ORDERED,
             ]);
-
-            $message=translate_api('success',$language);
+            $message = translate_api('success', $language);
             return $this->success($message, 200);
-        }
-        else {
-            $message=translate_api('this order not ordered or not exist',$language);
+        } else {
+            $message = translate_api('this order not ordered or not exist', $language);
             return $this->error($message, 400);
         }
     }
@@ -598,10 +613,10 @@ class OrderController extends Controller
 
         if ($order_detail=OrderDetail::where('id',$order_detail_id)->first()) {
 
-            $order=$order_detail->order;
-            $order->price=$order->price-($order_detail->price * $order_detail->quantity);
-            $order->discount_price=$order->discount_price - $order_detail->discount_price;
-            $order->all_price= $order->all_price - ($order_detail->price * $order_detail->quantity) + $order_detail->discount_price;
+            $order = $order_detail->order;
+            $order->price = $order->price - $order_detail->price * $order_detail->quantity;
+            $order->discount_price = $order->discount_price - $order_detail->discount_price;
+            $order->all_price = $order->all_price - ($order_detail->price * $order_detail->quantity) + $order_detail->discount_price;
             if ($order->coupon_id) {
                 if ($order_detail->warehouse_id) {
                     if (DB::table('warehouses')->where('id',$order_detail->warehouse_id)->first()->company_id == $coupon=DB::table('coupons')->where('id',$order->coupon_id)->first()->company_id) {
@@ -618,8 +633,6 @@ class OrderController extends Controller
                }
 
             }
-
-
            if ($upload=Uploads::where('relation_type',Constants::PRODUCT)->where('relation_id',$order_detail->product_id)->first()) {
             $upload->delete();
            }
@@ -865,17 +878,51 @@ class OrderController extends Controller
         return $list;
     }
 
-//    public function performOrder(Request $request){
-//        $language = $request->header('language');
-//        $order = Order::where('status', Constants::ACCEPTED)->find($request->id);
-//        if($order){
-//            $response
+    public function performOrder(Request $request){
+        $language = $request->header('language');
+//        $orders = Order::where(['status' => Constants::ORDERED, 'company_id' != null])->get();
+        $order = Order::first();
+        $user = Auth::user();
+        if($user){
+            $user->notify(new OrderNotification($order));
+        }
+
+//        Notification::send($order, new OrderNotification($order));
+//        foreach($orders as $order){
+//           $response
 //            Notification::send($order);
-//            $message=translate_api('Success', $language);
-//            return $this->success($message, 500, $response);
-//        }else{
-//            $message=translate_api('Order not found',$language);
-//            return $this->error($message, 500);
 //        }
-//    }
+        $message = translate_api('Success', $language);
+        return $this->success($message, 500, [$order]);
+    }
+
+    public function AnimeCategorySizeColor(Request $request){
+        $language = $request->header('language');
+        $categories = Category::where('step', 0)->get();
+        $white_black_colors = Color::whereIn('name', ['Black', 'White'])->get();
+        foreach($white_black_colors as $white_black){
+            $color_translate_name = table_translate($white_black,'category', $language);
+            $white_black_[] = [
+                'name'=>$color_translate_name,
+                'code'=>$white_black->code
+            ];
+        }
+        $categories_ = [];
+        foreach ($categories as $category){
+            if($category->name){
+                $category_translate_name = table_translate($category,'category', $language);
+            }
+            $categories_[] = [
+              'id'=>$category->id,
+              'name'=>$category_translate_name,
+              'sizes'=>$category->sizes
+            ];
+        }
+        $data = [
+            'category'=>$categories_,
+            'colors'=>$white_black_
+        ];
+        $message = translate_api('Success', $language);
+        return $this->success($message, 200, $data);
+    }
 }
