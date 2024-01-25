@@ -227,7 +227,8 @@ class OrderController extends Controller
             $order_price = 0;
             $order_discount_price = 0;
             foreach ($user->orderBasket->orderDetail as $order_detail) {
-                if ($order_detail->warehouse_id != null) {
+                $list_images = [];
+                if ($order_detail->warehouse_id) {
                     $warehouse_product = DB::table('order_details as dt1')
                         ->join('warehouses as dt2', 'dt2.id', '=', 'dt1.warehouse_id')
                         ->join('sizes as dt3', 'dt3.id', '=', 'dt2.size_id')
@@ -310,7 +311,6 @@ class OrderController extends Controller
                     ];
 
                 } else {
-                    $list_images = [];
                     $relation_type = 'product';
                     $relation_id = $order_detail->product_id;
 
