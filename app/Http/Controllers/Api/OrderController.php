@@ -46,8 +46,8 @@ class OrderController extends Controller
                 return $this->error(translate_api('Product not found', $language), 400);
             }
         }
-        if (isset($request->image_price) && $request->image_price !='') {
-            if(!isset($request->warehouse_product_id) || $request->warehouse_product_id == ""){
+        if ($request->image_price) {
+            if(!$request->warehouse_product_id){
                 if ($request->discount != null) {
                     $discount_price = (($request->price + $request->image_price)/100)*$request->discount*$request->quantity;
                 }else {
@@ -113,7 +113,7 @@ class OrderController extends Controller
         }
         $order->save();
         $message = translate_api('Success', $language);
-        if (isset($request->warehouse_product_id) && $request->warehouse_product_id != "") {
+        if ($request->warehouse_product_id) {
             if(!DB::table('warehouses')->where('id', $request->warehouse_product_id)->exists()){
                 return $this->error(translate_api('warehouse not found', $language), 400);
             }
@@ -163,7 +163,7 @@ class OrderController extends Controller
             $order_detail->discount = $request->discount;
             $order_detail->discount_price = $discount_price;
             $order_detail->save();
-            if (isset($images_print)) {
+            if ($images_print) {
                 foreach ($images_print as $image_print){
                     $uploads = new Uploads();
                     $uploads->image = $this->saveImage($image_print, 'print');
@@ -177,7 +177,7 @@ class OrderController extends Controller
     }
 
     public function saveImage($file, $url){
-        if (isset($file)) {
+        if ($file) {
             $letters = range('a', 'z');
             $random_array = [$letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)]];
             $random = implode("", $random_array);
@@ -188,7 +188,7 @@ class OrderController extends Controller
     }
 
     public function getImages($model, $text){
-        if(isset($model->images)){
+        if($model->images){
             $images_ = json_decode($model->images);
             $images = [];
             foreach ($images_ as $image_){
@@ -322,7 +322,7 @@ class OrderController extends Controller
                         ->select('dt1.image_front as image_front', 'dt1.image_back as image_back', 'dt2.id', 'dt2.name', 'dt2.images as images', 'dt2.description as description', 'dt3.id as size_id', 'dt3.name as size_name', 'dt4.id as color_id', 'dt4.code as color_code', 'dt4.name as color_name',)
                         ->first();
 
-                    if (isset($product->id)) {
+                    if ($product) {
                         $translate_name = table_translate($product, 'product', $language);
                         $total_price = $order_detail->price - $order_detail->discount_price;
                         if($product->image_front || $product->image_back){
@@ -542,7 +542,7 @@ class OrderController extends Controller
         if ($coupon=DB::table('coupons')->where('name', $request->coupon_name)->where('status',1)->first()) {
             if ($order=Order::where('id',$request->order_id)->first()) {
                 $order_count = Order::where('user_id', $order->user_id)->where('status', '!=', Constants::BASKED)->count();
-                if ($order->coupon_id == null) {
+                if (!$order->coupon_id == null) {
                     if ($coupon->company_id != null) {
                         foreach ($order->orderDetail as $order_detail) {
                             if ($order_detail->warehouse_id) {
@@ -637,7 +637,7 @@ class OrderController extends Controller
 
         if ($order_id  && $order = Order::where('id',$order_id)->where('status', Constants::BASKED)->first()) {
             $address = Address::find($data['address_id']);
-            if(!isset($address->id)){
+            if(!$address){
                 $message=translate_api('Address not found', $language);
                 return $this->error($message, 400);
             }
@@ -659,15 +659,13 @@ class OrderController extends Controller
      */
     public function deleteOrderDetail(Request $request){
         $language = $request->header('language');
-
         $order_detail_id=$request->order_detail_id;
 
         if ($order_detail=OrderDetail::where('id',$order_detail_id)->first()) {
-
             $order = $order_detail->order;
             $order->price = $order->price - $order_detail->price * $order_detail->quantity;
-            $order->discount_price = $order->discount_price - $order_detail->discount_price;
-            $order->all_price = $order->all_price - ($order_detail->price * $order_detail->quantity) + $order_detail->discount_price;
+            $order->discount_price = $order->discount_price??0 - $order_detail->discount_price??0;
+            $order->all_price = $order->all_price - ($order_detail->price * $order_detail->quantity) + $order_detail->discount_price??0;
             if ($order->coupon_id) {
                 if ($order_detail->warehouse_id) {
                     if (DB::table('warehouses')->where('id',$order_detail->warehouse_id)->first()->company_id == $coupon=DB::table('coupons')->where('id',$order->coupon_id)->first()->company_id) {
@@ -676,33 +674,51 @@ class OrderController extends Controller
                     }
                 }
             }
-            if ($order_detail->warehouse_id != null) {
+            if (!$order_detail->image_front) {
+                $order_detail->image_front = 'no';
+            }
+            $order_detail_image_front = storage_path('app/public/warehouse/'.$order_detail->image_front);
+            if (!$order_detail->image_back) {
+                $order_detail->image_back = 'no';
+            }
+            $order_detail_image_back = storage_path('app/public/warehouse/'.$order_detail->image_back);
+            if(file_exists($order_detail_image_front)){
+                unlink($order_detail_image_front);
+            }
+            if(file_exists($order_detail_image_back)){
+                unlink($order_detail_image_back);
+            }
+            if ($uploads=Uploads::where('relation_type',Constants::PRODUCT)->where('relation_id',$order_detail->product_id)->get()) {
+                foreach ($uploads as $upload){
+                    if (!$upload->image) {
+                        $upload->image = 'no';
+                    }
+                    $order_detail_upload = storage_path('app/public/print/'.$upload->image);
+                    if(file_exists($order_detail_upload)){
+                        unlink($order_detail_upload);
+                    }
+                    $upload->delete();
+                }
+            }
+
+            if ($order_detail->warehouse_id) {
                $warehouse=Warehouse::where('id',$order_detail->warehouse_id)->first();
                $warehouse->quantity=$warehouse->quantity + $order_detail->quantity;
-               if ($warehouse->save()) {
-                   $order_detail->delete();
-               }
-
+               $warehouse->save();
             }
-           if ($upload=Uploads::where('relation_type',Constants::PRODUCT)->where('relation_id',$order_detail->product_id)->first()) {
-            $upload->delete();
-           }
-
-           $order_detail->delete();
-
+            $order_detail->delete();
            $test_order_detail=DB::table('order_details')->where('order_id',$order->id)->first();
            if ($test_order_detail) {
                 $order->save();
-           }
-           else {
+           }else {
                 $order->delete();
            }
 
-           $message=translate_api('order detail deleted',$language);
+           $message=translate_api('order detail deleted', $language);
            return $this->success($message, 200);
         }
 
-        $message=translate_api('order_detail not found',$language);
+        $message=translate_api('order_detail not found', $language);
         return $this->error($message, 400);
 
     }
@@ -805,7 +821,7 @@ class OrderController extends Controller
         $language = $request->header('language');
         $user = Auth::user();
         $order = Order::where('user_id', $user->id)->find($request->id);
-        if(isset($order->id)){
+        if($order){
             $order_details = $order->orderDetail;
             $response = [];
             foreach ($order_details as $order_detail){
@@ -852,8 +868,8 @@ class OrderController extends Controller
 
     public function getWarehouseByOrderDetail($warehouse_id, $language){
         $warehouse = Warehouse::find($warehouse_id);
-        if (isset($warehouse->id)) {
-            if(isset($warehouse->color_id)) {
+        if ($warehouse) {
+            if($warehouse->color_id) {
                 $warehouse_color = Color::select('id', 'name', 'code')->find($warehouse->color_id);
                 $color_translate_name=table_translate($warehouse_color,'color', $language);
                 if(isset($warehouse_color->id)){
@@ -864,7 +880,7 @@ class OrderController extends Controller
                     ];
                 }
             }
-            if(isset($warehouse->size_id)) {
+            if($warehouse->size_id) {
                 $warehouse_size = Sizes::select('id', 'name')->find($warehouse->size_id);
                 if(isset($warehouse_size->id)){
                     $size = [
@@ -876,7 +892,7 @@ class OrderController extends Controller
             if($warehouse->name){
                 $warehouse_translate_name=table_translate($warehouse,'warehouse', $language);
             }
-            if (isset($warehouse->images)) {
+            if ($warehouse->images) {
                 $images_ = json_decode($warehouse->images);
                 $images = [];
                 foreach ($images_ as $image_) {
