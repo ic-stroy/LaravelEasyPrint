@@ -44,7 +44,6 @@ class CategoryController extends Controller
 
     public function getProductsByCategory(Request $request)
     {
-        // dd($request->all());
         $language = $request->header('language');
         $category = Category::find($request->category_id);
         $data = [];
@@ -121,7 +120,6 @@ class CategoryController extends Controller
         }
 
         $warehouse_products_ = Warehouse::where('product_id', $productId)->with('discount')->get();
-        // dd($warehouse_products_);
         $warehouse_products = [];
 
         foreach ($warehouse_products_ as $warehouse_product_) {

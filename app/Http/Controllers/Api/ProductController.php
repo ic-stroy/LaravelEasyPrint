@@ -129,7 +129,6 @@ class ProductController extends Controller
         if ($language == null) {
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
-
         $warehouse_product_id = $request->warehouse_product_id;
         if ($warehouse_product_id != null) {
             $warehouse_product = DB::table('warehouses as dt2')

@@ -16,6 +16,7 @@ function couponAddOption(item, index){
 }
 if(coupon_subcategory_id != ''){
     subcategory_id.innerHTML = ""
+    product_id.innerHTML = ""
     $(document).ready(function () {
         $.ajax({
             url:`/../api/subcategory/${coupon_category_id}`,
@@ -48,16 +49,17 @@ if(coupon_subcategory_id != ''){
     all_subcategories.selected = true
     subcategory_id.add(all_subcategories)
 }
-// function couponAddOptionToProduct(item, index){
-//     let option = document.createElement('option')
-//     option.value = item.id
-//     option.text = item.name
-//     if(item.id == coupon_product_id){
-//         option.selected = true
-//     }
-//     product_id.add(option)
-// }
+function couponAddOptionToProduct(item, index){
+    let option = document.createElement('option')
+    option.value = item.id
+    option.text = item.name
+    if(item.id == coupon_product_id){
+        option.selected = true
+    }
+    product_id.add(option)
+}
 if(coupon_product_id != undefined && coupon_product_id != '' && coupon_product_id != null){
+    product_id.innerHTML = ""
     $(document).ready(function () {
         $.ajax({
             url:`/../api/get-products-by-category?category_id=${coupon_subcategory_id}`,
@@ -66,29 +68,29 @@ if(coupon_product_id != undefined && coupon_product_id != '' && coupon_product_i
                 if(product_exists.classList.contains('display-none')){
                     product_exists.classList.remove('display-none')
                 }
-                // let disabled_option = document.createElement('option')
-                // disabled_option.text = text_select_product
-                // disabled_option.disabled = true
-                // product_id.add(disabled_option)
-                // let all_products = document.createElement('option')
-                // all_products.text = text_all_products
-                // all_products.value = "all"
-                // product_id.add(all_products)
-                // data.data[0].products.forEach(couponAddOptionToProduct)
+                let disabled_option = document.createElement('option')
+                disabled_option.text = text_select_product
+                disabled_option.disabled = true
+                product_id.add(disabled_option)
+                let all_products = document.createElement('option')
+                all_products.text = text_all_products
+                all_products.value = "all"
+                product_id.add(all_products)
+                data.data[0].products.forEach(couponAddOptionToProduct)
             },
             error: function (e) {
-                // if(!product_exists.classList.contains('display-none')){
-                //     product_exists.classList.add('display-none')
-                // }
+                if(!product_exists.classList.contains('display-none')){
+                    product_exists.classList.add('display-none')
+                }
             }
         })
     })
 }else{
-    // let all_products = document.createElement('option')
-    // all_products.text = text_all_products
-    // all_products.value = "all"
-    // all_products.selected = true
-    // product_id.add(all_products)
+    let all_products = document.createElement('option')
+    all_products.text = text_all_products
+    all_products.value = "all"
+    all_products.selected = true
+    product_id.add(all_products)
 }
 
 function addOption(item, index){
@@ -100,10 +102,10 @@ function addOption(item, index){
 
 category_id.addEventListener('change', function () {
     subcategory_id.innerHTML = ""
-    // product_id.innerHTML = ""
-    // if(!product_exists.classList.contains('display-none')){
-    //     product_exists.classList.add('display-none')
-    // }
+    product_id.innerHTML = ""
+    if(!product_exists.classList.contains('display-none')){
+        product_exists.classList.add('display-none')
+    }
     $(document).ready(function () {
         $.ajax({
             url:`/../api/subcategory/${category_id.value}`,
@@ -135,37 +137,38 @@ category_id.addEventListener('change', function () {
         })
     })
 })
-// function addOptionToProduct(item, index){
-//     let option = document.createElement('option')
-//     option.value = item.id
-//     option.text = item.name
-//     product_id.add(option)
-// }
+function addOptionToProduct(item, index){
+    let option = document.createElement('option')
+    option.value = item.id
+    option.text = item.name
+    product_id.add(option)
+}
 subcategory_id.addEventListener('change', function () {
-    // product_id.innerHTML = ""
+    product_id.innerHTML = ""
     $(document).ready(function () {
         $.ajax({
             url:`/../api/get-products-by-category?category_id=${subcategory_id.value}`,
             type:'GET',
             success: function (data) {
-                // if(product_exists.classList.contains('display-none')){
-                //     product_exists.classList.remove('display-none')
-                // }
-                // let disabled_option = document.createElement('option')
-                // disabled_option.text = text_select_product
-                // disabled_option.selected = true
-                // disabled_option.disabled = true
-                // product_id.add(disabled_option)
-                // let all_products = document.createElement('option')
-                // all_products.text = text_all_products
-                // all_products.value = "all"
-                // product_id.add(all_products)
-                // data.data[0].products.forEach(addOptionToProduct)
+                console.log({'product':data})
+                if(product_exists.classList.contains('display-none')){
+                    product_exists.classList.remove('display-none')
+                }
+                let disabled_option = document.createElement('option')
+                disabled_option.text = text_select_product
+                disabled_option.selected = true
+                disabled_option.disabled = true
+                product_id.add(disabled_option)
+                let all_products = document.createElement('option')
+                all_products.text = text_all_products
+                all_products.value = "all"
+                product_id.add(all_products)
+                data.data[0].products.forEach(addOptionToProduct)
             },
             error: function (e) {
-                // if(!product_exists.classList.contains('display-none')){
-                //     product_exists.classList.add('display-none')
-                // }
+                if(!product_exists.classList.contains('display-none')){
+                    product_exists.classList.add('display-none')
+                }
             }
         })
     })

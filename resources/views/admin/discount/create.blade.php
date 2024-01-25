@@ -37,7 +37,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="mb-3 col-6">
+                    <div class="mb-3 col-4">
                         <label class="form-label">{{translate('Category')}}</label>
                         <select name="category_id" class="form-control" id="category_id">
                             <option value="" selected>{{translate('All category')}}</option>
@@ -46,9 +46,13 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="mb-3 col-6 display-none" id="subcategory_exists">
+                    <div class="mb-3 col-4 display-none" id="subcategory_exists">
                         <label class="form-label">{{translate('Sub category')}}</label>
                         <select name="subcategory_id" class="form-control" id="subcategory_id"></select>
+                    </div>
+                    <div class="mb-3 col-4 display-none" id="product_exists">
+                        <label class="form-label">{{translate('Products')}}</label>
+                        <select name="product_id" class="form-control" id="product_id"></select>
                     </div>
                 </div>
                 <div class="row">

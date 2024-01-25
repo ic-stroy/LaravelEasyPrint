@@ -145,6 +145,7 @@ class OrderController extends Controller
 
              return $this->success($message, 200);
         }else{
+            $discount_price = ($request->price/100)*$request->discount*$request->quantity;
             $order_detail = new OrderDetail();
             $order_detail->product_id = $request->product_id ?? null;
             //warehouse_product_id:45
@@ -152,7 +153,7 @@ class OrderController extends Controller
             $order_detail->color_id = $request->color_id;
             $order_detail->size_id = $request->size_id;
             $images_print = $request->file('imagesPrint');
-            $order_detail->price = $request->price + $request->image_price ;
+            $order_detail->price = $request->price + $request->image_price??0;
             $order_detail->image_price = $request->image_price;
             $image_front = $request->file('image_front');
             $image_back = $request->file('image_back');
@@ -234,7 +235,7 @@ class OrderController extends Controller
                         // ->leftJoin('coupons as dt5', 'dt5.warehouse_product_id', '=', 'dt2.id')
                         ->where('dt1.id', $order_detail->id)
                         ->join('companies as dt5', 'dt5.id', '=', 'dt2.company_id')
-                        ->select('dt2.id as warehouse_product_id', 'dt2.name as warehouse_product_name', 'dt2.quantity as max_quantity',
+                        ->select('dt1.image_front as image_front', 'dt1.image_back as image_back', 'dt2.id as warehouse_product_id', 'dt2.name as warehouse_product_name', 'dt2.quantity as max_quantity',
                             'dt2.images as images', 'dt2.description as description', 'dt2.product_id as product_id',
                             'dt2.company_id as company_id', 'dt2.price as warehouse_price', 'dt3.id as size_id', 'dt3.name as size_name',
                             'dt4.id as color_id', 'dt4.name as color_name', 'dt4.code as color_code', 'dt5.name as company_name')
@@ -244,28 +245,27 @@ class OrderController extends Controller
                     $relation_id = $order_detail->warehouse_id;
                     $list_product = Products::find($warehouse_product->product_id);
                     $list_images = count($this->getImages($warehouse_product, 'warehouses')) > 0 ? $this->getImages($warehouse_product, 'warehouses') : $this->getImages($list_product, 'product');
-
                     $translate_name = table_translate($warehouse_product, 'warehouse', $language);
 
-                    if($order_detail->warehouse){
-                        if($order_detail->warehouse->discount){
-
-                        }
-                    }
-                    if($order_detail->product){
-                        if($order_detail->product->discount){
-
-                        }
-                    }
+//                    if($order_detail->warehouse){
+//                        if($order_detail->warehouse->discount){
+//
+//                        }
+//                    }
+//                    if($order_detail->product){
+//                        if($order_detail->product->discount){
+//
+//                        }
+//                    }
 
                     if($order_detail->price != $warehouse_product->warehouse_price){
                         $order_detail->price = $warehouse_product->warehouse_price;
                         $order_price = $order_price + $order_detail->price * $order_detail->quantity;
-                        if($order->warehouse){
-                            if($order->warehouse->discount){
-
-                            }
-                        }
+//                        if($order->warehouse){
+//                            if($order->warehouse->discount){
+//
+//                            }
+//                        }
                         if($order_detail->discount){
                             $order_detail->discount_price = ($warehouse_product->warehouse_price*$order_detail->discount)/100*$order_detail->quantity;
                             $order_discount_price = $order_discount_price + $order_detail->discount_price;
@@ -310,6 +310,7 @@ class OrderController extends Controller
                     ];
 
                 } else {
+                    $list_images = [];
                     $relation_type = 'product';
                     $relation_id = $order_detail->product_id;
 
@@ -318,14 +319,20 @@ class OrderController extends Controller
                         ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
                         ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
                         ->where('dt1.id', $order_detail->id)
-                        ->select('dt2.id', 'dt2.name', 'dt2.images as images', 'dt2.description as description', 'dt3.id as size_id', 'dt3.name as size_name', 'dt4.id as color_id', 'dt4.code as color_code', 'dt4.name as color_name',)
+                        ->select('dt1.image_front as image_front', 'dt1.image_back as image_back', 'dt2.id', 'dt2.name', 'dt2.images as images', 'dt2.description as description', 'dt3.id as size_id', 'dt3.name as size_name', 'dt4.id as color_id', 'dt4.code as color_code', 'dt4.name as color_name',)
                         ->first();
 
                     if (isset($product->id)) {
-
                         $translate_name = table_translate($product, 'product', $language);
                         $total_price = $order_detail->price - $order_detail->discount_price;
-
+                        if($product->image_front || $product->image_back){
+                            $list_images = [
+                                asset('storage/warehouse/'.$product->image_front),
+                                asset('storage/warehouse/'.$product->image_back),
+                            ];
+                        }else{
+                            $list_images = $this->getImages($product, 'product');
+                        }
                         $list = [
                             "id" => $order_detail->id,
                             "relation_type" => $relation_type,
@@ -338,7 +345,7 @@ class OrderController extends Controller
                             "total_price" => $total_price,
                             "description" => $product->description ?? '',
                             "company_name" => null,
-                            "images" => $this->getImages($product, 'product'),
+                            "images" => $list_images,
                             "color" => [
                                 "id" => $product->color_id,
                                 "code" => $product->color_code,
