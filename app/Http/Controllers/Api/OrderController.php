@@ -208,12 +208,6 @@ class OrderController extends Controller
         if ($language == null) {
             $language = env("DEFAULT_LANGUAGE", 'ru');
         }
-        if($request->warehouse_id && $request->product_id){
-            return $this->error(translate_api('send product_id or warehouse_id you are sending both of them', $language), 400);
-        }
-        if(!$request->warehouse_id && !$request->product_id){
-            return $this->error(translate_api('send product_id or warehouse_id you are sending none of them', $language), 400);
-        }
         $order = $user->orderBasket;
         $order_detail_list = [];
         if (isset($user->orderBasket->orderDetail)) {
