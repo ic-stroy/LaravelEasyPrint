@@ -46,70 +46,49 @@ class OrderController extends Controller
                 return $this->error(translate_api('Product not found', $language), 400);
             }
         }
-        if ($request->image_price) {
-            if(!$request->warehouse_product_id){
-                if ($request->discount != null) {
-                    $discount_price = (($request->price + $request->image_price)/100)*$request->discount*$request->quantity;
-                }else {
-                    $discount_price = 0;
-                }
-                $order_price = (int)($request->price + $request->image_price)*$request->quantity;
-                $order_all_price = $order_price - $discount_price;
-            }else{
-                if ($request->discount != null && $request->discount != "") {
-                    $discount_price = (($request->price)/100)*$request->discount*$request->quantity;
-                }else {
-                    $discount_price = 0;
-                }
-                $order_price =(int)(($request->price)*($request->quantity));
-                $order_all_price=$order_price - $discount_price;
-            }
-        }else {
-            if ($request->discount != null && $request->discount != "") {
-                $discount_price = (($request->price)/100)*$request->discount*$request->quantity;
-            }else {
-                $discount_price = 0;
-            }
-            $order_price = (int)(($request->price)*($request->quantity));
-            $order_all_price = $order_price - $discount_price;
-        }
-        if(isset($user->orderBasket->id)){
+        $request_price = $request->price + $request->image_price??0;
+        $request_discount = $request->discount??0;
+        $request_order_discount_price = ($request_price/100)*$request_discount*$request->quantity;
+        $request_order_price = $request_price*$request->quantity;
+        if($user->orderBasket){
             $order = $user->orderBasket;
-            $order->price = $order->price + $order_price;
-            $order->all_price = $order->all_price + $order_all_price;
-            $order->discount_price = $order->discount_price + $discount_price;
+            $orderDetailWarehouses_id = [];
+            $orderDetailProducts_id = [];
+            $orderDetailsDiscountPrice = 0;
+            $orderDetailsPrice = 0;
+            foreach($order->orderDetail as $orderDetail){
+                if($orderDetail->warehouse_id && $request->warehouse_product_id && $request->warehouse_product_id == $orderDetail->warehouse_id){
+                    $orderDetailWarehouses_id[] = $orderDetail->warehouse_id;
+                }
+                if($orderDetail->product_id && $request->product_id && $request->product_id == $orderDetail->product_id){
+                    $orderDetailProducts_id[] = $orderDetail->product_id;
+                }
+                if(in_array($request->warehouse_product_id, $orderDetailWarehouses_id) || in_array($request->product_id, $orderDetailProducts_id)) {
+                    $orderDetail->price = $request->price;
+                    $orderDetail->discount = $request->discount??0;
+                }else{
+                    $orderDetail->discount = $orderDetail->discount??0;
+                }
+                $orderDetail->discount_price = ($orderDetail->price/100)*$orderDetail->discount*$orderDetail->quantity;
+                $orderDetailsPrice = $orderDetailsPrice + $orderDetail->price*$orderDetail->quantity;
+                $orderDetailsDiscountPrice = $orderDetailsDiscountPrice + $orderDetail->discount_price;
+            }
+            $order->price = $request_order_price + $orderDetailsPrice;
+            $order->discount_price = $orderDetailsDiscountPrice + $request_order_discount_price;
+            $order->all_price = $order->price - $order->discount_price;
         }else{
             $order = new Order();
             $order->user_id = $user->id;
             $order->status = Constants::BASKED;
-            $order->price = (int)$order_price;
-            $order->discount_price = (int)$discount_price;
-            $order->all_price = (int)$order_all_price;
+            $order->price = (int)$request_order_price;
+            $order->discount_price = (int)$request_order_discount_price;
+            $order->all_price = (int)$request_order_price - $request_order_discount_price;
             $order->save();
         }
         if(!$order->code){
             $length = 8;
             $order_code = str_pad($order->id, $length, '0', STR_PAD_LEFT);
             $order->code=$order_code;
-        }
-        $orderDetailWarehouses_id = [];
-        $orderDetailsDiscountPrice = 0;
-        $orderDetailsPrice = 0;
-        foreach($order->orderDetail as $orderDetail){
-            if($request->warehouse_product_id == $orderDetail->warehouse_id){
-                if($request->discount){
-                    $orderDetail->discount_price = (($request->price)/100)*$request->discount*$orderDetail->quantity;
-                }else{
-                    $orderDetail->discount_price = 0;
-                }
-            }
-            $orderDetailWarehouses_id[] = $orderDetail->warehouse_id;
-            $orderDetailsDiscountPrice = $orderDetailsDiscountPrice + $orderDetail->discount_price;
-            $orderDetailsPrice = $orderDetailsPrice + $orderDetail->price;
-        }
-        if(in_array($request->warehouse_product_id, $orderDetailWarehouses_id)){
-            $order->discount_price = (int)$orderDetailsDiscountPrice + $discount_price;
-            $order->all_price = (int)$orderDetailsPrice - (int)$orderDetailsDiscountPrice + $order_all_price;
         }
         $order->save();
         $message = translate_api('Success', $language);
@@ -135,17 +114,25 @@ class OrderController extends Controller
                     'size_id' => $request->size_id,
                     'price' => $request->price,
                     'discount'=>$request->discount,
-                    'discount_price'=>$discount_price,
+                    'discount_price'=>$request_order_discount_price,
                     'warehouse_id'=>$request->warehouse_product_id,
                     'created_at'=>date("Y-m-d h:i:s"),
                     'updated_at'=>date("Y-m-d h:i:s")
                     // Add more columns and their respective default values
                 ]);
             }
-
              return $this->success($message, 200);
         }else{
-            $discount_price = ($request->price/100)*$request->discount*$request->quantity;
+            $order_details = OrderDetail::where('order_id', $order->id)->where('product_id', $request->product_id)->get();
+            foreach ($order_details as $order_detail) {
+                $discount_price = ($request->price / 100) * $request->discount * $order_detail->quantity;
+                $order_detail->update([
+                    'price'=>$request->price,
+                    'discount'=>$request->discount,
+                    'discount_price'=>$discount_price
+                ]);
+            }
+            $discount_price = ($request->price / 100) * $request->discount * $request->quantity;
             $order_detail = new OrderDetail();
             $order_detail->product_id = $request->product_id ?? null;
             //warehouse_product_id:45
@@ -153,7 +140,7 @@ class OrderController extends Controller
             $order_detail->color_id = $request->color_id;
             $order_detail->size_id = $request->size_id;
             $images_print = $request->file('imagesPrint');
-            $order_detail->price = $request->price + $request->image_price??0;
+            $order_detail->price = $request->price + $request->image_price ?? 0;
             $order_detail->image_price = $request->image_price;
             $image_front = $request->file('image_front');
             $image_back = $request->file('image_back');
@@ -164,7 +151,7 @@ class OrderController extends Controller
             $order_detail->discount_price = $discount_price;
             $order_detail->save();
             if ($images_print) {
-                foreach ($images_print as $image_print){
+                foreach ($images_print as $image_print) {
                     $uploads = new Uploads();
                     $uploads->image = $this->saveImage($image_print, 'print');
                     $uploads->relation_type = Constants::PRODUCT;
@@ -221,6 +208,12 @@ class OrderController extends Controller
         if ($language == null) {
             $language = env("DEFAULT_LANGUAGE", 'ru');
         }
+        if($request->warehouse_id && $request->product_id){
+            return $this->error(translate_api('send product_id or warehouse_id you are sending both of them', $language), 400);
+        }
+        if(!$request->warehouse_id && !$request->product_id){
+            return $this->error(translate_api('send product_id or warehouse_id you are sending none of them', $language), 400);
+        }
         $order = $user->orderBasket;
         $order_detail_list = [];
         if (isset($user->orderBasket->orderDetail)) {
@@ -248,37 +241,23 @@ class OrderController extends Controller
                     $list_images = count($this->getImages($warehouse_product, 'warehouses')) > 0 ? $this->getImages($warehouse_product, 'warehouses') : $this->getImages($list_product, 'product');
                     $translate_name = table_translate($warehouse_product, 'warehouse', $language);
 
-//                    if($order_detail->warehouse){
-//                        if($order_detail->warehouse->discount){
-//
-//                        }
-//                    }
-//                    if($order_detail->product){
-//                        if($order_detail->product->discount){
-//
-//                        }
-//                    }
-
-                    if($order_detail->price != $warehouse_product->warehouse_price){
-                        $order_detail->price = $warehouse_product->warehouse_price;
-                        $order_price = $order_price + $order_detail->price * $order_detail->quantity;
-//                        if($order->warehouse){
-//                            if($order->warehouse->discount){
-//
-//                            }
-//                        }
-                        if($order_detail->discount){
-                            $order_detail->discount_price = ($warehouse_product->warehouse_price*$order_detail->discount)/100*$order_detail->quantity;
-                            $order_discount_price = $order_discount_price + $order_detail->discount_price;
+                    if($warehouse_product->warehouse){
+                        if($order_detail->price != $warehouse_product->warehouse_price){
+                            $order_detail->price = $warehouse_product->warehouse_price;
+                            $order_price = $order_price + $order_detail->price * $order_detail->quantity;
+                            if($order_detail->discount){
+                                $order_detail->discount_price = ($warehouse_product->warehouse_price*$order_detail->discount)/100*$order_detail->quantity;
+                                $order_discount_price = $order_discount_price + $order_detail->discount_price;
+                            }else{
+                                $order_detail->discount_price = 0;
+                            }
                         }else{
-                            $order_detail->discount_price = 0;
-                        }
-                    }else{
-                        $order_price = $order_price + $order_detail->price * $order_detail->quantity;
-                        if($order_detail->discount) {
-                            $order_discount_price = $order_discount_price + $order_detail->discount_price;
-                        }else{
-                            $order_detail->discount_price = 0;
+                            $order_price = $order_price + $order_detail->price * $order_detail->quantity;
+                            if($order_detail->discount) {
+                                $order_discount_price = $order_discount_price + $order_detail->discount_price;
+                            }else{
+                                $order_detail->discount_price = 0;
+                            }
                         }
                     }
 
@@ -319,12 +298,11 @@ class OrderController extends Controller
                         ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
                         ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
                         ->where('dt1.id', $order_detail->id)
-                        ->select('dt1.image_front as image_front', 'dt1.image_back as image_back', 'dt2.id', 'dt2.name', 'dt2.images as images', 'dt2.description as description', 'dt3.id as size_id', 'dt3.name as size_name', 'dt4.id as color_id', 'dt4.code as color_code', 'dt4.name as color_name',)
+                        ->select('dt1.image_front as image_front', 'dt1.image_back as image_back', 'dt2.id', 'dt2.name', 'dt2.images as images', 'dt2.description as description', 'dt3.id as size_id', 'dt3.name as size_name', 'dt4.id as color_id', 'dt4.code as color_code', 'dt4.name as color_name', 'dt2.price as price',)
                         ->first();
 
                     if ($product) {
                         $translate_name = table_translate($product, 'product', $language);
-                        $total_price = $order_detail->price - $order_detail->discount_price;
                         if($product->image_front || $product->image_back){
                             $list_images = [
                                 asset('storage/warehouse/'.$product->image_front),
@@ -333,6 +311,29 @@ class OrderController extends Controller
                         }else{
                             $list_images = $this->getImages($product, 'product');
                         }
+
+                        if($order_detail->price != $product->price){
+                            $order_detail->price = $product->price;
+                            $order_price = $order_price + $order_detail->price * $order_detail->quantity;
+                            if($order_detail->discount){
+                                $order_detail->discount_price = ($product->price*$order_detail->discount)/100*$order_detail->quantity;
+                                $order_discount_price = $order_discount_price + $order_detail->discount_price;
+                            }else{
+                                $order_detail->discount_price = 0;
+                            }
+                        }else{
+                            $order_price = $order_price + $order_detail->price * $order_detail->quantity;
+                            if($order_detail->discount) {
+                                $order_discount_price = $order_discount_price + $order_detail->discount_price;
+                            }else{
+                                $order_detail->discount_price = 0;
+                            }
+                        }
+
+                        $order_detail->save();
+
+                        $total_price = $order_detail->price - $order_detail->discount_price??0;
+
                         $list = [
                             "id" => $order_detail->id,
                             "relation_type" => $relation_type,
@@ -371,7 +372,7 @@ class OrderController extends Controller
 
             $order->price = $order_price;
             $order->discount_price = $order_discount_price;
-            $order->all_price = $order->price - $order->discount_price - $order->coupon_price??0;
+            $order->all_price = $order->price - $order->discount_price??0 - $order->coupon_price??0;
             $order->save();
             $data = [
                 'id' => $order->id,
@@ -927,7 +928,7 @@ class OrderController extends Controller
 
     public function getProductByOrderDetail($product_id, $language){
         $product = Products::find($product_id);
-        if (isset($product->id)) {
+        if ($product) {
             if($product->name){
                 $product_translate_name=table_translate($product,'product', $language);
             }
