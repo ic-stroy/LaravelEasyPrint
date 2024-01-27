@@ -220,13 +220,25 @@ class OrderController extends Controller
                         ->join('warehouses as dt2', 'dt2.id', '=', 'dt1.warehouse_id')
                         ->join('sizes as dt3', 'dt3.id', '=', 'dt2.size_id')
                         ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
-                        // ->leftJoin('coupons as dt5', 'dt5.warehouse_product_id', '=', 'dt2.id')
+                         ->leftJoin('discounts as dt6', function($join){
+                             $join->on('dt6.warehouse_id', '=', 'dt2.id')
+                                 ->orOn(function ($join){
+                                     $join->on([
+                                         ['dt6.product_id', '=', 'dt2.product_id'],
+                                         ['dt6.product_id', 'is not', DB::raw('NULL')],
+                                         ['dt6.warehouse_id', 'is', DB::raw('NULL')]
+                                     ]);
+                                 })
+                             ->where('start_date', '<=', date('Y-m-d H:m:s'))
+                             ->where('end_date', '>=', date('Y-m-d H:m:s'));
+                         })
                         ->where('dt1.id', $order_detail->id)
                         ->join('companies as dt5', 'dt5.id', '=', 'dt2.company_id')
                         ->select('dt1.image_front as image_front', 'dt1.image_back as image_back', 'dt2.id as warehouse_product_id', 'dt2.name as warehouse_product_name', 'dt2.quantity as max_quantity',
                             'dt2.images as images', 'dt2.description as description', 'dt2.product_id as product_id',
                             'dt2.company_id as company_id', 'dt2.price as warehouse_price', 'dt3.id as size_id', 'dt3.name as size_name',
-                            'dt4.id as color_id', 'dt4.name as color_name', 'dt4.code as color_code', 'dt5.name as company_name')
+                            'dt4.id as color_id', 'dt4.name as color_name', 'dt4.code as color_code', 'dt5.name as company_name',
+                        'dt6.percent as discount_percent')
                         ->first();
 
                     $relation_type = 'warehouse_product';
@@ -235,19 +247,25 @@ class OrderController extends Controller
                     $list_images = count($this->getImages($warehouse_product, 'warehouses')) > 0 ? $this->getImages($warehouse_product, 'warehouses') : $this->getImages($list_product, 'product');
                     $translate_name = table_translate($warehouse_product, 'warehouse', $language);
 
-                    if($warehouse_product->warehouse){
+                    if($warehouse_product->warehouse_product_id){
+                        if($warehouse_product->discount_percent){
+                            $order_detail->discount = $warehouse_product->discount_percent;
+                        }else{
+                            $order_detail->discount = 0;
+                        }
                         if($order_detail->price != $warehouse_product->warehouse_price){
                             $order_detail->price = $warehouse_product->warehouse_price;
                             $order_price = $order_price + $order_detail->price * $order_detail->quantity;
-                            if($order_detail->discount){
-                                $order_detail->discount_price = ($warehouse_product->warehouse_price*$order_detail->discount)/100*$order_detail->quantity;
+                            if($order_detail->discount && $order_detail->discount != 0){
+                                $order_detail->discount_price = ($order_detail->price*$order_detail->discount)/100*$order_detail->quantity;
                                 $order_discount_price = $order_discount_price + $order_detail->discount_price;
                             }else{
                                 $order_detail->discount_price = 0;
                             }
                         }else{
                             $order_price = $order_price + $order_detail->price * $order_detail->quantity;
-                            if($order_detail->discount) {
+                            if($order_detail->discount && $order_detail->discount != 0) {
+                                $order_detail->discount_price = ($order_detail->price*$order_detail->discount)/100*$order_detail->quantity;
                                 $order_discount_price = $order_discount_price + $order_detail->discount_price;
                             }else{
                                 $order_detail->discount_price = 0;
@@ -291,8 +309,26 @@ class OrderController extends Controller
                         ->join('products as dt2', 'dt2.id', '=', 'dt1.product_id')
                         ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
                         ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
+                        ->leftJoin('discounts as dt5', function($join){
+                            $join->on([
+                                ['dt5.warehouse_id', '=', 'dt1.warehouse_id'],
+                                ['dt5.warehouse_id', 'is not', DB::raw('NULL')]
+                            ])
+                            ->orOn(function ($join) {
+                                $join->on([
+                                    ['dt5.product_id', '=', 'dt2.id'],
+                                    ['dt5.product_id', 'is not', DB::raw('NULL')],
+                                    ['dt5.warehouse_id', 'is', DB::raw('NULL')]
+                                ]);
+                            })
+                            ->where('start_date', '<=', date('Y-m-d H:m:s'))
+                            ->where('end_date', '>=', date('Y-m-d H:m:s'));
+                        })
                         ->where('dt1.id', $order_detail->id)
-                        ->select('dt1.image_front as image_front', 'dt1.image_back as image_back', 'dt2.id', 'dt2.name', 'dt2.images as images', 'dt2.description as description', 'dt3.id as size_id', 'dt3.name as size_name', 'dt4.id as color_id', 'dt4.code as color_code', 'dt4.name as color_name', 'dt2.price as price',)
+                        ->select('dt1.image_front as image_front', 'dt1.image_back as image_back', 'dt2.id', 'dt2.name', 'dt2.images as images',
+                            'dt2.description as description', 'dt3.id as size_id', 'dt3.name as size_name', 'dt4.id as color_id',
+                            'dt4.code as color_code', 'dt4.name as color_name', 'dt2.price as price',
+                        'dt5.percent as discount_percent')
                         ->first();
 
                     if ($product) {
@@ -305,11 +341,15 @@ class OrderController extends Controller
                         }else{
                             $list_images = $this->getImages($product, 'product');
                         }
-
+                        if($product->discount_percent){
+                            $order_detail->discount = $product->discount_percent;
+                        }else{
+                            $order_detail->discount = 0;
+                        }
                         if($order_detail->price != $product->price){
                             $order_detail->price = $product->price;
                             $order_price = $order_price + $order_detail->price * $order_detail->quantity;
-                            if($order_detail->discount){
+                            if($order_detail->discount && $order_detail->discount != 0){
                                 $order_detail->discount_price = ($product->price*$order_detail->discount)/100*$order_detail->quantity;
                                 $order_discount_price = $order_discount_price + $order_detail->discount_price;
                             }else{
@@ -317,7 +357,8 @@ class OrderController extends Controller
                             }
                         }else{
                             $order_price = $order_price + $order_detail->price * $order_detail->quantity;
-                            if($order_detail->discount) {
+                            if($order_detail->discount && $order_detail->discount != 0) {
+                                $order_detail->discount_price = ($product->price*$order_detail->discount)/100*$order_detail->quantity;
                                 $order_discount_price = $order_discount_price + $order_detail->discount_price;
                             }else{
                                 $order_detail->discount_price = 0;

@@ -136,8 +136,13 @@ class ProductController extends Controller
             ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
             ->join('products as dt5', 'dt5.id', '=', 'dt2.product_id')
             ->leftJoin('discounts as dt6', function($join) {
-                $join->on('warehouse_id', '=', 'dt2.id')
-                ->orOn('dt6.product_id', '=', 'dt2.product_id')
+                $join->on('dt6.warehouse_id', '=', 'dt2.id')
+                ->orOn(function ($join_) {
+                    $join_->on([
+                        ['dt6.product_id', '=', 'dt2.product_id'],
+                        ['dt6.warehouse_id', 'is', DB::raw('NULL')]
+                    ]);
+                })
                 ->where('dt6.start_date', '<=', date('Y-m-d H:i:s'))
                 ->where('dt6.end_date', '>=', date('Y-m-d H:i:s'));
             })
