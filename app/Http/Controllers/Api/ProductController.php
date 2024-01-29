@@ -80,16 +80,12 @@ class ProductController extends Controller
                 'id' => $warehouse_product_->id,
                 'name' => $translate_name ?? $warehouse_product_->product->name,
                 'price' => $warehouse_product_->price,
-                'discount' => (isset($warehouse_product_->discount)) > 0 ? $warehouse_product_->discount->percent : NULL,
-                'price_discount' => (isset($warehouse_product_->discount)) > 0 ? $warehouse_product_->price - ($warehouse_product_->price / 100 * $warehouse_product_->discount->percent) : NULL,
+                'discount' => $warehouse_product_->discount? $warehouse_product_->discount->percent : NULL,
+                'price_discount' => $warehouse_product_->discount? $warehouse_product_->price - ($warehouse_product_->price / 100 * $warehouse_product_->discount->percent) : NULL,
                 'images' => $warehouseProducts
             ];
         }
-
-        $products_ = DB::table('products')
-            ->select('id','name', 'price', 'images')
-            ->where('slide_show', Constants::ACTIVE)
-            ->get();
+        $products_ = Products::where('slide_show', Constants::ACTIVE)->get();
 
         $products = [];
         foreach ($products_ as $product_) {
