@@ -398,19 +398,21 @@ class OrderController extends Controller
                 }
                 array_push($order_detail_list, $list);
             }
-            if($order->coupon){
-                if(!$order->coupon_price || $order->coupon->start_date > date('Y-m-d H:i:s') || date('Y-m-d H:i:s') > $order->coupon->end_date){
-                    $order->coupon_price = 0;
-                    $order->coupon_id = NULL;
-                }
-            }
 
             $order->price = $order_price;
             $order->discount_price = $order_discount_price;
-            $order->all_price = $order->price - $order->discount_price??0 - $order->coupon_price??0;
+            if($order->coupon){
+                if($order->coupon->start_date > date('Y-m-d H:i:s') || date('Y-m-d H:i:s') > $order->coupon->end_date){
+                    $order->all_price = $order->price - $order->discount_price??0;
+                    $order->coupon_id = NULL;
+                }else{
+                    $order->all_price = $order->price - $order->discount_price??0 - $order->coupon_price??0;
+                }
+            }
             $order->save();
             $data = [
                 'id' => $order->id,
+                'coupon_id' => $order->coupon_id,
                 'coupon_price' => $order->coupon_price,
                 'price' => $order->price,
                 'discount_price' => $order->discount_price,
@@ -578,7 +580,7 @@ class OrderController extends Controller
         if ($coupon=DB::table('coupons')->where('name', $request->coupon_name)->where('status',1)->first()) {
             if ($order=Order::where('id',$request->order_id)->first()) {
                 $order_count = Order::where('user_id', $order->user_id)->where('status', '!=', Constants::BASKED)->count();
-                if (!$order->coupon_id == null) {
+                if (!$order->coupon_id) {
                     if ($coupon->company_id != null) {
                         foreach ($order->orderDetail as $order_detail) {
                             if ($order_detail->warehouse_id) {
@@ -647,8 +649,7 @@ class OrderController extends Controller
 
                     $message=translate_api('success',$language);
                     return $this->success($message, 200,$data);
-                }
-                else {
+                }else {
                     $message=translate_api('this order has a coupon',$language);
                     return $this->error($message, 400);
                 }
