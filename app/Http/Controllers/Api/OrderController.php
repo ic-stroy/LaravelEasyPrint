@@ -229,8 +229,8 @@ class OrderController extends Controller
                                          ['dt6.warehouse_id', 'is', DB::raw('NULL')]
                                      ]);
                                  })
-                             ->where('start_date', '<=', date('Y-m-d H:m:s'))
-                             ->where('end_date', '>=', date('Y-m-d H:m:s'));
+                             ->where('start_date', '<=', date('Y-m-d H:i:s'))
+                             ->where('end_date', '>=', date('Y-m-d H:i:s'));
                          })
                         ->where('dt1.id', $order_detail->id)
                         ->join('companies as dt5', 'dt5.id', '=', 'dt2.company_id')
@@ -321,8 +321,8 @@ class OrderController extends Controller
                                     ['dt5.warehouse_id', 'is', DB::raw('NULL')]
                                 ]);
                             })
-                            ->where('start_date', '<=', date('Y-m-d H:m:s'))
-                            ->where('end_date', '>=', date('Y-m-d H:m:s'));
+                            ->where('start_date', '<=', date('Y-m-d H:i:s'))
+                            ->where('end_date', '>=', date('Y-m-d H:i:s'));
                         })
                         ->where('dt1.id', $order_detail->id)
                         ->select('dt1.image_front as image_front', 'dt1.image_back as image_back', 'dt2.id', 'dt2.name', 'dt2.images as images',
@@ -399,7 +399,7 @@ class OrderController extends Controller
                 array_push($order_detail_list, $list);
             }
             if($order->coupon){
-                if(!$order->coupon_price || $order->coupon->start_date > date('Y-m-d') || date('Y-m-d') > $order->coupon->end_date){
+                if(!$order->coupon_price || $order->coupon->start_date > date('Y-m-d H:i:s') || date('Y-m-d H:i:s') > $order->coupon->end_date){
                     $order->coupon_price = 0;
                     $order->coupon_id = NULL;
                 }
