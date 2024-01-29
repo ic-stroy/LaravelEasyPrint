@@ -52,7 +52,7 @@ class CategoryController extends Controller
         $subCategory = [];
         $productId = [];
 
-        if (isset($category->id)) {
+        if ($category) {
             $translate_category_name=table_translate($category,'category',$language);
             if ($category->step == 0) {
 
@@ -89,7 +89,7 @@ class CategoryController extends Controller
                 $images = json_decode($product->images);
             }
             foreach ($images as $image) {
-                if (!isset($image)) {
+                if (!$image) {
                     $product_image = 'no';
                 } else {
                     $product_image = $image;
@@ -161,7 +161,7 @@ class CategoryController extends Controller
                 $images = json_decode($product->images);
             }
             foreach ($images as $image) {
-                if (!isset($image)) {
+                if ($image) {
                     $product_image = 'no';
                 } else {
                     $product_image = $image;
@@ -197,7 +197,7 @@ class CategoryController extends Controller
                 'Authorization' => "Bearer $token"
             ]
         ];
-        if(isset($token) && $token != ""){
+        if(isset($token) && $token){
             $client = new \GuzzleHttp\Client();
             $url = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https://' : 'http://'.$_SERVER['HTTP_HOST'];
             $guzzle_request = new GuzzleRequest('GET', $url.'/api/user-info');
@@ -225,14 +225,14 @@ class CategoryController extends Controller
 
     public function userInfo(){
         $user = Auth::user();
-        if(isset($user->orderBasket)){
-            $basket_count = count(isset($user->orderBasket->orderDetail)?$user->orderBasket->orderDetail:[]);
+        if($user->orderBasket){
+            $basket_count = $user->orderBasket->orderDetail?$user->orderBasket->orderDetail:[];
         }else{
             $basket_count = 0;
         }
-        $personalInfo = isset($user->personalInfo)?$user->personalInfo:[];
-        if(isset($user->personalInfo)){
-            if(isset($user->personalInfo->avatar)){
+        $personalInfo = $user->personalInfo?$user->personalInfo:[];
+        if($user->personalInfo){
+            if($user->personalInfo->avatar){
                 $sms_avatar = storage_path('app/public/user/'.$user->personalInfo->avatar);
             }else{
                 $sms_avatar = 'no';
@@ -241,7 +241,7 @@ class CategoryController extends Controller
             $sms_avatar = 'no';
         }
         $profile = [
-            'name'=>isset($personalInfo->first_name)?$personalInfo->first_name:null,
+            'name'=>$personalInfo->first_name?$personalInfo->first_name:null,
             'avatar'=>file_exists($sms_avatar)?asset('storage/user/'.$personalInfo->avatar):asset('assets/images/man.jpg'),
             'basket_count'=>$basket_count
         ];
@@ -250,7 +250,7 @@ class CategoryController extends Controller
 
     public function getImages($model, $text)
     {
-        if (isset($model->images)) {
+        if ($model->images) {
             $images_ = json_decode($model->images);
             $images = [];
             foreach ($images_ as $image_) {

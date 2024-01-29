@@ -97,8 +97,8 @@ class ProductController extends Controller
                 'id' => $product_->id,
                 'name' => $product_->name,
                 'price' => $product_->price,
-                'discount' => (isset($product_->discount)) > 0 ? $product_->discount->percent : NULL,
-                'price_discount' => (isset($product_->discount)) > 0 ? $product_->price - ($product_->price / 100 * $product_->discount->percent) : NULL,
+                'discount' => $product_->discount ? $product_->discount->percent : NULL,
+                'price_discount' => $product_->discount ? $product_->price - ($product_->price / 100 * $product_->discount->percent) : NULL,
                 'images' => $this->getImages($product_, 'product')
             ];
         }
@@ -130,7 +130,7 @@ class ProductController extends Controller
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
         $warehouse_product_id = $request->warehouse_product_id;
-        if ($warehouse_product_id != null) {
+        if ($warehouse_product_id) {
             $warehouse_product = DB::table('warehouses as dt2')
             ->join('sizes as dt3', 'dt3.id', '=', 'dt2.size_id')
             ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
@@ -156,13 +156,13 @@ class ProductController extends Controller
                 'dt5.name as product_name', 'dt5.images as product_images', 'dt5.description as product_description', 'dt6.percent AS discount')
             ->first();
 
-            if (isset($warehouse_product->images)) {
+            if ($warehouse_product->images) {
                 $images_ = json_decode($warehouse_product->images);
                 $images = [];
                 foreach ($images_ as $image_) {
                     $images[] = asset('storage/warehouses/' . $image_);
                 }
-            } elseif (isset($warehouse_product->product_images)) {
+            } elseif ($warehouse_product->product_images) {
                 $images_ = json_decode($warehouse_product->product_images);
                 $images = [];
                 foreach ($images_ as $image_){
@@ -172,7 +172,7 @@ class ProductController extends Controller
                 $images = [];
             }
 
-            if (isset($warehouse_product->product_id)) {
+            if ($warehouse_product->product_id) {
                 $sizes = DB::table('warehouses as dt1')
                     ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
                     // ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
@@ -274,12 +274,12 @@ class ProductController extends Controller
             // $relation_type='warehouse_product';
             // $relation_id=$order_detail->warehouse_id;
 
-            if (isset($warehouse_product->warehouse_product_id)) {
-                if(isset($warehouse_product->color_id)) {
+            if ($warehouse_product->warehouse_product_id) {
+                if($warehouse_product->color_id) {
                     $warehouse_color = Color::select('id', 'name')->find($warehouse_product->color_id);
                     $color_translate_name=table_translate($warehouse_color,'color', $language);
                 }
-                if(isset($warehouse_product->warehouse_product_id)) {
+                if($warehouse_product->warehouse_product_id) {
                     $warehouse_translate_name=table_translate($warehouse_product,'warehouse', $language);
                 }
                 if (!empty($warehouse_product->material_name) ||
@@ -389,7 +389,7 @@ class ProductController extends Controller
     {
         $language = $request->header('language');
         $product = Products::find($request->id);
-        if (isset($product->warehouse)) {
+        if ($product->warehouse) {
             $colors_array = [];
             $sizes_array = [];
             foreach ($product->warehouse as $warehouse_) {
@@ -398,7 +398,7 @@ class ProductController extends Controller
                 if($colors_array[0] == $warehouse_->color->id){
                     $firstColorProducts[] = [
                         'id'=>$warehouse_->id,
-                        'size'=>isset($warehouse_->size) ? $warehouse_->size->name:'',
+                        'size'=>$warehouse_->size ? $warehouse_->size->name:'',
                         'quantity' => $warehouse_->quantity,
                         'images' => $this->getImages($warehouse_, 'warehouse'),
                     ];
@@ -411,7 +411,7 @@ class ProductController extends Controller
                         $colorModel = $warehouse->color;
                         $productsByColor[] = [
                             'id' => $warehouse->id,
-                            'size' => isset($warehouse->size) ? $warehouse->size->name:'',
+                            'size' => $warehouse->size ? $warehouse->size->name:'',
                             'price' => $warehouse->price,
                             'quantity' => $warehouse->quantity,
                             'images' => $this->getImages($warehouse, 'warehouse'),
@@ -430,7 +430,7 @@ class ProductController extends Controller
                         $sizeModel = $warehouse->size;
                         $productsBySize[] = [
                             'id' => $warehouse->id,
-                            'color' => isset($warehouse->color) ? $warehouse->color:'',
+                            'color' => $warehouse->color ? $warehouse->color:'',
                             'price' => $warehouse->price,
                             'quantity' => $warehouse->quantity,
                             'images' => $this->getImages($warehouse, 'warehouse'),
@@ -444,7 +444,7 @@ class ProductController extends Controller
             }
         }
         $good = [];
-        if(isset($product->id)){
+        if($product){
             $images_ = json_decode($product->images);
             $images = [];
             foreach ($images_ as $image_){
@@ -452,7 +452,7 @@ class ProductController extends Controller
             }
             $good['id'] = $product->id;
             $good['name'] = $product->name??null;
-            if(isset($product->subCategory->name)){
+            if($product->subCategory->name){
                 $good['subcategory'] = $product->subCategory->name;
             }else{
                 $good['subcategory'] = null;
@@ -475,13 +475,13 @@ class ProductController extends Controller
     }
 
     public function getProductCategory($product){
-        if(isset($product->subSubCategory->id)){
+        if($product->subSubCategory){
             $category_product = $product->subSubCategory;
             $is_category = 3;
-        }elseif(isset($product->subCategory->id)){
+        }elseif($product->subCategory){
             $category_product = $product->subCategory;
             $is_category = 2;
-        }elseif(isset($product->category->id)){
+        }elseif($product->category){
             $category_product = $product->category;
             $is_category = 1;
         }else{
@@ -493,10 +493,10 @@ class ProductController extends Controller
                 $current_category = $category_product;
                 break;
             case 2:
-                $current_category = isset($category_product->category)?$category_product->category:'no';
+                $current_category = $category_product->category?$category_product->category:'no';
                 break;
             case 3:
-                $current_category = isset($category_product->sub_category->category)?$category_product->sub_category->category:'no';
+                $current_category = $category_product->sub_category->category?$category_product->sub_category->category:'no';
                 break;
             default:
                 $current_category = 'no';
@@ -509,7 +509,7 @@ class ProductController extends Controller
      */
 
     public function getImages($model, $text){
-        if(isset($model->images)){
+        if($model->images){
             $images_ = json_decode($model->images);
             $images = [];
             foreach ($images_ as $image_){
@@ -532,7 +532,7 @@ class ProductController extends Controller
     public function deleteProductImage(Request $request){
 
         $product = Products::find($request->id);
-        if(isset($product->images) && !is_array($product->images)){
+        if($product->images && !is_array($product->images)){
             $product_images_base = json_decode($product->images);
         }else{
             $product_images_base = [];

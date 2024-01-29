@@ -13,7 +13,7 @@ class BannerController extends Controller
         $all_banners = Banner::all();
         $banners = [];
         foreach ($all_banners as $banner){
-            if(isset($banner->image) && !is_array($banner->image)){
+            if($banner->image && !is_array($banner->image)){
                 $banner_images = json_decode($banner->image);
             }else{
                 $banner_images = [];
@@ -57,7 +57,7 @@ class BannerController extends Controller
 
     public function deleteCarousel(Request $request){
         $banner = Banner::find($request->id);
-        if(isset($banner->image) && !is_array($banner->image)){
+        if($banner->image && !is_array($banner->image)){
             $banner_images = json_decode($banner->image);
         }else{
             $banner_images = [];

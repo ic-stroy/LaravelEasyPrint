@@ -82,7 +82,7 @@ class CompanyController extends Controller
     public function update(Request $request, string $id)
     {
         $model = Company::find($id);
-        if(isset($model->address->id)){
+        if($model->address){
             $address = $model->address;
         }else{
             $address = new Address();
@@ -114,7 +114,7 @@ class CompanyController extends Controller
             }
         }
         $model->delete();
-        if(isset($address->id)){
+        if($address){
             $address->delete();
         }
         return redirect()->route('company.index')->with('status', translate('Successfully deleted'));

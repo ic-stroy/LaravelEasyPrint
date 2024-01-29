@@ -703,12 +703,14 @@ class OrderController extends Controller
             $order->discount_price = $order->discount_price??0 - $order_detail->discount_price??0;
             $order->all_price = $order->all_price - ($order_detail->price * $order_detail->quantity) + $order_detail->discount_price??0;
             if ($order->coupon_id) {
-                if ($order_detail->warehouse_id) {
-                    if (DB::table('warehouses')->where('id',$order_detail->warehouse_id)->first()->company_id == $coupon=DB::table('coupons')->where('id',$order->coupon_id)->first()->company_id) {
-                        $order->all_price = $order->all_price + $order->coupon_price;
-                        $order->coupon_price = null;
-                    }
-                }
+//                if ($order_detail->warehouse_id) {
+//                    if (DB::table('warehouses')->where('id', $order_detail->warehouse_id)->first()->company_id == DB::table('coupons')->where('id', $order->coupon_id)->first()->company_id) {
+//                        $order->all_price = $order->all_price + $order->coupon_price;
+//                        $order->coupon_price = null;
+//                    }
+//                }
+                $order->all_price = $order->all_price + $order->coupon_price??0;
+                $order->coupon_price = null;
             }
             if (!$order_detail->image_front) {
                 $order_detail->image_front = 'no';
@@ -724,7 +726,7 @@ class OrderController extends Controller
             if(file_exists($order_detail_image_back)){
                 unlink($order_detail_image_back);
             }
-            if ($uploads=Uploads::where('relation_type',Constants::PRODUCT)->where('relation_id',$order_detail->product_id)->get()) {
+            if ($uploads=Uploads::where('relation_type', Constants::PRODUCT)->where('relation_id', $order_detail->product_id)->get()) {
                 foreach ($uploads as $upload){
                     if (!$upload->image) {
                         $upload->image = 'no';
@@ -737,13 +739,13 @@ class OrderController extends Controller
                 }
             }
 
-            if ($order_detail->warehouse_id) {
-               $warehouse=Warehouse::where('id',$order_detail->warehouse_id)->first();
-               $warehouse->quantity=$warehouse->quantity + $order_detail->quantity;
-               $warehouse->save();
-            }
-            $order_detail->delete();
-           $test_order_detail=DB::table('order_details')->where('order_id',$order->id)->first();
+//            if ($order_detail->warehouse_id) {
+//               $warehouse=Warehouse::where('id',$order_detail->warehouse_id)->first();
+//               $warehouse->quantity=$warehouse->quantity + $order_detail->quantity;
+//               $warehouse->save();
+//            }
+           $order_detail->delete();
+           $test_order_detail=DB::table('order_details')->where('order_id', $order->id)->first();
            if ($test_order_detail) {
                 $order->save();
            }else {
@@ -863,12 +865,12 @@ class OrderController extends Controller
             foreach ($order_details as $order_detail){
                 $warehouse = $this->getWarehouseByOrderDetail($order_detail->warehouse_id, $language);
                 $product = $this->getProductByOrderDetail($order_detail->product_id, $language);
-                if(isset($order_detail->image_front)){
+                if($order_detail->image_front){
                     $image_front = asset('storage/warehouse/'.$order_detail->image_front);
                 }else{
                     $image_front = null;
                 }
-                if(isset($order_detail->image_back)){
+                if($order_detail->image_back){
                     $image_back = asset('storage/warehouse/'.$order_detail->image_back);
                 }else{
                     $image_back = null;
@@ -908,7 +910,7 @@ class OrderController extends Controller
             if($warehouse->color_id) {
                 $warehouse_color = Color::select('id', 'name', 'code')->find($warehouse->color_id);
                 $color_translate_name=table_translate($warehouse_color,'color', $language);
-                if(isset($warehouse_color->id)){
+                if($warehouse_color){
                     $color = [
                         "id" => $warehouse_color->id,
                         "code" => $warehouse_color->code,
@@ -918,7 +920,7 @@ class OrderController extends Controller
             }
             if($warehouse->size_id) {
                 $warehouse_size = Sizes::select('id', 'name')->find($warehouse->size_id);
-                if(isset($warehouse_size->id)){
+                if($warehouse_size){
                     $size = [
                         "id" => $warehouse_size->id,
                         "name" => $warehouse_size->name??'',

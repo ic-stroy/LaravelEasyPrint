@@ -28,11 +28,11 @@ class AuthController extends Controller
         $eskiz_token = EskizToken::first();
         $user_verify = UserVerify::withTrashed()->where('phone_number', (int)$fields['phone'])->first();
         $random = rand(100000, 999999);
-        if(!isset($user_verify->id)){
+        if(!$user_verify->id){
             $user_verify = new UserVerify();
             $user_verify->phone_number = (int)$request->phone;
             $user_verify->status_id = 1;
-        }elseif(isset($user_verify->deleted_at)){
+        }elseif($user_verify->deleted_at){
             $user_verify->status_id = 1;
             $user_verify->deleted_at = NULL;
         }
@@ -48,7 +48,7 @@ class AuthController extends Controller
                 ]
             ]
         ];
-        if(!isset($eskiz_token->expire_date)){
+        if(!$eskiz_token->expire_date){
             $guzzle_request = new GuzzleRequest('POST', 'https://notify.eskiz.uz/api/auth/login');
             $res = $client->sendAsync($guzzle_request, $token_options)->wait();
             $res_array = json_decode($res->getBody());
@@ -91,7 +91,7 @@ class AuthController extends Controller
         $res = $client->sendAsync($guzzle_request, $options)->wait();
         $result = $res->getBody();
         $result = json_decode($result);
-        if(isset($result)){
+        if($result){
             $user_verify->verify_code = $random;
             $user_verify->save();
             return $this->success("Success", 200);
@@ -108,19 +108,19 @@ class AuthController extends Controller
             'verify_code'=>'required',
         ]);
         $model = UserVerify::withTrashed()->where('phone_number', (int)$fields['phone_number'])->first();
-        if(isset($model->id)){
+        if($model){
             if(strtotime('-7 minutes') > strtotime($model->updated_at)){
                 $model->verify_code = rand(100000, 999999);
                 $model->save();
                 return $this->error(translate_api('Your sms code expired. Resend sms code', $language), 400);
             }
-            if(isset($model->deleted_at)){
+            if($model->deleted_at){
                 $model->deleted_at = NULL;
             }
             if($model->verify_code == $fields['verify_code']){
                 $is_registred = false;
                 $user = User::withTrashed()->find($model->user_id);
-                if(!isset($user->id)){
+                if(!$user){
                     $new_user = new User();
                     $personal_info = new PersonalInfo();
                     $personal_info->phone_number = (int)$fields['phone_number'];
@@ -140,23 +140,23 @@ class AuthController extends Controller
                     return $this->success($message, 201, ['token'=>$token, 'is_registred'=>$is_registred]);
                 }else{
                     $is_registred = true;
-                    if(isset($user->deleted_at)){
+                    if($user->deleted_at){
                         $user->deleted_at = NULL;
                     }
                     $user->email = $model->phone_number;
-                    if(!isset($user->personal_info_id)){
+                    if(!$user->personal_info_id){
                         $personal_info = new PersonalInfo();
                         $personal_info->phone_number = (int)$fields['phone_number'];
                         $personal_info->save();
                         $user->personal_info_id = $personal_info->id;
                     }else{
                         $personal_info = PersonalInfo::withTrashed()->find($user->personal_info_id);
-                        if(!isset($personal_info->id)){
+                        if(!$personal_info){
                             $personal_info = new PersonalInfo();
                             $personal_info->phone_number = (int)$fields['phone_number'];
                             $personal_info->save();
                             $user->personal_info_id = $personal_info->id;
-                        }elseif(isset($personal_info->deleted_at)){
+                        }elseif($personal_info->deleted_at){
                             $personal_info->deleted_at = NULL;
                         }
                     }

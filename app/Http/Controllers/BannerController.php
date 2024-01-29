@@ -83,7 +83,7 @@ class BannerController extends Controller
 
     public function imageSave($file, $banner, $carusel_images, $text){
         if($text == 'update'){
-            if(isset($banner->image) && !is_array($banner->image)){
+            if($banner->image && !is_array($banner->image)){
                 $banner_images = json_decode($banner->image);
                 $banner_image_name = $banner_images->banner;
                 $carousel_image_names = $banner_images->carousel;
@@ -92,7 +92,7 @@ class BannerController extends Controller
                 $banner_image_name = '';
                 $carousel_image_names = [];
             }
-            if(isset($file) && !is_array($banner_images)){
+            if($file && !is_array($banner_images)){
                 if(!isset($banner_images->banner) || $banner_images->banner == ""){
                     $banner_image = 'no';
                 }else{
@@ -105,7 +105,7 @@ class BannerController extends Controller
             }
 
         }
-        if(isset($file)){
+        if($file){
             $random = $this->setRandom();
             $banner_name = $random . '' . date('Y-m-dh-i-s') . '.' . $file->extension();
             $file->storeAs('public/banner/', $banner_name);
@@ -135,7 +135,7 @@ class BannerController extends Controller
     public function destroy(string $id)
     {
         $banner = Banner::find($id);
-        if(isset($banner->image) && !is_array($banner->image)){
+        if($banner->image && !is_array($banner->image)){
             $banner_images = json_decode($banner->image);
         }else{
             $banner_images = [];

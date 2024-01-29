@@ -20,10 +20,6 @@ class HeaderController extends Controller
         }
 
         $categories=Category::pluck('id','name');
-        // dd($categories);
-        // $language_db=Language::
-
-
     }
 
     /**

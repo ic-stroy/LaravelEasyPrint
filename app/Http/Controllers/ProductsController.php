@@ -78,33 +78,33 @@ class ProductsController extends Controller
     public function edit(string $id)
     {
         $product = Products::find($id);
-       if(isset($product->subCategory->id)){
+       if($product->subCategory){
             $category_product = $product->subCategory;
             $is_category = 2;
-           $current_category = isset($category_product->category)?$category_product->category:'no';
-           $current_sub_category_id = isset($category_product->id)?$category_product->id:'no';
+           $current_category = $category_product->category?$category_product->category:'no';
+           $current_sub_category_id = $category_product->id?$category_product->id:'no';
            $current_sub_sub_category_id = 'no';
-        }elseif(isset($product->category->id)){
+        }elseif($product->category){
             $category_product = $product->category;
             $is_category = 1;
            $current_category = $category_product;
            $current_sub_category_id = 'no';
            $current_sub_sub_category_id = 'no';
-        }elseif(isset($product->subSubCategory->id)) {
+        }elseif($product->subSubCategory) {
            $category_product = $product->subSubCategory;
            $is_category = 3;
-           if(isset($category_product->subSubCategory->subCategory)){
-               if(isset($category_product->subSubCategory->subCategory->category)){
+           if($category_product->subSubCategory->subCategory){
+               if($category_product->subSubCategory->subCategory->category){
                    $current_category = $category_product->subSubCategory->subCategory->category;
                }else{
                    $current_category = 'no';
                }
-               $current_sub_category_id = isset($category_product->subSubCategory->subCategory->id) ? $category_product->subSubCategory->subCategory : 'no';
+               $current_sub_category_id = $category_product->subSubCategory->subCategory ? $category_product->subSubCategory->subCategory : 'no';
            }else{
                $current_category = 'no';
                $current_sub_category_id = 'no';
            }
-           $current_sub_sub_category_id = isset($category_product->id) ? $category_product->id : 'no';
+           $current_sub_sub_category_id = $category_product ? $category_product->id : 'no';
        }else{
             $category_product = 'no';
             $is_category = 0;
@@ -149,7 +149,7 @@ class ProductsController extends Controller
     public function destroy(string $id)
     {
         $model = Products::find($id);
-        if(isset($model->images)){
+        if($model->images){
             $images = json_decode($model->images);
             foreach ($images as $image){
                 $avatar_main = storage_path('app/public/products/'.$image);
@@ -207,7 +207,7 @@ class ProductsController extends Controller
                 }
             }
             foreach($model->order_detail as $order_detail){
-                if(isset($order_detail->order)){
+                if($order_detail->order){
                     $order_detail->order->delete();
                 }
                 $order_detail->delete();
@@ -233,7 +233,7 @@ class ProductsController extends Controller
 
     public function SlideShowStatus(Request $request){
         $product = Products::find($request->id);
-        if(isset($product)){
+        if($product){
             if($request->checked == 'true'){
                 $product->slide_show = Constants::ACTIVE;
                 $message = translate('Added to slide show');
@@ -248,7 +248,7 @@ class ProductsController extends Controller
 
     public function imageSave($product, $images, $text){
         if($text == 'update'){
-            if(isset($product->images) && !is_array($product->images)){
+            if($product->images && !is_array($product->images)){
                 $product_images = json_decode($product->images);
             }else{
                 $product_images = [];
@@ -278,9 +278,9 @@ class ProductsController extends Controller
         foreach ($warehouses_ as $warehouse_){
             $warehouses[] = [
                 'id'=>$warehouse_->id,
-                'name'=>isset($warehouse_->name)?$warehouse_->name:$warehouse_->product->name,
-                'color'=>isset($warehouse_->color->name)?$warehouse_->color->name:'',
-                'size'=>isset($warehouse_->size->name)?$warehouse_->size->name:''
+                'name'=>$warehouse_->name?$warehouse_->name:$warehouse_->product->name,
+                'color'=>$warehouse_->color?$warehouse_->color->name:'',
+                'size'=>$warehouse_->size?$warehouse_->size->name:''
             ];
         }
         return response()->json([

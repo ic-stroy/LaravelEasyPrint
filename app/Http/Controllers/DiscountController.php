@@ -45,13 +45,13 @@ class DiscountController extends Controller
     public function store(Request $request)
     {
         $discount_ = Discount::orderBy('discount_number', 'desc')->first();
-        if(isset($discount_->id)){
+        if($discount_){
             $discount_number = $discount_->discount_number + 1;
         }else{
             $discount_number = 1;
         }
         $products = $this->getProducts($request);
-        if(isset($request->company_id)){
+        if($request->company_id){
             foreach ($products as $product){
                 $warehouses_id = Warehouse::where('company_id', $request->company_id)->where('product_id', $product->id)->pluck('id');
                 $datas[] = [
@@ -84,7 +84,7 @@ class DiscountController extends Controller
 
     public function getProducts($request){
         $sub_category = [];
-        if (isset($request->subcategory_id) && $request->subcategory_id != "all" && $request->subcategory_id != ""){
+        if (isset($request->subcategory_id) && $request->subcategory_id != "all" && $request->subcategory_id){
             $sub_category[] = $request->subcategory_id;
         }else{
             $category = Category::where('step', 0)->find($request->category_id);
@@ -101,7 +101,7 @@ class DiscountController extends Controller
         $discount->percent = $request->percent;
         $discount->start_date = $request->start_date;
         $discount->end_date = $request->end_date;
-        if (isset($request->subcategory_id) && $request->subcategory_id != "all" && $request->subcategory_id != ""){
+        if (isset($request->subcategory_id) && $request->subcategory_id != "all" && $request->subcategory_id){
             $discount->category_id = $request->subcategory_id;
         }else{
             $discount->category_id = $request->category_id;
@@ -119,11 +119,11 @@ class DiscountController extends Controller
             'discount'=>$model,
             'number'=>$discount_number
         ];
-        if(isset($model->category->id)){
+        if($model->category){
             $category = $model->category->name;
             $subcategory = '';
-        }elseif(isset($model->subCategory->id)){
-            $category = isset($model->subCategory->category)?$model->subCategory->category->name:'';
+        }elseif($model->subCategory){
+            $category = $model->subCategory->category?$model->subCategory->category->name:'';
             $subcategory = $model->subCategory->name;
         }else{
             $category = '';
@@ -139,11 +139,11 @@ class DiscountController extends Controller
     {
         $discount = Discount::find($id);
         $categories = Category::where('step', 0)->orderBy('id', 'asc')->get();
-        if(isset($discount->category->id)){
+        if($discount->category){
             $category_id = $discount->category->id;
             $subcategory_id = '';
-        }elseif(isset($discount->subCategory->id)){
-            $category_id = isset($discount->subCategory->category)?$discount->subCategory->category->id:'';
+        }elseif($discount->subCategory){
+            $category_id = $discount->subCategory->category?$discount->subCategory->category->id:'';
             $subcategory_id = $discount->subCategory->id;
         }else{
             $category_id = '';
@@ -167,7 +167,7 @@ class DiscountController extends Controller
     public function update(Request $request, string $id)
     {
         $discount_ = Discount::orderBy('discount_number', 'desc')->first();
-        if(isset($discount_->id)){
+        if($discount_){
             $discount_number = $discount_->discount_number + 1;
         }else{
             $discount_number = 1;

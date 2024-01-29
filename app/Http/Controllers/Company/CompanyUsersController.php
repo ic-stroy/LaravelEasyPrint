@@ -167,7 +167,7 @@ class CompanyUsersController extends Controller
         $model->language = 'ru';
         $model->company_id = $user->company_id;
         $model->save();
-        if(isset($model->address->id)){
+        if($model->address){
             $address = $model->address;
         }else{
             $address = new Address();
@@ -190,7 +190,7 @@ class CompanyUsersController extends Controller
             $random = implode("", $random_array);
 
             if($text == 'update'){
-                if(isset($personal_info->avatar)){
+                if($personal_info->avatar){
                     $sms_avatar = storage_path('app/public/user/' . $personal_info->avatar);
                 }else{
                     $sms_avatar = storage_path('app/public/user/' . 'no');
@@ -213,11 +213,11 @@ class CompanyUsersController extends Controller
     public function destroy(string $id)
     {
         $model = User::find($id);
-        if (isset($model->personalInfo->id)) {
+        if ($model->personalInfo) {
             $model->personalInfo->delete();
         }
 
-        if(isset($model->personalInfo->avatar)) {
+        if($model->personalInfo->avatar) {
             $sms_avatar = storage_path('app/public/user/'.$model->personalInfo->avatar);
         } else {
             $sms_avatar = 'no';
@@ -229,7 +229,7 @@ class CompanyUsersController extends Controller
 
         $address = $model->address;
         $model->delete();
-        if(isset($address->id)){
+        if($address){
             $address->delete();
         }
         return redirect()->route('company_user.index')->with('status', translate('Successfully deleted'));

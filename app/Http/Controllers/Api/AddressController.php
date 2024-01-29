@@ -53,7 +53,7 @@ class AddressController extends Controller
         $user = Auth::user();
         $address = new Address();
         $cities = Cities::find($request->city_id);
-        if(!isset($cities->id)){
+        if(!$cities){
             $message = translate_api('City or Region not found', $language);
             return $this->error($message, 400);
         }
@@ -70,12 +70,12 @@ class AddressController extends Controller
         $language = $request->header('language');
         $user = Auth::user();
         $address = Address::where('user_id', $user->id)->find($request->id);
-        if(!isset($address->id)){
+        if(!$address){
             $message = translate_api('Address not found', $language);
             return $this->error($message, 400);
         }
         $cities = Cities::find($request->city_id);
-        if(!isset($cities->id)){
+        if(!$cities){
             $message = translate_api('City or Region not found', $language);
             return $this->error($message, 400);
         }
@@ -95,7 +95,7 @@ class AddressController extends Controller
         $city = [];
         $region = [];
         foreach ($user->addresses as $address_) {
-            if(isset($address_->cities->id)){
+            if($address_->cities){
                 if($address_->cities->type == 'district'){
                     $city = [
                         'id' => $address_->cities->id,
@@ -103,7 +103,7 @@ class AddressController extends Controller
                         'lat' => $address_->cities->lat??'',
                         'lng' => $address_->cities->lng??'',
                     ];
-                    if(isset($address_->cities->region->id)){
+                    if($address_->cities->region){
                         $region = [
                             'id' => $address_->cities->region->id,
                             'name' => $address_->cities->region->name??'',
@@ -144,7 +144,7 @@ class AddressController extends Controller
         $language = $request->header('language');
         $user = Auth::user();
         $address = Address::where('user_id', $user->id)->find($request->id);
-        if(isset($address->id)){
+        if($address){
             $address->delete();
             $message = translate_api('Success', $language);
             return $this->success($message, 200);
@@ -159,17 +159,17 @@ class AddressController extends Controller
     // get company products
     public function getCompanyProducts(Request $request){
         $language = $request->header('language');
-     
+
         $id = (int)$request->id;
 
         $company = Company::where('id',$id)->first();
         $user = User::where(['role_id' => 2, 'company_id' => $id])->first();
 
         $response = [];
-        
+
         if((isset($company) && $company != NULL) && (isset($user) && $user != NULL)){
             $full_name = ($user->personalInfo) ? $user->personalInfo->last_name . ' ' . $user->personalInfo->first_name : '';
-            
+
             $user_image = null;
             if(isset($user->personalInfo->avatar)){
                 $sms_avatar = storage_path('app/public/user/' . $user->personalInfo->avatar);
@@ -194,7 +194,7 @@ class AddressController extends Controller
                 'total_solds' => $total_solds,
                 'registration_date' => date('d.m.Y', strtotime(date($company->created_at))),
                 'products' => $data
-            ];    
+            ];
 
             $message=translate_api('Success',$language);
             return $this->success($message, 200, $response);
@@ -227,7 +227,7 @@ class AddressController extends Controller
     {
         $warehouse_products_ = Warehouse::distinct('product_id')->where('company_id', $company_id)->get();
         $warehouse_products = [];
-        
+
         $product_ides = [];
         foreach ($warehouse_products_ as $warehouse_product_) {
             $product_ides[] = $warehouse_product_->product_id;

@@ -20,8 +20,6 @@ class CompanyProductController extends Controller
      */
     public function index()
     {
-        // return 'vsdas';
-        // $products = Warehouse::orderBy('created_at', 'desc')->get();
         $company_id=auth()->user()->company_id;
         $warehouses = DB::table('warehouses as dt1')
             ->leftJoin('colors as dt2', 'dt2.id', '=', 'dt1.color_id')
@@ -31,7 +29,6 @@ class CompanyProductController extends Controller
             ->where('dt1.company_id', $company_id)
             ->select('dt1.id','dt1.name','dt1.quantity','dt1.price','dt2.name as color_name','dt3.images', 'dt4.name as category_name', 'dt5.name as size_name')
             ->get();
-            // dd($warehouses);
 
         return view('company.products.index', ['warehouses'=> $warehouses]);
 
@@ -66,15 +63,6 @@ class CompanyProductController extends Controller
             'price'=>$request->sum,
             'quantity'=>$request->quantity,
         ]);
-
-        // $model = ;
-        // $model->name = $request->name;
-        // $model->subcategory_id = $request->subcategory_id;
-        // $model->sum = $request->sum;
-        // $model->company = $request->company;
-        // $images = $request->file('images');
-
-        // $warehouse->save();
         return redirect()->route('company_product.index')->with('status', translate('Successfully created'));
     }
 
@@ -83,7 +71,6 @@ class CompanyProductController extends Controller
      */
     public function show(string $id)
     {
-        // dd($id);
 
         $warehouse = DB::table('warehouses as dt1')
             ->leftJoin('colors as dt2', 'dt2.id', '=', 'dt1.color_id')
@@ -93,11 +80,7 @@ class CompanyProductController extends Controller
             ->where('dt1.id', $id)
             ->select('dt1.id','dt1.name','dt1.quantity','dt1.price','dt2.name as color_name','dt3.images', 'dt4.name as category_name', 'dt5.name as size_name')
             ->first();
-            // dd($warehouse);
 
-        // $model = Products::find($id);
-        // $colors_array = json_decode($model->colors_id);
-        // $colors = Color::select('name', 'code')->whereIn('id', $colors_array??[])->get();
         return view('company.products.show', ['warehouse'=>$warehouse]);
     }
 
@@ -132,7 +115,6 @@ class CompanyProductController extends Controller
             'price'=>$request->sum,
             'quantity'=>$request->quantity,
         ]);
-        // dd($warehouse);
         return redirect()->route('company_product.index')->with('status', translate('Successfully updated'));
 
 
