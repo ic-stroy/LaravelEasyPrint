@@ -25,7 +25,6 @@ class ImagesController extends Controller
         $model = new Images();
         $images = $request->file('images');
         $product_image_name = '';
-        $model->name = $this->imageSave($images);
         if (!empty($images)) {
             foreach($images as $image){
                 $random = $this->setRandom();
@@ -39,23 +38,7 @@ class ImagesController extends Controller
         return redirect()->route('images.index')->with('status', translate('Successfully created'));
     }
 
-   public function destroy(Request $request)
-    {
-        print_r($id);
-        die();
-        $model = Images::find($id);
-        if($model->images){
-            $images = json_decode($model->images);
-            foreach ($images as $image){
-                $avatar_main = storage_path('app/public/images/'.$image);
-                if(file_exists($avatar_main)){
-                    unlink($avatar_main);
-                }
-            }
-        }
-        $model->delete();
-        return redirect()->route('images.index')->with('status', translate('Successfully deleted'));
-    }
+   
     
 
 }
