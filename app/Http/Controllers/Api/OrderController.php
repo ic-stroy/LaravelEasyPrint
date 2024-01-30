@@ -710,6 +710,8 @@ class OrderController extends Controller
                 'phone_number'=>$data['receiver_phone'],
                 'status'=>Constants::ORDERED,
             ]);
+            $users = User::whereIn('role_id', [2, 3])->get();
+            Notification::send($users, new OrderNotification($order));
             $message = translate_api('success', $language);
             return $this->success($message, 200);
         } else {
@@ -1021,9 +1023,8 @@ class OrderController extends Controller
         $language = $request->header('language');
 //        $orders = Order::where(['status' => Constants::ORDERED, 'company_id' != null])->get();
         $order = Order::first();
-        $user = User::all();
-        Notification::send($user, new OrderNotification($order));
-
+        $users = User::whereIn('role_id', [2, 3])->get();
+        Notification::send($users, new OrderNotification($order));
         $message = translate_api('Success', $language);
         return $this->success($message, 500, []);
     }

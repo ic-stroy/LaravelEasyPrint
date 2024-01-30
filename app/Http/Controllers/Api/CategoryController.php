@@ -204,7 +204,7 @@ class CategoryController extends Controller
             $res = $client->sendAsync($guzzle_request, $options)->wait();
             $result = $res->getBody();
             $result = json_decode($result);
-            $basket_quantity = $result->basket_count??0;
+            $basket_quantity = $result->basket_quantity??0;
             $profile = [
                 $result->name??null,
                 $result->avatar??null,
@@ -225,6 +225,7 @@ class CategoryController extends Controller
 
     public function userInfo(){
         $user = Auth::user();
+//        return response()->json($user->orderBasket->orderDetail?count($user->orderBasket->orderDetail):0);
         if($user->orderBasket){
             $basket_quantity = $user->orderBasket->orderDetail?count($user->orderBasket->orderDetail):0;
         }else{
