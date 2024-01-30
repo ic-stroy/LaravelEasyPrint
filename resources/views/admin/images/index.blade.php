@@ -18,7 +18,7 @@
                     <tr>
                         <th>#</th>
                         <th>{{ translate('Image') }}</th>
-                        <th>{{ translate('Actions') }}</th>
+                        {{-- <th>{{ translate('Actions') }}</th> --}}
                     </tr>
                 </thead>
                 <tbody class="table_body">
@@ -29,13 +29,13 @@
                                 <td>
                                     <img src="{{ asset('storage/images/'.$value->name) }}" alt="" height="40px">
                                 </td>
-                                <td class="py-1">
+                                {{-- <td class="py-1">
                                     <div class="d-flex justify-content-center align-items-center">
                                         <a href="{{route('images.destroy', $value->id)}}" class="btn btn-danger  btn-sm waves-effect form_functions">
                                             <i class="fe-trash-2"></i>
                                         </a>
                                     </div>
-                                </td>
+                                </td> --}}
                             </tr>
                         @php $i++; @endphp @endforeach
                     @else

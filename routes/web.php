@@ -42,7 +42,6 @@ Auth::routes();
         Route::get('/set-cities', [HomeController::class, 'setCities']);
         Route::resource('banner', BannerController::class);
         Route::resource('images', ImagesController::class);
-         Route::delete('/images/delete/{id}', [ImagesController::class, 'destroy'])->name('images.destroy');
         Route::resource('color', ColorController::class);
         Route::resource('size', SizesController::class);
         Route::resource('user', UsersController::class);
