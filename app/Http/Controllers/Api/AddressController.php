@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Warehouse;
 use App\Models\OrderDetail;
 use App\Models\Products;
+use App\Models\Images;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Constants;
@@ -270,6 +271,26 @@ class AddressController extends Controller
             'product_list' => $products,
             'warehouse_product_list' => $warehouse_products
         ];
+    }
+
+    public function getImage(Request $request)
+    {
+        $language = $request->header('language');
+        $images = Images::get();
+
+        $response = [];
+        if (count($images) > 0) {
+            foreach ($images as $key => $value) {
+                $response[] =  asset('storage/images/'.$value->name) ;
+                
+            }
+            $message=translate_api('Success',$language);
+            return $this->success($message, 200, $response);
+        }
+        else{
+            $message=translate_api('Images not found',$language);
+            return $this->error($message, 500);
+        }
     }
 
 }

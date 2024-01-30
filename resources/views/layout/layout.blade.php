@@ -422,6 +422,12 @@
                             </a>
                         </li>
                         <li>
+                            <a href="{{route('images.index')}}">
+                            <i class="mdi mdi-file-image-outline"></i>
+                                <span> {{translate('Images')}} </span>
+                            </a>
+                        </li>
+                        <li>
                             <a href="{{ route('company.index') }}">
                                 <i class="mdi mdi-bank-outline"></i>
                                 <span> {{ translate('Company') }} </span>

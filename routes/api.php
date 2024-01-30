@@ -60,6 +60,7 @@ Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
     Route::post('edit-address', [AddressController::class, 'editAddress']);
     Route::get('get-address', [AddressController::class, 'getAddress']);
     Route::get('get-company-products', [AddressController::class, 'getCompanyProducts']);
+    Route::get('get-image', [AddressController::class, 'getImage']);
     Route::delete('destroy-address', [AddressController::class, 'destroy']);
     Route::get('get-cards', [CardController::class, 'getCards']);
     Route::post('store-card', [CardController::class, 'storeCard']);
