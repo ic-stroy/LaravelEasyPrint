@@ -447,23 +447,24 @@ class OrderController extends Controller
                         ->join('warehouses as dt2', 'dt2.id', '=', 'dt1.warehouse_id')
                         ->join('sizes as dt3', 'dt3.id', '=', 'dt2.size_id')
                         ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
+                        ->join('products as dt5', 'dt5.id', '=', 'dt2.product_id')
                         ->where('dt1.id' , $order_detail->id)
                         ->select('dt2.name as warehouse_product_name', 'dt2.id as warehouse_id',
                             'dt2.quantity as max_quantity', 'dt2.images as images', 'dt2.description as description',
                             'dt2.product_id as product_id', 'dt2.company_id as company_id', 'dt2.images as images',
                             'dt3.id as size_id', 'dt3.name as size_name','dt4.id as color_id','dt4.name as color_name', 'dt4.code as color_code',
+                            'dt5.name as product_name'
                         )
                         ->first();
                     $product = Products::find($warehouse_product->product_id);
                     $relation_type='warehouse_product';
                     $relation_id=$order_detail->warehouse_id;
                     $images = count($this->getImages($warehouse_product, 'warehouses'))>0?$this->getImages($warehouse_product, 'warehouses'):$this->getImages($product, 'product');
-                    $images = count($this->getImages($warehouse_product, 'warehouses'))>0?$this->getImages($warehouse_product, 'warehouses'):$this->getImages($product, 'product');
                     $list=[
                         "id"=>$order_detail->id,
                         "relation_type"=>$relation_type,
                         "relation_id"=>$relation_id,
-                        'name'=>$warehouse_product->warehouse_product_name,
+                        'name'=>$warehouse_product->warehouse_product_name??$warehouse_product->product_name,
                         "price"=>$order_detail->price,
                         "discount"=>$order_detail->discount,
                         "discount_price"=>$order_detail->discount_price,
@@ -522,6 +523,7 @@ class OrderController extends Controller
                         "id"=>$order_detail->id,
                         "relation_type"=>$relation_type,
                         "relation_id"=>$relation_id,
+                        'name'=>$product->product_name,
                         "price"=>$order_detail->price,
                         "discount"=>$order_detail->discount,
                         "discount_price"=>$order_detail->discount_price,
@@ -916,6 +918,7 @@ class OrderController extends Controller
                     ]:[],
                     "color"=>$order_detail->color?[
                         "id"=>$order_detail->color->id,
+                        "code" => $order_detail->color->code,
                         "name"=>$order_detail->color->name,
                     ]:[],
                     "image_price"=>$order_detail->image_price,
