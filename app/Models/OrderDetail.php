@@ -40,5 +40,11 @@ class OrderDetail extends Model
     public function product(){
         return $this->hasOne(Warehouse::class, 'id', 'product_id');
     }
+    public function size(){
+        return $this->hasOne(Sizes::class, 'id', 'size_id');
+    }
+    public function color(){
+        return $this->hasOne(Color::class, 'id', 'color_id');
+    }
 
 }

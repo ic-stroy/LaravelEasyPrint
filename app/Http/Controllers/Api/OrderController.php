@@ -443,19 +443,22 @@ class OrderController extends Controller
             foreach ($order->orderDetail as $order_detail){
 
                 if ($order_detail->warehouse_id != null) {
-
                     $warehouse_product = DB::table('order_details as dt1')
                         ->join('warehouses as dt2', 'dt2.id', '=', 'dt1.warehouse_id')
                         ->join('sizes as dt3', 'dt3.id', '=', 'dt2.size_id')
                         ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
                         ->where('dt1.id' , $order_detail->id)
-                        ->select('dt2.name as warehouse_product_name','dt2.quantity as max_quantity', 'dt2.images as images', 'dt2.description as description', 'dt2.product_id as product_id', 'dt2.company_id as company_id','dt3.id as size_id','dt3.name as size_name','dt4.id as color_id','dt4.name as color_name','dt4.code as color_code')
+                        ->select('dt2.name as warehouse_product_name', 'dt2.id as warehouse_id',
+                            'dt2.quantity as max_quantity', 'dt2.images as images', 'dt2.description as description',
+                            'dt2.product_id as product_id', 'dt2.company_id as company_id', 'dt2.images as images',
+                            'dt3.id as size_id', 'dt3.name as size_name','dt4.id as color_id','dt4.name as color_name', 'dt4.code as color_code',
+                        )
                         ->first();
                     $product = Products::find($warehouse_product->product_id);
-
                     $relation_type='warehouse_product';
                     $relation_id=$order_detail->warehouse_id;
-                    $images = count($this->getImages($order_detail, 'warehouses'))>0?$this->getImages($order_detail, 'warehouses'):$this->getImages($product, 'product');
+                    $images = count($this->getImages($warehouse_product, 'warehouses'))>0?$this->getImages($warehouse_product, 'warehouses'):$this->getImages($product, 'product');
+                    $images = count($this->getImages($warehouse_product, 'warehouses'))>0?$this->getImages($warehouse_product, 'warehouses'):$this->getImages($product, 'product');
                     $list=[
                         "id"=>$order_detail->id,
                         "relation_type"=>$relation_type,
@@ -481,10 +484,39 @@ class OrderController extends Controller
                         ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
                         ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
                         ->where('dt1.id' , $order_detail->id)
-                        ->select('dt2.name as product_name','dt2.images as images', 'dt2.description as description','dt3.id as size_id','dt3.name as size_name','dt4.id as color_id','dt4.code as color_code','dt4.name as color_name',)
+                        ->select('dt1.quantity as order_detail_quantity', 'dt1.price as order_detail_price',
+                            'dt1.image_front as order_detail_image_front', 'dt1.image_back as order_detail_image_back',
+                            'dt1.discount_price as order_detail_discount_price',
+                            'dt2.name as product_name','dt2.images as images', 'dt2.description as description',
+                            'dt3.id as size_id','dt3.name as size_name','dt4.id as color_id','dt4.code as color_code',
+                            'dt4.name as color_name')
                         ->first();
-                        // dd($product);
-                    $images = $this->getImages($product, 'product');
+                    if(!$product->order_detail_image_front){
+                        $product->order_detail_image_front = 'no';
+                    }
+                    if(!$product->order_detail_image_back){
+                        $product->order_detail_image_back = 'no';
+                    }
+
+                    $order_detail_image_front_exists = storage_path('app/public/warehouse/'.$product->order_detail_image_front);
+                    if(file_exists($order_detail_image_front_exists)){
+                        $order_detail_image_front = asset('storage/warehouse/'.$product->order_detail_image_front);
+                    }else{
+                        $order_detail_image_front = null;
+                    }
+
+                    $order_detail_image_back_exists = storage_path('app/public/warehouse/'.$product->order_detail_image_back);
+                    if(file_exists($order_detail_image_back_exists)){
+                        $order_detail_image_back= asset('storage/warehouse/'.$product->order_detail_image_back);
+                    }else{
+                        $order_detail_image_back = null;
+                    }
+
+                    if(!$order_detail_image_front || !$order_detail_image_back){
+                        $images = $this->getImages($product, 'product');
+                    }else{
+                        $images = [$order_detail_image_front, $order_detail_image_back];
+                    }
 
                     $list=[
                         "id"=>$order_detail->id,
@@ -878,8 +910,14 @@ class OrderController extends Controller
                     "created_at"=>$order_detail->created_at,
                     "updated_at"=>$order_detail->updated_at,
                     "coupon_id"=>$order_detail->coupon_id,
-                    "size_id"=>$order_detail->size_id,
-                    "color_id"=>$order_detail->color_id,
+                    "size"=>$order_detail->size?[
+                        "id"=>$order_detail->size->id,
+                        "name"=>$order_detail->size->name,
+                    ]:[],
+                    "color"=>$order_detail->color?[
+                        "id"=>$order_detail->color->id,
+                        "name"=>$order_detail->color->name,
+                    ]:[],
                     "image_price"=>$order_detail->image_price,
                     "total_price"=>$order_detail->total_price,
                     "discount"=>$order_detail->discount,
@@ -980,18 +1018,11 @@ class OrderController extends Controller
         $language = $request->header('language');
 //        $orders = Order::where(['status' => Constants::ORDERED, 'company_id' != null])->get();
         $order = Order::first();
-        $user = Auth::user();
-        if($user){
-            $user->notify(new OrderNotification($order));
-        }
+        $user = User::all();
+        Notification::send($user, new OrderNotification($order));
 
-//        Notification::send($order, new OrderNotification($order));
-//        foreach($orders as $order){
-//           $response
-//            Notification::send($order);
-//        }
         $message = translate_api('Success', $language);
-        return $this->success($message, 500, [$order]);
+        return $this->success($message, 500, []);
     }
 
     public function AnimeCategorySizeColor(Request $request){
