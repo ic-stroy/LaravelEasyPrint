@@ -576,67 +576,50 @@ class OrderController extends Controller
         if ($language == null) {
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
-
+        $order_coupon_price = 0;
         if ($coupon=DB::table('coupons')->where('name', $request->coupon_name)->where('status',1)->first()) {
-            if ($order=Order::where('id',$request->order_id)->first()) {
+            if ($order=Order::where('id', $request->order_id)->first()) {
                 $order_count = Order::where('user_id', $order->user_id)->where('status', '!=', Constants::BASKED)->count();
                 if (!$order->coupon_id) {
+                    if($order->all_price < $coupon->min_price){
+                        $message=translate_api("this order sum isn't enough for coupon. Coupon min price $coupon->min_price",$language);
+                        return $this->error($message, 400);
+                    }
                     if ($coupon->company_id != null) {
                         foreach ($order->orderDetail as $order_detail) {
                             if ($order_detail->warehouse_id) {
-                               $company_id=DB::table('warehouses')->where('id',$order_detail->warehouse_id)->first()->company_id;
+                               $company_id = DB::table('warehouses')->where('id', $order_detail->warehouse_id)->first()->company_id;
                                if ($coupon->company_id == $company_id) {
-                                    if ($coupon->min_price && $order->all_price > $coupon->min_price && $coupon->type == 0 && $order_count <= $coupon->order_count) {
-                                        $order->coupon_id = $coupon->id;
-                                    }
-                                    elseif ($coupon->min_price && $order->all_price > $coupon->min_price && $coupon->type == 1 && ($order_count - 1) == $coupon->order_count) {
-                                        $order->coupon_id = $coupon->id;
-                                    }
-                                    elseif ($coupon->type == 0 && $order_count <= $coupon->order_count) {
-                                        $order->coupon_id = $coupon->id;
-                                    }
-                                    elseif ($coupon->type == 1 && ($order_count - 1) == $coupon->order_count) {
-                                        $order->coupon_id = $coupon->id;
-                                    }
-                                    else {
-                                        $message=translate_api('This coupon has not been verified',$language);
-                                        return $this->error($message, 400);
-                                    }
-                               }
+                                   switch ($coupon->type){
+                                       case Constants::TO_ORDER_COUNT:
+                                            if($coupon->order_count > 0){
+                                               $coupon->order_count = $coupon->order_count - 1;
+                                                $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order_detail->price*$order_detail->quantity - $order_detail->discount_price??0);
+                                            }else{
+                                                $message=translate_api("Coupon left 0 quantity", $language);
+                                                return $this->error($message, 400);
+                                            }
+                                           break;
+                                       case Constants::FOR_ORDER_NUMBER:
+                                           if($order_count == $coupon->order_count){
+                                               $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order_detail->price*$order_detail->quantity - $order_detail->discount_price??0);
+                                           }else{
+                                               $message=translate_api("Coupon for your $coupon->order_count - order this is your $order_count - order", $language);
+                                               return $this->error($message, 400);
+                                           }
+                                           break;
+                                       default:
+                                           $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order_detail->price*$order_detail->quantity - $order_detail->discount_price??0);
+                                   }
+                                }
                             }
-
                         }
-
+                    }else{
+                        $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order->all_price);
                     }
-                    elseif ($order->all_price > $coupon->min_price && $coupon->type == 0 && $order_count <= $coupon->order_count) {
-                        $order->coupon_id = $coupon->id;
-                    }
-                    elseif ($order->all_price > $coupon->min_price && $coupon->type == 1 && ($order_count - 1) == $coupon->order_count) {
-                        $order->coupon_id = $coupon->id;
-                    }
-                    elseif ($coupon->type == 0 && $order_count <= $coupon->order_count) {
-                        $order->coupon_id = $coupon->id;
-                    }
-                    elseif ($coupon->type == 1 && ($order_count - 1) == $coupon->order_count) {
-                        $order->coupon_id = $coupon->id;
-                    }
-                    else {
-                        $message=translate_api('This coupon has not been verified',$language);
-                        return $this->error($message, 400);
-                    }
-
-                    if ($order->coupun_id == null) {
-                        // dd('have a coupons');
-                         if ($coupon->percent != null) {
-                            $order_coupon_price=(($order->all_price)/100)*($coupon->percent);
-                            $order->coupon_price=$order_coupon_price;
-                            $order->all_price=$order->all_price - $order_coupon_price;
-                         }
-                         else {
-                            $order->all_price=$order->all_price - $coupon->price;
-                            $order->coupon_price=$coupon->price;
-                         }
-                    }
+                    $order->coupon_id = $coupon->id;
+                    $order->coupon_price = $order_coupon_price;
+                    $order->all_price = $order->all_price - $order_coupon_price;
                     $order->save();
 
                     $data=[
@@ -653,7 +636,6 @@ class OrderController extends Controller
                     $message=translate_api('this order has a coupon',$language);
                     return $this->error($message, 400);
                 }
-
             }
             else {
                 $message=translate_api('order not found',$language);
@@ -662,6 +644,16 @@ class OrderController extends Controller
         }
         $message=translate_api('coupon not found',$language);
         return $this->error($message, 400);
+    }
+
+    public function setOrderCoupon($coupon, $price){
+        if ($coupon->percent != null) {
+            $order_coupon_price = ($price/100)*($coupon->percent);
+        }else {
+            $order_coupon_price = $coupon->price;
+
+        }
+        return $order_coupon_price;
     }
 
     /**
