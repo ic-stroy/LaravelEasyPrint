@@ -204,19 +204,19 @@ class CategoryController extends Controller
             $res = $client->sendAsync($guzzle_request, $options)->wait();
             $result = $res->getBody();
             $result = json_decode($result);
-            $basket_count = $result->basket_count??0;
+            $basket_quantity = $result->basket_count??0;
             $profile = [
                 $result->name??null,
                 $result->avatar??null,
             ];
         }else{
-            $basket_count = 0;
+            $basket_quantity = 0;
             $profile = [];
         }
 
         $data = [
             'language'=>$languages,
-            'basket_count'=>$basket_count,
+            'basket_count'=>$basket_quantity,
             'profile'=>$profile
         ];
         $message = translate_api('Success', $language);
@@ -226,9 +226,9 @@ class CategoryController extends Controller
     public function userInfo(){
         $user = Auth::user();
         if($user->orderBasket){
-            $basket_count = $user->orderBasket->orderDetail?$user->orderBasket->orderDetail:[];
+            $basket_quantity = $user->orderBasket->orderDetail?count($user->orderBasket->orderDetail):0;
         }else{
-            $basket_count = 0;
+            $basket_quantity = 0;
         }
         $personalInfo = $user->personalInfo?$user->personalInfo:[];
         if($user->personalInfo){
@@ -243,7 +243,7 @@ class CategoryController extends Controller
         $profile = [
             'name'=>$personalInfo->first_name?$personalInfo->first_name:null,
             'avatar'=>file_exists($sms_avatar)?asset('storage/user/'.$personalInfo->avatar):asset('assets/images/man.jpg'),
-            'basket_count'=>$basket_count
+            'basket_quantity'=>$basket_quantity
         ];
         return response()->json($profile);
     }
