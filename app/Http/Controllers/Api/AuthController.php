@@ -28,7 +28,7 @@ class AuthController extends Controller
         $eskiz_token = EskizToken::first();
         $user_verify = UserVerify::withTrashed()->where('phone_number', (int)$fields['phone'])->first();
         $random = rand(100000, 999999);
-        if(!$user_verify->id){
+        if(!$user_verify){
             $user_verify = new UserVerify();
             $user_verify->phone_number = (int)$request->phone;
             $user_verify->status_id = 1;

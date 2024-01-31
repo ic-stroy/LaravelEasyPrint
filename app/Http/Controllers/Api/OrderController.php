@@ -221,14 +221,36 @@ class OrderController extends Controller
                         ->join('sizes as dt3', 'dt3.id', '=', 'dt2.size_id')
                         ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
                          ->leftJoin('discounts as dt6', function($join){
-                             $join->on('dt6.warehouse_id', '=', 'dt2.id')
+                             $join->on(function ($join){
+                                 $join->on([
+                                     ['dt6.warehouse_id', '=', 'dt2.id'],
+                                     ['dt6.company_id', 'is', DB::raw('NULL')]
+                                 ])
+                                 ->orOn(function ($join){
+                                     $join->on([
+                                         ['dt6.warehouse_id', '=', 'dt2.id'],
+                                         ['dt6.company_id', 'is not', DB::raw('NULL')],
+                                         ['dt2.company_id', '=', 'dt6.company_id'],
+                                     ]);
+                                 });
+                             })
+                             ->orOn(function ($join){
+                                 $join->on([
+                                     ['dt6.product_id', '=', 'dt2.product_id'],
+                                     ['dt6.product_id', 'is not', DB::raw('NULL')],
+                                     ['dt6.warehouse_id', 'is', DB::raw('NULL')],
+                                     ['dt6.company_id', 'is', DB::raw('NULL')]
+                                 ])
                                  ->orOn(function ($join){
                                      $join->on([
                                          ['dt6.product_id', '=', 'dt2.product_id'],
                                          ['dt6.product_id', 'is not', DB::raw('NULL')],
-                                         ['dt6.warehouse_id', 'is', DB::raw('NULL')]
+                                         ['dt6.warehouse_id', 'is', DB::raw('NULL')],
+                                         ['dt6.company_id', 'is not', DB::raw('NULL')],
+                                         ['dt2.company_id', '=', 'dt6.company_id'],
                                      ]);
-                                 })
+                                 });
+                             })
                              ->where('start_date', '<=', date('Y-m-d H:i:s'))
                              ->where('end_date', '>=', date('Y-m-d H:i:s'));
                          })
@@ -311,16 +333,11 @@ class OrderController extends Controller
                         ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
                         ->leftJoin('discounts as dt5', function($join){
                             $join->on([
-                                ['dt5.warehouse_id', '=', 'dt1.warehouse_id'],
-                                ['dt5.warehouse_id', 'is not', DB::raw('NULL')]
+                                ['dt5.product_id', '=', 'dt2.id'],
+                                ['dt5.product_id', 'is not', DB::raw('NULL')],
+                                ['dt5.warehouse_id', 'is', DB::raw('NULL')],
+                                ['dt5.company_id', 'is', DB::raw('NULL')]
                             ])
-                            ->orOn(function ($join) {
-                                $join->on([
-                                    ['dt5.product_id', '=', 'dt2.id'],
-                                    ['dt5.product_id', 'is not', DB::raw('NULL')],
-                                    ['dt5.warehouse_id', 'is', DB::raw('NULL')]
-                                ]);
-                            })
                             ->where('start_date', '<=', date('Y-m-d H:i:s'))
                             ->where('end_date', '>=', date('Y-m-d H:i:s'));
                         })
@@ -443,24 +460,28 @@ class OrderController extends Controller
             foreach ($order->orderDetail as $order_detail){
 
                 if ($order_detail->warehouse_id != null) {
-
                     $warehouse_product = DB::table('order_details as dt1')
                         ->join('warehouses as dt2', 'dt2.id', '=', 'dt1.warehouse_id')
                         ->join('sizes as dt3', 'dt3.id', '=', 'dt2.size_id')
                         ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
+                        ->join('products as dt5', 'dt5.id', '=', 'dt2.product_id')
                         ->where('dt1.id' , $order_detail->id)
-                        ->select('dt2.name as warehouse_product_name','dt2.quantity as max_quantity', 'dt2.images as images', 'dt2.description as description', 'dt2.product_id as product_id', 'dt2.company_id as company_id','dt3.id as size_id','dt3.name as size_name','dt4.id as color_id','dt4.name as color_name','dt4.code as color_code')
+                        ->select('dt2.name as warehouse_product_name', 'dt2.id as warehouse_id',
+                            'dt2.quantity as max_quantity', 'dt2.images as images', 'dt2.description as description',
+                            'dt2.product_id as product_id', 'dt2.company_id as company_id', 'dt2.images as images',
+                            'dt3.id as size_id', 'dt3.name as size_name','dt4.id as color_id','dt4.name as color_name', 'dt4.code as color_code',
+                            'dt5.name as product_name'
+                        )
                         ->first();
                     $product = Products::find($warehouse_product->product_id);
-
                     $relation_type='warehouse_product';
                     $relation_id=$order_detail->warehouse_id;
-                    $images = count($this->getImages($order_detail, 'warehouses'))>0?$this->getImages($order_detail, 'warehouses'):$this->getImages($product, 'product');
+                    $images = count($this->getImages($warehouse_product, 'warehouses'))>0?$this->getImages($warehouse_product, 'warehouses'):$this->getImages($product, 'product');
                     $list=[
                         "id"=>$order_detail->id,
                         "relation_type"=>$relation_type,
                         "relation_id"=>$relation_id,
-                        'name'=>$warehouse_product->warehouse_product_name,
+                        'name'=>$warehouse_product->warehouse_product_name??$warehouse_product->product_name,
                         "price"=>$order_detail->price,
                         "discount"=>$order_detail->discount,
                         "discount_price"=>$order_detail->discount_price,
@@ -481,15 +502,45 @@ class OrderController extends Controller
                         ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
                         ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
                         ->where('dt1.id' , $order_detail->id)
-                        ->select('dt2.name as product_name','dt2.images as images', 'dt2.description as description','dt3.id as size_id','dt3.name as size_name','dt4.id as color_id','dt4.code as color_code','dt4.name as color_name',)
+                        ->select('dt1.quantity as order_detail_quantity', 'dt1.price as order_detail_price',
+                            'dt1.image_front as order_detail_image_front', 'dt1.image_back as order_detail_image_back',
+                            'dt1.discount_price as order_detail_discount_price',
+                            'dt2.name as product_name','dt2.images as images', 'dt2.description as description',
+                            'dt3.id as size_id','dt3.name as size_name','dt4.id as color_id','dt4.code as color_code',
+                            'dt4.name as color_name')
                         ->first();
-                        // dd($product);
-                    $images = $this->getImages($product, 'product');
+                    if(!$product->order_detail_image_front){
+                        $product->order_detail_image_front = 'no';
+                    }
+                    if(!$product->order_detail_image_back){
+                        $product->order_detail_image_back = 'no';
+                    }
+
+                    $order_detail_image_front_exists = storage_path('app/public/warehouse/'.$product->order_detail_image_front);
+                    if(file_exists($order_detail_image_front_exists)){
+                        $order_detail_image_front = asset('storage/warehouse/'.$product->order_detail_image_front);
+                    }else{
+                        $order_detail_image_front = null;
+                    }
+
+                    $order_detail_image_back_exists = storage_path('app/public/warehouse/'.$product->order_detail_image_back);
+                    if(file_exists($order_detail_image_back_exists)){
+                        $order_detail_image_back= asset('storage/warehouse/'.$product->order_detail_image_back);
+                    }else{
+                        $order_detail_image_back = null;
+                    }
+
+                    if(!$order_detail_image_front || !$order_detail_image_back){
+                        $images = $this->getImages($product, 'product');
+                    }else{
+                        $images = [$order_detail_image_front, $order_detail_image_back];
+                    }
 
                     $list=[
                         "id"=>$order_detail->id,
                         "relation_type"=>$relation_type,
                         "relation_id"=>$relation_id,
+                        'name'=>$product->product_name,
                         "price"=>$order_detail->price,
                         "discount"=>$order_detail->discount,
                         "discount_price"=>$order_detail->discount_price,
@@ -676,6 +727,8 @@ class OrderController extends Controller
                 'phone_number'=>$data['receiver_phone'],
                 'status'=>Constants::ORDERED,
             ]);
+            $users = User::whereIn('role_id', [2, 3])->get();
+            Notification::send($users, new OrderNotification($order));
             $message = translate_api('success', $language);
             return $this->success($message, 200);
         } else {
@@ -878,8 +931,15 @@ class OrderController extends Controller
                     "created_at"=>$order_detail->created_at,
                     "updated_at"=>$order_detail->updated_at,
                     "coupon_id"=>$order_detail->coupon_id,
-                    "size_id"=>$order_detail->size_id,
-                    "color_id"=>$order_detail->color_id,
+                    "size"=>$order_detail->size?[
+                        "id"=>$order_detail->size->id,
+                        "name"=>$order_detail->size->name,
+                    ]:[],
+                    "color"=>$order_detail->color?[
+                        "id"=>$order_detail->color->id,
+                        "code" => $order_detail->color->code,
+                        "name"=>$order_detail->color->name,
+                    ]:[],
                     "image_price"=>$order_detail->image_price,
                     "total_price"=>$order_detail->total_price,
                     "discount"=>$order_detail->discount,
@@ -888,10 +948,10 @@ class OrderController extends Controller
                     "product"=>count($product)>0?$product:null,
                 ];
             }
-            $message=translate_api('Success',$language);
+            $message=translate_api('Success', $language);
             return $this->success($message, 500, $response);
         }else{
-            $message=translate_api('Order not found',$language);
+            $message=translate_api('Order not found', $language);
             return $this->error($message, 500);
         }
 
@@ -980,18 +1040,31 @@ class OrderController extends Controller
         $language = $request->header('language');
 //        $orders = Order::where(['status' => Constants::ORDERED, 'company_id' != null])->get();
         $order = Order::first();
-        $user = Auth::user();
-        if($user){
-            $user->notify(new OrderNotification($order));
-        }
+        if($order){
+            foreach($order->orderDetail as $orderDetail){
+                if($orderDetail->warehouse) {
+                    foreach ($order->orderDetail as $orderDetail_warehouse) {
+                        if ($orderDetail_warehouse->warehouse) {
+                            if($orderDetail->warehouse->company_id == $orderDetail_warehouse->warehouse->company_id){
 
-//        Notification::send($order, new OrderNotification($order));
-//        foreach($orders as $order){
-//           $response
-//            Notification::send($order);
-//        }
+                            }
+                        }
+                    }
+                }
+                if($orderDetail->product){
+                    foreach ($order->orderDetail as $orderDetail_product) {
+                        if ($orderDetail->warehouse) {
+                            $orderDetail->warehouse->company_id;
+
+                        }
+                    }
+                }
+            }
+        }
+        $users = User::whereIn('role_id', [2, 3])->get();
+        Notification::send($users, new OrderNotification($order));
         $message = translate_api('Success', $language);
-        return $this->success($message, 500, [$order]);
+        return $this->success($message, 500, []);
     }
 
     public function AnimeCategorySizeColor(Request $request){

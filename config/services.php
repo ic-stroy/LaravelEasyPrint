@@ -36,4 +36,9 @@ return [
         'client_secret' => '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',
         'redirect' => 'http://admin.easyprint.uz/api/googleauth/callback',
     ],
+
+    'database' => [
+        'driver' => 'database',
+        'table' => 'notifications',
+    ],
 ];

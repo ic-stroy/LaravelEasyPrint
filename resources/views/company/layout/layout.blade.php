@@ -201,7 +201,7 @@
                 <a class="nav-link dropdown-toggle waves-effect waves-light" data-bs-toggle="dropdown"
                    href="#" role="button" aria-haspopup="false" aria-expanded="false">
                     <i class="fe-bell noti-icon"></i>
-                    <span class="badge bg-danger rounded-circle noti-icon-badge">9</span>
+                    <span class="badge bg-danger rounded-circle noti-icon-badge">{{count($current_user->unreadnotifications)}}</span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end dropdown-lg">
 
@@ -217,71 +217,77 @@
                     </div>
 
                     <div class="noti-scroll" data-simplebar>
+                        <!-- item-->
+                        @forelse($current_user->unreadnotifications as $notification)
+                            <a href="javascript:void(0);" class="dropdown-item notify-item active">
+                                <div class="notify-icon">
+                                    <img src="{{ asset('assets/images/user/user-1.jpg') }}" class="img-fluid rounded-circle" alt="" />
+                                </div>
+                                <p class="notify-details">{{$notification->data['user']}}</p>
+                                <p class="text-muted mb-0 user-msg">
+                                    <small>{{$notification->data['all_price']}}</small>
+                                </p>
+                            </a>
+                        @empty
+                            <a href="javascript:void(0);"
+                               class="dropdown-item text-center text-primary notify-item notify-all">
+                                {{ translate('No notifications')}}
+                                <i class="fe-arrow-right"></i>
+                            </a>
+                        @endforelse
 
                         <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item notify-item active">
-                            <div class="notify-icon">
-                                <img src="{{ asset('assets/images/user/user-1.jpg') }}" class="img-fluid rounded-circle"
-                                     alt="" />
-                            </div>
-                            <p class="notify-details">Cristina Pride</p>
-                            <p class="text-muted mb-0 user-msg">
-                                <small>{{translate('Hi, How are you? What about our next meeting')}}</small>
-                            </p>
-                        </a>
+{{--                        <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
+{{--                            <div class="notify-icon bg-primary">--}}
+{{--                                <i class="mdi mdi-comment-account-outline"></i>--}}
+{{--                            </div>--}}
+{{--                            <p class="notify-details">{{translate('Caleb Flakelar commented on Admin')}}--}}
+{{--                                <small class="text-muted">{{translate('1 min ago')}}</small>--}}
+{{--                            </p>--}}
+{{--                        </a>--}}
 
-                        <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon bg-primary">
-                                <i class="mdi mdi-comment-account-outline"></i>
-                            </div>
-                            <p class="notify-details">{{translate('Caleb Flakelar commented on Admin')}}
-                                <small class="text-muted">{{translate('1 min ago')}}</small>
-                            </p>
-                        </a>
+{{--                        <!-- item-->--}}
+{{--                        <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
+{{--                            <div class="notify-icon">--}}
+{{--                                <img src="{{ asset('assets/images/user/user-4.jpg') }}" class="img-fluid rounded-circle"--}}
+{{--                                     alt="" />--}}
+{{--                            </div>--}}
+{{--                            <p class="notify-details">Karen Robinson</p>--}}
+{{--                            <p class="text-muted mb-0 user-msg">--}}
+{{--                                <small>{{ translate('Wow ! this admin looks good and awesome design')}}</small>--}}
+{{--                            </p>--}}
+{{--                        </a>--}}
 
-                        <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon">
-                                <img src="{{ asset('assets/images/user/user-4.jpg') }}" class="img-fluid rounded-circle"
-                                     alt="" />
-                            </div>
-                            <p class="notify-details">Karen Robinson</p>
-                            <p class="text-muted mb-0 user-msg">
-                                <small>{{ translate('Wow ! this admin looks good and awesome design')}}</small>
-                            </p>
-                        </a>
+{{--                        <!-- item-->--}}
+{{--                        <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
+{{--                            <div class="notify-icon bg-warning">--}}
+{{--                                <i class="mdi mdi-account-plus"></i>--}}
+{{--                            </div>--}}
+{{--                            <p class="notify-details">{{ translate('New user registered.')}}--}}
+{{--                                <small class="text-muted">{{ translate('5 hours ago')}}</small>--}}
+{{--                            </p>--}}
+{{--                        </a>--}}
 
-                        <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon bg-warning">
-                                <i class="mdi mdi-account-plus"></i>
-                            </div>
-                            <p class="notify-details">{{ translate('New user registered.')}}
-                                <small class="text-muted">{{ translate('5 hours ago')}}</small>
-                            </p>
-                        </a>
+{{--                        <!-- item-->--}}
+{{--                        <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
+{{--                            <div class="notify-icon bg-info">--}}
+{{--                                <i class="mdi mdi-comment-account-outline"></i>--}}
+{{--                            </div>--}}
+{{--                            <p class="notify-details">{{ translate('Caleb Flakelar commented on Admin')}}--}}
+{{--                                <small class="text-muted">{{ translate('4 days ago')}}</small>--}}
+{{--                            </p>--}}
+{{--                        </a>--}}
 
-                        <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon bg-info">
-                                <i class="mdi mdi-comment-account-outline"></i>
-                            </div>
-                            <p class="notify-details">{{ translate('Caleb Flakelar commented on Admin')}}
-                                <small class="text-muted">{{ translate('4 days ago')}}</small>
-                            </p>
-                        </a>
-
-                        <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <div class="notify-icon bg-secondary">
-                                <i class="mdi mdi-heart"></i>
-                            </div>
-                            <p class="notify-details">Carlos Crouch {{ translate('liked')}}
-                                <b>Admin</b>
-                                <small class="text-muted">{{ translate('13 days ago')}}</small>
-                            </p>
-                        </a>
+{{--                        <!-- item-->--}}
+{{--                        <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
+{{--                            <div class="notify-icon bg-secondary">--}}
+{{--                                <i class="mdi mdi-heart"></i>--}}
+{{--                            </div>--}}
+{{--                            <p class="notify-details">Carlos Crouch {{ translate('liked')}}--}}
+{{--                                <b>Admin</b>--}}
+{{--                                <small class="text-muted">{{ translate('13 days ago')}}</small>--}}
+{{--                            </p>--}}
+{{--                        </a>--}}
                     </div>
 
                     <!-- All-->
