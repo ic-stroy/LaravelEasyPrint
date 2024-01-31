@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Language;
 use App\Models\Products;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request as GuzzleRequest;
 use Illuminate\Http\Request;
 use App\Models\Category;
@@ -197,19 +198,23 @@ class CategoryController extends Controller
                 'Authorization' => "Bearer $token"
             ]
         ];
-        $user = Auth::user();
-        if($user && isset($token) && $token){
+        if(isset($token) && $token){
             $client = new \GuzzleHttp\Client();
             $url = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https://' : 'http://'.$_SERVER['HTTP_HOST'];
             $guzzle_request = new GuzzleRequest('GET', $url.'/api/user-info');
-            $res = $client->sendAsync($guzzle_request, $options)->wait();
-            $result = $res->getBody();
-            $result = json_decode($result);
-            $basket_quantity = $result->basket_quantity??0;
-            $profile = [
-                $result->name??null,
-                $result->avatar??null,
-            ];
+            try{
+                $res = $client->sendAsync($guzzle_request, $options)->wait();
+                $result = $res->getBody();
+                $result = json_decode($result);
+                $basket_quantity = $result->basket_quantity??0;
+                $profile = [
+                    $result->name??null,
+                    $result->avatar??null,
+                ];
+            }catch (\Exception $e){
+                $basket_quantity = 0;
+                $profile = [];
+            }
         }else{
             $basket_quantity = 0;
             $profile = [];

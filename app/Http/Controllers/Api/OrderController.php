@@ -1046,7 +1046,7 @@ class OrderController extends Controller
                     foreach ($order->orderDetail as $orderDetail_warehouse) {
                         if ($orderDetail_warehouse->warehouse) {
                             if($orderDetail->warehouse->company_id == $orderDetail_warehouse->warehouse->company_id){
-
+                                
                             }
                         }
                     }
