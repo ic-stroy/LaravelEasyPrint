@@ -197,7 +197,8 @@ class CategoryController extends Controller
                 'Authorization' => "Bearer $token"
             ]
         ];
-        if(isset($token) && $token){
+        $user = Auth::user();
+        if($user && isset($token) && $token){
             $client = new \GuzzleHttp\Client();
             $url = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https://' : 'http://'.$_SERVER['HTTP_HOST'];
             $guzzle_request = new GuzzleRequest('GET', $url.'/api/user-info');
