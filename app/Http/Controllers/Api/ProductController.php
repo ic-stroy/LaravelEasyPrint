@@ -147,213 +147,219 @@ class ProductController extends Controller
             // ->leftJoin('coupons as dt5', 'dt5.warehouse_product_id', '=', 'dt2.id')
             ->where('dt2.id' , $warehouse_product_id)
             ->select('dt2.id as warehouse_product_id','dt2.name as warehouse_product_name','dt2.quantity as quantity', 'dt2.images as images', 'dt2.description as description',
-                'dt2.product_id as product_id', 'dt2.company_id as company_id', 'dt2.price as price','dt2.material_composition','dt2.manufacturer_country','dt8.name as company_name','dt7.name as material_name', 'dt3.id as size_id',
+                'dt2.product_id as product_id', 'dt2.company_id as company_id', 'dt2.price as price','dt2.material_composition','dt2.manufacturer_country',
+                'dt8.name as company_name','dt7.name as material_name', 'dt3.id as size_id',
                 'dt3.name as size_name','dt4.id as color_id','dt4.name as color_name','dt4.code as color_code',
                 'dt5.name as product_name', 'dt5.images as product_images', 'dt5.description as product_description', 'dt6.percent AS discount')
             ->first();
-
-            if ($warehouse_product->images) {
-                $images_ = json_decode($warehouse_product->images);
-                $images = [];
-                foreach ($images_ as $image_) {
-                    $images[] = asset('storage/warehouses/' . $image_);
-                }
-            } elseif ($warehouse_product->product_images) {
-                $images_ = json_decode($warehouse_product->product_images);
-                $images = [];
-                foreach ($images_ as $image_){
-                    $images[] = asset('storage/products/' . $image_);
-                }
-            } else {
-                $images = [];
-            }
-
-            if ($warehouse_product->product_id) {
-                $sizes = DB::table('warehouses as dt1')
-                    ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
-                    // ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
-                    ->where('dt1.product_id', $warehouse_product->product_id)
-                    ->where('dt1.company_id', $warehouse_product->company_id)
-                    ->select('dt1.id as id','dt3.id as size_id', 'dt3.name as size_name')
-                    ->distinct('size_id')
-                    ->get();
-
-                $size_list=[];
-                $get_sizes=[];
-                foreach ($sizes as $size) {
-                    $colors = DB::table('warehouses as dt1')
-                        ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
-                        ->where('dt1.product_id', $warehouse_product->product_id)
-                        ->where('dt1.company_id', $warehouse_product->company_id)
-                        ->where('dt1.size_id', $size->size_id)
-                        ->select('dt1.description','dt4.id as color_id','dt4.code as color_code', 'dt4.name as color_name','dt1.images as images')
-                        ->distinct('color_id')
-                        ->get();
-
-                    $color_list=[];
-                    foreach ($colors as $color) {
-                        $aa_color = [
-                            'id' => $color->color_id,
-                            'code' => $color->color_code,
-                            'name' => $color->color_name,
-                            'description' => $color->description,
-                        ];
-                        array_push($color_list,$aa_color);
+            if($warehouse_product){
+                if ($warehouse_product->images) {
+                    $images_ = json_decode($warehouse_product->images);
+                    $images = [];
+                    foreach ($images_ as $image_) {
+                        $images[] = asset('storage/warehouses/' . $image_);
                     }
-
-                    $aa_size = [
-                        'id' => $size->size_id,
-                        'name' => $size->size_name,
-                        'color' => $color_list
-                    ];
-                    $bb_size = [
-                        'id' => $size->size_id,
-                        'name' => $size->size_name
-                    ];
-
-                    array_push($size_list, $aa_size);
-                    array_push($get_sizes, $bb_size);
+                } elseif ($warehouse_product->product_images) {
+                    $images_ = json_decode($warehouse_product->product_images);
+                    $images = [];
+                    foreach ($images_ as $image_){
+                        $images[] = asset('storage/products/' . $image_);
+                    }
+                } else {
+                    $images = [];
                 }
 
-                $colors = DB::table('warehouses as dt1')
-                    ->join('colors as dt3', 'dt3.id', '=', 'dt1.color_id')
-                    // ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
-                    ->where('dt1.product_id', $warehouse_product->product_id)
-                    ->where('dt1.company_id', $warehouse_product->company_id)
-                    ->select('dt1.id as id','dt3.id as color_id','dt3.code as color_code', 'dt3.name as color_name')
-                    ->distinct('color_id')
-                    ->get();
-                    // dd($colors);
-
-                $aaa_color_list = [];
-                $get_colors = [];
-                foreach ($colors as $color) {
+                if ($warehouse_product->product_id) {
                     $sizes = DB::table('warehouses as dt1')
-                        ->join('sizes as dt4', 'dt4.id', '=', 'dt1.size_id')
+                        ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
+                        // ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
                         ->where('dt1.product_id', $warehouse_product->product_id)
                         ->where('dt1.company_id', $warehouse_product->company_id)
-                        ->where('dt1.color_id', $color->color_id)
-                        ->select('dt1.description','dt4.id as size_id','dt4.name as size_name')
+                        ->select('dt1.id as id','dt3.id as size_id', 'dt3.name as size_name')
                         ->distinct('size_id')
                         ->get();
 
-                    $aaa_size_list = [];
+                    $size_list=[];
+                    $get_sizes=[];
                     foreach ($sizes as $size) {
-                        $aas_size = [
+                        $colors = DB::table('warehouses as dt1')
+                            ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
+                            ->where('dt1.product_id', $warehouse_product->product_id)
+                            ->where('dt1.company_id', $warehouse_product->company_id)
+                            ->where('dt1.size_id', $size->size_id)
+                            ->select('dt1.description','dt4.id as color_id','dt4.code as color_code', 'dt4.name as color_name','dt1.images as images')
+                            ->distinct('color_id')
+                            ->get();
+
+                        $color_list=[];
+                        foreach ($colors as $color) {
+                            $aa_color = [
+                                'id' => $color->color_id,
+                                'code' => $color->color_code,
+                                'name' => $color->color_name,
+                                'description' => $color->description,
+                            ];
+                            array_push($color_list,$aa_color);
+                        }
+
+                        $aa_size = [
                             'id' => $size->size_id,
                             'name' => $size->size_name,
-                            'description'=>$size->description,
+                            'color' => $color_list
                         ];
-                        array_push($aaa_size_list,$aas_size);
+                        $bb_size = [
+                            'id' => $size->size_id,
+                            'name' => $size->size_name
+                        ];
+
+                        array_push($size_list, $aa_size);
+                        array_push($get_sizes, $bb_size);
                     }
 
-                    $aaa_color = [
-                        'id' => $color->color_id,
-                        'code' => $color->color_code,
-                        'name' => $color->color_name,
-                        'sizes' => $aaa_size_list
-                    ];
-                    $bbb_color = [
-                        'id' => $color->color_id,
-                        'code' => $color->color_code,
-                        'name' => $color->color_name
-                    ];
+                    $colors = DB::table('warehouses as dt1')
+                        ->join('colors as dt3', 'dt3.id', '=', 'dt1.color_id')
+                        // ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
+                        ->where('dt1.product_id', $warehouse_product->product_id)
+                        ->where('dt1.company_id', $warehouse_product->company_id)
+                        ->select('dt1.id as id','dt3.id as color_id','dt3.code as color_code', 'dt3.name as color_name')
+                        ->distinct('color_id')
+                        ->get();
+                        // dd($colors);
 
-                    array_push($aaa_color_list,$aaa_color);
-                    array_push($get_colors,$bbb_color);
+                    $aaa_color_list = [];
+                    $get_colors = [];
+                    foreach ($colors as $color) {
+                        $sizes = DB::table('warehouses as dt1')
+                            ->join('sizes as dt4', 'dt4.id', '=', 'dt1.size_id')
+                            ->where('dt1.product_id', $warehouse_product->product_id)
+                            ->where('dt1.company_id', $warehouse_product->company_id)
+                            ->where('dt1.color_id', $color->color_id)
+                            ->select('dt1.description','dt4.id as size_id','dt4.name as size_name')
+                            ->distinct('size_id')
+                            ->get();
+
+                        $aaa_size_list = [];
+                        foreach ($sizes as $size) {
+                            $aas_size = [
+                                'id' => $size->size_id,
+                                'name' => $size->size_name,
+                                'description'=>$size->description,
+                            ];
+                            array_push($aaa_size_list,$aas_size);
+                        }
+
+                        $aaa_color = [
+                            'id' => $color->color_id,
+                            'code' => $color->color_code,
+                            'name' => $color->color_name,
+                            'sizes' => $aaa_size_list
+                        ];
+                        $bbb_color = [
+                            'id' => $color->color_id,
+                            'code' => $color->color_code,
+                            'name' => $color->color_name
+                        ];
+
+                        array_push($aaa_color_list,$aaa_color);
+                        array_push($get_colors,$bbb_color);
+                    }
+                } else {
+                    $aaa_color_list = [];
+                    $size_list = [];
                 }
-            } else {
-                $aaa_color_list = [];
-                $size_list = [];
-            }
 
-            // $relation_type='warehouse_product';
-            // $relation_id=$order_detail->warehouse_id;
+                // $relation_type='warehouse_product';
+                // $relation_id=$order_detail->warehouse_id;
 
-            if ($warehouse_product->warehouse_product_id) {
-                if($warehouse_product->color_id) {
-                    $warehouse_color = Color::select('id', 'name')->find($warehouse_product->color_id);
-                    $color_translate_name=table_translate($warehouse_color,'color', $language);
-                }
-                if($warehouse_product->warehouse_product_id) {
-                    $warehouse_translate_name=table_translate($warehouse_product,'warehouse', $language);
-                }
-                if (!empty($warehouse_product->material_name) ||
-                    !empty($warehouse_product->material_composition) ||
-                    !empty($warehouse_product->manufacturer_country)) {
+                if ($warehouse_product->warehouse_product_id) {
+                    if($warehouse_product->color_id) {
+                        $warehouse_color = Color::select('id', 'name')->find($warehouse_product->color_id);
+                        $color_translate_name=table_translate($warehouse_color,'color', $language);
+                    }
+                    if($warehouse_product->warehouse_product_id) {
+                        $warehouse_translate_name=table_translate($warehouse_product,'warehouse', $language);
+                    }
+                    if (!empty($warehouse_product->material_name) ||
+                        !empty($warehouse_product->material_composition) ||
+                        !empty($warehouse_product->manufacturer_country)) {
 
+                            $list = [
+                                "id" => $warehouse_product->warehouse_product_id,
+                                "name" => $warehouse_translate_name ?? $warehouse_product->product_name,
+                                // "relation_id" => $relation_id,
+                                "price" => $warehouse_product->price,
+                                'discount' => $warehouse_product->discount?$warehouse_product->discount : NULL,
+                                'price_discount' => $warehouse_product->discount ? $warehouse_product->price - ($warehouse_product->price / 100 * $warehouse_product->discount) : NULL,
+                                // "discounts" => $warehouse_product->price,
+                                "quantity" => $warehouse_product->quantity,
+                                "composition" => $warehouse_product->material_name.' '. $warehouse_product->material_composition .' '. $warehouse_product->manufacturer_country,
+                                // "max_quantity" => $warehouse_product->max_quantity,
+                                // "material_name"=>$warehouse_product->material_name,
+                                "company_name"=>$warehouse_product->company_name,
+                                "company_id"=>$warehouse_product->company_id,
+                                // "manufacturer_country"=>$warehouse_product->manufacturer_country,
+                                // "material_composition"=>$warehouse_product->material_composition,
+                                "description" => $warehouse_product->description ?? $warehouse_product->product_description,
+                                "images" => $images,
+                                "color" => [
+                                    "id" => $warehouse_product->color_id,
+                                    "code" => $warehouse_product->color_code,
+                                    "name" => $color_translate_name??'',
+                                ],
+                                "size" => [
+                                    "id" => $warehouse_product->size_id,
+                                    "name" => $warehouse_product->size_name,
+                                ],
+                                "color_by_size" => $size_list,
+                                "size_by_color" => $aaa_color_list,
+                                "get_sizes"=>$get_sizes,
+                                "get_colors"=>$get_colors
+                            ];
+                    }
+                    else{
                         $list = [
-                            "id" => $warehouse_product->warehouse_product_id,
-                            "name" => $warehouse_translate_name ?? $warehouse_product->product_name,
-                            // "relation_id" => $relation_id,
-                            "price" => $warehouse_product->price,
-                            'discount' => $warehouse_product->discount?$warehouse_product->discount : NULL,
-                            'price_discount' => $warehouse_product->discount ? $warehouse_product->price - ($warehouse_product->price / 100 * $warehouse_product->discount) : NULL,
-                            // "discounts" => $warehouse_product->price,
-                            "quantity" => $warehouse_product->quantity,
-                            "composition" => $warehouse_product->material_name.' '. $warehouse_product->material_composition .' '. $warehouse_product->manufacturer_country,
-                            // "max_quantity" => $warehouse_product->max_quantity,
-                            // "material_name"=>$warehouse_product->material_name,
-                            "company_name"=>$warehouse_product->company_name,
-                            "company_id"=>$warehouse_product->company_id,
-                            // "manufacturer_country"=>$warehouse_product->manufacturer_country,
-                            // "material_composition"=>$warehouse_product->material_composition,
-                            "description" => $warehouse_product->description ?? $warehouse_product->product_description,
-                            "images" => $images,
-                            "color" => [
-                                "id" => $warehouse_product->color_id,
-                                "code" => $warehouse_product->color_code,
-                                "name" => $color_translate_name??'',
-                            ],
-                            "size" => [
-                                "id" => $warehouse_product->size_id,
-                                "name" => $warehouse_product->size_name,
-                            ],
-                            "color_by_size" => $size_list,
-                            "size_by_color" => $aaa_color_list,
-                            "get_sizes"=>$get_sizes,
-                            "get_colors"=>$get_colors
-                        ];
+                                "id" => $warehouse_product->warehouse_product_id,
+                                "name" => $warehouse_translate_name ?? $warehouse_product->product_name,
+                                // "relation_id" => $relation_id,
+                                "price" => $warehouse_product->price,
+                                'discount' => $warehouse_product->discount ? $warehouse_product->discount : NULL,
+                                'price_discount' => $warehouse_product->discount ? $warehouse_product->price - ($warehouse_product->price / 100 * $warehouse_product->discount) : NULL,
+                                // "discounts" => $warehouse_product->price,
+                                "quantity" => $warehouse_product->quantity,
+                                // "max_quantity" => $warehouse_product->max_quantity,
+                                // "material_name"=>$warehouse_product->material_name,
+                                "company_name"=>$warehouse_product->company_name,
+                                "company_id"=>$warehouse_product->company_id,
+                                // "manufacturer_country"=>$warehouse_product->manufacturer_country,
+                                // "material_composition"=>$warehouse_product->material_composition,
+                                "description" => $warehouse_product->description ?? $warehouse_product->product_description,
+                                "images" => $images,
+                                "color" => [
+                                    "id" => $warehouse_product->color_id,
+                                    "code" => $warehouse_product->color_code,
+                                    "name" => $color_translate_name??'',
+                                ],
+                                "size" => [
+                                    "id" => $warehouse_product->size_id,
+                                    "name" => $warehouse_product->size_name,
+                                ],
+                                "color_by_size" => $size_list,
+                                "size_by_color" => $aaa_color_list,
+                                "get_sizes"=>$get_sizes,
+                                "get_colors"=>$get_colors
+                            ];
+                    }
+                } else {
+                    $list = [];
                 }
-                else{
-                    $list = [
-                            "id" => $warehouse_product->warehouse_product_id,
-                            "name" => $warehouse_translate_name ?? $warehouse_product->product_name,
-                            // "relation_id" => $relation_id,
-                            "price" => $warehouse_product->price,
-                            'discount' => $warehouse_product->discount ? $warehouse_product->discount : NULL,
-                            'price_discount' => $warehouse_product->discount ? $warehouse_product->price - ($warehouse_product->price / 100 * $warehouse_product->discount) : NULL,
-                            // "discounts" => $warehouse_product->price,
-                            "quantity" => $warehouse_product->quantity,
-                            // "max_quantity" => $warehouse_product->max_quantity,
-                            // "material_name"=>$warehouse_product->material_name,
-                            "company_name"=>$warehouse_product->company_name,
-                            "company_id"=>$warehouse_product->company_id,
-                            // "manufacturer_country"=>$warehouse_product->manufacturer_country,
-                            // "material_composition"=>$warehouse_product->material_composition,
-                            "description" => $warehouse_product->description ?? $warehouse_product->product_description,
-                            "images" => $images,
-                            "color" => [
-                                "id" => $warehouse_product->color_id,
-                                "code" => $warehouse_product->color_code,
-                                "name" => $color_translate_name??'',
-                            ],
-                            "size" => [
-                                "id" => $warehouse_product->size_id,
-                                "name" => $warehouse_product->size_name,
-                            ],
-                            "color_by_size" => $size_list,
-                            "size_by_color" => $aaa_color_list,
-                            "get_sizes"=>$get_sizes,
-                            "get_colors"=>$get_colors
-                        ];
-                }
-            } else {
-                $list = [];
-            }
 
-            $message = translate_api('success', $language);
-            return $this->success($message, 200, $list);
+                $message = translate_api('success', $language);
+                return $this->success($message, 200, $list);
+
+            }else{
+                $message = translate_api("There is no warehouse for this id $warehouse_product_id", $language);
+                return $this->error($message, 200);
+            }
         }
     }
 
