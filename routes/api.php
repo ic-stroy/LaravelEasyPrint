@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\CardController;
+use App\Http\Controllers\Api\HeaderController;
 use \App\Http\Controllers\Company\WarehouseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,7 +29,7 @@ use Illuminate\Support\Facades\Route;
  */
 
 Route::get('get-districts', [AddressController::class, 'getCities']);
-
+Route::get('get-image', [HeaderController::class, 'getImage']);
 Route::post('phone-verify', [AuthController::class, 'PhoneVerify']);
 Route::post('phone-register', [AuthController::class, 'PhoneRegister']);
 Route::post('login', [AuthController::class, 'login']);
@@ -60,7 +61,6 @@ Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
     Route::post('edit-address', [AddressController::class, 'editAddress']);
     Route::get('get-address', [AddressController::class, 'getAddress']);
     Route::get('get-company-products', [AddressController::class, 'getCompanyProducts']);
-    Route::get('get-image', [AddressController::class, 'getImage']);
     Route::delete('destroy-address', [AddressController::class, 'destroy']);
     Route::get('get-cards', [CardController::class, 'getCards']);
     Route::post('store-card', [CardController::class, 'storeCard']);
