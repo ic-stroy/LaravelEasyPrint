@@ -221,14 +221,36 @@ class OrderController extends Controller
                         ->join('sizes as dt3', 'dt3.id', '=', 'dt2.size_id')
                         ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
                          ->leftJoin('discounts as dt6', function($join){
-                             $join->on('dt6.warehouse_id', '=', 'dt2.id')
+                             $join->on(function ($join){
+                                 $join->on([
+                                     ['dt6.warehouse_id', '=', 'dt2.id'],
+                                     ['dt6.company_id', 'is', DB::raw('NULL')]
+                                 ])
+                                 ->orOn(function ($join){
+                                     $join->on([
+                                         ['dt6.warehouse_id', '=', 'dt2.id'],
+                                         ['dt6.company_id', 'is not', DB::raw('NULL')],
+                                         ['dt2.company_id', '=', 'dt6.company_id'],
+                                     ]);
+                                 });
+                             })
+                             ->orOn(function ($join){
+                                 $join->on([
+                                     ['dt6.product_id', '=', 'dt2.product_id'],
+                                     ['dt6.product_id', 'is not', DB::raw('NULL')],
+                                     ['dt6.warehouse_id', 'is', DB::raw('NULL')],
+                                     ['dt6.company_id', 'is', DB::raw('NULL')]
+                                 ])
                                  ->orOn(function ($join){
                                      $join->on([
                                          ['dt6.product_id', '=', 'dt2.product_id'],
                                          ['dt6.product_id', 'is not', DB::raw('NULL')],
-                                         ['dt6.warehouse_id', 'is', DB::raw('NULL')]
+                                         ['dt6.warehouse_id', 'is', DB::raw('NULL')],
+                                         ['dt6.company_id', 'is not', DB::raw('NULL')],
+                                         ['dt2.company_id', '=', 'dt6.company_id'],
                                      ]);
-                                 })
+                                 });
+                             })
                              ->where('start_date', '<=', date('Y-m-d H:i:s'))
                              ->where('end_date', '>=', date('Y-m-d H:i:s'));
                          })
@@ -311,16 +333,11 @@ class OrderController extends Controller
                         ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
                         ->leftJoin('discounts as dt5', function($join){
                             $join->on([
-                                ['dt5.warehouse_id', '=', 'dt1.warehouse_id'],
-                                ['dt5.warehouse_id', 'is not', DB::raw('NULL')]
+                                ['dt5.product_id', '=', 'dt2.id'],
+                                ['dt5.product_id', 'is not', DB::raw('NULL')],
+                                ['dt5.warehouse_id', 'is', DB::raw('NULL')],
+                                ['dt5.company_id', 'is', DB::raw('NULL')]
                             ])
-                            ->orOn(function ($join) {
-                                $join->on([
-                                    ['dt5.product_id', '=', 'dt2.id'],
-                                    ['dt5.product_id', 'is not', DB::raw('NULL')],
-                                    ['dt5.warehouse_id', 'is', DB::raw('NULL')]
-                                ]);
-                            })
                             ->where('start_date', '<=', date('Y-m-d H:i:s'))
                             ->where('end_date', '>=', date('Y-m-d H:i:s'));
                         })
@@ -1023,6 +1040,27 @@ class OrderController extends Controller
         $language = $request->header('language');
 //        $orders = Order::where(['status' => Constants::ORDERED, 'company_id' != null])->get();
         $order = Order::first();
+        if($order){
+            foreach($order->orderDetail as $orderDetail){
+                if($orderDetail->warehouse) {
+                    foreach ($order->orderDetail as $orderDetail_warehouse) {
+                        if ($orderDetail_warehouse->warehouse) {
+                            if($orderDetail->warehouse->company_id == $orderDetail_warehouse->warehouse->company_id){
+
+                            }
+                        }
+                    }
+                }
+                if($orderDetail->product){
+                    foreach ($order->orderDetail as $orderDetail_product) {
+                        if ($orderDetail->warehouse) {
+                            $orderDetail->warehouse->company_id;
+
+                        }
+                    }
+                }
+            }
+        }
         $users = User::whereIn('role_id', [2, 3])->get();
         Notification::send($users, new OrderNotification($order));
         $message = translate_api('Success', $language);

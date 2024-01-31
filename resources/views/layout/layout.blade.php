@@ -219,24 +219,24 @@
                             <div class="noti-scroll" data-simplebar>
 
                                 <!-- item-->
-                                @forelse($current_user->notifications as $notification)
-                                    <a href="javascript:void(0);" class="dropdown-item notify-item active">
-                                        <div class="notify-icon">
-                                            <img src="{{ asset('assets/images/user/user-1.jpg') }}" class="img-fluid rounded-circle"
-                                                 alt="" />
-                                        </div>
-                                        <p class="notify-details">{{$notification->data['name']}}</p>
-                                        <p class="text-muted mb-0 user-msg">
-                                            <small>{{$notification->data['all_price']}}</small>
-                                        </p>
-                                    </a>
-                                @empty
-                                    <a href="javascript:void(0);"
-                                       class="dropdown-item text-center text-primary notify-item notify-all">
-                                        {{ translate('No notifications')}}
-                                        <i class="fe-arrow-right"></i>
-                                    </a>
-                                @endforelse
+{{--                                @forelse($current_user->notifications as $notification)--}}
+{{--                                    <a href="javascript:void(0);" class="dropdown-item notify-item active">--}}
+{{--                                        <div class="notify-icon">--}}
+{{--                                            <img src="{{ asset('assets/images/user/user-1.jpg') }}" class="img-fluid rounded-circle"--}}
+{{--                                                 alt="" />--}}
+{{--                                        </div>--}}
+{{--                                        <p class="notify-details">{{$notification->data['name']}}</p>--}}
+{{--                                        <p class="text-muted mb-0 user-msg">--}}
+{{--                                            <small>{{$notification->data['all_price']}}</small>--}}
+{{--                                        </p>--}}
+{{--                                    </a>--}}
+{{--                                @empty--}}
+{{--                                    <a href="javascript:void(0);"--}}
+{{--                                       class="dropdown-item text-center text-primary notify-item notify-all">--}}
+{{--                                        {{ translate('No notifications')}}--}}
+{{--                                        <i class="fe-arrow-right"></i>--}}
+{{--                                    </a>--}}
+{{--                                @endforelse--}}
 
 {{--                                <a href="javascript:void(0);" class="dropdown-item notify-item active">--}}
 {{--                                    <div class="notify-icon">--}}
