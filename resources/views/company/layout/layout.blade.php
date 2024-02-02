@@ -220,20 +220,22 @@
                         <!-- item-->
                         @forelse($current_user->unreadnotifications as $notification)
                             @if($notification->type == "App\Notifications\OrderNotification")
-                                <a href="{{route('company_order.index', 2)}}" class="dropdown-item notify-item">
-                                    <div class="notify-icon">
-                                        <img src="{{$notification->data['product_images']?$notification->data['product_images']:''}}" class="img-fluid" alt="" />
-                                    </div>
-                                    <p class="notify-details">
-                                        @if($notification->data['product_name'])
-                                            {{strlen($notification->data['product_name'])>24?substr($notification->data['product_name'], 0, 24):$notification->data['product_name']}}...  <b>{{$notification->data['order_all_price']}}</b>
-                                        @endif
-                                    </p>
-                                    <p class="text-muted mb-0 user-msg">
-                                        <small>{{$notification->data['user']?$notification->data['user']:''}}</small>
-                                    </p>
-                                </a>
-                                <hr style="margin: 0px">
+                                @if(!empty($notification->data))
+                                    <a href="{{route('company_order.index', 2)}}" class="dropdown-item notify-item">
+                                        <div class="notify-icon">
+                                            <img src="{{$notification->data['product_images']?$notification->data['product_images']:''}}" class="img-fluid" alt="" />
+                                        </div>
+                                        <p class="notify-details">
+                                            @if($notification->data['product_name'])
+                                                {{strlen($notification->data['product_name'])>24?substr($notification->data['product_name'], 0, 24):$notification->data['product_name']}}...  <b>{{$notification->data['order_all_price']}}</b>
+                                            @endif
+                                        </p>
+                                        <p class="text-muted mb-0 user-msg">
+                                            <small>{{$notification->data['user']?$notification->data['user']:''}}</small>
+                                        </p>
+                                    </a>
+                                    <hr style="margin: 0px">
+                                @endif
                             @endif
                         @empty
                             <a href="javascript:void(0);"
