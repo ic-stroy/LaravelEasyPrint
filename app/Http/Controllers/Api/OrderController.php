@@ -12,6 +12,7 @@ use App\Models\Products;
 use App\Models\Sizes;
 use App\Models\Uploads;
 use App\Models\User;
+use App\Models\UserCard;
 use App\Models\Warehouse;
 use App\Notifications\OrderNotification;
 use Illuminate\Http\Request;
@@ -716,9 +717,14 @@ class OrderController extends Controller
         $order_id = $data['order_id'];
 
         if ($order_id  && $order = Order::where('id',$order_id)->where('status', Constants::BASKED)->first()) {
-            $address = Address::find($data['address_id']);
+            $address = Address::where('user_id', $order->user_id)->find($data['address_id']);
             if(!$address){
-                $message=translate_api('Address not found', $language);
+                $message=translate_api('Your address not found', $language);
+                return $this->error($message, 400);
+            }
+            $user_card = UserCard::where('user_id', $order->user_id)->find($data['user_card_id']);
+            if(!$user_card){
+                $message=translate_api('your card not found', $language);
                 return $this->error($message, 400);
             }
             $order->update([
@@ -726,13 +732,70 @@ class OrderController extends Controller
                 'receiver_name'=>$data['receiver_name'],
                 'phone_number'=>$data['receiver_phone'],
                 'status'=>Constants::ORDERED,
+                'payment_method'=>$data['payment_method'],
+                'user_card_id'=>$data['user_card_id']
             ]);
-            $users = User::whereIn('role_id', [2, 3])->get();
-            Notification::send($users, new OrderNotification($order));
+            $warehouses_id = OrderDetail::where('order_id', $order->id)->pluck('warehouse_id');
+            if(!empty($warehouses_id)){
+                $companies_id = Warehouse::whereIn('id', $warehouses_id)->pluck('company_id')->unique()->values()->all();
+            }else{
+                $companies_id = [];
+            }
+            if($order){
+                $i = 0;
+                $users = User::whereIn('company_id', $companies_id)->get();
+                foreach($order->orderDetail as $orderDetail){
+                    if(!empty($orderDetail->warehouse)) {
+                        if(!empty($companies_id)){
+
+                            if(count($users)>0){
+                                $list_images = !empty($this->getImages($orderDetail->warehouse, 'warehouses')) ? $this->getImages($orderDetail->warehouse, 'warehouses')[0] : $this->getImages($orderDetail->warehouse->product, 'product')[0];
+                                $data = [
+                                    'order_id'=>$order->id,
+                                    'order_detail_id'=>$orderDetail->id,
+                                    'order_all_price'=>$orderDetail->price-$orderDetail->discount_price??0,
+                                    'product'=>[
+                                        'name'=>$orderDetail->warehouse->name,
+                                        'images'=>$list_images
+                                    ],
+                                    'receiver_name'=>$order->receiver_name,
+                                ];
+                                Notification::send($users, new OrderNotification($data));
+                            }
+                        }
+                    }elseif(!empty($orderDetail->product)){
+                        $users = User::whereIn('role_id', [2, 3])->get();
+                        if(count($users)>0) {
+                            $order_detail_image_front_exists = storage_path('app/public/warehouse/'.$orderDetail->image_front);
+                            if(file_exists($order_detail_image_front_exists)){
+                                $order_detail_image_front = asset('storage/warehouse/'.$orderDetail->image_front);
+                            }else{
+                                $order_detail_image_front = null;
+                            }
+                            if(!$order_detail_image_front){
+                                $images = $this->getImages($orderDetail->product, 'product')[0];
+                            }else{
+                                $images = $order_detail_image_front;
+                            }
+                            $data = [
+                                'order_id' => $order->id,
+                                'order_detail_id' => $orderDetail->id,
+                                'order_all_price' => $orderDetail->price - $orderDetail->discount_price ?? 0,
+                                'product' => [
+                                    'name' => $orderDetail->product->name,
+                                    'images' => $images
+                                ],
+                                'receiver_name' => $order->receiver_name,
+                            ];
+                            Notification::send($users, new OrderNotification($data));
+                        }
+                    }
+                }
+            }
             $message = translate_api('success', $language);
             return $this->success($message, 200);
         } else {
-            $message = translate_api('this order not ordered or not exist', $language);
+            $message = translate_api('this order not in the basket or not exist', $language);
             return $this->error($message, 400);
         }
     }
@@ -1040,29 +1103,30 @@ class OrderController extends Controller
         $language = $request->header('language');
 //        $orders = Order::where(['status' => Constants::ORDERED, 'company_id' != null])->get();
         $order = Order::first();
+        $companies = [];
+        $warehouses_id= OrderDetail::where('order_id', $order->id)->pluck('warehouse_id');
+        if(!empty($warehouses_id)){
+            $companies_id = Warehouse::whereIn('id', $warehouses_id)->pluck('company_id');
+            $companies_id = array_unique($companies_id);
+        }else{
+            $companies_id = [];
+        }
         if($order){
             foreach($order->orderDetail as $orderDetail){
                 if($orderDetail->warehouse) {
-                    foreach ($order->orderDetail as $orderDetail_warehouse) {
-                        if ($orderDetail_warehouse->warehouse) {
-                            if($orderDetail->warehouse->company_id == $orderDetail_warehouse->warehouse->company_id){
-                                
-                            }
+                    if(!empty($companies_id)){
+                        $users = User::whereIn('company_id', $companies_id)->get();
+                        if(count($users)>0){
+                            Notification::send($users, new OrderNotification($orderDetail));
                         }
                     }
-                }
-                if($orderDetail->product){
-                    foreach ($order->orderDetail as $orderDetail_product) {
-                        if ($orderDetail->warehouse) {
-                            $orderDetail->warehouse->company_id;
-
-                        }
-                    }
+                }elseif($orderDetail->product){
+                    $users = User::whereIn('role_id', [2, 3])->get();
+                    Notification::send($users, new OrderNotification($orderDetail));
                 }
             }
         }
-        $users = User::whereIn('role_id', [2, 3])->get();
-        Notification::send($users, new OrderNotification($order));
+
         $message = translate_api('Success', $language);
         return $this->success($message, 500, []);
     }

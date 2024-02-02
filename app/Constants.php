@@ -16,9 +16,14 @@ class Constants {
    const ACCEPTED_BY_RECIPIENT = 5;
    // 1 basked 2 ordered 3 performed 4 cancelled 5 accepted by recipient
 
+    //Order detail companyalar ga notificatsiya borganda ular qabul qilishi yoki kechiktrishi
+
+    const ORDER_DETAIL_ACCEPTED = 1;
+    const ORDER_DETAIL_CANCELLED = 2;
+
    // Order    payment_method
-   const CASH_ON_DELIVERY = 0;
-   const BANK_CARD = 1;
+   const CASH_ON_DELIVERY = 1;
+   const BANK_CARD = 2;
 
    // coupon type
    const TO_ORDER_COUNT = 0; //maslan 10 ta orderga

@@ -231,7 +231,6 @@ class CategoryController extends Controller
 
     public function userInfo(){
         $user = Auth::user();
-//        return response()->json($user->orderBasket->orderDetail?count($user->orderBasket->orderDetail):0);
         if($user->orderBasket){
             $basket_quantity = $user->orderBasket->orderDetail?count($user->orderBasket->orderDetail):0;
         }else{

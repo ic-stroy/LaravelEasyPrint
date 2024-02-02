@@ -11,14 +11,14 @@ class OrderNotification extends Notification
 {
     use Queueable;
 
-    public $order;
+    public $data;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($order)
+    public function __construct($data)
     {
-        $this->order = $order;
+        $this->data = $data;
     }
 
     /**
@@ -34,11 +34,12 @@ class OrderNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'id'=>$this->order['id'],
-            'user'=>$this->order['receiver_name'],
-            'all_price'=>$this->order['all_price'],
-            'created_at'=>$this->order['created_at'],
-            'updated_at'=>$this->order['updated_at'],
+            'order_id'=>$this->data['order_id'],
+            'order_detail_id'=>$this->data['order_detail_id'],
+            'order_all_price'=>$this->data['order_all_price'],
+            'user'=>$this->data['receiver_name'],
+            'product_name'=>$this->data['product']['name'],
+            'product_images'=>$this->data['product']['images'],
         ];
     }
 }

@@ -38,7 +38,7 @@ class OrderDetail extends Model
         return $this->hasOne(Warehouse::class, 'id', 'warehouse_id');
     }
     public function product(){
-        return $this->hasOne(Warehouse::class, 'id', 'product_id');
+        return $this->hasOne(Products::class, 'id', 'product_id');
     }
     public function size(){
         return $this->hasOne(Sizes::class, 'id', 'size_id');

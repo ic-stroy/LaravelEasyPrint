@@ -19,82 +19,217 @@
                     @break
                 @endswitch
             </h4>
-{{--            <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap">--}}
-            <table class="table table-striped table-bordered dt-responsive nowrap">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>{{translate('Price')}}</th>
-                        <th>{{translate('All price')}}</th>
-                        <th>{{translate('Status')}}</th>
-                        <th>{{translate('User')}}</th>
-                        <th class="text-center">{{translate('Functions')}}</th>
-                    </tr>
-                </thead>
-                <tbody class="table_body">
+
+            @php
+                $i=0
+            @endphp
+            @foreach($order_data as $order)
                 @php
-                    $i=0
+                    $i++;
+                    if(!empty($order['order']->user->personalInfo)){
+                        $first_name = isset($order['order']->user->personalInfo->first_name)?$order['order']->user->personalInfo->first_name.' ':'';
+                        $last_name = isset($order['order']->user->personalInfo->last_name)?$order['order']->user->personalInfo->last_name.' ':'';
+                        $middle_name = isset($order['order']->user->personalInfo->middle_name)?$order['order']->user->personalInfo->middle_name:'';
+                        $user_name = $first_name.''.$last_name.''.$middle_name;
+                    }
                 @endphp
-                    @foreach($orders as $order)
-                        @php
-                            $i++
-                        @endphp
-                        <tr>
-                            <th scope="row">
-                                <a class="show_page" href="{{route('company_order.show', $order->id)}}">{{$i}}</a>
-                            </th>
-                            <td>
-                                <a class="show_page" href="{{route('company_order.show', $order->id)}}">
-                                    @if(isset($order->price)){{ $order->price }}@else <div class="no_text"></div> @endif
+                <div class="accordion custom-accordion" id="custom-accordion-one">
+                    <div class="card mb-0">
+                        <div class="card-header" id="headingNine">
+                            <span class="m-0 position-relative" style="width: 100%">
+                                <a class="custom-accordion-title text-reset d-block"
+                                   data-bs-toggle="collapse" href="#collapseNine"
+                                   aria-expanded="true" aria-controls="collapseNine">
+                                    <div class="d-flex justify-content-between align-items-center p-4">
+                                        <h4 style="line-height: 2">
+                                            @if($user_name){{$user_name}}@endif
+                                            @if(isset($order['product_types'])) <b>{{ $order['product_types'] }}</b> {{translate('of')}} {{count($order['order']->orderDetail)}} {{translate('products are yours')}} @endif
+                                            <b>{{$order['company_product_price']}}</b> {{translate('sum of')}} <b>{{$order['order']->all_price}}</b> {{translate('sum is yours in order')}}
+                                            @if($order['order']->status)
+                                                @switch($order['order']->status)
+                                                    @case(2)
+                                                        <b style="color: #00FFFF">{{translate('ORDERED')}}</b>
+                                                    @break
+                                                    @case(3)
+                                                        <b style="color: #00FF00">{{translate('PERFORMED')}}</b>
+                                                    @break
+                                                    @case(3)
+                                                        <b style="color: #FF0000">{{translate('CANCELLED')}}</b>
+                                                    @break
+                                                    @case(3)
+                                                        <b style="color: #009900">{{translate('ACCEPTED_BY_RECIPIENT')}}</b>
+                                                    @break
+                                                @endswitch
+                                            @endif
+                                        </h4>
+                                        <i class="mdi mdi-chevron-down accordion-arrow"></i>
+                                    </div>
                                 </a>
-                            </td>
-                            <td>
-                                <a class="show_page" href="{{route('company_order.show', $order->id)}}">
-                                    @if(isset($order->all_price)){{ $order->all_price }}@else <div class="no_text"></div> @endif
-                                </a>
-                            </td>
-                            <td>
-                                <a class="show_page" href="{{route('company_order.show', $order->id)}}">
-                                    @if($order->status)
-                                        @switch($order->status)
-                                            @case(1)
-                                            {{translate('Basked')}}
-                                            @break
-                                            @case(2)
-                                            {{translate('Ordered')}}
-                                            @break
-                                            @case(3)
-                                            {{translate('Finished')}}
-                                            @break
-                                        @endswitch
-                                    @else<div class="no_text"></div> @endif
-                                </a>
-                            </td>
-                            <td>
-                                <a class="show_page" href="{{route('company_order.show', $order->id)}}">
-                                    @if(isset($order->user->personalInfo->id))
-                                        @php
-                                            $first_name = isset($order->user->personalInfo->first_name)?$order->user->personalInfo->first_name.' ':'';
-                                            $last_name = isset($order->user->personalInfo->last_name)?$order->user->personalInfo->last_name.' ':'';
-                                            $middle_name = isset($order->user->personalInfo->middle_name)?$order->user->personalInfo->middle_name:'';
-                                            $user_name = $first_name.''.$last_name.''.$middle_name;
-                                        @endphp
-                                        {{$user_name}}
-                                    @else
-                                        <div class="no_text"></div>
-                                    @endif
-                                </a>
-                            </td>
-                            <td class="function_column">
-                                <div class="d-flex justify-content-center">
-                                    <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-alert-modal" data-url="{{route('company_order.destroy', $order->id)}}"><i class="fe-trash-2"></i></button>
+                            </span>
+                        </div>
+                        <div id="collapseNine" class="collapse fade"
+                             aria-labelledby="headingFour"
+                             data-bs-parent="#custom-accordion-one">
+                            @foreach($order['products_with_anime'] as $products_with_anime)
+                                @php
+                                    $order_detail_image_front_exists = storage_path('app/public/warehouse/'.$products_with_anime->image_front);
+                                    if(file_exists($order_detail_image_front_exists)){
+                                        $order_detail_image_front = asset('storage/warehouse/'.$products_with_anime->image_front);
+                                    }else{
+                                        $order_detail_image_front = null;
+                                    }
+                                    $order_detail_image_back_exists = storage_path('app/public/warehouse/'.$products_with_anime->image_back);
+                                    if(file_exists($order_detail_image_back_exists)){
+                                        $order_detail_image_back = asset('storage/warehouse/'.$products_with_anime->image_back);
+                                    }else{
+                                        $order_detail_image_back = null;
+                                    }
+                                    if(!$order_detail_image_front && !$order_detail_image_back){
+                                        if($products_with_anime->product->images){
+                                            $images_ = json_decode($products_with_anime->product->images);
+                                            $images = [];
+                                            foreach ($images_ as $key => $image_){
+                                                if($key < 2){
+                                                    $images[] = asset('storage/products/'.$image_);
+                                                }
+                                            }
+                                        }else{
+                                            $images = [];
+                                        }
+
+                                    }else{
+                                        $images = [$order_detail_image_front??'no', $order_detail_image_back??'no'];
+                                    }
+                                @endphp
+                                <hr>
+                                <div class="row">
+                                    <div class="col-4">
+                                        @foreach($images as $image)
+                                            <img src="{{$image}}" alt="" height="144px">
+                                        @endforeach
+                                    </div>
+                                    <div class="col-3 order_content">
+                                        <h4>{{translate('Order')}}</h4>
+                                        <span class="white_text">{{!empty($products_with_anime->product)?$products_with_anime->product->name:''}}</span>
+                                        @if(!empty($products_with_anime->size))
+                                            <span>{{translate('Size')}}: <span class="white_text">{{$products_with_anime->size->name}}</span></span>
+                                        @endif
+                                        @if(!empty($products_with_anime->color))
+                                            <span>{{translate('Color')}}: <span class="white_text">{{$products_with_anime->color->name}}</span></span>
+                                        @endif
+                                        @if(!empty($products_with_anime->quantity))
+                                            <span>{{translate('Quantity')}}: <span class="white_text">{{$products_with_anime->quantity}}</span></span>
+                                        @endif
+                                        @if(!empty($products_with_anime->updated_at))
+                                            <span>{{translate('Ordered')}}: <span class="white_text">{{$products_with_anime->updated_at}}</span></span>
+                                        @endif
+                                    </div>
+                                    <div class="col-3 order_content">
+                                        <h4>{{translate('Product')}}</h4>
+                                        @if(!empty($products_with_anime->size))
+                                            <span>{{translate('Size')}}: <span class="white_text">{{$products_with_anime->size->name}}</span></span>
+                                        @endif
+                                        @if(!empty($products_with_anime->color))
+                                            <span>{{translate('Color')}}: <span class="white_text">{{$products_with_anime->color->name}}</span></span>
+                                        @endif
+                                        @if(!empty($products_with_anime->quantity))
+                                            <span>{{translate('Quantity')}}: <span class="white_text">{{$products_with_anime->quantity}}</span></span>
+                                        @endif
+                                        @if(!empty($products_with_anime->updated_at))
+                                            <span>{{translate('Ordered')}}: <span class="white_text">{{$products_with_anime->updated_at}}</span></span>
+                                        @endif
+                                    </div>
+                                    <div class="function-column col-2">
+                                        <div class="d-flex justify-content-around">
+                                            <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#success-alert-modal" data-url=""><i class="fa fa-check"></i></button>
+                                            <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-alert-modal" data-url=""><i class="fa fa-times"></i></button>
+                                        </div>
+                                    </div>
                                 </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                            @endforeach
+                            @foreach($order['products'] as $products)
+                                @php
+                                    if(!empty($products->warehouse) && $products->warehouse->images){
+                                        $images_ = json_decode($products->warehouse->images);
+                                        $images = [];
+                                        foreach ($images_ as $key => $image_){
+                                            if($key < 2){
+                                                $images[] = asset('storage/warehouses/'.$image_);
+                                            }
+                                        }
+                                    }elseif(!empty($products->warehouse->product) && $products->warehouse->product->images){
+                                        $images_ = json_decode($products->warehouse->product->images);
+                                        $images = [];
+                                        foreach ($images_ as $key => $image_){
+                                            if($key < 2){
+                                                $images[] = asset('storage/products/'.$image_);
+                                            }
+                                        }
+                                    }else{
+                                        $images = [];
+                                    }
+                                @endphp
+                                <hr>
+                                <div class="row">
+                                    <div class="col-4">
+                                        @foreach($images as $image)
+                                            <img src="{{$image}}" alt="" height="144px">
+                                        @endforeach
+                                    </div>
+                                    <div class="col-6 order_content">
+                                        @if(!empty($products->warehouse) && $products->warehouse->name)
+                                            <span class="white_text">{{$products->warehouse->name}}</span>
+                                        @elseif(!empty($products->warehouse->product) && $products->warehouse->product->name)
+                                            <span>{{$products->warehouse->product->name}}</span>
+                                        @endif
+                                        @if(!empty($products->size))
+                                            <span>{{translate('Size')}}: <span class="white_text">{{$products->size->name}}</span></span>
+                                        @endif
+                                        @if(!empty($products->color))
+                                            <span>{{translate('Color')}}: <span class="white_text">{{$products->color->name}}</span></span>
+                                        @endif
+                                        @if(!empty($products_with_anime->quantity))
+                                            <span>{{translate('Quantity')}}: <span class="white_text">{{$products_with_anime->quantity}}</span></span>
+                                        @endif
+                                    </div>
+                                    <div class="function-column col-2">
+                                        <div class="d-flex justify-content-around">
+                                            <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#success-alert-modal" data-url=""><i class="fa fa-check"></i></button>
+                                            <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-alert-modal" data-url=""><i class="fa fa-times"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            @endforeach
         </div>
     </div>
+    <style>
+        #headingNine{
+            height: 74px;
+            display: flex;
+            align-items: center;
+        }
+        #headingNine a{
+            width: 100%;
+            font-size: 15px;
+        }
+        .function-column{
+            display: flex;
+            align-items: center;
+        }
+        .function-column>div{
+            width: 100%;
+        }
+        .order_content{
+            display: flex;
+            flex-direction: column;
+        }
+        .white_text{
+            color:white
+        }
 
+    </style>
 @endsection

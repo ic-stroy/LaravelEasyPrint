@@ -219,15 +219,20 @@
                     <div class="noti-scroll" data-simplebar>
                         <!-- item-->
                         @forelse($current_user->unreadnotifications as $notification)
-                            <a href="javascript:void(0);" class="dropdown-item notify-item active">
-                                <div class="notify-icon">
-                                    <img src="{{ asset('assets/images/user/user-1.jpg') }}" class="img-fluid rounded-circle" alt="" />
-                                </div>
-                                <p class="notify-details">{{$notification->data['user']}}</p>
-                                <p class="text-muted mb-0 user-msg">
-                                    <small>{{$notification->data['all_price']}}</small>
-                                </p>
-                            </a>
+                            @if($notification->type == "App\Notifications\OrderNotification")
+                                <a href="{{route('company_order.index', 2)}}" class="dropdown-item notify-item">
+                                    <div class="notify-icon">
+                                        <img src="{{$notification->data['product_images']}}" class="img-fluid" alt="" />
+                                    </div>
+                                    <p class="notify-details">
+                                        {{strlen($notification->data['product_name'])>24?substr($notification->data['product_name'], 0, 24):$notification->data['product_name']}}...  <b>{{$notification->data['order_all_price']}}</b>
+                                    </p>
+                                    <p class="text-muted mb-0 user-msg">
+                                        <small>{{$notification->data['user']}}</small>
+                                    </p>
+                                </a>
+                                <hr style="margin: 0px">
+                            @endif
                         @empty
                             <a href="javascript:void(0);"
                                class="dropdown-item text-center text-primary notify-item notify-all">
