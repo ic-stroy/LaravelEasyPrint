@@ -84,14 +84,14 @@ class OrderController extends Controller
             $order->price = (int)$request_order_price;
             $order->discount_price = (int)$request_order_discount_price;
             $order->all_price = (int)$request_order_price - $request_order_discount_price;
-            $order->save();
+//            $order->save();
         }
         if(!$order->code){
             $length = 8;
             $order_code = str_pad($order->id, $length, '0', STR_PAD_LEFT);
             $order->code=$order_code;
         }
-        $order->save();
+//        $order->save();
         $message = translate_api('Success', $language);
         if ($request->warehouse_product_id) {
             if(!DB::table('warehouses')->where('id', $request->warehouse_product_id)->exists()){
@@ -127,11 +127,11 @@ class OrderController extends Controller
             $order_details = OrderDetail::where('order_id', $order->id)->where('product_id', $request->product_id)->get();
             foreach ($order_details as $order_detail) {
                 $discount_price = ($request->price / 100) * $request->discount * $order_detail->quantity;
-                $order_detail->update([
-                    'price'=>$request->price,
-                    'discount'=>$request->discount,
-                    'discount_price'=>$discount_price
-                ]);
+//                $order_detail->update([
+//                    'price'=>$request->price,
+//                    'discount'=>$request->discount,
+//                    'discount_price'=>$discount_price
+//                ]);
             }
             $discount_price = ($request->price / 100) * $request->discount * $request->quantity;
             $order_detail = new OrderDetail();
@@ -145,6 +145,7 @@ class OrderController extends Controller
                     case 'Sweatshirts':
                         $t_shirts = Products::where('category_id', $request->category_id)->where('name', 'Свитшот')->first();
                         $order_detail->product_id = $t_shirts->id;
+                        dd($t_shirts);
                         break;
                     case 'Hoodies':
                         $t_shirts = Products::where('category_id', $request->category_id)->where('name', 'Худи')->first();
