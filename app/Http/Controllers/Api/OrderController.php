@@ -137,7 +137,7 @@ class OrderController extends Controller
             $order_detail = new OrderDetail();
             $category_type = Category::where('step', 0)->find($request->category_id);
             if($category_type){
-                switch($category_type){
+                switch($category_type->name){
                     case 'T-shirts':
                         $t_shirts = Products::where('category_id', $request->category_id)->where('name', 'Футболка')->first();
                         $order_detail->product_id = $t_shirts->id;
