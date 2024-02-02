@@ -135,7 +135,27 @@ class OrderController extends Controller
             }
             $discount_price = ($request->price / 100) * $request->discount * $request->quantity;
             $order_detail = new OrderDetail();
-            $order_detail->product_id = $request->product_id ?? null;
+            $category_type = Category::where('step', 0)->find($request->category_id);
+            if($category_type){
+                switch($category_type){
+                    case 'T-shirts':
+                        $t_shirts = Products::where('category_id', $request->category_id)->where('name', 'Футболка')->first();
+                        $order_detail->product_id = $t_shirts->id;
+                        break;
+                    case 'Sweatshirts':
+                        $t_shirts = Products::where('category_id', $request->category_id)->where('name', 'Свитшот')->first();
+                        $order_detail->product_id = $t_shirts->id;
+                        break;
+                    case 'Hoodies':
+                        $t_shirts = Products::where('category_id', $request->category_id)->where('name', 'Худи')->first();
+                        $order_detail->product_id = $t_shirts->id;
+                        break;
+                    default:
+                        $order_detail->product_id = $request->product_id ?? null;
+                }
+            }else{
+                $order_detail->product_id = $request->product_id ?? null;
+            }
             //warehouse_product_id:45
             $order_detail->quantity = $request->quantity;
             $order_detail->color_id = $request->color_id;

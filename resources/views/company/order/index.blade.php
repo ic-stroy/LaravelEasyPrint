@@ -41,9 +41,9 @@
                                    data-bs-toggle="collapse" href="#collapseNine"
                                    aria-expanded="true" aria-controls="collapseNine">
                                     <div class="d-flex justify-content-between align-items-center p-4">
-                                        <h4 style="line-height: 2">
-                                            @if($user_name){{$user_name}}@endif
-                                            @if(isset($order['product_types'])) <b>{{ $order['product_types'] }}</b> {{translate('of')}} {{count($order['order']->orderDetail)}} {{translate('products are yours')}} @endif
+                                        <span class="white_text" style="line-height: 2; font-size: 16px">
+                                            @if($user_name){{$user_name}}@endif {{translate('ordered')}}
+                                            @if(isset($order['product_types'])) <b>{{ $order['product_types'] }}</b>  {{translate('products of yours in')}} {{count($order['order']->orderDetail)}} {{translate('products')}} @endif
                                             <b>{{$order['company_product_price']}}</b> {{translate('sum of')}} <b>{{$order['order']->all_price}}</b> {{translate('sum is yours in order')}}
                                             @if($order['order']->status)
                                                 @switch($order['order']->status)
@@ -61,7 +61,7 @@
                                                     @break
                                                 @endswitch
                                             @endif
-                                        </h4>
+                                        </span>
                                         <i class="mdi mdi-chevron-down accordion-arrow"></i>
                                     </div>
                                 </a>
@@ -109,7 +109,7 @@
                                         @endforeach
                                     </div>
                                     <div class="col-3 order_content">
-                                        <h4>{{translate('Order')}}</h4>
+                                        <h4>{{translate('Animated order')}}</h4>
                                         <span class="white_text">{{!empty($products_with_anime->product)?$products_with_anime->product->name:''}}</span>
                                         @if(!empty($products_with_anime->size))
                                             <span>{{translate('Size')}}: <span class="white_text">{{$products_with_anime->size->name}}</span></span>
@@ -125,18 +125,15 @@
                                         @endif
                                     </div>
                                     <div class="col-3 order_content">
-                                        <h4>{{translate('Product')}}</h4>
-                                        @if(!empty($products_with_anime->size))
-                                            <span>{{translate('Size')}}: <span class="white_text">{{$products_with_anime->size->name}}</span></span>
-                                        @endif
-                                        @if(!empty($products_with_anime->color))
-                                            <span>{{translate('Color')}}: <span class="white_text">{{$products_with_anime->color->name}}</span></span>
-                                        @endif
-                                        @if(!empty($products_with_anime->quantity))
-                                            <span>{{translate('Quantity')}}: <span class="white_text">{{$products_with_anime->quantity}}</span></span>
-                                        @endif
-                                        @if(!empty($products_with_anime->updated_at))
-                                            <span>{{translate('Ordered')}}: <span class="white_text">{{$products_with_anime->updated_at}}</span></span>
+                                        <h4>{{translate('Product withouth anime')}}</h4>
+                                        @if(!empty($products_with_anime->product))
+                                            <span>{{translate('Name')}}: <span class="white_text">{{$products_with_anime->product->name}}</span></span>
+
+                                            <span>{{translate('Color')}}: <span class="white_text">{{$products_with_anime->product->name}}</span></span>
+
+                                            <span>{{translate('Status')}}: <span class="white_text">{{$products_with_anime->product->status}}</span></span>
+
+                                            <span>{{translate('Ordered')}}: <span class="white_text">{{$products_with_anime->product->updated_at}}</span></span>
                                         @endif
                                     </div>
                                     <div class="function-column col-2">
