@@ -412,7 +412,7 @@
             }
         }
         function cancelling_order(order_detail_id){
-            cancell_order_id.setAttribute("actions", "{{route()}}")
+            {{--cancell_order_id.setAttribute("actions", "{{route()}}")--}}
             console.log(order_detail_id)
         }
         function getImages(images) {
