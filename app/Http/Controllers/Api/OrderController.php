@@ -702,7 +702,8 @@ class OrderController extends Controller
 
         if ($coupon=DB::table('coupons')->where('name', $request->coupon_name)
             ->where('status',1)
-            ->where([['start_date', '>=', date('Y-m-d H:i:s')], ['end_date', '<=', date('Y-m-d H:i:s')]])->first()) {
+            ->where('start_date', '<=', date('Y-m-d H:i:s'))
+            ->where('end_date', '>=', date('Y-m-d H:i:s'))->first()) {
             if ($order=Order::where('id', $request->order_id)->first()) {
                 $order_count = Order::where('user_id', $order->user_id)->where('status', '!=', Constants::BASKED)->count();
                 if (!$order->coupon_id) {
