@@ -699,7 +699,10 @@ class OrderController extends Controller
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
         $order_coupon_price = 0;
-        if ($coupon=DB::table('coupons')->where('name', $request->coupon_name)->where('status',1)->where(['start_date'>=date('Y-m-d H:i:s'), 'end_date'<=date('Y-m-d H:i:s')])->first()) {
+
+        if ($coupon=DB::table('coupons')->where('name', $request->coupon_name)
+            ->where('status',1)
+            ->where([['start_date', '>=', date('Y-m-d H:i:s')], ['end_date', '<=', date('Y-m-d H:i:s')]])->first()) {
             if ($order=Order::where('id', $request->order_id)->first()) {
                 $order_count = Order::where('user_id', $order->user_id)->where('status', '!=', Constants::BASKED)->count();
                 if (!$order->coupon_id) {
@@ -767,7 +770,7 @@ class OrderController extends Controller
                 return $this->error($message, 400);
             }
         }
-        $message=translate_api('coupon not found',$language);
+        $message=translate_api('coupon not found or expired',$language);
         return $this->error($message, 400);
     }
 
