@@ -237,10 +237,11 @@ class OrderController extends Controller
             foreach ($user->orderBasket->orderDetail as $order_detail) {
                 $list_images = [];
                 if ($order_detail->warehouse_id) {
+                    $list = [];
                     $warehouse_product = DB::table('order_details as dt1')
                         ->join('warehouses as dt2', 'dt2.id', '=', 'dt1.warehouse_id')
-                        ->join('sizes as dt3', 'dt3.id', '=', 'dt2.size_id')
-                        ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
+                        ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
+                        ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
                          ->leftJoin('discounts as dt6', function($join){
                              $join->on(function ($join){
                                  $join->on([
@@ -290,7 +291,7 @@ class OrderController extends Controller
                     $list_images = count($this->getImages($warehouse_product, 'warehouses')) > 0 ? $this->getImages($warehouse_product, 'warehouses') : $this->getImages($list_product, 'product');
                     $translate_name = table_translate($warehouse_product, 'warehouse', $language);
 
-                    if($warehouse_product->warehouse_product_id){
+                    if(!empty($warehouse_product) && $warehouse_product->warehouse_product_id){
                         if($warehouse_product->discount_percent){
                             $order_detail->discount = $warehouse_product->discount_percent;
                         }else{
@@ -314,9 +315,8 @@ class OrderController extends Controller
                                 $order_detail->discount_price = 0;
                             }
                         }
+                        $order_detail->save();
                     }
-
-                    $order_detail->save();
                     $total_price = $order_detail->price - $order_detail->discount_price??0;
 
                     $list = [
@@ -347,7 +347,6 @@ class OrderController extends Controller
                 } else {
                     $relation_type = 'product';
                     $relation_id = $order_detail->product_id;
-
                     $product = DB::table('order_details as dt1')
                         ->join('products as dt2', 'dt2.id', '=', 'dt1.product_id')
                         ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
@@ -436,7 +435,6 @@ class OrderController extends Controller
                 }
                 array_push($order_detail_list, $list);
             }
-
             $order->price = $order_price;
             $order->discount_price = $order_discount_price;
             if($order->coupon){
@@ -447,6 +445,7 @@ class OrderController extends Controller
                     $order->all_price = $order->price - $order->discount_price??0 - $order->coupon_price??0;
                 }
             }
+            $order->all_price = $order->price - $order->discount_price??0;
             $order->save();
             $data = [
                 'id' => $order->id,
@@ -478,103 +477,143 @@ class OrderController extends Controller
         if ($order_id  && $order = Order::where('id',$order_id)->first()) {
             $data=[];
             $order_detail_list=[];
+
+            $coupon = $order->coupon;
+            $order_count = Order::where('user_id', $order->user_id)->where('status', '!=', Constants::BASKED)->count();
+            $order_coupon_price = 0;
+            $company_id = 'no';
             foreach ($order->orderDetail as $order_detail){
+                if($order_detail->status == Constants::ORDER_DETAIL_ORDERED){
+                    $list = [];
+                    if(!empty($coupon) && $coupon->start_date >= date('Y-m-d H:i:s') && $coupon->end_date <= date('Y-m-d H:i:s')){
+                        if($order_detail->warehouse_id) {
+                            $company_id = DB::table('warehouses')->where('id', $order_detail->warehouse_id)->first()->company_id;
+                        }elseif($order_detail->product_id) {
+                            $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order_detail->price*$order_detail->quantity - $order_detail->discount_price??0);
+                        }
+                        if ($coupon->company_id == $company_id) {
+                            switch ($coupon->type){
+                                case Constants::TO_ORDER_COUNT:
+                                    if($coupon->order_count > 0){
+                                        $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order_detail->price*$order_detail->quantity - $order_detail->discount_price??0);
+                                    }
+                                    break;
+                                case Constants::FOR_ORDER_NUMBER:
+                                    if($order_count == $coupon->order_count){
+                                        $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order_detail->price*$order_detail->quantity - $order_detail->discount_price??0);
+                                    }
+                                    break;
+                                default:
+                                    $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order_detail->price*$order_detail->quantity - $order_detail->discount_price??0);
+                            }
+                        }else{
+                            $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order->all_price);
+                        }
+                    }
 
-                if ($order_detail->warehouse_id != null) {
-                    $warehouse_product = DB::table('order_details as dt1')
-                        ->join('warehouses as dt2', 'dt2.id', '=', 'dt1.warehouse_id')
-                        ->join('sizes as dt3', 'dt3.id', '=', 'dt2.size_id')
-                        ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
-                        ->join('products as dt5', 'dt5.id', '=', 'dt2.product_id')
-                        ->where('dt1.id' , $order_detail->id)
-                        ->select('dt2.name as warehouse_product_name', 'dt2.id as warehouse_id',
-                            'dt2.quantity as max_quantity', 'dt2.images as images', 'dt2.description as description',
-                            'dt2.product_id as product_id', 'dt2.company_id as company_id', 'dt2.images as images',
-                            'dt3.id as size_id', 'dt3.name as size_name','dt4.id as color_id','dt4.name as color_name', 'dt4.code as color_code',
-                            'dt5.name as product_name'
-                        )
-                        ->first();
-                    $product = Products::find($warehouse_product->product_id);
-                    $relation_type='warehouse_product';
-                    $relation_id=$order_detail->warehouse_id;
-                    $images = count($this->getImages($warehouse_product, 'warehouses'))>0?$this->getImages($warehouse_product, 'warehouses'):$this->getImages($product, 'product');
-                    $list=[
-                        "id"=>$order_detail->id,
-                        "relation_type"=>$relation_type,
-                        "relation_id"=>$relation_id,
-                        'name'=>$warehouse_product->warehouse_product_name??$warehouse_product->product_name,
-                        "price"=>$order_detail->price,
-                        "discount"=>$order_detail->discount,
-                        "discount_price"=>$order_detail->discount_price,
-                        "quantity"=>$order_detail->quantity,
-                        "description"=>$warehouse_product->description,
-                        "images"=>$images,
-                        "color_code"=>$warehouse_product->color_code,
-                        "color_name"=>$warehouse_product->color_name,
-                        "size_name"=>$warehouse_product->size_name
-                    ];
+                    if ($order_detail->warehouse_id != null) {
+                        $warehouse_product = DB::table('order_details as dt1')
+                            ->join('warehouses as dt2', 'dt2.id', '=', 'dt1.warehouse_id')
+                            ->join('sizes as dt3', 'dt3.id', '=', 'dt2.size_id')
+                            ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
+                            ->join('products as dt5', 'dt5.id', '=', 'dt2.product_id')
+                            ->where('dt1.id' , $order_detail->id)
+                            ->select('dt2.name as warehouse_product_name', 'dt2.id as warehouse_id',
+                                'dt2.quantity as max_quantity', 'dt2.images as images', 'dt2.description as description',
+                                'dt2.product_id as product_id', 'dt2.company_id as company_id', 'dt2.images as images',
+                                'dt3.id as size_id', 'dt3.name as size_name','dt4.id as color_id','dt4.name as color_name', 'dt4.code as color_code',
+                                'dt5.name as product_name'
+                            )
+                            ->first();
+                        $product = Products::find($warehouse_product->product_id);
+                        $relation_type='warehouse_product';
+                        $relation_id=$order_detail->warehouse_id;
+                        $images = count($this->getImages($warehouse_product, 'warehouses'))>0?$this->getImages($warehouse_product, 'warehouses'):$this->getImages($product, 'product');
+                        $list=[
+                            "id"=>$order_detail->id,
+                            "relation_type"=>$relation_type,
+                            "relation_id"=>$relation_id,
+                            'name'=>$warehouse_product->warehouse_product_name??$warehouse_product->product_name,
+                            "price"=>$order_detail->price,
+                            "discount"=>$order_detail->discount,
+                            "discount_price"=>$order_detail->discount_price,
+                            "quantity"=>$order_detail->quantity,
+                            "description"=>$warehouse_product->description,
+                            "images"=>$images,
+                            "color_code"=>$warehouse_product->color_code,
+                            "color_name"=>$warehouse_product->color_name,
+                            "size_name"=>$warehouse_product->size_name
+                        ];
+                    }else {
+                        $relation_type='product';
+                        $relation_id=$order_detail->product_id;
+
+                        $product = DB::table('order_details as dt1')
+                            ->join('products as dt2', 'dt2.id', '=', 'dt1.product_id')
+                            ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
+                            ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
+                            ->where('dt1.id' , $order_detail->id)
+                            ->select('dt1.quantity as order_detail_quantity', 'dt1.price as order_detail_price',
+                                'dt1.image_front as order_detail_image_front', 'dt1.image_back as order_detail_image_back',
+                                'dt1.discount_price as order_detail_discount_price',
+                                'dt2.name as product_name','dt2.images as images', 'dt2.description as description',
+                                'dt3.id as size_id','dt3.name as size_name','dt4.id as color_id','dt4.code as color_code',
+                                'dt4.name as color_name')
+                            ->first();
+
+                        if($product){
+                            if(!$product->order_detail_image_front){
+                                $product->order_detail_image_front = 'no';
+                            }
+                            if(!$product->order_detail_image_back){
+                                $product->order_detail_image_back = 'no';
+                            }
+
+                            $order_detail_image_front_exists = storage_path('app/public/warehouse/'.$product->order_detail_image_front);
+                            if(file_exists($order_detail_image_front_exists)){
+                                $order_detail_image_front = asset('storage/warehouse/'.$product->order_detail_image_front);
+                            }else{
+                                $order_detail_image_front = null;
+                            }
+
+                            $order_detail_image_back_exists = storage_path('app/public/warehouse/'.$product->order_detail_image_back);
+                            if(file_exists($order_detail_image_back_exists)){
+                                $order_detail_image_back= asset('storage/warehouse/'.$product->order_detail_image_back);
+                            }else{
+                                $order_detail_image_back = null;
+                            }
+
+                            if(!$order_detail_image_front || !$order_detail_image_back){
+                                $images = $this->getImages($product, 'product');
+                            }else{
+                                $images = [$order_detail_image_front, $order_detail_image_back];
+                            }
+
+                            $list=[
+                                "id"=>$order_detail->id,
+                                "relation_type"=>$relation_type,
+                                "relation_id"=>$relation_id,
+                                'name'=>$product->product_name,
+                                "price"=>$order_detail->price,
+                                "discount"=>$order_detail->discount,
+                                "discount_price"=>$order_detail->discount_price,
+                                "quantity"=>$order_detail->quantity,
+                                "description"=>$product->description,
+                                "images"=>$images,
+                                "color_name"=>$product->color_name,
+                                "color_code"=>$product->color_code,
+                                "size_name"=>$product->size_name
+                            ];
+                        }
+                    }
+                    if(!empty($list)){
+                        array_push($order_detail_list, $list);
+                    }
                 }
-                else {
-                    $relation_type='product';
-                    $relation_id=$order_detail->product_id;
-
-                    $product = DB::table('order_details as dt1')
-                        ->join('products as dt2', 'dt2.id', '=', 'dt1.product_id')
-                        ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
-                        ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
-                        ->where('dt1.id' , $order_detail->id)
-                        ->select('dt1.quantity as order_detail_quantity', 'dt1.price as order_detail_price',
-                            'dt1.image_front as order_detail_image_front', 'dt1.image_back as order_detail_image_back',
-                            'dt1.discount_price as order_detail_discount_price',
-                            'dt2.name as product_name','dt2.images as images', 'dt2.description as description',
-                            'dt3.id as size_id','dt3.name as size_name','dt4.id as color_id','dt4.code as color_code',
-                            'dt4.name as color_name')
-                        ->first();
-                    if(!$product->order_detail_image_front){
-                        $product->order_detail_image_front = 'no';
-                    }
-                    if(!$product->order_detail_image_back){
-                        $product->order_detail_image_back = 'no';
-                    }
-
-                    $order_detail_image_front_exists = storage_path('app/public/warehouse/'.$product->order_detail_image_front);
-                    if(file_exists($order_detail_image_front_exists)){
-                        $order_detail_image_front = asset('storage/warehouse/'.$product->order_detail_image_front);
-                    }else{
-                        $order_detail_image_front = null;
-                    }
-
-                    $order_detail_image_back_exists = storage_path('app/public/warehouse/'.$product->order_detail_image_back);
-                    if(file_exists($order_detail_image_back_exists)){
-                        $order_detail_image_back= asset('storage/warehouse/'.$product->order_detail_image_back);
-                    }else{
-                        $order_detail_image_back = null;
-                    }
-
-                    if(!$order_detail_image_front || !$order_detail_image_back){
-                        $images = $this->getImages($product, 'product');
-                    }else{
-                        $images = [$order_detail_image_front, $order_detail_image_back];
-                    }
-
-                    $list=[
-                        "id"=>$order_detail->id,
-                        "relation_type"=>$relation_type,
-                        "relation_id"=>$relation_id,
-                        'name'=>$product->product_name,
-                        "price"=>$order_detail->price,
-                        "discount"=>$order_detail->discount,
-                        "discount_price"=>$order_detail->discount_price,
-                        "quantity"=>$order_detail->quantity,
-                        "description"=>$product->description,
-                        "images"=>$images,
-                        "color_name"=>$product->color_name,
-                        "color_code"=>$product->color_code,
-                        "size_name"=>$product->size_name
-                    ];
-                }
-                array_push($order_detail_list,$list);
             }
+            $order->coupon_id = $coupon->id;
+            $order->coupon_price = $order_coupon_price;
+            $order->all_price = $order->all_price - $order_coupon_price;
 
             $data=[
                 'id'=>$order->id,
@@ -618,6 +657,7 @@ class OrderController extends Controller
                         'size_id'=>$update_order_detail['size_id'],
                         'quantity'=>$update_order_detail['quantity'],
                         'discount_price'=>$one_order_detail_discount_price*$update_order_detail['quantity'],
+                        'status'=>Constants::ORDER_DETAIL_ORDERED
                     ]);
 
                     $order_price +=(($order_detail->price)*($order_detail->quantity));
@@ -627,9 +667,19 @@ class OrderController extends Controller
                     return $this->error($message, 400);
                 }
             }
+
+            if($order->coupon){
+                if($order->coupon->start_date > date('Y-m-d H:i:s') || date('Y-m-d H:i:s') > $order->coupon->end_date){
+                    $order->all_price = $order_price - $order_discount_price;
+                    $order->coupon_id = NULL;
+                }else{
+                    $order->all_price = $order_price - $order_discount_price - $order->coupon_price??0;
+                }
+            }else{
+                $order->all_price=$order_price - $order_discount_price;
+            }
             $order->price=$order_price;
             $order->discount_price=$order_discount_price;
-            $order->all_price=$order_price-$order_discount_price;
             $order->status=Constants::BASKED;
             $order->save();
             $message=translate_api('success',$language);
@@ -649,41 +699,44 @@ class OrderController extends Controller
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
         $order_coupon_price = 0;
-        if ($coupon=DB::table('coupons')->where('name', $request->coupon_name)->where('status',1)->first()) {
+        if ($coupon=DB::table('coupons')->where('name', $request->coupon_name)->where('status',1)->where(['start_date'>=date('Y-m-d H:i:s'), 'end_date'<=date('Y-m-d H:i:s')])->first()) {
             if ($order=Order::where('id', $request->order_id)->first()) {
                 $order_count = Order::where('user_id', $order->user_id)->where('status', '!=', Constants::BASKED)->count();
                 if (!$order->coupon_id) {
                     if($order->all_price < $coupon->min_price){
-                        $message=translate_api("this order sum isn't enough for coupon. Coupon min price $coupon->min_price",$language);
+                        $message=translate_api("this order sum isn't enough for coupon. Coupon min price $coupon->min_price", $language);
                         return $this->error($message, 400);
                     }
                     if ($coupon->company_id != null) {
+                        $company_id = 'no';
                         foreach ($order->orderDetail as $order_detail) {
                             if ($order_detail->warehouse_id) {
-                               $company_id = DB::table('warehouses')->where('id', $order_detail->warehouse_id)->first()->company_id;
-                               if ($coupon->company_id == $company_id) {
-                                   switch ($coupon->type){
-                                       case Constants::TO_ORDER_COUNT:
-                                            if($coupon->order_count > 0){
-                                               $coupon->order_count = $coupon->order_count - 1;
-                                                $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order_detail->price*$order_detail->quantity - $order_detail->discount_price??0);
-                                            }else{
-                                                $message=translate_api("Coupon left 0 quantity", $language);
-                                                return $this->error($message, 400);
-                                            }
-                                           break;
-                                       case Constants::FOR_ORDER_NUMBER:
-                                           if($order_count == $coupon->order_count){
-                                               $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order_detail->price*$order_detail->quantity - $order_detail->discount_price??0);
-                                           }else{
-                                               $message=translate_api("Coupon for your $coupon->order_count - order this is your $order_count - order", $language);
-                                               return $this->error($message, 400);
-                                           }
-                                           break;
-                                       default:
+                                $company_id = DB::table('warehouses')->where('id', $order_detail->warehouse_id)->first()->company_id;
+                            }elseif($order_detail->product_id) {
+                                $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order_detail->price*$order_detail->quantity - $order_detail->discount_price??0);
+                            }
+                            if ($coupon->company_id == $company_id) {
+                               switch ($coupon->type){
+                                   case Constants::TO_ORDER_COUNT:
+                                        if($coupon->order_count > 0){
+                                           $coupon->order_count = $coupon->order_count - 1;
+                                            $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order_detail->price*$order_detail->quantity - $order_detail->discount_price??0);
+                                        }else{
+                                            $message=translate_api("Coupon left 0 quantity", $language);
+                                            return $this->error($message, 400);
+                                        }
+                                       break;
+                                   case Constants::FOR_ORDER_NUMBER:
+                                       if($order_count == $coupon->order_count){
                                            $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order_detail->price*$order_detail->quantity - $order_detail->discount_price??0);
-                                   }
-                                }
+                                       }else{
+                                           $message=translate_api("Coupon for your $coupon->order_count - order this is your $order_count - order", $language);
+                                           return $this->error($message, 400);
+                                       }
+                                       break;
+                                   default:
+                                       $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order_detail->price*$order_detail->quantity - $order_detail->discount_price??0);
+                               }
                             }
                         }
                     }else{
@@ -767,7 +820,6 @@ class OrderController extends Controller
                 foreach($order->orderDetail as $orderDetail){
                     if(!empty($orderDetail->warehouse)) {
                         if(!empty($companies_id)){
-
                             if(count($users)>0){
                                 $list_images = !empty($this->getImages($orderDetail->warehouse, 'warehouses')) ? $this->getImages($orderDetail->warehouse, 'warehouses')[0] : $this->getImages($orderDetail->warehouse->product, 'product')[0];
                                 $data = [
@@ -1148,7 +1200,7 @@ class OrderController extends Controller
         }
 
         $message = translate_api('Success', $language);
-        return $this->success($message, 500, []);
+        return $this->success($message, 200, []);
     }
 
     public function AnimeCategorySizeColor(Request $request){

@@ -74,4 +74,9 @@ class CompanyOrderController extends Controller
     public function destroy($id){
         return view('company.order.show');
     }
+
+    public function cancellOrderDetail($id){
+
+
+    }
 }

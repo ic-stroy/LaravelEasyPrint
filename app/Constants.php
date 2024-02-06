@@ -18,8 +18,11 @@ class Constants {
 
     //Order detail companyalar ga notificatsiya borganda ular qabul qilishi yoki kechiktrishi
 
-    const ORDER_DETAIL_ACCEPTED = 1;
-    const ORDER_DETAIL_CANCELLED = 2;
+    const ORDER_DETAIL_BASKET = 1;
+    const ORDER_DETAIL_ORDERED = 2;
+    const ORDER_DETAIL_PERFORMED = 3;
+    const ORDER_DETAIL_CANCELLED = 4;
+    const ORDER_DETAIL_ACCEPTED_BY_RECIPIENT = 5;
 
    // Order    payment_method
    const CASH_ON_DELIVERY = 1;

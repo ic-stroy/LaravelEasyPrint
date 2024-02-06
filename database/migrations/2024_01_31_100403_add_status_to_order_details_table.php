@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('order_details', function (Blueprint $table) {
-            //
+            $table->tinyInteger('status')->default(1);
         });
     }
 
