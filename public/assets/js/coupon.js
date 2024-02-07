@@ -69,33 +69,12 @@ coupon_type.addEventListener('change', function () {
 })
 type.addEventListener('change', function () {
     switch(type.value){
-        case 'no':
-            if(!coupon_order_type.classList.contains('display-none')){
-                coupon_order_type.classList.add('display-none')
-            }
-            if(!order_count.classList.contains('display-none')){
-                order_count.classList.add('display-none')
-            }
-            if(order_count.hasAttribute('required')){
-                order_count.removeAttribute('required')
-            }
-            order_count.value=""
-            break;
         case '0':
             if(quantity_orders.classList.contains('display-none')){
                 quantity_orders.classList.remove('display-none')
             }
             if(!number_order.classList.contains('display-none')){
                 number_order.classList.add('display-none')
-            }
-            if(coupon_order_type.classList.contains('display-none')){
-                coupon_order_type.classList.remove('display-none')
-            }
-            if(order_count.classList.contains('display-none')){
-                order_count.classList.remove('display-none')
-            }
-            if(!order_count.hasAttribute('required')){
-                order_count.setAttribute('required', true)
             }
             break;
         case '1':
@@ -104,15 +83,6 @@ type.addEventListener('change', function () {
             }
             if(!quantity_orders.classList.contains('display-none')){
                 quantity_orders.classList.add('display-none')
-            }
-            if(coupon_order_type.classList.contains('display-none')){
-                coupon_order_type.classList.remove('display-none')
-            }
-            if(order_count.classList.contains('display-none')){
-                order_count.classList.remove('display-none')
-            }
-            if(!order_count.hasAttribute('required')){
-                order_count.setAttribute('required', true)
             }
             break;
         default :
