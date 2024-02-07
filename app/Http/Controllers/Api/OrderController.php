@@ -912,18 +912,8 @@ class OrderController extends Controller
             $order = $order_detail->order;
             $order->price = $order->price - $order_detail->price * $order_detail->quantity;
             $order->discount_price = (int)$order->discount_price - (int)$order_detail->discount_price;
-            $order->all_price = $order->all_price - ($order_detail->price * $order_detail->quantity) + (int)$order_detail->discount_price;
-            if($order->coupon_id) {
-                $coupon = $order->coupon;
-                if(!empty($coupon)){
-                    if($order->product_id || !$order->coupon->company_id){
-                        $order->all_price = $order->all_price - $this->setOrderCoupon($coupon, $order->all_price);
-                    }
-                }else{
-                    $order->coupon_id = NULL;
-                    $order->coupon_price = null;
-                }
-            }
+            $order->all_price = $order->price + (int)$order_detail->discount_price - $order->discount_price;
+
             if (!$order_detail->image_front) {
                 $order_detail->image_front = 'no';
             }
@@ -952,7 +942,24 @@ class OrderController extends Controller
             }
 
            $order_detail->delete();
-           $test_order_detail=DB::table('order_details')->where('order_id', $order->id)->first();
+//            foreach($order->orderDetail as $orderDetail){
+//                $order $orderDetail->price
+//            }
+
+            if($order->coupon_id) {
+                $coupon = $order->coupon;
+                if(!empty($coupon)){
+                    if($order->product_id || !$order->coupon->company_id){
+                        $order->coupon_price = $this->setOrderCoupon($coupon, $order->all_price);
+                        $order->all_price = $order->all_price - $order->coupon_price;
+                    }
+                }else{
+                    $order->coupon_id = NULL;
+                    $order->coupon_price = null;
+                }
+            }
+
+            $test_order_detail=DB::table('order_details')->where('order_id', $order->id)->first();
            if ($test_order_detail) {
                 $order->save();
            }else {
