@@ -34,7 +34,6 @@ if(coupon_percent_value != ''){
     if(coupon_percent_input.hasAttribute('required')){
         coupon_percent_input.removeAttribute('required')
     }
-    console.log(coupon_percent_input.hasAttribute('required'))
 }
 
 coupon_type.addEventListener('change', function () {
@@ -107,10 +106,5 @@ type.addEventListener('change', function () {
             }
             break;
         default :
-    }
-    if(type.value == 0){
-
-    }else if(type.value == 1){
-
     }
 })

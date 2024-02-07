@@ -48,7 +48,7 @@ class OrderController extends Controller
                 return $this->error(translate_api('Product not found', $language), 400);
             }
         }
-        $request_price = $request->price + $request->image_price??0;
+        $request_price = $request->price + (int)$request->image_price;
         $request_discount = $request->discount??0;
         $request_order_discount_price = ($request_price/100)*$request_discount*$request->quantity;
         $request_order_price = $request_price*$request->quantity;
@@ -173,7 +173,7 @@ class OrderController extends Controller
             $order_detail->color_id = $request->color_id;
             $order_detail->size_id = $request->size_id;
             $images_print = $request->file('imagesPrint');
-            $order_detail->price = $request->price + $request->image_price ?? 0;
+            $order_detail->price = $request->price + (int)$request->image_price;
             $order_detail->image_price = $request->image_price;
             $image_front = $request->file('image_front');
             $image_back = $request->file('image_back');
@@ -329,7 +329,7 @@ class OrderController extends Controller
                         }
                         $order_detail->save();
                     }
-                    $total_price = $order_detail->price - $order_detail->discount_price??0;
+                    $total_price = $order_detail->price - (int)$order_detail->discount_price;
 
                     $list = [
                         "id" => $order_detail->id,
@@ -416,7 +416,7 @@ class OrderController extends Controller
 
                         $order_detail->save();
 
-                        $total_price = $order_detail->price - $order_detail->discount_price??0;
+                        $total_price = $order_detail->price - (int)$order_detail->discount_price;
 
                         $list = [
                             "id" => $order_detail->id,
@@ -451,11 +451,11 @@ class OrderController extends Controller
             $order->discount_price = $order_discount_price;
             if(!empty($order->coupon)){
                 if($order->coupon->start_date > date('Y-m-d H:i:s') || date('Y-m-d H:i:s') > $order->coupon->end_date){
-                    $order->all_price = $order->price - $order->discount_price??0;
+                    $order->all_price = $order->price - (int)$order->discount_price;
                     $order->coupon_id = NULL;
                     $order->coupon_price = NULL;
                 }else{
-                    $order->all_price = $order->price - $order->discount_price??0 - (int)$order->coupon_price??0;
+                    $order->all_price = $order->price - (int)$order->discount_price - (int)$order->coupon_price;
                 }
             }
             $order->save();
@@ -617,7 +617,7 @@ class OrderController extends Controller
             ];
 
             $message=translate_api('success',$language);
-            return $this->success($message, 200,$data);
+            return $this->success($message, 200, $data);
         } else {
             $message=translate_api('order not found ',$language);
             return $this->error($message, 400);
@@ -665,7 +665,7 @@ class OrderController extends Controller
                     $order->all_price = $order_price - $order_discount_price;
                     $order->coupon_id = NULL;
                 }else{
-                    $order->all_price = $order_price - $order_discount_price - (int)$order->coupon_price??0;
+                    $order->all_price = $order_price - $order_discount_price - (int)$order->coupon_price;
                 }
             }else{
                 $order->all_price = $order_price - $order_discount_price;
@@ -805,7 +805,7 @@ class OrderController extends Controller
 
     public function getCouponAndPrice($order_coupon_price, $order_detail, $coupon){
         if($coupon->percent){
-            $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order_detail->price*$order_detail->quantity - $order_detail->discount_price??0);
+            $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order_detail->price*$order_detail->quantity - (int)$order_detail->discount_price);
         }elseif($coupon->price){
             $order_coupon_price = $this->setOrderCoupon($coupon, 0);
         }
@@ -855,7 +855,7 @@ class OrderController extends Controller
                                 $data = [
                                     'order_id'=>$order->id,
                                     'order_detail_id'=>$orderDetail->id,
-                                    'order_all_price'=>$orderDetail->price-$orderDetail->discount_price??0,
+                                    'order_all_price'=>$orderDetail->price-(int)$orderDetail->discount_price,
                                     'product'=>[
                                         'name'=>$orderDetail->warehouse->name,
                                         'images'=>$list_images
@@ -882,7 +882,7 @@ class OrderController extends Controller
                             $data = [
                                 'order_id' => $order->id,
                                 'order_detail_id' => $orderDetail->id,
-                                'order_all_price' => $orderDetail->price - $orderDetail->discount_price ?? 0,
+                                'order_all_price' => $orderDetail->price - (int)$orderDetail->discount_price,
                                 'product' => [
                                     'name' => $orderDetail->product->name,
                                     'images' => $images
@@ -911,8 +911,8 @@ class OrderController extends Controller
         if ($order_detail=OrderDetail::where('id',$order_detail_id)->first()) {
             $order = $order_detail->order;
             $order->price = $order->price - $order_detail->price * $order_detail->quantity;
-            $order->discount_price = $order->discount_price??0 - $order_detail->discount_price??0;
-            $order->all_price = $order->all_price - ($order_detail->price * $order_detail->quantity) + $order_detail->discount_price??0;
+            $order->discount_price = (int)$order->discount_price - (int)$order_detail->discount_price;
+            $order->all_price = $order->all_price - ($order_detail->price * $order_detail->quantity) + (int)$order_detail->discount_price;
             if($order->coupon_id) {
                 $coupon = $order->coupon;
                 if(!empty($coupon)){
