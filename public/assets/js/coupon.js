@@ -76,6 +76,9 @@ type.addEventListener('change', function () {
             if(!order_count.classList.contains('display-none')){
                 order_count.classList.add('display-none')
             }
+            if(order_count.hasAttribute('required')){
+                order_count.removeAttribute('required')
+            }
             break;
         case '0':
             if(quantity_orders.classList.contains('display-none')){
@@ -90,6 +93,9 @@ type.addEventListener('change', function () {
             if(order_count.classList.contains('display-none')){
                 order_count.classList.remove('display-none')
             }
+            if(!order_count.hasAttribute('required')){
+                order_count.setAttribute('required', true)
+            }
             break;
         case '1':
             if(number_order.classList.contains('display-none')){
@@ -103,6 +109,9 @@ type.addEventListener('change', function () {
             }
             if(order_count.classList.contains('display-none')){
                 order_count.classList.remove('display-none')
+            }
+            if(!order_count.hasAttribute('required')){
+                order_count.setAttribute('required', true)
             }
             break;
         default :
