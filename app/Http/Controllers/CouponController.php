@@ -47,9 +47,7 @@ class CouponController extends Controller
         }else{
             $coupon->company_id = NULL;
         }
-        if($request->type != 'no'){
-            $coupon->type = $request->type;
-        }
+        $coupon->type = $request->type;
         $coupon->status = $request->status;
         $coupon->order_count = $request->order_count;
         $coupon->start_date = $request->start_date;
@@ -100,9 +98,7 @@ class CouponController extends Controller
             $coupon->company_id = NULL;
         }
         $coupon->order_count = $request->order_count;
-        if($request->type != 'no'){
-            $coupon->type = $request->type;
-        }
+        $coupon->type = $request->type;
         $coupon->status = $request->status;
         $coupon->start_date = $request->start_date;
         $coupon->end_date = $request->end_date;
