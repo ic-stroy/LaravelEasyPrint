@@ -62,6 +62,7 @@
                     <div class="mb-3 col-2">
                         <label class="form-label">{{translate('Type')}}</label>
                         <select name="type" class="form-control" id="type" required>
+                            <option value="no" class="form-control">{{translate('All')}}</option>
                             <option value="{{\App\Constants::TO_ORDER_COUNT}}" class="form-control">{{translate('Quantity')}}</option>
                             <option value="{{\App\Constants::FOR_ORDER_NUMBER}}" class="form-control">{{translate('The number')}}</option>
                         </select>
@@ -70,10 +71,10 @@
                         <label class="form-label">{{translate("Order's min price")}}</label>
                         <input type="number" name="min_price" class="form-control" min="0" value="{{old('min_price')}}"/>
                     </div>
-                    <div class="mb-3 col-3">
+                    <div class="mb-3 col-3" id="coupon_order_type">
                         <label class="form-label" id="quantity_orders">{{translate('Quantity of orders')}}</label>
                         <label class="form-label display-none" id="number_order">{{translate('The number of order')}}</label>
-                        <input type="number" name="order_count" class="form-control" required/>
+                        <input type="number" name="order_count" class="form-control" id="order_count" required/>
                     </div>
                     <div class="mb-3 col-2">
                         <label class="form-label">{{translate('Start date')}}</label>
