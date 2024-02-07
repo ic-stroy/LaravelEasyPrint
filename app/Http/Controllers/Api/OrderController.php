@@ -458,7 +458,6 @@ class OrderController extends Controller
                     $order->all_price = $order->price - $order->discount_price??0 - $order->coupon_price??0;
                 }
             }
-            $order->all_price = $order->price - $order->discount_price??0;
             $order->save();
             $data = [
                 'id' => $order->id,
