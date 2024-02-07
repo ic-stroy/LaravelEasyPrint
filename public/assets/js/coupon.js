@@ -6,6 +6,8 @@ let coupon_percent = document.getElementById('coupon_percent')
 let coupon_price = document.getElementById('coupon_price')
 let coupon_price_input = document.getElementById('coupon_price_input')
 let coupon_percent_input = document.getElementById('coupon_percent_input')
+let coupon_order_type = document.getElementById('coupon_order_type')
+let order_count = document.getElementById('order_count')
 if(coupon_percent_value != ''){
     if(coupon_percent.classList.contains('display-none')){
         coupon_percent.classList.remove('display-none')
@@ -67,19 +69,48 @@ coupon_type.addEventListener('change', function () {
     }
 })
 type.addEventListener('change', function () {
+    switch(type.value){
+        case 'no':
+            if(!coupon_order_type.classList.contains('display-none')){
+                coupon_order_type.classList.add('display-none')
+            }
+            if(!order_count.classList.contains('display-none')){
+                order_count.classList.add('display-none')
+            }
+            break;
+        case '0':
+            if(quantity_orders.classList.contains('display-none')){
+                quantity_orders.classList.remove('display-none')
+            }
+            if(!number_order.classList.contains('display-none')){
+                number_order.classList.add('display-none')
+            }
+            if(coupon_order_type.classList.contains('display-none')){
+                coupon_order_type.classList.remove('display-none')
+            }
+            if(order_count.classList.contains('display-none')){
+                order_count.classList.remove('display-none')
+            }
+            break;
+        case '1':
+            if(number_order.classList.contains('display-none')){
+                number_order.classList.remove('display-none')
+            }
+            if(!quantity_orders.classList.contains('display-none')){
+                quantity_orders.classList.add('display-none')
+            }
+            if(coupon_order_type.classList.contains('display-none')){
+                coupon_order_type.classList.remove('display-none')
+            }
+            if(order_count.classList.contains('display-none')){
+                order_count.classList.remove('display-none')
+            }
+            break;
+        default :
+    }
     if(type.value == 0){
-        if(quantity_orders.classList.contains('display-none')){
-            quantity_orders.classList.remove('display-none')
-        }
-        if(!number_order.classList.contains('display-none')){
-            number_order.classList.add('display-none')
-        }
+
     }else if(type.value == 1){
-        if(number_order.classList.contains('display-none')){
-            number_order.classList.remove('display-none')
-        }
-        if(!quantity_orders.classList.contains('display-none')){
-            quantity_orders.classList.add('display-none')
-        }
+
     }
 })

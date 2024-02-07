@@ -455,14 +455,14 @@ class OrderController extends Controller
                     $order->coupon_id = NULL;
                     $order->coupon_price = NULL;
                 }else{
-                    $order->all_price = $order->price - $order->discount_price??0 - $order->coupon_price??0;
+                    $order->all_price = $order->price - $order->discount_price??0 - (int)$order->coupon_price??0;
                 }
             }
             $order->save();
             $data = [
                 'id' => $order->id,
                 'coupon_id' => $order->coupon_id,
-                'coupon_price' => $order->coupon_price,
+                'coupon_price' => (int)$order->coupon_price,
                 'price' => $order->price,
                 'discount_price' => $order->discount_price,
                 'grant_total' => $order->all_price,
@@ -665,7 +665,7 @@ class OrderController extends Controller
                     $order->all_price = $order_price - $order_discount_price;
                     $order->coupon_id = NULL;
                 }else{
-                    $order->all_price = $order_price - $order_discount_price - $order->coupon_price??0;
+                    $order->all_price = $order_price - $order_discount_price - (int)$order->coupon_price??0;
                 }
             }else{
                 $order->all_price = $order_price - $order_discount_price;
