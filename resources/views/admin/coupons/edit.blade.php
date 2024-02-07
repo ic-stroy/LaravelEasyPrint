@@ -41,15 +41,15 @@
                         <label class="form-label">{{translate('Coupon percent')}}</label>
                         <input type="number" name="percent" value="{{$coupon->percent??''}}" class="form-control" required id="coupon_percent_input" min="0" max="100"/>
                     </div>
-                    <div class="mb-3 col-3">
-                        <label class="form-label">{{translate('Companies')}}</label>
-                        <select name="company" class="form-control">
-                            <option value="" {{$coupon->company_id == ''?'selected':''}}>{{translate('All company')}}</option>
-                            @foreach($companies as $company)
-                                <option value="{{$company->id}}" {{$coupon->company_id == $company->id?'selected':''}}>{{$company->name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
+{{--                    <div class="mb-3 col-3">--}}
+{{--                        <label class="form-label">{{translate('Companies')}}</label>--}}
+{{--                        <select name="company" class="form-control">--}}
+{{--                            <option value="" {{$coupon->company_id == ''?'selected':''}}>{{translate('All company')}}</option>--}}
+{{--                            @foreach($companies as $company)--}}
+{{--                                <option value="{{$company->id}}" {{$coupon->company_id == $company->id?'selected':''}}>{{$company->name}}</option>--}}
+{{--                            @endforeach--}}
+{{--                        </select>--}}
+{{--                    </div>--}}
                     <div class="mb-3 col-2">
                         <label class="form-label">{{translate('Status')}}</label>
                         <select name="status" class="form-control" required>

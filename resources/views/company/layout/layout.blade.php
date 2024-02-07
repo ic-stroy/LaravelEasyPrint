@@ -461,12 +461,12 @@
                             <span> {{ translate('Orders') }} </span>
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ route('company_coupons.index') }}">
-                            <i class="mdi mdi-cart-minus"></i>
-                            <span> {{ translate('Coupon') }} </span>
-                        </a>
-                    </li>
+{{--                    <li>--}}
+{{--                        <a href="{{ route('company_coupons.index') }}">--}}
+{{--                            <i class="mdi mdi-cart-minus"></i>--}}
+{{--                            <span> {{ translate('Coupon') }} </span>--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
                 </ul>
             </div>
             <!-- End Sidebar -->
