@@ -79,6 +79,7 @@ type.addEventListener('change', function () {
             if(order_count.hasAttribute('required')){
                 order_count.removeAttribute('required')
             }
+            order_count.value=""
             break;
         case '0':
             if(quantity_orders.classList.contains('display-none')){

@@ -42,7 +42,11 @@ class CouponController extends Controller
             $coupon->percent = $request->percent;
         }
         $coupon->min_price = $request->min_price;
-        $coupon->company_id = $request->company_id;
+        if($request->company_id != 'all'){
+            $coupon->company_id = $request->company_id;
+        }else{
+            $coupon->company_id = NULL;
+        }
         if($request->type != 'no'){
             $coupon->type = $request->type;
         }
@@ -90,8 +94,10 @@ class CouponController extends Controller
         if(isset($request->min_price)){
             $coupon->min_price = $request->min_price;
         }
-        if(isset($request->company_id)){
+        if($request->company_id != 'all'){
             $coupon->company_id = $request->company_id;
+        }else{
+            $coupon->company_id = NULL;
         }
         $coupon->order_count = $request->order_count;
         if($request->type != 'no'){
