@@ -1250,7 +1250,8 @@ class OrderController extends Controller
             $categories_[] = [
               'id'=>$category->id,
               'name'=>$category_translate_name,
-              'sizes'=>$category->sizes
+              'sizes'=>$category->sizes,
+              'type'=>count($category->sizes)>0?'active':'no active'
             ];
         }
         $data = [
