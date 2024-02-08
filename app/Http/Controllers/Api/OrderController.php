@@ -597,12 +597,12 @@ class OrderController extends Controller
                     }
                 }
             }
-//            if(!empty($coupon) && $coupon->start_date <= date('Y-m-d H:i:s') && $coupon->end_date >= date('Y-m-d H:i:s')){
-////                if($order->product_id || !$order->coupon->company_id){
-//                    $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order_all_price);
-//                    $order_all_price = $order_all_price;
-////                }
-//            }
+            if(!empty($coupon) && $coupon->start_date <= date('Y-m-d H:i:s') && $coupon->end_date >= date('Y-m-d H:i:s')){
+//                if($order->product_id || !$order->coupon->company_id){
+                    $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order_all_price);
+                    $order_all_price = $order_all_price;
+//                }
+            }
 
             $grant_total = $order_all_price - $order_discount_price - $order_coupon_price;
 
@@ -675,7 +675,6 @@ class OrderController extends Controller
             $order->discount_price=$order_discount_price;
             $order->status=Constants::BASKED;
             $order->save();
-
             $message=translate_api('success',$language);
             return $this->success($message, 200);
         }else {
@@ -852,8 +851,9 @@ class OrderController extends Controller
                 $newOrderDetailCouponPrice = 0;
                 $orderedOrderPrice = 0;
                 $orderedOrderDiscountPrice = 0;
-                $newOrderDetail = [];
-                $orderedOrderDetail = [];
+                $newOrderDetail = 0;
+                $orderedOrderDetail = 0;
+                $newOrderDetailQuantity = 0;
                 $users = User::whereIn('company_id', $companies_id)->get();
                 foreach($order->orderDetail as $orderDetail){
                     if($orderDetail->status == Constants::ORDER_DETAIL_ORDERED){
@@ -901,11 +901,12 @@ class OrderController extends Controller
                                 Notification::send($users, new OrderNotification($data));
                             }
                         }
-                        $orderedOrderDetail[] = $orderDetail->id;
+                        $orderedOrderDetail = $orderedOrderDetail + $orderDetail->quantity;
                         $orderedOrderPrice = $orderedOrderPrice + $orderDetail->price*$orderDetail->quantity;
                         $orderedOrderDiscountPrice = $orderedOrderDiscountPrice + $orderDetail->discount_price;
                     }else{
-                        $newOrderDetail[] = $orderDetail;
+                        $newOrderDetail = $newOrderDetail + $orderDetail;
+                        $newOrderDetailQuantity = $newOrderDetailQuantity + $orderDetail->quantity;
                         $newOrderDetailPrice = $newOrderDetailPrice + $orderDetail->price*$orderDetail->quantity;
                         $newOrderDetailDiscountPrice = $newOrderDetailDiscountPrice + $orderDetail->discount_price;
                     }
@@ -914,15 +915,13 @@ class OrderController extends Controller
                 $order->price = $orderedOrderPrice;
                 $order->discount_price = $orderedOrderDiscountPrice;
                 if($order->coupon && $order->coupon_price != 0){
-                    $orderedOrderDetailQuantity = count($orderedOrderDetail);
-                    if($orderedOrderDetailQuantity>0){
-                        $newOrderDetailCouponPrice = $order->coupon_price/(count($order->orderDetail)/$orderedOrderDetailQuantity);
+                    if($orderedOrderDetail>0){
+                        $newOrderDetailCouponPrice = $order->coupon_price/($orderedOrderDetail + $newOrderDetailQuantity)/$orderedOrderDetail;
                     }
                     $order->all_price = (int)$orderedOrderPrice - (int)$orderedOrderDiscountPrice - (int)$newOrderDetailCouponPrice;
 
-                    $newOrderDetailQuantity = count($newOrderDetail);
                     if($newOrderDetailQuantity>0){
-                        $newOrderDetailCouponPrice = $order->coupon_price/(count($order->orderDetail)/$newOrderDetailQuantity);
+                        $newOrderDetailCouponPrice = $order->coupon_price/($orderedOrderDetail + $newOrderDetailQuantity)/$newOrderDetailQuantity;
                     }
                 }else{
                     $order->all_price = $orderedOrderPrice - $orderedOrderDiscountPrice;
