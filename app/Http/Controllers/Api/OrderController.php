@@ -329,7 +329,7 @@ class OrderController extends Controller
                         }
                         $order_detail->save();
                     }
-                    $total_price = $order_detail->price - (int)$order_detail->discount_price;
+                    $total_price = $order_detail->price*$order_detail->quantity - (int)$order_detail->discount_price;
 
                     $list = [
                         "id" => $order_detail->id,
@@ -416,7 +416,7 @@ class OrderController extends Controller
 
                         $order_detail->save();
 
-                        $total_price = $order_detail->price - (int)$order_detail->discount_price;
+                        $total_price = $order_detail->price*$order_detail->quantity - (int)$order_detail->discount_price;
 
                         $list = [
                             "id" => $order_detail->id,
@@ -495,7 +495,7 @@ class OrderController extends Controller
             $company_id = 'no';
             foreach ($order->orderDetail as $order_detail){
                 if($order_detail->status == Constants::ORDER_DETAIL_ORDERED){
-                    $order_all_price = $order_all_price + $order_detail->price;
+                    $order_all_price = $order_all_price + $order_detail->price*$order_detail->quantity;
                     $order_discount_price = $order_discount_price + $order_detail->discount_price;
                     $list = [];
                     if ($order_detail->warehouse_id != null) {
@@ -597,12 +597,12 @@ class OrderController extends Controller
                     }
                 }
             }
-            if(!empty($coupon) && $coupon->start_date <= date('Y-m-d H:i:s') && $coupon->end_date >= date('Y-m-d H:i:s')){
-//                if($order->product_id || !$order->coupon->company_id){
-                    $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order_all_price);
-                    $order_all_price = $order_all_price;
-//                }
-            }
+//            if(!empty($coupon) && $coupon->start_date <= date('Y-m-d H:i:s') && $coupon->end_date >= date('Y-m-d H:i:s')){
+////                if($order->product_id || !$order->coupon->company_id){
+//                    $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order_all_price);
+//                    $order_all_price = $order_all_price;
+////                }
+//            }
 
             $grant_total = $order_all_price - $order_discount_price - $order_coupon_price;
 
@@ -864,7 +864,7 @@ class OrderController extends Controller
                                     $data = [
                                         'order_id'=>$order->id,
                                         'order_detail_id'=>$orderDetail->id,
-                                        'order_all_price'=>$orderDetail->price-(int)$orderDetail->discount_price,
+                                        'order_all_price'=>$orderDetail->price*$orderDetail->quantity-(int)$orderDetail->discount_price,
                                         'product'=>[
                                             'name'=>$orderDetail->warehouse->name,
                                             'images'=>$list_images
@@ -891,7 +891,7 @@ class OrderController extends Controller
                                 $data = [
                                     'order_id' => $order->id,
                                     'order_detail_id' => $orderDetail->id,
-                                    'order_all_price' => $orderDetail->price - (int)$orderDetail->discount_price,
+                                    'order_all_price' => $orderDetail->price * $orderDetail->quantity - (int)$orderDetail->discount_price,
                                     'product' => [
                                         'name' => $orderDetail->product->name,
                                         'images' => $images
@@ -955,7 +955,7 @@ class OrderController extends Controller
         $language = $request->header('language');
         $order_detail_id=$request->order_detail_id;
 
-        if ($order_detail=OrderDetail::where('id',$order_detail_id)->first()) {
+        if ($order_detail=OrderDetail::where('id',$order_detail_id)->where('status', Constants::BASKED)->first()) {
             $order = $order_detail->order;
             $order->price = $order->price - $order_detail->price * $order_detail->quantity;
             $order->discount_price = (int)$order->discount_price - (int)$order_detail->discount_price;
