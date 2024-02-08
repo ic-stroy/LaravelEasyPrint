@@ -23,6 +23,7 @@ class OrderDetail extends Model
         'image_back',
         'coupon_id',
         'size_id',
+        'status',
         'color_id',
         'discount',
         'discount_price',

@@ -488,7 +488,6 @@ class OrderController extends Controller
         if ($order_id  && $order = Order::where('id', $order_id)->first()) {
             $data=[];
             $order_detail_list=[];
-
             $coupon = $order->coupon;
             $order_coupon_price = 0;
             $order_all_price = 0;
@@ -635,6 +634,7 @@ class OrderController extends Controller
         if ($order_id  && $order = Order::where('id', $order_id)->where('status', Constants::BASKED)->first()) {
             $order_price = 0;
             $order_discount_price = 0;
+            $order_details_id = [];
             foreach ($order_inner as $update_order_detail) {
                 if ($order_detail=OrderDetail::where('id', $update_order_detail['order_detail_id'])->where('order_id', $order_id)->first()) {
                     if(!Color::where('id', $update_order_detail['color_id'])->exists()){
@@ -651,15 +651,15 @@ class OrderController extends Controller
                         'discount_price'=>$one_order_detail_discount_price*$update_order_detail['quantity'],
                         'status'=>Constants::ORDER_DETAIL_ORDERED
                     ]);
-
-                    $order_price +=(($order_detail->price)*($order_detail->quantity));
-                    $order_discount_price +=(($order_detail->discount_price));
                 }else {
                     $message=translate_api('order detail not found', $language);
                     return $this->error($message, 400);
                 }
             }
-
+            foreach($order->orderDetail as $order_detail_){
+                $order_price = $order_price + $order_detail_->price*$order_detail_->quantity;
+                $order_discount_price = $order_discount_price + $order_detail_->discount_price;
+            }
             if($order->coupon){
                 if($order->coupon->start_date > date('Y-m-d H:i:s') || date('Y-m-d H:i:s') > $order->coupon->end_date){
                     $order->all_price = $order_price - $order_discount_price;
@@ -675,6 +675,7 @@ class OrderController extends Controller
             $order->discount_price=$order_discount_price;
             $order->status=Constants::BASKED;
             $order->save();
+
             $message=translate_api('success',$language);
             return $this->success($message, 200);
         }else {
@@ -846,52 +847,98 @@ class OrderController extends Controller
             }
             if(!empty($order)){
                 $i = 0;
+                $newOrderDetailPrice = 0;
+                $newOrderDetailDiscountPrice = 0;
+                $newOrderDetailCouponPrice = 0;
+                $orderedOrderPrice = 0;
+                $orderedOrderDiscountPrice = 0;
+                $newOrderDetail = [];
+                $orderedOrderDetail = [];
                 $users = User::whereIn('company_id', $companies_id)->get();
                 foreach($order->orderDetail as $orderDetail){
-                    if(!empty($orderDetail->warehouse)) {
-                        if(!empty($companies_id)){
-                            if(count($users)>0){
-                                $list_images = !empty($this->getImages($orderDetail->warehouse, 'warehouses')) ? $this->getImages($orderDetail->warehouse, 'warehouses')[0] : $this->getImages($orderDetail->warehouse->product, 'product')[0];
+                    if($orderDetail->status == Constants::ORDER_DETAIL_ORDERED){
+                        if(!empty($orderDetail->warehouse)) {
+                            if(!empty($companies_id)){
+                                if(count($users)>0){
+                                    $list_images = !empty($this->getImages($orderDetail->warehouse, 'warehouses')) ? $this->getImages($orderDetail->warehouse, 'warehouses')[0] : $this->getImages($orderDetail->warehouse->product, 'product')[0];
+                                    $data = [
+                                        'order_id'=>$order->id,
+                                        'order_detail_id'=>$orderDetail->id,
+                                        'order_all_price'=>$orderDetail->price-(int)$orderDetail->discount_price,
+                                        'product'=>[
+                                            'name'=>$orderDetail->warehouse->name,
+                                            'images'=>$list_images
+                                        ],
+                                        'receiver_name'=>$order->receiver_name,
+                                    ];
+                                    Notification::send($users, new OrderNotification($data));
+                                }
+                            }
+                        }elseif(!empty($orderDetail->product)){
+                            $users = User::whereIn('role_id', [2, 3])->get();
+                            if(count($users)>0) {
+                                $order_detail_image_front_exists = storage_path('app/public/warehouse/'.$orderDetail->image_front);
+                                if(file_exists($order_detail_image_front_exists)){
+                                    $order_detail_image_front = asset('storage/warehouse/'.$orderDetail->image_front);
+                                }else{
+                                    $order_detail_image_front = null;
+                                }
+                                if(!$order_detail_image_front){
+                                    $images = $this->getImages($orderDetail->product, 'product')[0];
+                                }else{
+                                    $images = $order_detail_image_front;
+                                }
                                 $data = [
-                                    'order_id'=>$order->id,
-                                    'order_detail_id'=>$orderDetail->id,
-                                    'order_all_price'=>$orderDetail->price-(int)$orderDetail->discount_price,
-                                    'product'=>[
-                                        'name'=>$orderDetail->warehouse->name,
-                                        'images'=>$list_images
+                                    'order_id' => $order->id,
+                                    'order_detail_id' => $orderDetail->id,
+                                    'order_all_price' => $orderDetail->price - (int)$orderDetail->discount_price,
+                                    'product' => [
+                                        'name' => $orderDetail->product->name,
+                                        'images' => $images
                                     ],
-                                    'receiver_name'=>$order->receiver_name,
+                                    'receiver_name' => $order->receiver_name,
                                 ];
                                 Notification::send($users, new OrderNotification($data));
                             }
                         }
-                    }elseif(!empty($orderDetail->product)){
-                        $users = User::whereIn('role_id', [2, 3])->get();
-                        if(count($users)>0) {
-                            $order_detail_image_front_exists = storage_path('app/public/warehouse/'.$orderDetail->image_front);
-                            if(file_exists($order_detail_image_front_exists)){
-                                $order_detail_image_front = asset('storage/warehouse/'.$orderDetail->image_front);
-                            }else{
-                                $order_detail_image_front = null;
-                            }
-                            if(!$order_detail_image_front){
-                                $images = $this->getImages($orderDetail->product, 'product')[0];
-                            }else{
-                                $images = $order_detail_image_front;
-                            }
-                            $data = [
-                                'order_id' => $order->id,
-                                'order_detail_id' => $orderDetail->id,
-                                'order_all_price' => $orderDetail->price - (int)$orderDetail->discount_price,
-                                'product' => [
-                                    'name' => $orderDetail->product->name,
-                                    'images' => $images
-                                ],
-                                'receiver_name' => $order->receiver_name,
-                            ];
-                            Notification::send($users, new OrderNotification($data));
-                        }
+                        $orderedOrderDetail[] = $orderDetail->id;
+                        $orderedOrderPrice = $orderedOrderPrice + $orderDetail->price*$orderDetail->quantity;
+                        $orderedOrderDiscountPrice = $orderedOrderDiscountPrice + $orderDetail->discount_price;
+                    }else{
+                        $newOrderDetail[] = $orderDetail;
+                        $newOrderDetailPrice = $newOrderDetailPrice + $orderDetail->price*$orderDetail->quantity;
+                        $newOrderDetailDiscountPrice = $newOrderDetailDiscountPrice + $orderDetail->discount_price;
                     }
+                }
+
+                $order->price = $orderedOrderPrice;
+                $order->discount_price = $orderedOrderDiscountPrice;
+                if($order->coupon && $order->coupon_price != 0){
+                    $orderedOrderDetailQuantity = count($orderedOrderDetail);
+                    if($orderedOrderDetailQuantity>0){
+                        $newOrderDetailCouponPrice = $order->coupon_price/(count($order->orderDetail)/$orderedOrderDetailQuantity);
+                    }
+                    $order->all_price = (int)$orderedOrderPrice - (int)$orderedOrderDiscountPrice - (int)$newOrderDetailCouponPrice;
+
+                    $newOrderDetailQuantity = count($newOrderDetail);
+                    if($newOrderDetailQuantity>0){
+                        $newOrderDetailCouponPrice = $order->coupon_price/(count($order->orderDetail)/$newOrderDetailQuantity);
+                    }
+                }else{
+                    $order->all_price = $orderedOrderPrice - $orderedOrderDiscountPrice;
+                }
+                $order->save();
+
+                $newOrder = new Order();
+                $newOrder->price = $newOrderDetailPrice;
+                $newOrder->discount_price = $newOrderDetailDiscountPrice;
+                $newOrder->all_price = (int)$newOrderDetailPrice - (int)$newOrderDetailDiscountPrice - (int)$newOrderDetailCouponPrice;
+                $newOrder->user_id = $order->user_id;
+                $newOrder->status = Constants::BASKED;
+                $newOrder->save();
+                foreach($newOrderDetail as $new_order_detail){
+                    $new_order_detail->order_id = $newOrder->id;
+                    $new_order_detail->save();
                 }
             }
             $message = translate_api('success', $language);
