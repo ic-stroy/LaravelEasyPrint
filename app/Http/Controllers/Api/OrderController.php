@@ -956,10 +956,19 @@ class OrderController extends Controller
 
         if ($order_detail=OrderDetail::where('id',$order_detail_id)->where('status', Constants::BASKED)->first()) {
             $order = $order_detail->order;
-            $order->price = $order->price - $order_detail->price * $order_detail->quantity;
+            $quantity_products = OrderDetail::where('order_id', $order_detail->order_id)->pluck('quantity')->all();
+            $order_detail_coupon_price = 0;
+            $coupon_price = 0;
+            if(!empty($order->coupon) && $order->coupon_price){
+                $coupon_price = $order->coupon_price;
+                if($order->coupon->percent){
+                    $order_detail_coupon_price = $order->coupon_price/array_sum($quantity_products)/$order_detail->quantity;
+                }
+            }
+            $order->price = (int)$order->price - ((int)$order_detail->price * (int)$order_detail->quantity);
             $order->discount_price = (int)$order->discount_price - (int)$order_detail->discount_price;
-            $order->all_price = $order->price + (int)$order_detail->discount_price - $order->discount_price;
-
+            $order_coupon_price = (int)$coupon_price - (int)$order_detail_coupon_price;
+            $order->all_price = (int)$order->price - $order->discount_price - $order_coupon_price;
             if (!$order_detail->image_front) {
                 $order_detail->image_front = 'no';
             }
@@ -987,23 +996,10 @@ class OrderController extends Controller
                 }
             }
 
-           $order_detail->delete();
+            $order_detail->delete();
 //            foreach($order->orderDetail as $orderDetail){
 //                $order $orderDetail->price
 //            }
-
-            if($order->coupon_id) {
-                $coupon = $order->coupon;
-                if(!empty($coupon)){
-                    if($order->product_id || !$order->coupon->company_id){
-                        $order->coupon_price = $this->setOrderCoupon($coupon, $order->all_price);
-                        $order->all_price = $order->all_price - $order->coupon_price;
-                    }
-                }else{
-                    $order->coupon_id = NULL;
-                    $order->coupon_price = null;
-                }
-            }
 
             $test_order_detail=DB::table('order_details')->where('order_id', $order->id)->first();
            if ($test_order_detail) {
