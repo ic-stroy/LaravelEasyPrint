@@ -960,7 +960,7 @@ class OrderController extends Controller
         $language = $request->header('language');
         $order_detail_id=$request->order_detail_id;
 
-        if ($order_detail=OrderDetail::where('id',$order_detail_id)->where('status', Constants::BASKED)->first()) {
+        if ($order_detail=OrderDetail::where('id',$order_detail_id)->whereIn('status', [Constants::ORDER_DETAIL_BASKET, Constants::ORDER_DETAIL_ORDERED])->first()) {
             $order = $order_detail->order;
             $quantity_products = OrderDetail::where('order_id', $order_detail->order_id)->pluck('quantity')->all();
             $order_detail_coupon_price = 0;
