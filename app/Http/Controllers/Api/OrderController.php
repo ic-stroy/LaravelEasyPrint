@@ -878,7 +878,7 @@ class OrderController extends Controller
                 $newOrderDetailCouponPrice = 0;
                 $orderedOrderPrice = 0;
                 $orderedOrderDiscountPrice = 0;
-                $newOrderDetail = 0;
+                $newOrderDetail = [];
                 $orderedOrderDetail = 0;
                 $newOrderDetailQuantity = 0;
                 $users = User::whereIn('company_id', $companies_id)->get();
@@ -932,7 +932,7 @@ class OrderController extends Controller
                         $orderedOrderPrice = $orderedOrderPrice + $orderDetail->price*$orderDetail->quantity;
                         $orderedOrderDiscountPrice = $orderedOrderDiscountPrice + $orderDetail->discount_price;
                     }else{
-                        $newOrderDetail = $newOrderDetail + $orderDetail;
+                        $newOrderDetail[] = $orderDetail;
                         $newOrderDetailQuantity = $newOrderDetailQuantity + $orderDetail->quantity;
                         $newOrderDetailPrice = $newOrderDetailPrice + $orderDetail->price*$orderDetail->quantity;
                         $newOrderDetailDiscountPrice = $newOrderDetailDiscountPrice + $orderDetail->discount_price;
