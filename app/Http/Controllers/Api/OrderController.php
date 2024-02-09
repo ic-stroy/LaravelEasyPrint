@@ -347,6 +347,7 @@ class OrderController extends Controller
                                 $order_detail->discount_price = 0;
                             }
                         }
+                        $order_detail->status = Constants::ORDER_DETAIL_BASKET;
                         $order_detail->save();
                     }
                     $total_price = $order_detail->price*$order_detail->quantity - (int)$order_detail->discount_price;
@@ -434,6 +435,7 @@ class OrderController extends Controller
                             }
                         }
 
+                        $order_detail->status = Constants::ORDER_DETAIL_BASKET;
                         $order_detail->save();
 
                         $total_price = $order_detail->price*$order_detail->quantity - (int)$order_detail->discount_price;
