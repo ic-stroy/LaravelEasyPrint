@@ -62,9 +62,14 @@ class ProductController extends Controller
     {
         // dd('dsfdfs');
         $language = $request->header('language');
-        $warehouse_products_ = Warehouse::distinct('product_id')->get();
+        $warehouse_products_id = DB::table('warehouses')
+//            ->select(DB::raw('MAX(id) as id')) // assuming 'id' is the primary key
+            ->groupBy('company_id', 'product_id')
+            ->whereNull('deleted_at')
+            ->pluck(DB::raw('MAX(id) as id'))
+            ->all();
         $warehouse_products = [];
-        // dd($warehouse_products_);
+        $warehouse_products_ = Warehouse::whereIn('id', $warehouse_products_id)->get();
 
         foreach ($warehouse_products_ as $warehouse_product_) {
             if (count($this->getImages($warehouse_product_, 'warehouse'))>0) {
@@ -72,7 +77,7 @@ class ProductController extends Controller
             } else {
                 $warehouseProducts = $this->getImages($warehouse_product_->product, 'product');
             }
-            $translate_name=table_translate($warehouse_product_,'warehouse_category',$language);
+            $translate_name=table_translate($warehouse_product_,'warehouse_category', $language);
             // dd($translate_name);
             //  join qilish kere
             $warehouse_products[] = [
@@ -80,8 +85,8 @@ class ProductController extends Controller
                 'id' => $warehouse_product_->id,
                 'name' => $translate_name ?? $warehouse_product_->product->name,
                 'price' => $warehouse_product_->price,
-                'discount' => $warehouse_product_->discount? $warehouse_product_->discount->percent : NULL,
-                'price_discount' => $warehouse_product_->discount? $warehouse_product_->price - ($warehouse_product_->price / 100 * $warehouse_product_->discount->percent) : NULL,
+                'discount' => $warehouse_product_->product_discount ? $warehouse_product_->product_discount->percent : NULL,
+                'price_discount' => $warehouse_product_->product_discount ? $warehouse_product_->price - ($warehouse_product_->price / 100 * $warehouse_product_->product_discount->percent) : NULL,
                 'images' => $warehouseProducts
             ];
         }
@@ -93,8 +98,8 @@ class ProductController extends Controller
                 'id' => $product_->id,
                 'name' => $product_->name,
                 'price' => $product_->price,
-                'discount' => $product_->discount ? $product_->discount->percent : NULL,
-                'price_discount' => $product_->discount ? $product_->price - ($product_->price / 100 * $product_->discount->percent) : NULL,
+                'discount' => $product_->product_discount ? $product_->product_discount->percent : NULL,
+                'price_discount' => $product_->product_discount ? $product_->price - ($product_->price / 100 * $product_->product_discount->percent) : NULL,
                 'images' => $this->getImages($product_, 'product')
             ];
         }
@@ -391,7 +396,7 @@ class ProductController extends Controller
     {
         $language = $request->header('language');
         $product = Products::find($request->id);
-        if ($product->warehouse) {
+        if ($product && $product->warehouse) {
             $colors_array = [];
             $sizes_array = [];
             foreach ($product->warehouse as $warehouse_) {
