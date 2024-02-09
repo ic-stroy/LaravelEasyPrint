@@ -634,10 +634,9 @@ class OrderController extends Controller
             $order_price = 0;
             $order_discount_price = 0;
             $order_details_id = [];
-            $order_detail_id = '';
             foreach ($order_inner as $update_order_detail) {
                 if ($order_detail=OrderDetail::where('id', $update_order_detail['order_detail_id'])->where('order_id', $order_id)->first()) {
-                    $order_detail_id = $order_detail->id;
+                    $order_details_id[] = $order_detail->id;
                     if(!Color::where('id', $update_order_detail['color_id'])->exists()){
                         return $this->error(translate_api('Color not found', $language), 400);
                     }
@@ -660,9 +659,10 @@ class OrderController extends Controller
             foreach($order->orderDetail as $order_detail_){
                 $order_price = $order_price + $order_detail_->price*$order_detail_->quantity;
                 $order_discount_price = $order_discount_price + $order_detail_->discount_price;
-                if($order_detail_id != '' && $order_detail_id){
-                    if((int)$order_detail_id == $order_detail_->id){
+                if(!empty($order_details_id)){
+                    if(!in_array($order_detail_->id, $order_details_id)){
                         $order_detail_->status = Constants::ORDER_DETAIL_BASKET;
+                        $order_detail_->save();
                     }
                 }
             }
