@@ -696,12 +696,11 @@ class OrderController extends Controller
             }else{
                 $order->all_price = $order_price - $order_discount_price;
             }
-
             $order->price=$order_price;
             $order->discount_price=$order_discount_price;
             $order->status=Constants::BASKED;
             $order->save();
-            $message=translate_api('success',$language);
+            $message=translate_api('success', $language);
             return $this->success($message, 200);
         }else {
             $message=translate_api('this order not in the basket or not exist', $language);

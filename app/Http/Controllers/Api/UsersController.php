@@ -19,15 +19,28 @@ class UsersController extends Controller
         }else{
             $personal_info = new PersonalInfo();
         }
-        $personal_info->first_name = $request->first_name;
-        $personal_info->last_name = $request->last_name;
-        $personal_info->phone_number = $request->phone_number;
-        $personal_info->gender = $request->gender;
-        $personal_info->email = $request->email;
+        if($request->first_name){
+            $personal_info->first_name = $request->first_name;
+        }
+        if($request->last_name){
+            $personal_info->last_name = $request->last_name;
+        }
+        if($request->phone_number){
+            $personal_info->phone_number = $request->phone_number;
+        }
+        if($request->gender){
+            $personal_info->gender = $request->gender;
+        }
+        if($request->email){
+            $personal_info->email = $request->email;
+        }
 
         $file = $request->file('image');
         $this->imageSave($file, $personal_info, 'update');
-        $personal_info->birth_date = $request->birth_date;
+
+        if($request->birth_date){
+            $personal_info->birth_date = $request->birth_date;
+        }
         $personal_info->save();
         $user->personal_info_id = $personal_info->id;
         $user->save();
