@@ -52,6 +52,7 @@ class OrderController extends Controller
         $request_discount = $request->discount??0;
         $request_order_discount_price = ($request_price/100)*$request_discount*$request->quantity;
         $request_order_price = $request_price*$request->quantity;
+
         if($user->orderBasket){
             $order = $user->orderBasket;
             $orderDetailWarehouses_id = [];
@@ -87,37 +88,44 @@ class OrderController extends Controller
             $order->price = (int)$request_order_price;
             $order->discount_price = (int)$request_order_discount_price;
             $order->all_price = (int)$request_order_price - $request_order_discount_price;
-            $order->save();
         }
+
+        $order->save();
+
         if(!$order->code){
             $length = 8;
             $order_code = str_pad($order->id, $length, '0', STR_PAD_LEFT);
             $order->code=$order_code;
         }
 
-        if($order->coupon_price && (int)$order->coupon_price>0){
-            if($order->coupon->start_date > date('Y-m-d H:i:s') || date('Y-m-d H:i:s') > $order->coupon->end_date){
-                $order->coupon_price = NULL;
-                $order->coupon_id = NULL;
-            }else{
-                $order->all_price = $order->price - $order->coupon_price;
-                $order->coupon_id = 1;
-            }
-        }
-
-        $order->save();
         $message = translate_api('Success', $language);
         if ($request->warehouse_product_id) {
             if(!DB::table('warehouses')->where('id', $request->warehouse_product_id)->exists()){
                 return $this->error(translate_api('warehouse not found', $language), 400);
             }
-            $order_detail = OrderDetail::where('order_id', $order->id)->where('warehouse_id', $request->warehouse_product_id)->where('color_id', $request->color_id)->where('size_id', $request->size_id)->first();
+            $order_detail = OrderDetail::where('order_id', $order->id)
+                ->where('warehouse_id', $request->warehouse_product_id)
+                ->where('color_id', $request->color_id)
+                ->where('size_id', $request->size_id)
+                ->first();
+            $order_details = OrderDetail::where('order_id', $order->id)
+                ->where('warehouse_id', $request->warehouse_product_id)
+                ->get();
+            foreach($order_details as $order_detail_){
+                if((int)$order_detail_->discount != (int)$request->discount){
+                    $discount_price = ($order_detail_->price/100)*$request->discount*$order_detail_->quantity;
+                    $order_detail_->discount = $request->discount;
+                    $order_detail_->discount_price = $discount_price;
+                    $order_detail_->save();
+                }
+            }
             if ($order_detail) {
                 $quantity=$order_detail->quantity + $request->quantity;
                 $discount_price = ($request->price/100)*$request->discount*$quantity;
+                $order_detail_price = $request->price;
                 $order_detail->update([
                     'quantity' =>$quantity,
-                    'price'=>$request->price,
+                    'price'=>$order_detail_price,
                     'discount'=>$request->discount,
                     'discount_price'=>$discount_price
                 ]);
@@ -147,7 +155,6 @@ class OrderController extends Controller
                     'discount_price'=>$discount_price
                 ]);
             }
-            $discount_price = ($request->price / 100) * $request->discount * $request->quantity;
             $order_detail = new OrderDetail();
             $category_type = Category::where('step', 0)->find($request->category_id);
             if($category_type){
@@ -175,7 +182,7 @@ class OrderController extends Controller
             $order_detail->color_id = $request->color_id;
             $order_detail->size_id = $request->size_id;
             $images_print = $request->file('imagesPrint');
-            $order_detail->price = $request->price + (int)$request->image_price;
+            $order_detail->price = $request->price;
             $order_detail->image_price = $request->image_price;
             $image_front = $request->file('image_front');
             $image_back = $request->file('image_back');
@@ -183,7 +190,7 @@ class OrderController extends Controller
             $order_detail->image_back = $this->saveImage($image_back, 'warehouse');
             $order_detail->order_id = $order->id;
             $order_detail->discount = $request->discount;
-            $order_detail->discount_price = $discount_price;
+            $order_detail->discount_price = $request_order_discount_price;
             $order_detail->save();
             if ($images_print) {
                 foreach ($images_print as $image_print) {
@@ -195,6 +202,17 @@ class OrderController extends Controller
                 }
             }
         }
+
+        if($order->coupon_price && (int)$order->coupon_price>0){
+            if($order->coupon->start_date > date('Y-m-d H:i:s') || date('Y-m-d H:i:s') > $order->coupon->end_date){
+                $order->coupon_price = NULL;
+                $order->coupon_id = NULL;
+            }else{
+                $order->all_price = $order->all_price - $order->coupon_price;
+            }
+        }
+        $order->save();
+
         return $this->success($message, 200);
     }
 
