@@ -58,13 +58,15 @@ class OrderController extends Controller
             $orderDetailProducts_id = [];
             $orderDetailsDiscountPrice = 0;
             $orderDetailsPrice = 0;
-            foreach($order->orderDetail as $orderDetail){
-                if($orderDetail->warehouse_id && $request->warehouse_product_id && $request->warehouse_product_id == $orderDetail->warehouse_id){
+            foreach($order->orderDetail as $orderDetail) {
+                if ($orderDetail->warehouse_id && $request->warehouse_product_id && $request->warehouse_product_id == $orderDetail->warehouse_id) {
                     $orderDetailWarehouses_id[] = $orderDetail->warehouse_id;
                 }
-                if($orderDetail->product_id && $request->product_id && $request->product_id == $orderDetail->product_id){
+                if ($orderDetail->product_id && $request->product_id && $request->product_id == $orderDetail->product_id) {
                     $orderDetailProducts_id[] = $orderDetail->product_id;
                 }
+            }
+            foreach($order->orderDetail as $orderDetail) {
                 if(in_array($request->warehouse_product_id, $orderDetailWarehouses_id) || in_array($request->product_id, $orderDetailProducts_id)) {
                     $orderDetail->price = $request->price;
                     $orderDetail->discount = $request->discount??0;
@@ -94,7 +96,7 @@ class OrderController extends Controller
         }
 
         if($order->coupon_price && (int)$order->coupon_price>0){
-            if($order->coupon->start_date < date('Y-m-d H:i:s') || date('Y-m-d H:i:s') < $order->coupon->end_date){
+            if($order->coupon->start_date > date('Y-m-d H:i:s') || date('Y-m-d H:i:s') > $order->coupon->end_date){
                 $order->coupon_price = NULL;
                 $order->coupon_id = NULL;
             }else{
