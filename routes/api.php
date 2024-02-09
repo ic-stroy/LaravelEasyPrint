@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Route;
 /**
  * Frontent  Api routes
  */
-
+Route::get('get-company-products', [AddressController::class, 'getCompanyProducts']);
 Route::get('get-districts', [AddressController::class, 'getCities']);
 Route::get('get-image', [HeaderController::class, 'getImage']);
 Route::post('phone-verify', [AuthController::class, 'PhoneVerify']);
@@ -60,7 +60,6 @@ Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
     Route::post('set-address', [AddressController::class, 'setAddress']);
     Route::post('edit-address', [AddressController::class, 'editAddress']);
     Route::get('get-address', [AddressController::class, 'getAddress']);
-    Route::get('get-company-products', [AddressController::class, 'getCompanyProducts']);
     Route::delete('destroy-address', [AddressController::class, 'destroy']);
     Route::get('get-cards', [CardController::class, 'getCards']);
     Route::post('store-card', [CardController::class, 'storeCard']);
