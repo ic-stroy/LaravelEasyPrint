@@ -118,7 +118,8 @@ Auth::routes();
                 Route::get('/show/{id}', [CompanyOrderController::class, 'show'])->name('company_order.show');
                 Route::get('/destroy/{id}', [CompanyOrderController::class, 'destroy'])->name('company_order.destroy');
             });
-            Route::post('/order-detail/cancell/{id}', [CompanyOrderController::class, 'cancellOrderDetail'])->name('cancell_order_detail');
+            Route::delete('/order-detail/cancell/{id}', [CompanyOrderController::class, 'cancellOrderDetail'])->name('cancell_order_detail');
+            Route::post('/order-detail/perform/{id}', [CompanyOrderController::class, 'performOrderDetail'])->name('perform_order_detail');
         });
     });
 

@@ -887,11 +887,19 @@ class OrderController extends Controller
                         if(!empty($orderDetail->warehouse)) {
                             if(!empty($companies_id)){
                                 if(count($users)>0){
+                                    $order_product_quantity_array = OrderDetail::where('order_id', $orderDetail->order_id)->pluck('quantity')->all();
+                                    $order_product_quantity = array_sum($order_product_quantity_array);
+                                    if((int)$order->coupon_price>0){
+                                        $coupon_price = (int)$orderDetail->quantity * (int)$order->coupon_price/$order_product_quantity;
+                                    }else{
+                                        $coupon_price = 0;
+                                    }
+
                                     $list_images = !empty($this->getImages($orderDetail->warehouse, 'warehouses')) ? $this->getImages($orderDetail->warehouse, 'warehouses')[0] : $this->getImages($orderDetail->warehouse->product, 'product')[0];
                                     $data = [
                                         'order_id'=>$order->id,
                                         'order_detail_id'=>$orderDetail->id,
-                                        'order_all_price'=>$orderDetail->price*$orderDetail->quantity-(int)$orderDetail->discount_price,
+                                        'order_all_price'=>$orderDetail->price*$orderDetail->quantity-(int)$orderDetail->discount_price - $coupon_price,
                                         'product'=>[
                                             'name'=>$orderDetail->warehouse->name,
                                             'images'=>$list_images
@@ -915,10 +923,19 @@ class OrderController extends Controller
                                 }else{
                                     $images = $order_detail_image_front;
                                 }
+
+                                $order_product_quantity_array = OrderDetail::where('order_id', $orderDetail->order_id)->pluck('quantity')->all();
+                                $order_product_quantity = array_sum($order_product_quantity_array);
+                                if((int)$order->coupon_price>0){
+                                    $coupon_price = (int)$orderDetail->quantity * (int)$order->coupon_price/$order_product_quantity;
+                                }else{
+                                    $coupon_price = 0;
+                                }
+
                                 $data = [
                                     'order_id' => $order->id,
                                     'order_detail_id' => $orderDetail->id,
-                                    'order_all_price' => $orderDetail->price * $orderDetail->quantity - (int)$orderDetail->discount_price,
+                                    'order_all_price' => $orderDetail->price * $orderDetail->quantity - (int)$orderDetail->discount_price - $coupon_price,
                                     'product' => [
                                         'name' => $orderDetail->product->name,
                                         'images' => $images

@@ -44,4 +44,9 @@ class Products extends Model
     {
         return $this->hasOne(Discount::class, 'product_id','id')->where('type', 1)->where('start_date', '<=', date('Y-m-d H:i:s'))->where('end_date', '>=', date('Y-m-d H:i:s'));
     }
+    public function discount_whithout_expire()
+    {
+        $maxValue = Discount::max('end_date');
+        return $this->hasOne(Discount::class, 'product_id','id')->where('type', 1)->where('end_date', $maxValue);
+    }
 }
