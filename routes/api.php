@@ -36,6 +36,7 @@ Route::post('login', [AuthController::class, 'login']);
 Route::get('/googleauth', [AuthController::class, 'redirectGoogle'])->name('redirectGoogle');
 Route::get('/googleauth/callback', [AuthController::class, 'callbackGoogle'])->name('callbackGoogle');
 Route::get('/googleauth/user', [AuthController::class, 'responseUser'])->name('responseUser');
+Route::get('get-advertising', [HeaderController::class, 'getAdvertising']);
 
 Route::group(['prefix' => 'product'], function () {
     Route::get('/list', [ProductController::class, 'index']);

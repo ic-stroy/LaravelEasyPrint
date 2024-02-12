@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Images;
+use App\Models\Advertising;
 
 
 class HeaderController extends Controller
@@ -90,4 +91,31 @@ class HeaderController extends Controller
             return $this->error($message, 500);
         }
     }
+
+    public function getAdvertising(Request $request)
+    {
+        $language = $request->header('language');
+        $response = [];
+        $ads = Advertising::get();
+
+         if (count($ads) > 0) {
+            foreach ($ads as $key => $value) {
+                $response[] = [
+                    'title' => $value->title,
+                    'url' => $value->url,
+                    'image' =>  asset('storage/images/'.$value->image)
+                ] ;
+                
+            }
+
+            $message=translate_api('Success',$language);
+            return $this->success($message, 200, $response);
+        }
+        else{
+            $message=translate_api('Images not found',$language);
+            return $this->error($message, 500);
+        }
+    }
+
+
 }
