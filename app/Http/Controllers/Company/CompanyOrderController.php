@@ -6,6 +6,7 @@ use App\Constants;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\Uploads;
 use App\Models\User;
 use App\Models\Warehouse;
 use App\Notifications\OrderNotification;
@@ -31,11 +32,13 @@ class CompanyOrderController extends Controller
         $products_with_anime = [];
         $product_types = 0;
         $product_quantity = 0;
-        $company_product_price = 0;
         $order_data = [];
+//        $not_read_order_quantity = OrderDetail::where('order_id', $id)->where('is_read', 0)->count();
         $order_product_quantity_array = OrderDetail::where('order_id', $id)->pluck('quantity')->all();
         foreach($orders as $order){
+            $company_product_price = 0;
             $order_has = false;
+            $products_with_anime_uploads = [];
             foreach($order->orderDetail as $order_detail){
                 $order_product_quantity = array_sum($order_product_quantity_array);
                 if((int)$order->coupon_price>0){
@@ -53,7 +56,18 @@ class CompanyOrderController extends Controller
                     !empty($order_detail->warehouse) && $order_detail->warehouse->company_id == $user->company_id){
                     $products[] = [$order_detail, $order_detail_all_price];
                 }elseif(!$order_detail->warehouse_id && $order_detail->product_id){
-                    $products_with_anime[] = [$order_detail, $order_detail_all_price];
+                    if ($uploads=Uploads::where('relation_type', Constants::PRODUCT)->where('relation_id', $order_detail->product_id)->get()) {
+                        foreach ($uploads as $upload){
+                            if (!$upload->image) {
+                                $upload->image = 'no';
+                            }
+                            $order_detail_upload = storage_path('app/public/print/'.$upload->image);
+                            if(file_exists($order_detail_upload)){
+                                $products_with_anime_uploads[] = asset('storage/print/'.$upload->image);
+                            }
+                        }
+                    }
+                    $products_with_anime[] = [$order_detail, $order_detail_all_price, $products_with_anime_uploads];
                 }
             }
             $order_coupon_price = $order->coupon_price??0;
@@ -73,7 +87,17 @@ class CompanyOrderController extends Controller
     }
 
     public function category(){
-
+//
+//        $user = Auth::user();
+//        foreach($user->unreadnotifications as $notification) {
+//            if ($notification->type == "App\Notifications\OrderNotification") {
+//                if (!empty($notification->data)) {
+//                    $notification->data['product_images'] ? $notification->data['product_images'] : '';
+//
+//                    $not_read_ordered_quantity = OrderDetail::where('status', 0)->where()->count();
+//                }
+//            }
+//        }
         return view('company.order.category');
     }
 

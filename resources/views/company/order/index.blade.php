@@ -4,14 +4,66 @@
     {{-- Your page title --}}
 @endsection
 @section('content')
+
     <style>
+        #headingNine{
+            height: 74px;
+            display: flex;
+            align-items: center;
+        }
+        #headingNine a{
+            width: 100%;
+            font-size: 15px;
+        }
+        .function-column{
+            display: flex;
+            align-items: center;
+        }
+        .function-column>div{
+            width: 100%;
+        }
+        .order_content{
+            display: flex;
+            flex-direction: column;
+        }
+        .white_text{
+            color:white
+        }
+        .carousel-control-prev, .carousel-control-next{
+            top:50%;
+            background-color: transparent;
+        }
+        .carousel-control-prev{
+            margin-left: -30px;
+        }
+        .carousel-control-next{
+            margin-right: -30px;
+        }
+        .carousel-control-prev-icon, .carousel-control-next-icon{
+            color:#6C8BC0 !important;
+            width: 34px;
+            height: 34px;
+        }
+        .carousel-inner{
+            padding:0px;
+        }
+        .order_product_images>img{
+            transition: 0.4s;
+        }
+        .order_product_images>img:hover{
+            transform: scale(1.14);
+        }
         .color_green{
             color:forestgreen;
         }
         .color_red{
             color:red;
         }
+        .color_reddish{
+            color:#ff8000;
+        }
     </style>
+    @if(!empty($order_data))
     <div id="success-alert-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
@@ -62,6 +114,26 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+    <!-- /.modal -->
+    <div id="carousel-upload-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background-color: #989CA2">
+                <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                    <div class="carousel-inner" id="carousel_product_upload_images">
+
+                    </div>
+                    <a class="carousel-control-prev" href="#carouselExampleFade" role="button" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleFade" role="button" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </a>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
     <div id="warning-order-alert-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
@@ -84,14 +156,20 @@
         <div class="card-body">
             <h4 class="mt-0 header-title">
                 @switch($id)
-                    @case(1)
-                    {{translate('Basked orders list')}}
+{{--                    @case(\App\Constants::BASKED)--}}
+{{--                    {{translate('Basked orders list')}}--}}
+{{--                    @break--}}
+                    @case(\App\Constants::ORDERED)
+                        {{translate('Ordered orders list')}}
                     @break
-                    @case(2)
-                    {{translate('Ordered orders list')}}
+                    @case(\App\Constants::PERFORMED)
+                        {{translate('Performed orders list')}}
                     @break
-                    @case(3)
-                    {{translate('Finished orders list')}}
+                    @case(\App\Constants::CANCELLED)
+                        {{translate('Cancelled orders list')}}
+                    @break
+                    @case(\App\Constants::ACCEPTED_BY_RECIPIENT)
+                        {{translate('Accepted by recipient orders list')}}
                     @break
                 @endswitch
             </h4>
@@ -182,9 +260,10 @@
                                 <hr>
                                 <div class="row">
                                     <div class="col-4 order_product_images" onclick='getImages("{{implode(" ", $images)}}")' data-bs-toggle="modal" data-bs-target="#carousel-modal">
-                                        @foreach($images as $image)
-                                            <img src="{{$image}}" alt="" height="144px">
-                                        @endforeach
+                                        <img src="{{$images[0]}}" alt="" height="144px">
+                                    </div>
+                                    <div class="col-4 order_product_images" onclick='getUploads("{{implode(" ", $products_with_anime[2])}}")' data-bs-toggle="modal" data-bs-target="#carousel-upload-modal">
+                                        <img src="{{$products_with_anime[2][0]}}" alt="" height="144px">
                                     </div>
                                     <div class="col-3 order_content">
                                         <h4>{{translate('Animated order')}}</h4>
@@ -229,7 +308,7 @@
                                                 <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products_with_anime[0]->id)}}")' data-url=""><i class="fa fa-times"></i></button>
                                                 @break
                                                 @case(\App\Constants::ORDER_DETAIL_PERFORMED)
-                                                    <span class="color_green">{{translate('Accepted')}}</span>
+                                                    <span class="color_reddish" style="width: min-content">{{translate('Waiting for superadmin performing')}}</span>
                                                     <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products_with_anime[0]->id)}}")' data-url=""><i class="fa fa-times"></i></button>
                                                 @break
                                                 @case(\App\Constants::ORDER_DETAIL_CANCELLED)
@@ -264,17 +343,13 @@
                                         $images_ = json_decode($products[0]->warehouse->images);
                                         $images = [];
                                         foreach ($images_ as $key => $image_){
-                                            if($key < 2){
-                                                $images[] = asset('storage/warehouses/'.$image_);
-                                            }
+                                            $images[] = asset('storage/warehouses/'.$image_);
                                         }
                                     }elseif(!empty($products[0]->warehouse->product) && $products[0]->warehouse->product->images){
                                         $images_ = json_decode($products[0]->warehouse->product->images);
                                         $images = [];
                                         foreach ($images_ as $key => $image_){
-                                            if($key < 2){
-                                                $images[] = asset('storage/products/'.$image_);
-                                            }
+                                            $images[] = asset('storage/products/'.$image_);
                                         }
                                     }else{
                                         $images = [];
@@ -283,9 +358,7 @@
                                 <hr>
                                 <div class="row">
                                     <div class="col-4 order_product_images" onclick='getImages("{{implode(" ", $images)}}")'  data-bs-toggle="modal" data-bs-target="#carousel-modal">
-                                        @foreach($images as $image)
-                                            <img src="{{$image}}" alt="" height="144px">
-                                        @endforeach
+                                        <img src="{{$images[0]}}" alt="" height="144px">
                                     </div>
                                     <div class="col-3 order_content">
                                         <h4>{{translate('Order')}}</h4>
@@ -356,21 +429,21 @@
                                                     </button>
                                                 @break
                                                 @case(\App\Constants::ORDER_DETAIL_PERFORMED)
-                                                    <span class="color_green">{{translate('Accepted')}}</span>
+                                                    <span class="color_reddish" style="width: min-content">{{translate('Waiting for superadmin performing')}}</span>
                                                     <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products[0]->id)}}")' data-url=""><i class="fa fa-times"></i></button>
                                                 @break
                                                 @case(\App\Constants::ORDER_DETAIL_CANCELLED)
                                                     <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#success-alert-modal" data-url=""
-                                                            onclick='accepting_order(
-                                                                "{{$products[0]->quantity}}",
-                                                                "{{$products[0]->warehouse->quantity - $products[0]->quantity }}",
-                                                                "{{!empty($products[0]->color)?$products[0]->color->name:''}}",
-                                                                "{{!empty($products[0]->size)?$products[0]->size->name:''}}",
-                                                                "{{$product_name}}",
-                                                                "{{isset($images[0])?$images[0]:''}}",
-                                                                "{{isset($images[1])?$images[1]:''}}",
-                                                                "{{route('perform_order_detail', $products[0]->id)}}"
-                                                                )'>
+                                                        onclick='accepting_order(
+                                                        "{{$products[0]->quantity}}",
+                                                        "{{$products[0]->warehouse->quantity - $products[0]->quantity }}",
+                                                        "{{!empty($products[0]->color)?$products[0]->color->name:''}}",
+                                                        "{{!empty($products[0]->size)?$products[0]->size->name:''}}",
+                                                        "{{$product_name}}",
+                                                        "{{isset($images[0])?$images[0]:''}}",
+                                                        "{{isset($images[1])?$images[1]:''}}",
+                                                        "{{route('perform_order_detail', $products[0]->id)}}"
+                                                            )'>
                                                         <i class="fa fa-check"></i>
                                                     </button>
                                                     <span class="color_red">{{translate('Cancelled')}}</span>
@@ -392,56 +465,11 @@
             @endforeach
         </div>
     </div>
-    <style>
-        #headingNine{
-            height: 74px;
-            display: flex;
-            align-items: center;
-        }
-        #headingNine a{
-            width: 100%;
-            font-size: 15px;
-        }
-        .function-column{
-            display: flex;
-            align-items: center;
-        }
-        .function-column>div{
-            width: 100%;
-        }
-        .order_content{
-            display: flex;
-            flex-direction: column;
-        }
-        .white_text{
-            color:white
-        }
-        .carousel-control-prev, .carousel-control-next{
-            top:50%;
-            background-color: transparent;
-        }
-        .carousel-control-prev{
-            margin-left: -30px;
-        }
-        .carousel-control-next{
-            margin-right: -30px;
-        }
-        .carousel-control-prev-icon, .carousel-control-next-icon{
-            color:#6C8BC0 !important;
-            width: 34px;
-            height: 34px;
-        }
-        .carousel-inner{
-            padding:0px;
-        }
-        .order_product_images>img{
-            transition: 0.4s;
-        }
-        .order_product_images>img:hover{
-            transform: scale(1.14);
-        }
-
-    </style>
+    @else
+        <span class="badge bg-warning">
+            <h2>{{translate('No orders')}}</h2>
+        </span>
+    @endif
     <script>
         let product_name = document.getElementById('product_name')
         let order_size = document.getElementById('order_size')
@@ -450,6 +478,7 @@
         let order_quantity = document.getElementById('order_quantity')
         let products_images = document.getElementById('products_images')
         let carousel_product_images = document.getElementById('carousel_product_images')
+        let carousel_product_upload_images = document.getElementById('carousel_product_upload_images')
         let product_image = document.getElementById('product_image')
         let cancell_order = document.getElementById('cancell_order')
         let perform_order = document.getElementById('perform_order')
@@ -529,6 +558,24 @@
                 }
             }
             carousel_product_images.innerHTML = images_content
+        }
+        function getUploads(images) {
+            let all_uploads = images.split(' ')
+            let uploads_content = ''
+            for(let i=0; i<all_uploads.length; i++){
+                if(i == 0){
+                    uploads_content = uploads_content +
+                        `<div class="carousel-item active">
+                        <img class="d-block img-fluid" src="${all_uploads[i]}" alt="First slide">
+                    </div>`
+                }else{
+                    uploads_content = uploads_content +
+                        `<div class="carousel-item">
+                        <img class="d-block img-fluid" src="${all_uploads[i]}" alt="First slide">
+                    </div>`
+                }
+            }
+            carousel_product_upload_images.innerHTML = uploads_content
         }
     </script>
 @endsection

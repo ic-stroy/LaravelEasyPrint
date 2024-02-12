@@ -25,6 +25,9 @@ class Constants {
     const ORDER_DETAIL_CANCELLED = 5;
     const ORDER_DETAIL_ACCEPTED_BY_RECIPIENT = 6;
 
+    const READED = 1;
+    const NOT_READED = 0;
+
    // Order    payment_method
    const CASH_ON_DELIVERY = 1;
    const BANK_CARD = 2;

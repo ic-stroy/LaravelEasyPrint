@@ -14,37 +14,37 @@
                 </tr>
                 </thead>
                 <tbody class="table_body">
+{{--                    <tr>--}}
+{{--                        <td>--}}
+{{--                            <a class="show_page" href="{{route('company_order.index', \App\Constants::BASKED)}}">--}}
+{{--                                {{translate('Basket')}}--}}
+{{--                            </a>--}}
+{{--                        </td>--}}
+{{--                    </tr>--}}
                     <tr>
                         <td>
-                            <a class="show_page" href="{{route('company_order.index', 1)}}">
-                                {{translate('Basket')}}
+                            <a class="show_page" href="{{route('company_order.index', \App\Constants::ORDERED)}}">
+                                <span>{{translate('Ordered')}}<span class="badge bg-danger">{{translate('new')}}</span></span>
                             </a>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <a class="show_page" href="{{route('company_order.index', 2)}}">
-                                {{translate('Ordered')}}
-                            </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a class="show_page" href="{{route('company_order.index', 3)}}">
+                            <a class="show_page" href="{{route('company_order.index', \App\Constants::PERFORMED)}}">
                                 {{translate('Performed')}}
                             </a>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <a class="show_page" href="{{route('company_order.index', 4)}}">
+                            <a class="show_page" href="{{route('company_order.index', \App\Constants::CANCELLED)}}">
                                 {{translate('Cancelled')}}
                             </a>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <a class="show_page" href="{{route('company_order.index', 5)}}">
+                            <a class="show_page" href="{{route('company_order.index', \App\Constants::ACCEPTED_BY_RECIPIENT)}}">
                                 {{translate('Accepted by recipient')}}
                             </a>
                         </td>
