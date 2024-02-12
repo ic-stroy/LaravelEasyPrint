@@ -56,7 +56,6 @@
                         {{session('status')}}
                     </div>
                 @endif
-{{--                <div class="card" style="border-radius: 20px; margin-top: 100px">--}}
                     <div class="p-4" style="width: 94%">
                         <div class="text-center mb-4">
                             <h4 class="text-uppercase mt-0">Войти</h4>
@@ -109,7 +108,6 @@
                         </form>
 
                     </div> <!-- end card-body -->
-{{--                </div>--}}
                 <!-- end card -->
 
                 <div class="row">

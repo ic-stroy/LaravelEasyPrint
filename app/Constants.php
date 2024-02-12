@@ -21,8 +21,9 @@ class Constants {
     const ORDER_DETAIL_BASKET = 1;
     const ORDER_DETAIL_ORDERED = 2;
     const ORDER_DETAIL_PERFORMED = 3;
-    const ORDER_DETAIL_CANCELLED = 4;
-    const ORDER_DETAIL_ACCEPTED_BY_RECIPIENT = 5;
+    const ORDER_DETAIL_PERFORMED_BY_SUPERADMIN = 4;
+    const ORDER_DETAIL_CANCELLED = 5;
+    const ORDER_DETAIL_ACCEPTED_BY_RECIPIENT = 6;
 
    // Order    payment_method
    const CASH_ON_DELIVERY = 1;

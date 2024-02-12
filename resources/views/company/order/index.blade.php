@@ -4,6 +4,14 @@
     {{-- Your page title --}}
 @endsection
 @section('content')
+    <style>
+        .color_green{
+            color:forestgreen;
+        }
+        .color_red{
+            color:red;
+        }
+    </style>
     <div id="success-alert-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
@@ -116,17 +124,17 @@
                                                 @if($order['order']->coupon_price) {{translate('coupon price')}} <b style="color: green">{{$order['order']->coupon_price}}</b>@endif
                                             @if($order['order']->status)
                                                 @switch($order['order']->status)
-                                                    @case(2)
+                                                    @case(\App\Constants::ORDERED)
                                                         <b>{{translate('ORDERED')}}</b>
                                                     @break
-                                                    @case(3)
+                                                    @case(\App\Constants::PERFORMED)
                                                         <b>{{translate('PERFORMED')}}</b>
                                                     @break
-                                                    @case(3)
+                                                    @case(\App\Constants::CANCELLED)
                                                         <b>{{translate('CANCELLED')}}</b>
                                                     @break
-                                                    @case(3)
-                                                        <b>{{translate('ACCEPTED_BY_RECIPIENT')}}</b>
+                                                    @case(\App\Constants::ACCEPTED_BY_RECIPIENT)
+                                                        <b>{{translate('ACCEPTED BY RECIPIENT')}}</b>
                                                     @break
                                                 @endswitch
                                             @endif
@@ -218,19 +226,34 @@
                                                         )' data-url="">
                                                         <i class="fa fa-check"></i>
                                                     </button>
+                                                <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products_with_anime[0]->id)}}")' data-url=""><i class="fa fa-times"></i></button>
                                                 @break
                                                 @case(\App\Constants::ORDER_DETAIL_PERFORMED)
-                                                    <button type="button" class="btn btn-success delete-datas btn-sm waves-effect">
-                                                        <span>{{translate('Accepted')}}</span>
-                                                    </button>
+                                                    <span class="color_green">{{translate('Accepted')}}</span>
+                                                    <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products_with_anime[0]->id)}}")' data-url=""><i class="fa fa-times"></i></button>
                                                 @break
                                                 @case(\App\Constants::ORDER_DETAIL_CANCELLED)
-                                                    <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect">
-                                                        <span>{{translate('Cancelled')}}</span>
+                                                    <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#success-alert-modal"
+                                                            onclick='accepting_anime_order(
+                                                                "{{$products_with_anime[0]->quantity??''}}",
+                                                                "{{!empty($products_with_anime[0]->product)?$products_with_anime[0]->product->name:''}}",
+                                                                "{{!empty($products_with_anime[0]->size)?$products_with_anime[0]->size->name:''}}",
+                                                                "{{!empty($products_with_anime[0]->color)?$products_with_anime[0]->color->name:''}}",
+                                                                "{{isset($images[0])?$images[0]:''}}",
+                                                                "{{isset($images[1])?$images[1]:''}}",
+                                                                "{{route('perform_order_detail', $products_with_anime[0]->id)}}"
+                                                                )' data-url="">
+                                                        <i class="fa fa-check"></i>
                                                     </button>
+                                                    <span class="color_red">{{translate('Cancelled')}}</span>
+                                                @break
+                                                @case(\App\Constants::ORDER_DETAIL_PERFORMED_BY_SUPERADMIN)
+                                                    <span class="color_green">{{translate('Performed by admin')}}</span>
+                                                @break
+                                                @case(\App\Constants::ORDER_DETAIL_ACCEPTED_BY_RECIPIENT)
+                                                    <span class="color_green">{{translate('Order accepted by recipient')}}</span>
                                                 @break
                                             @endswitch
-                                            <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products_with_anime[0]->id)}}")' data-url=""><i class="fa fa-times"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -333,17 +356,32 @@
                                                     </button>
                                                 @break
                                                 @case(\App\Constants::ORDER_DETAIL_PERFORMED)
-                                                    <button type="button" class="btn btn-success delete-datas btn-sm waves-effect">
-                                                        <span>{{translate('Accepted')}}</span>
-                                                    </button>
+                                                    <span class="color_green">{{translate('Accepted')}}</span>
+                                                    <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products[0]->id)}}")' data-url=""><i class="fa fa-times"></i></button>
                                                 @break
                                                 @case(\App\Constants::ORDER_DETAIL_CANCELLED)
-                                                <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect">
-                                                    <span>{{translate('Cancelled')}}</span>
-                                                </button>
+                                                    <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#success-alert-modal" data-url=""
+                                                            onclick='accepting_order(
+                                                                "{{$products[0]->quantity}}",
+                                                                "{{$products[0]->warehouse->quantity - $products[0]->quantity }}",
+                                                                "{{!empty($products[0]->color)?$products[0]->color->name:''}}",
+                                                                "{{!empty($products[0]->size)?$products[0]->size->name:''}}",
+                                                                "{{$product_name}}",
+                                                                "{{isset($images[0])?$images[0]:''}}",
+                                                                "{{isset($images[1])?$images[1]:''}}",
+                                                                "{{route('perform_order_detail', $products[0]->id)}}"
+                                                                )'>
+                                                        <i class="fa fa-check"></i>
+                                                    </button>
+                                                    <span class="color_red">{{translate('Cancelled')}}</span>
+                                                @break
+                                                @case(\App\Constants::ORDER_DETAIL_PERFORMED_BY_SUPERADMIN)
+                                                    <span class="color_green">{{translate('Performed by admin')}}</span>
+                                                @break
+                                                @case(\App\Constants::ORDER_DETAIL_ACCEPTED_BY_RECIPIENT)
+                                                    <span class="color_green">{{translate('Order accepted by recipient')}}</span>
                                                 @break
                                             @endswitch
-                                            <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products[0]->id)}}")' data-url=""><i class="fa fa-times"></i></button>
                                         </div>
                                     </div>
                                 </div>

@@ -853,18 +853,17 @@ class OrderController extends Controller
                 return $this->error($message, 400);
             }
             $user_card = UserCard::where('user_id', $order->user_id)->find($data['user_card_id']);
-            if(!$user_card){
+            if(!$user_card && $data['payment_method'] == Constants::BANK_CARD){
+                $order->user_card_id = $data['user_card_id'];
                 $message=translate_api('your card not found', $language);
                 return $this->error($message, 400);
             }
-            $order->update([
-                'address_id'=>$data['address_id'],
-                'receiver_name'=>$data['receiver_name'],
-                'phone_number'=>$data['receiver_phone'],
-                'status'=>Constants::ORDERED,
-                'payment_method'=>$data['payment_method'],
-                'user_card_id'=>$data['user_card_id']
-            ]);
+            $order->address_id = $data['address_id'];
+            $order->receiver_name = $data['receiver_name'];
+            $order->phone_number = $data['receiver_phone'];
+            $order->status = Constants::ORDERED;
+            $order->payment_method = $data['payment_method'];
+
             $warehouses_id = OrderDetail::where('order_id', $order->id)->pluck('warehouse_id');
             if(!empty($warehouses_id)){
                 $companies_id = Warehouse::whereIn('id', $warehouses_id)->pluck('company_id')->unique()->values()->all();
