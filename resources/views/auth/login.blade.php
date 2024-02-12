@@ -9,7 +9,7 @@
             box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
         }
         .login_page{
-            background-color: white;
+            background-color: #E6F3FFBF;
             /*height:100vh;*/
         }
         .correct_img img {
@@ -17,11 +17,12 @@
             width: 47%;
         }
         .login_page_image{
-            background-image: url("{{asset('/assets/images/easyprintlogin.jpg')}}");
-            background-size: cover;
+            background-image: url("{{asset('/assets/images/logineasyprint.png')}}");
+            background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            height: 100vh;
+            height: 94vh;
+            width: 100%;
         }
         .login_page input{
             border-radius: 8px !important;
@@ -42,18 +43,21 @@
         }
     </style>
     <div class="container-fluid login_page">
-        <div class="row justify-content-start align-items-center">
-            <div class="col-6 login_page_image">
+        <div class="row">
+            <div class="col-6" style="height: 100vh;">
+                <div class="login_page_image">
 
+                </div>
             </div>
-            <div class="col-6">
+            <div class="col-6 d-flex flex-column justify-content-center align-items-center" style="border-radius: 24px 0px 0px 24px; background-color: white; height: 100vh">
+
                 @if (session('status'))
                     <div class="alert alert-danger">
                         {{session('status')}}
                     </div>
                 @endif
 {{--                <div class="card" style="border-radius: 20px; margin-top: 100px">--}}
-                    <div class="p-4">
+                    <div class="p-4" style="width: 94%">
                         <div class="text-center mb-4">
                             <h4 class="text-uppercase mt-0">Войти</h4>
                         </div>
