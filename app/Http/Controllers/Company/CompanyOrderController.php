@@ -18,15 +18,6 @@ class CompanyOrderController extends Controller
 {
     public function index($id){
         $user = Auth::user();
-//        $warehouses_id = Warehouse::where('company_id', $user->company_id)->pluck('id')->values()->all();
-
-//        $order_ids = OrderDetail::select('order_id')->where('warehouse_id', NULL)->orWhereIn('warehouse_id', $warehouses_id)->groupBy('order_id')->distinct()->get()->toArray();
-//        $orders_id = [];
-//        foreach ($order_ids as $order_id_){
-//            foreach ($order_id_ as $order_id){
-//                $orders_id[] = $order_id;
-//            }
-//        }
         $orders = Order::where('status', $id)->get();
         $products = [];
         $products_with_anime = [];

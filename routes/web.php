@@ -23,6 +23,7 @@ use \App\Http\Controllers\LanguageController;
 use \App\Http\Controllers\CouponController;
 use \App\Http\Controllers\DiscountController;
 use \App\Http\Controllers\ImagesController;
+use \App\Http\Controllers\PickUpController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -41,6 +42,7 @@ Auth::routes();
         Route::get('/', [HomeController::class, 'index'])->name('dashboard');
         Route::get('/set-cities', [HomeController::class, 'setCities']);
         Route::resource('banner', BannerController::class);
+        Route::resource('pick_up', PickUpController::class);
         Route::resource('images', ImagesController::class);
         Route::resource('color', ColorController::class);
         Route::resource('size', SizesController::class);

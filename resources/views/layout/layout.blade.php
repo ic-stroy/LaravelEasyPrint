@@ -465,7 +465,6 @@
                             </a>
                         </li>
                         <li>
-                        <li>
                             <a href="#productMenus" data-bs-toggle="collapse">
                                 <i class="mdi mdi-basket-outline"></i>
                                 <span> {{ translate('Products') }} </span>
@@ -495,6 +494,12 @@
                                     </li>
                                 </ul>
                             </div>
+                        </li>
+                        <li>
+                            <a href="{{ route('pick_up.index') }}">
+                                <i class="mdi mdi-map-marker-outline"></i>
+                                <span> {{ translate('Pick up point') }} </span>
+                            </a>
                         </li>
                         <li>
                             <a href="{{ route('size.index') }}">
