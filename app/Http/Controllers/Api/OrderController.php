@@ -973,22 +973,23 @@ class OrderController extends Controller
                     $order->all_price = $orderedOrderPrice - $orderedOrderDiscountPrice;
                 }
                 $order->save();
-
-                $newOrder = new Order();
-                $newOrder->price = $newOrderDetailPrice;
-                $newOrder->discount_price = $newOrderDetailDiscountPrice;
-                $newOrder->all_price = (int)$newOrderDetailPrice - (int)$newOrderDetailDiscountPrice - (int)$newOrderDetailCouponPrice;
-                $newOrder->user_id = $order->user_id;
-                $newOrder->status = Constants::BASKED;
-                if(!$newOrder->code){
-                    $length = 8;
-                    $order_code = str_pad($newOrder->id, $length, '0', STR_PAD_LEFT);
-                    $newOrder->code=$order_code;
-                }
-                $newOrder->save();
-                foreach($newOrderDetail as $new_order_detail){
-                    $new_order_detail->order_id = $newOrder->id;
-                    $new_order_detail->save();
+                if(!empty($newOrderDetail)){
+                    $newOrder = new Order();
+                    $newOrder->price = $newOrderDetailPrice;
+                    $newOrder->discount_price = $newOrderDetailDiscountPrice;
+                    $newOrder->all_price = (int)$newOrderDetailPrice - (int)$newOrderDetailDiscountPrice - (int)$newOrderDetailCouponPrice;
+                    $newOrder->user_id = $order->user_id;
+                    $newOrder->status = Constants::BASKED;
+                    if(!$newOrder->code){
+                        $length = 8;
+                        $order_code = str_pad($newOrder->id, $length, '0', STR_PAD_LEFT);
+                        $newOrder->code=$order_code;
+                    }
+                    $newOrder->save();
+                    foreach($newOrderDetail as $new_order_detail){
+                        $new_order_detail->order_id = $newOrder->id;
+                        $new_order_detail->save();
+                    }
                 }
             }
             $message = translate_api('success', $language);

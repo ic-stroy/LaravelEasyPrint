@@ -37,10 +37,15 @@ class CompanyOrderController extends Controller
                 }
                 $order_product_quantity = array_sum($order_product_quantity_array);
                 if((int)$order->coupon_price>0){
-                    $coupon_price = (int)$order_detail->quantity * (int)$order->coupon_price/$order_product_quantity;
+                    if($order->coupon){
+                        $coupon_price = $this->setOrderCoupon($order->coupon, (int)$order_detail->price*(int)$order_detail->quantity-(int)$order_detail->discount_price);
+                    }else{
+                        $coupon_price = (int)$order_detail->quantity * (int)$order->coupon_price/$order_product_quantity;
+                    }
                 }else{
                     $coupon_price = 0;
                 }
+
                 $product_quantity = $product_quantity + $order_detail->quantity;
                 $company_product_price = $company_product_price + $order_detail->price*$order_detail->quantity - $order_detail->discount_price - $coupon_price;
                 $order_has = true;
