@@ -180,7 +180,8 @@
                 <div class="modal-body">
                     <div class="text-center">
                         <i class="dripicons-warning h1 text-success"></i>
-                        <h4 class="mt-2">{{translate('Accepted by super admin')}}</h4>
+{{--                        <h4 class="mt-2">{{translate('Accepted by super admin')}}</h4>--}}
+                        <h4 class="mt-2">{{translate('Performed by admin')}}</h4>
                     </div>
                 </div>
             </div><!-- /.modal-content -->
@@ -243,7 +244,7 @@
                                     <div class="d-flex justify-content-between align-items-center p-4">
                                         <span style="line-height: 2; font-size: 16px">
                                             @if($user_name){{$user_name}}@endif {{translate('ordered')}}
-                                            @if(isset($order['product_types'])) <b>{{ $order['product_types'] }}</b>  {{translate('products of yours in')}} {{count($order['order']->orderDetail)}} {{translate('products')}} @endif
+                                            @if(isset($order['product_types'])) <b>{{ $order['product_types'] }}</b>  {{translate('products of yours in')}} <b>{{count($order['order']->orderDetail)}}</b> {{translate('products')}} @endif
                                             <b>{{$order['company_product_price']}}</b> {{translate('sum of')}} <b>{{$order['order']->all_price}}</b> {{translate('sum is yours in order')}}
                                                 @if($order['order']->coupon_price) {{translate('coupon price')}} <b style="color: green">{{$order['order']->coupon_price}}</b>@endif
                                             @if($order['order']->status)
@@ -263,6 +264,9 @@
                                                 @endswitch
                                             @endif
                                         </span>
+                                        @if($order['order_detail_is_ordered'] == true)
+                                            <span class="badge bg-danger">{{translate('new')}}</span>
+                                        @endif
                                         <i class="mdi mdi-chevron-down accordion-arrow"></i>
                                     </div>
                                 </a>
@@ -311,7 +315,7 @@
                                     <div class="col-2 order_product_images" onclick='getUploads("{{implode(" ", $products_with_anime[2])}}")' data-bs-toggle="modal" data-bs-target="#carousel-upload-modal">
                                         <img src="{{$products_with_anime[2][0]}}" alt="" height="144px">
                                     </div>
-                                    <div class="col-5 order_content">
+                                    <div class="col-4 order_content">
                                         <h4>{{translate('Animated order')}}</h4>
                                         <span>{{!empty($products_with_anime[0]->product)?$products_with_anime[0]->product->name:''}}</span>
                                         @if($product_discount_withouth_expire != 0)
@@ -333,7 +337,35 @@
                                             <span>{{translate('Ordered')}}: <b>{{$products_with_anime[0]->updated_at}}</b></span>
                                         @endif
                                     </div>
-
+                                    <div class="col-1 d-flex justify-content-around align-items-center">
+                                        @switch($products_with_anime[0]->status)
+                                            @case(\App\Constants::ORDER_DETAIL_ORDERED):
+                                                <div>
+                                                    <span class="badge bg-danger">{{translate('new')}}</span>
+                                                </div>
+                                            @break
+                                            @case(\App\Constants::ORDER_DETAIL_PERFORMED):
+                                                <div>
+                                                    <span class="badge bg-success">{{translate('performed')}}</span>
+                                                </div>
+                                            @break
+                                            @case(\App\Constants::ORDER_DETAIL_CANCELLED):
+                                                <div>
+                                                    <span class="badge bg-danger">{{translate('cancelled')}}</span>
+                                                </div>
+                                            @break
+                                            {{--                                            @case(\App\Constants::ORDER_DETAIL_PERFORMED_BY_SUPERADMIN):--}}
+                                            {{--                                                <div>--}}
+                                            {{--                                                    <span class="badge bg-danger">{{translate('new')}}</span>--}}
+                                            {{--                                                </div> --}}
+                                            {{--                                            @break--}}
+                                            @case(\App\Constants::ORDER_DETAIL_ACCEPTED_BY_RECIPIENT):
+                                                <div>
+                                                    <span class="badge bg-info">{{translate('finished')}}</span>
+                                                </div>
+                                            @break
+                                        @endswitch
+                                    </div>
                                     <div class="function-column col-3">
                                         <div class="d-flex justify-content-around">
                                             @switch($products_with_anime[0]->status)
@@ -413,7 +445,7 @@
                                         <img src="{{$images[0]}}" alt="" height="144px">
                                     </div>
                                     <div class="col-1"></div>
-                                    <div class="col-5 order_content">
+                                    <div class="col-4 order_content">
                                         <h4>{{translate('Order')}}</h4>
                                         @if(!empty($products[0]->warehouse) && $products[0]->warehouse->name)
                                             <span><b>{{$products[0]->warehouse->name}}</b></span>
@@ -435,6 +467,35 @@
                                             <span>{{translate('Size')}}: <b>{{$products[0]->size->name}}</b> {{translate('Color')}}: <b>{{$products[0]->color->name}}</b></span>
                                         @endif
                                         <span>{{translate('Ordered')}}: <b>{{$products[0]->updated_at}}</b></span>
+                                    </div>
+                                    <div class="col-1 d-flex justify-content-around align-items-center">
+                                        @switch($products[0]->status)
+                                            @case(\App\Constants::ORDER_DETAIL_ORDERED):
+                                                <div>
+                                                    <span class="badge bg-danger">{{translate('new')}}</span>
+                                                </div>
+                                            @break
+                                            @case(\App\Constants::ORDER_DETAIL_PERFORMED):
+                                                <div>
+                                                    <span class="badge bg-success">{{translate('performed')}}</span>
+                                                </div>
+                                            @break
+                                            @case(\App\Constants::ORDER_DETAIL_CANCELLED):
+                                                <div>
+                                                    <span class="badge bg-danger">{{translate('cancelled')}}</span>
+                                                </div>
+                                            @break
+{{--                                            @case(\App\Constants::ORDER_DETAIL_PERFORMED_BY_SUPERADMIN):--}}
+{{--                                                <div>--}}
+{{--                                                    <span class="badge bg-danger">{{translate('new')}}</span>--}}
+{{--                                                </div> --}}
+{{--                                            @break--}}
+                                            @case(\App\Constants::ORDER_DETAIL_ACCEPTED_BY_RECIPIENT):
+                                                <div>
+                                                    <span class="badge bg-info">{{translate('finished')}}</span>
+                                                </div>
+                                            @break
+                                        @endswitch
                                     </div>
                                     <div class="function-column col-3">
                                         <div class="d-flex justify-content-around">
@@ -464,7 +525,8 @@
                                                     <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products[0]->id)}}")' data-url=""><i class="fa fa-times"></i></button>
                                                 @break
                                                 @case(\App\Constants::ORDER_DETAIL_PERFORMED)
-                                                    <button type="button" class="btn btn-warning delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#waiting-to-perform-alert-modal" title="{{translate('Waiting for superadmin performing')}}"><i class="fa fa-question"></i></button>
+                                                    <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#accepted-success-modal" title="{{translate('Performed by admin')}}"><i class="fa fa-ellipsis-h"></i></button>
+                                                {{--                                                    <button type="button" class="btn btn-warning delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#waiting-to-perform-alert-modal" title="{{translate('Waiting for superadmin performing')}}"><i class="fa fa-question"></i></button>--}}
                                                     <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products[0]->id)}}")' data-url=""><i class="fa fa-times"></i></button>
                                                 @break
                                                 @case(\App\Constants::ORDER_DETAIL_CANCELLED)

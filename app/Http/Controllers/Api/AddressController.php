@@ -273,5 +273,34 @@ class AddressController extends Controller
         ];
     }
 
+    public function pickUpFunction(Request $request){
+        $language = $request->header('language');
+        $super_admins_id = User::where('role_id', 1)->pluck('id')->all();
+        $addresses = Address::whereIn('user_id', $super_admins_id)->get();
+        $data = [];
+        foreach ($addresses as $address){
+            if($address->cities){
+                if($address->cities->type == 'district'){
+                    $city = $address->cities->name??null;
+                    if($address->cities->region){
+                        $region = $address->cities->region->name??null;
+                    }
+                }else{
+                    $region = $address->cities->name??null;
+                }
+            }
+            $data[] = [
+              'id'=>$address->id,
+              'name'=>$address->name??null,
+              'region'=>$region,
+              'city'=>$city,
+              'postcode'=>$address->postcode??null,
+            ];
+        }
+
+        $message = translate_api('Success', $language);
+        return $this->success($message, 200, $data);
+    }
+
 
 }

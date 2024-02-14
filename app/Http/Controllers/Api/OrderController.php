@@ -881,19 +881,22 @@ class OrderController extends Controller
                 $orderedOrderDetail = 0;
                 $newOrderDetailQuantity = 0;
                 $users = User::whereIn('company_id', $companies_id)->get();
+                $order_product_quantity_array = OrderDetail::where('order_id', $order->id)->pluck('quantity')->all();
+                $order_product_quantity = array_sum($order_product_quantity_array);
                 foreach($order->orderDetail as $orderDetail){
                     if($orderDetail->status == Constants::ORDER_DETAIL_ORDERED){
                         if(!empty($orderDetail->warehouse)) {
                             if(!empty($companies_id)){
                                 if(count($users)>0){
-                                    $order_product_quantity_array = OrderDetail::where('order_id', $orderDetail->order_id)->pluck('quantity')->all();
-                                    $order_product_quantity = array_sum($order_product_quantity_array);
                                     if((int)$order->coupon_price>0){
-                                        $coupon_price = (int)$orderDetail->quantity * (int)$order->coupon_price/$order_product_quantity;
+                                        if($order->coupon){
+                                            $coupon_price = $this->setOrderCoupon($order->coupon, (int)$orderDetail->price*(int)$orderDetail->quantity-(int)$orderDetail->discount_price);
+                                        }else{
+                                            $coupon_price = (int)$orderDetail->quantity * (int)$order->coupon_price/$order_product_quantity;
+                                        }
                                     }else{
                                         $coupon_price = 0;
                                     }
-
                                     $list_images = !empty($this->getImages($orderDetail->warehouse, 'warehouses')) ? $this->getImages($orderDetail->warehouse, 'warehouses')[0] : $this->getImages($orderDetail->warehouse->product, 'product')[0];
                                     $data = [
                                         'order_id'=>$order->id,
@@ -923,10 +926,12 @@ class OrderController extends Controller
                                     $images = $order_detail_image_front;
                                 }
 
-                                $order_product_quantity_array = OrderDetail::where('order_id', $orderDetail->order_id)->pluck('quantity')->all();
-                                $order_product_quantity = array_sum($order_product_quantity_array);
                                 if((int)$order->coupon_price>0){
-                                    $coupon_price = (int)$orderDetail->quantity * (int)$order->coupon_price/$order_product_quantity;
+                                    if($order->coupon){
+                                        $coupon_price = $this->setOrderCoupon($order->coupon, (int)$orderDetail->price*(int)$orderDetail->quantity-(int)$orderDetail->discount_price);
+                                    }else{
+                                        $coupon_price = (int)$orderDetail->quantity * (int)$order->coupon_price/$order_product_quantity;
+                                    }
                                 }else{
                                     $coupon_price = 0;
                                 }
@@ -999,18 +1004,15 @@ class OrderController extends Controller
 
         if ($order_detail=OrderDetail::where('id',$order_detail_id)->whereIn('status', [Constants::ORDER_DETAIL_BASKET, Constants::ORDER_DETAIL_ORDERED])->first()) {
             $order = $order_detail->order;
-            $quantity_products = OrderDetail::where('order_id', $order_detail->order_id)->pluck('quantity')->all();
-            $order_detail_coupon_price = 0;
-            $coupon_price = 0;
-            if(!empty($order->coupon) && $order->coupon_price){
-                $coupon_price = $order->coupon_price;
-                if($order->coupon->percent){
-                    $order_detail_coupon_price = $order->coupon_price/array_sum($quantity_products)/$order_detail->quantity;
-                }
-            }
+
             $order->price = (int)$order->price - ((int)$order_detail->price * (int)$order_detail->quantity);
             $order->discount_price = (int)$order->discount_price - (int)$order_detail->discount_price;
-            $order_coupon_price = (int)$coupon_price - (int)$order_detail_coupon_price;
+            if(!empty($order->coupon)){
+                $order_coupon_price = $this->setOrderCoupon($order->coupon, ($order->price - $order->discount_price));
+                $order->coupon_price = $order_coupon_price;
+            }else{
+                $order_coupon_price = $order->coupon_price;
+            }
             $order->all_price = (int)$order->price - $order->discount_price - $order_coupon_price;
             if (!$order_detail->image_front) {
                 $order_detail->image_front = 'no';

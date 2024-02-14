@@ -30,6 +30,7 @@ class PickUpController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request)
     {
         $address = new Address();
@@ -44,7 +45,6 @@ class PickUpController extends Controller
         if($super_admin_id){
             $address->user_id = $super_admin_id->id;
         }
-        dd($request->all());
         $address->save();
         return redirect()->route('pick_up.index');
     }
@@ -52,6 +52,7 @@ class PickUpController extends Controller
     /**
      * Display the specified resource.
      */
+
     public function show(string $id)
     {
         $model = Address::find($id);
@@ -70,7 +71,6 @@ class PickUpController extends Controller
         }
 
         $address = $region.' '.$city;
-        dd($model->cities);
         return view('admin.pick-up.show', ['model'=>$model, 'address'=>$address]);
     }
 

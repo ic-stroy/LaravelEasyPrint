@@ -67,6 +67,7 @@ Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
     Route::post('update-card', [CardController::class, 'updateCard']);
     Route::get('show-card', [CardController::class, 'showCard']);
     Route::post('destroy-card', [CardController::class, 'destroyCard']);
+    Route::get('pick-up-point', [AddressController::class, 'pickUpFunction']);
     Route::group(['prefix' => 'order'], function () {
         Route::post('/set-warehouse', [OrderController::class, 'setWarehouse']);
         Route::post('/add-coupon', [OrderController::class, 'addCoupon']);
