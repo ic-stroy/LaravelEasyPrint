@@ -620,9 +620,7 @@ class OrderController extends Controller
                 }
             }
             if(!empty($coupon) && $coupon->start_date <= date('Y-m-d H:i:s') && $coupon->end_date >= date('Y-m-d H:i:s')){
-//                if($order->product_id || !$order->coupon->company_id){
-                    $order_coupon_price = $order_coupon_price + $this->setOrderCoupon($coupon, $order_all_price - $order_discount_price);
-//                }
+                    $order_coupon_price = $this->setOrderCoupon($coupon, $order_all_price - $order_discount_price);
             }
 
             $grant_total = $order_all_price - $order_discount_price - $order_coupon_price;
@@ -688,12 +686,13 @@ class OrderController extends Controller
                     }
                 }
             }
-            if($order->coupon){
+            if(!empty($order->coupon)){
                 if($order->coupon->start_date > date('Y-m-d H:i:s') || date('Y-m-d H:i:s') > $order->coupon->end_date){
                     $order->all_price = $order_price - $order_discount_price;
                     $order->coupon_id = NULL;
                 }else{
-                    $order->all_price = $order_price - $order_discount_price - (int)$order->coupon_price;
+                    $coupon_price = $this->setOrderCoupon($order->coupon, $order_price - $order_discount_price);
+                    $order->all_price = $order_price - $order_discount_price - (int)$coupon_price;
                 }
             }else{
                 $order->all_price = $order_price - $order_discount_price;
@@ -845,11 +844,10 @@ class OrderController extends Controller
         $language = $request->header('language');
         $data = $request->all();
         $order_id = $data['order_id'];
-
         if ($order_id  && $order = Order::where('id',$order_id)->where('status', Constants::BASKED)->first()) {
-            $address = Address::where('user_id', $order->user_id)->find($data['address_id']);
+            $address = Address::find($data['address_id']);
             if(!$address){
-                $message=translate_api('Your address not found', $language);
+                $message=translate_api('Address not found', $language);
                 return $this->error($message, 400);
             }
             $user_card = UserCard::where('user_id', $order->user_id)->find($data['user_card_id']);
@@ -982,6 +980,11 @@ class OrderController extends Controller
                 $newOrder->all_price = (int)$newOrderDetailPrice - (int)$newOrderDetailDiscountPrice - (int)$newOrderDetailCouponPrice;
                 $newOrder->user_id = $order->user_id;
                 $newOrder->status = Constants::BASKED;
+                if(!$newOrder->code){
+                    $length = 8;
+                    $order_code = str_pad($newOrder->id, $length, '0', STR_PAD_LEFT);
+                    $newOrder->code=$order_code;
+                }
                 $newOrder->save();
                 foreach($newOrderDetail as $new_order_detail){
                     $new_order_detail->order_id = $newOrder->id;
@@ -1093,6 +1096,7 @@ class OrderController extends Controller
             $city = null;
             $street = null;
             if($data->address){
+                $address_id = $data->address->id;
                 $street = $data->address->name;
                 if($data->address->cities){
                     if($data->address->cities->region){
@@ -1105,6 +1109,7 @@ class OrderController extends Controller
                 }
             }
             $address = [
+                'id'=>$address_id,
                 'street'=>$street,
                 'region'=>$region,
                 'city'=>$city,
