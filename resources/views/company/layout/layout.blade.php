@@ -950,6 +950,14 @@
         if(sessionSuccess){
             toastr.success(sessionSuccess)
         }
+        let performed ="{{session('performed')}}";
+        if(performed){
+            toastr.success(performed)
+        }
+        let cancelled ="{{session('cancelled')}}";
+        if(cancelled){
+            toastr.warning(cancelled)
+        }
         let language = "{{ $locale ?? "ru"}}"
         let uz = `{{ asset('/assets/images/language/region.png') }}`
         let ru = `{{ asset('/assets/images/language/RU.png') }}`

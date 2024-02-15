@@ -620,7 +620,7 @@ class OrderController extends Controller
                 }
             }
             if(!empty($coupon) && $coupon->start_date <= date('Y-m-d H:i:s') && $coupon->end_date >= date('Y-m-d H:i:s')){
-                    $order_coupon_price = $this->setOrderCoupon($coupon, $order_all_price - $order_discount_price);
+                $order_coupon_price = $this->setOrderCoupon($coupon, $order_all_price - $order_discount_price);
             }
 
             $grant_total = $order_all_price - $order_discount_price - $order_coupon_price;
@@ -634,10 +634,10 @@ class OrderController extends Controller
                 'list'=>$order_detail_list
             ];
 
-            $message=translate_api('success',$language);
+            $message=translate_api('success', $language);
             return $this->success($message, 200, $data);
         } else {
-            $message=translate_api('order not found ',$language);
+            $message=translate_api('order not found ', $language);
             return $this->error($message, 400);
         }
     }
@@ -690,6 +690,7 @@ class OrderController extends Controller
                 if($order->coupon->start_date > date('Y-m-d H:i:s') || date('Y-m-d H:i:s') > $order->coupon->end_date){
                     $order->all_price = $order_price - $order_discount_price;
                     $order->coupon_id = NULL;
+                    $order->coupon_price = NULL;
                 }else{
                     $coupon_price = $this->setOrderCoupon($order->coupon, $order_price - $order_discount_price);
                     $order->all_price = $order_price - $order_discount_price - (int)$coupon_price;
@@ -899,7 +900,7 @@ class OrderController extends Controller
                                     $data = [
                                         'order_id'=>$order->id,
                                         'order_detail_id'=>$orderDetail->id,
-                                        'order_all_price'=>$orderDetail->price*$orderDetail->quantity-(int)$orderDetail->discount_price - $coupon_price,
+                                        'order_all_price'=>$orderDetail->price*$orderDetail->quantity - (int)$orderDetail->discount_price - $coupon_price,
                                         'product'=>[
                                             'name'=>$orderDetail->warehouse->name,
                                             'images'=>$list_images
@@ -1017,7 +1018,7 @@ class OrderController extends Controller
             }else{
                 $order_coupon_price = $order->coupon_price;
             }
-            $order->all_price = (int)$order->price - $order->discount_price - $order_coupon_price;
+            $order->all_price = (int)$order->price - (int)$order->discount_price - (int)$order_coupon_price;
             if (!$order_detail->image_front) {
                 $order_detail->image_front = 'no';
             }

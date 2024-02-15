@@ -22,7 +22,6 @@ class CompanyOrderController extends Controller
         $order_data = [];
         foreach($orders as $order){
 //        $not_read_order_quantity = OrderDetail::where('order_id', $id)->where('is_read', 0)->count();
-            $order_product_quantity_array = OrderDetail::where('order_id', $order->id)->pluck('quantity')->all();
             $products_with_anime = [];
             $products = [];
             $product_types = 0;
@@ -35,12 +34,11 @@ class CompanyOrderController extends Controller
                 if($order_detail->status == Constants::ORDER_DETAIL_ORDERED){
                     $order_detail_is_ordered = true;
                 }
-                $order_product_quantity = array_sum($order_product_quantity_array);
                 if((int)$order->coupon_price>0){
                     if($order->coupon){
                         $coupon_price = $this->setOrderCoupon($order->coupon, (int)$order_detail->price*(int)$order_detail->quantity-(int)$order_detail->discount_price);
                     }else{
-                        $coupon_price = (int)$order_detail->quantity * (int)$order->coupon_price/$order_product_quantity;
+                        $coupon_price = $order->coupon_price;
                     }
                 }else{
                     $coupon_price = 0;
@@ -111,62 +109,55 @@ class CompanyOrderController extends Controller
     }
 
     public function cancellOrderDetail($id){
+        $user = Auth::user();
         $orderDetail = OrderDetail::find($id);
-        $order = $orderDetail->order;
-        $orderDetail->status = Constants::ORDER_DETAIL_CANCELLED;
-        $order_product_quantity_array = OrderDetail::where('order_id', $orderDetail->order_id)->pluck('quantity')->all();
-        $order_product_quantity = array_sum($order_product_quantity_array);
-        if((int)$order->coupon_price>0){
-            $coupon_price = (int)$orderDetail->quantity * (int)$order->coupon_price/$order_product_quantity;
-        }else{
-            $coupon_price = 0;
-        }
-//        $user = User::where('role_id', 1)->first();
-//        $list_images = !empty($this->getImages($orderDetail->warehouse, 'warehouses')) ? $this->getImages($orderDetail->warehouse, 'warehouses')[0] : $this->getImages($orderDetail->warehouse->product, 'product')[0];
-//        $data = [
-//            'order_id'=>$order->id,
-//            'order_detail_id'=>$orderDetail->id,
-//            'order_all_price'=>$orderDetail->price*$orderDetail->quantity-(int)$orderDetail->discount_price - $coupon_price,
-//            'product'=>[
-//                'name'=>$orderDetail->warehouse->name,
-//                'images'=>$list_images
-//            ],
-//            'receiver_name'=>$order->receiver_name,
-//        ];
-//        if($user){
-//            Notification::send($user, new OrderNotification($data));
-//        }
-        $orderDetail->save();
-        return redirect()->route('company_order.index', 2);
-    }
-
-    public function performOrderDetail($id){
-        $orderDetail = OrderDetail::find($id);
-        $company_product_price = 0;
         $order_details_discount_price = 0;
-        $order_coupon_price = 0;
+        $order_detail_price = 0;
         if($orderDetail){
-            $order = Order::where('status', Constants::BASKED)->find($orderDetail->order_id);
-            if($order){
-                $order_product_quantity_array = OrderDetail::where('order_id', $orderDetail->order_id)->pluck('quantity')->all();
-                $order_product_quantity = array_sum($order_product_quantity_array);
-                if((int)$order->coupon_price>0){
-                    if($order->coupon){
-                        $coupon_price = $this->setOrderCoupon($order->coupon, (int)$orderDetail->price*(int)$orderDetail->quantity-(int)$orderDetail->discount_price);
-                    }else{
-                        $coupon_price = (int)$orderDetail->quantity * (int)$order->coupon_price/$order_product_quantity;
+            $orderDetail->status = Constants::ORDER_DETAIL_CANCELLED;
+            foreach($user->unreadnotifications as $notification){
+                if($notification->type == "App\Notifications\OrderNotification"){
+                    if(!empty($notification->data)){
+                        if($notification->data['order_detail_id'] == $orderDetail->id){
+                            $notification->read_at = date('Y-m-d H:i:s');
+                            $notification->save();
+                        }
                     }
-                }else{
-                    $coupon_price = 0;
                 }
-                $order_detail_ = OrderDetail::where('order_id', $orderDetail->order_id)->whereNotIn('status', [Constants::ORDER_DETAIL_ORDERED, Constants::ORDER_DETAIL_BASKET])->first();
-                if(!$order_detail_){
+            }
+            $orderDetail->save();
+            $order = Order::where('status', Constants::ORDERED)->find($orderDetail->order_id);
+            if($order){
+                $order_details_status = OrderDetail::where('order_id', $orderDetail->order_id)->pluck('status')->all();
+                if(!in_array(Constants::ORDER_DETAIL_BASKET, $order_details_status) && !in_array(Constants::ORDER_DETAIL_ORDERED, $order_details_status)){
                     foreach($order->orderDetail as $order_detail){
-                        $discount_price = $order_detail->discount_price??0;
-                        $order_details_discount_price = $order_details_discount_price + $discount_price;
-                        $company_product_price = $company_product_price + $order_detail->price*$order_detail->quantity - $order_detail->discount_price - $coupon_price*$order_detail->quantity;
-                        $order_coupon_price = $order_coupon_price + $coupon_price * $order_detail->quantity;
+                        if($order_detail->status == Constants::ORDER_DETAIL_PERFORMED){
+                            $discount_price = $order_detail->discount_price??0;
+                            $order_detail_price = $order_detail_price + $order_detail->price*$order_detail->quantity;
+                            $order_details_discount_price = $order_details_discount_price + $discount_price;
+                        }
+//                        elseif($order_detail->status == Constants::ORDER_DETAIL_CANCELLED){
+//                            $order_detail->delete();
+//                        }
                     }
+                    $order->price = $order_detail_price;
+                    $order->discount_price = $order_details_discount_price;
+                    $order->all_price = $order_detail_price - $order_details_discount_price;
+                    if((int)$order->coupon_price>0){
+                        if($order->coupon){
+                            $coupon_price = $this->setOrderCoupon($order->coupon, $order->all_price);
+                        }else{
+                            $coupon_price = $order->coupon_price;
+                        }
+                        $order->coupon_price = $coupon_price;
+                    }else{
+                        $coupon_price = 0;
+                    }
+                    $order->all_price = $order->all_price - $coupon_price;
+                    $order->status = Constants::PERFORMED;
+                    $order->save();
+
+                    return redirect()->route('company_order.index', 2)->with('cancelled', 'Product is cancelled');
                 }
             }
 //        $user = User::where('role_id', 1)->first();
@@ -183,10 +174,78 @@ class CompanyOrderController extends Controller
 //            'receiver_name'=>$order->receiver_name,
 //        ];
 //        Notification::send($user, new OrderNotification($data));
+        }
+        return redirect()->route('company_order.index', 2)->with('cancelled', 'Product is cancelled');
+    }
+
+    public function performOrderDetail($id){
+        $user = Auth::user();
+        $orderDetail = OrderDetail::find($id);
+        $order_details_discount_price = 0;
+        $order_detail_price = 0;
+        if($orderDetail){
+            $orderDetail->status = Constants::ORDER_DETAIL_PERFORMED;
+            foreach($user->unreadnotifications as $notification){
+                if($notification->type == "App\Notifications\OrderNotification"){
+                    if(!empty($notification->data)){
+                        if($notification->data['order_detail_id'] == $orderDetail->id){
+                            $notification->read_at = date('Y-m-d H:i:s');
+                            $notification->save();
+                        };
+                    }
+                }
+            }
             $orderDetail->save();
+            $order = Order::where('status', Constants::ORDERED)->find($orderDetail->order_id);
+            if($order){
+                $order_details_status = OrderDetail::where('order_id', $orderDetail->order_id)->pluck('status')->all();
+                if(!in_array(Constants::ORDER_DETAIL_BASKET, $order_details_status) && !in_array(Constants::ORDER_DETAIL_ORDERED, $order_details_status)){
+                    foreach($order->orderDetail as $order_detail){
+                        if($order_detail->status == Constants::ORDER_DETAIL_PERFORMED){
+                            $discount_price = $order_detail->discount_price??0;
+                            $order_detail_price = $order_detail_price + $order_detail->price*$order_detail->quantity;
+                            $order_details_discount_price = $order_details_discount_price + $discount_price;
+                        }
+//                        elseif($order_detail->status == Constants::ORDER_DETAIL_CANCELLED){
+//                            $order_detail->delete();
+//                        }
+                    }
+                    $order->price = $order_detail_price;
+                    $order->discount_price = $order_details_discount_price;
+                    $order->all_price = $order_detail_price - $order_details_discount_price;
+                    if((int)$order->coupon_price>0){
+                        if($order->coupon){
+                            $coupon_price = $this->setOrderCoupon($order->coupon, $order->all_price);
+                        }else{
+                            $coupon_price = $order->coupon_price;
+                        }
+                        $order->coupon_price = $coupon_price;
+                    }else{
+                        $coupon_price = 0;
+                    }
+                    $order->all_price = $order->all_price - $coupon_price;
+                    $order->status = Constants::PERFORMED;
+
+                    $order->save();
+                }
+            }
+//        $user = User::where('role_id', 1)->first();
+//        $orderDetail->status = Constants::ORDER_DETAIL_PERFORMED;
+//        $list_images = !empty($this->getImages($orderDetail->warehouse, 'warehouses')) ? $this->getImages($orderDetail->warehouse, 'warehouses')[0] : $this->getImages($orderDetail->warehouse->product, 'product')[0];
+//        $data = [
+//            'order_id'=>$order->id,
+//            'order_detail_id'=>$orderDetail->id,
+//            'order_all_price'=>$orderDetail->price*$orderDetail->quantity-(int)$orderDetail->discount_price - $coupon_price,
+//            'product'=>[
+//                'name'=>$orderDetail->warehouse->name,
+//                'images'=>$list_images
+//            ],
+//            'receiver_name'=>$order->receiver_name,
+//        ];
+//        Notification::send($user, new OrderNotification($data));
         }
 
-        return redirect()->route('company_order.index', 2);
+        return redirect()->route('company_order.index', 2)->with('performed', 'Product is performed');
     }
 
     public function getImages($model, $text){
