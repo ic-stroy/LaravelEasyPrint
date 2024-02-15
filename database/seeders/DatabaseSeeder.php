@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             ColorTranslationSeeder::class,
             CategoryTranslationSeeder::class,
             CompanyTranslationSeeder::class,
+            ProductSeeder::class,
             ProductTranslationSeeder::class,
             RoleTranslationSeeder::class,
             WarehouseTranslationSeeder::class
