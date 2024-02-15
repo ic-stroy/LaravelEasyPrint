@@ -1014,10 +1014,18 @@ class OrderController extends Controller
             $order->price = (int)$order->price - ((int)$order_detail->price * (int)$order_detail->quantity);
             $order->discount_price = (int)$order->discount_price - (int)$order_detail->discount_price;
             if(!empty($order->coupon)){
-                $order_coupon_price = $this->setOrderCoupon($order->coupon, ($order->price - $order->discount_price));
-                $order->coupon_price = $order_coupon_price;
+                if($order->price - $order->discount_price >= $order->coupon->min_price){
+                    $order_coupon_price = $this->setOrderCoupon($order->coupon, ($order->price - $order->discount_price));
+                    $order->coupon_price = $order_coupon_price;
+                }else{
+                    $order_coupon_price = 0;
+                    $order->coupon_price = NULL;
+                    $order->coupon_id = NULL;
+                }
             }else{
-                $order_coupon_price = $order->coupon_price;
+                $order_coupon_price = 0;
+                $order->coupon_price = NULL;
+                $order->coupon_id = NULL;
             }
             $order->all_price = (int)$order->price - (int)$order->discount_price - (int)$order_coupon_price;
             if (!$order_detail->image_front) {
