@@ -479,6 +479,8 @@ class OrderController extends Controller
                 }else{
                     $order->all_price = $order->price - (int)$order->discount_price - (int)$order->coupon_price;
                 }
+            }else{
+                $order->all_price = $order->price - (int)$order->discount_price;
             }
             $order->save();
             $data = [
@@ -692,8 +694,14 @@ class OrderController extends Controller
                     $order->coupon_id = NULL;
                     $order->coupon_price = NULL;
                 }else{
-                    $coupon_price = $this->setOrderCoupon($order->coupon, $order_price - $order_discount_price);
-                    $order->all_price = $order_price - $order_discount_price - (int)$coupon_price;
+                    if($order->coupon->min_price <= $order->all_price){
+                        $coupon_price = $this->setOrderCoupon($order->coupon, $order->all_price);
+                        $order->all_price = $order_price - $order_discount_price - (int)$coupon_price;
+                    }else{
+                        $order->coupon_id = NULL;
+                        $order->coupon_price = NULL;
+                        $order->all_price = $order_price - $order_discount_price;
+                    }
                 }
             }else{
                 $order->all_price = $order_price - $order_discount_price;
@@ -870,15 +878,12 @@ class OrderController extends Controller
                 $companies_id = [];
             }
             if(!empty($order)){
-                $i = 0;
                 $newOrderDetailPrice = 0;
                 $newOrderDetailDiscountPrice = 0;
-                $newOrderDetailCouponPrice = 0;
                 $orderedOrderPrice = 0;
                 $orderedOrderDiscountPrice = 0;
                 $newOrderDetail = [];
                 $orderedOrderDetail = 0;
-                $newOrderDetailQuantity = 0;
                 $users = User::whereIn('company_id', $companies_id)->get();
                 $order_product_quantity_array = OrderDetail::where('order_id', $order->id)->pluck('quantity')->all();
                 $order_product_quantity = array_sum($order_product_quantity_array);
@@ -888,7 +893,7 @@ class OrderController extends Controller
                             if(!empty($companies_id)){
                                 if(count($users)>0){
                                     if((int)$order->coupon_price>0){
-                                        if($order->coupon){
+                                        if(!empty($order->coupon)){
                                             $coupon_price = $this->setOrderCoupon($order->coupon, (int)$orderDetail->price*(int)$orderDetail->quantity-(int)$orderDetail->discount_price);
                                         }else{
                                             $coupon_price = (int)$orderDetail->quantity * (int)$order->coupon_price/$order_product_quantity;
@@ -924,9 +929,8 @@ class OrderController extends Controller
                                 }else{
                                     $images = $order_detail_image_front;
                                 }
-
                                 if((int)$order->coupon_price>0){
-                                    if($order->coupon){
+                                    if(!empty($order->coupon)){
                                         $coupon_price = $this->setOrderCoupon($order->coupon, (int)$orderDetail->price*(int)$orderDetail->quantity-(int)$orderDetail->discount_price);
                                     }else{
                                         $coupon_price = (int)$orderDetail->quantity * (int)$order->coupon_price/$order_product_quantity;
@@ -953,7 +957,6 @@ class OrderController extends Controller
                         $orderedOrderDiscountPrice = $orderedOrderDiscountPrice + $orderDetail->discount_price;
                     }else{
                         $newOrderDetail[] = $orderDetail;
-                        $newOrderDetailQuantity = $newOrderDetailQuantity + $orderDetail->quantity;
                         $newOrderDetailPrice = $newOrderDetailPrice + $orderDetail->price*$orderDetail->quantity;
                         $newOrderDetailDiscountPrice = $newOrderDetailDiscountPrice + $orderDetail->discount_price;
                     }
@@ -961,15 +964,14 @@ class OrderController extends Controller
 
                 $order->price = $orderedOrderPrice;
                 $order->discount_price = $orderedOrderDiscountPrice;
-                if($order->coupon && $order->coupon_price != 0){
-                    if($orderedOrderDetail>0){
-                        $newOrderDetailCouponPrice = $order->coupon_price/($orderedOrderDetail + $newOrderDetailQuantity)/$orderedOrderDetail;
+                if(!empty($order->coupon) && $order->coupon_price != 0){
+                    if($order->coupon->min_price <= $order->price - $order->discount_price){
+                        $order->coupon_price = $this->setOrderCoupon($order->coupon, $order->price - $order->discount_price);
+                    }else{
+                        $order->coupon_price = NULL;
+                        $order->coupon_id = NULL;
                     }
-                    $order->all_price = (int)$orderedOrderPrice - (int)$orderedOrderDiscountPrice - (int)$newOrderDetailCouponPrice;
-
-                    if($newOrderDetailQuantity>0){
-                        $newOrderDetailCouponPrice = $order->coupon_price/($orderedOrderDetail + $newOrderDetailQuantity)/$newOrderDetailQuantity;
-                    }
+                    $order->all_price = (int)$orderedOrderPrice - (int)$orderedOrderDiscountPrice - (int)$order->coupon_price;
                 }else{
                     $order->all_price = $orderedOrderPrice - $orderedOrderDiscountPrice;
                 }
@@ -978,7 +980,7 @@ class OrderController extends Controller
                     $newOrder = new Order();
                     $newOrder->price = $newOrderDetailPrice;
                     $newOrder->discount_price = $newOrderDetailDiscountPrice;
-                    $newOrder->all_price = (int)$newOrderDetailPrice - (int)$newOrderDetailDiscountPrice - (int)$newOrderDetailCouponPrice;
+                    $newOrder->all_price = (int)$newOrderDetailPrice - (int)$newOrderDetailDiscountPrice;
                     $newOrder->user_id = $order->user_id;
                     $newOrder->status = Constants::BASKED;
                     if(!$newOrder->code){
@@ -1009,7 +1011,6 @@ class OrderController extends Controller
 
         if ($order_detail=OrderDetail::where('id',$order_detail_id)->whereIn('status', [Constants::ORDER_DETAIL_BASKET, Constants::ORDER_DETAIL_ORDERED])->first()) {
             $order = $order_detail->order;
-
             $order->price = (int)$order->price - ((int)$order_detail->price * (int)$order_detail->quantity);
             $order->discount_price = (int)$order->discount_price - (int)$order_detail->discount_price;
             if(!empty($order->coupon)){
@@ -1047,9 +1048,6 @@ class OrderController extends Controller
             }
 
             $order_detail->delete();
-//            foreach($order->orderDetail as $orderDetail){
-//                $order $orderDetail->price
-//            }
 
             $test_order_detail=DB::table('order_details')->where('order_id', $order->id)->first();
            if ($test_order_detail) {
@@ -1193,11 +1191,11 @@ class OrderController extends Controller
                     "created_at"=>$order_detail->created_at,
                     "updated_at"=>$order_detail->updated_at,
                     "coupon_id"=>$order_detail->coupon_id,
-                    "size"=>$order_detail->size?[
+                    "size"=>!empty($order_detail->size)?[
                         "id"=>$order_detail->size->id,
                         "name"=>$order_detail->size->name,
                     ]:[],
-                    "color"=>$order_detail->color?[
+                    "color"=>!empty($order_detail->color)?[
                         "id"=>$order_detail->color->id,
                         "code" => $order_detail->color->code,
                         "name"=>$order_detail->color->name,
