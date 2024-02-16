@@ -284,27 +284,29 @@ class OrderController extends Controller
                                      $join->on([
                                          ['dt6.warehouse_id', '=', 'dt2.id'],
                                          ['dt6.company_id', 'is not', DB::raw('NULL')],
-                                         ['dt2.company_id', '=', 'dt6.company_id'],
+                                         ['dt2.company_id', '=', 'dt6.company_id']
                                      ]);
                                  });
                              })
+                                 ->where('dt6.type', '=', Constants::DISCOUNT_WAREHOUSE_TYPE)
+                                 ->where('start_date', '<=', date('Y-m-d H:i:s'))
+                                 ->where('end_date', '>=', date('Y-m-d H:i:s'))
                              ->orOn(function ($join){
                                  $join->on([
                                      ['dt6.product_id', '=', 'dt2.product_id'],
                                      ['dt6.product_id', 'is not', DB::raw('NULL')],
-                                     ['dt6.warehouse_id', 'is', DB::raw('NULL')],
                                      ['dt6.company_id', 'is', DB::raw('NULL')]
                                  ])
                                  ->orOn(function ($join){
                                      $join->on([
                                          ['dt6.product_id', '=', 'dt2.product_id'],
                                          ['dt6.product_id', 'is not', DB::raw('NULL')],
-                                         ['dt6.warehouse_id', 'is', DB::raw('NULL')],
                                          ['dt6.company_id', 'is not', DB::raw('NULL')],
                                          ['dt2.company_id', '=', 'dt6.company_id'],
                                      ]);
                                  });
                              })
+                             ->where('dt6.type', '=', Constants::DISCOUNT_PRODUCT_TYPE)
                              ->where('start_date', '<=', date('Y-m-d H:i:s'))
                              ->where('end_date', '>=', date('Y-m-d H:i:s'));
                          })
@@ -316,7 +318,6 @@ class OrderController extends Controller
                             'dt4.id as color_id', 'dt4.name as color_name', 'dt4.code as color_code', 'dt5.name as company_name',
                         'dt6.percent as discount_percent')
                         ->first();
-
                     $relation_type = 'warehouse_product';
                     $relation_id = $order_detail->warehouse_id;
                     $list_product = Products::find($warehouse_product->product_id);
@@ -388,9 +389,9 @@ class OrderController extends Controller
                             $join->on([
                                 ['dt5.product_id', '=', 'dt2.id'],
                                 ['dt5.product_id', 'is not', DB::raw('NULL')],
-                                ['dt5.warehouse_id', 'is', DB::raw('NULL')],
-                                ['dt5.company_id', 'is', DB::raw('NULL')]
+//                                ['dt5.warehouse_id', 'is', DB::raw('NULL')],
                             ])
+                            ->where('dt5.type', '=', Constants::DISCOUNT_PRODUCT_TYPE)
                             ->where('start_date', '<=', date('Y-m-d H:i:s'))
                             ->where('end_date', '>=', date('Y-m-d H:i:s'));
                         })
@@ -400,7 +401,6 @@ class OrderController extends Controller
                             'dt4.code as color_code', 'dt4.name as color_name', 'dt2.price as price',
                         'dt5.percent as discount_percent')
                         ->first();
-
                     if ($product) {
                         $translate_name = table_translate($product, 'product', $language);
                         if($product->image_front || $product->image_back){
