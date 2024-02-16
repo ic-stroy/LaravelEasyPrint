@@ -775,7 +775,7 @@ class OrderController extends Controller
                         case Constants::TO_ORDER_COUNT:
                             if($coupon->order_count > 0){
                                 $coupon->order_count = $coupon->order_count - 1;
-                                $order_coupon_price = $this->setOrderCoupon($coupon, $order->all_price);
+                                $order_coupon_price = (int)$this->setOrderCoupon($coupon, $order->all_price);
                                 $coupon->save();
                             }else{
                                 $message=translate_api("Coupon left 0 quantity", $language);
@@ -784,14 +784,14 @@ class OrderController extends Controller
                             break;
                         case Constants::FOR_ORDER_NUMBER:
                             if($order_count == $coupon->order_count){
-                                $order_coupon_price = $this->setOrderCoupon($coupon, $order->all_price);
+                                $order_coupon_price = (int)$this->setOrderCoupon($coupon, $order->all_price);
                             }else{
                                 $message=translate_api("Coupon for your $coupon->order_count - order this is your $order_count - order", $language);
                                 return $this->error($message, 400);
                             }
                             break;
                         default:
-                            $order_coupon_price = $this->setOrderCoupon($coupon, $order->all_price);
+                            $order_coupon_price = (int)$this->setOrderCoupon($coupon, $order->all_price);
 
                     }
 

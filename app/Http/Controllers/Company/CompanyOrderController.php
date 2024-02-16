@@ -27,6 +27,7 @@ class CompanyOrderController extends Controller
             $product_types = 0;
             $product_quantity = 0;
             $company_product_price = 0;
+            $company_discount_price = 0;
             $order_has = false;
             $order_detail_is_ordered = false;
             $products_with_anime_uploads = [];
@@ -34,27 +35,26 @@ class CompanyOrderController extends Controller
                 if($order_detail->status == Constants::ORDER_DETAIL_ORDERED){
                     $order_detail_is_ordered = true;
                 }
-                if((int)$order->coupon_price>0){
-                    if($order->coupon){
-                        $coupon_price = $this->setOrderCoupon($order->coupon, (int)$order_detail->price*(int)$order_detail->quantity-(int)$order_detail->discount_price);
-                    }else{
-                        $coupon_price = $order->coupon_price;
-                    }
-                }else{
-                    $coupon_price = 0;
-                }
-
                 $product_quantity = $product_quantity + $order_detail->quantity;
-                $company_product_price = $company_product_price + $order_detail->price*$order_detail->quantity - $order_detail->discount_price - $coupon_price;
                 $order_has = true;
-                $order_detail_all_price = (int)$order_detail->price*(int)$order_detail->quantity - (int)$order_detail->discount_price - (int)$coupon_price;
+
                 if($order_detail->warehouse_id && $order_detail->product_id == NULL &&
                     !empty($order_detail->warehouse) && $order_detail->warehouse->company_id == $user->company_id){
                     $product_types = $product_types + 1;
+
+                    $company_product_price = $company_product_price + $order_detail->price*$order_detail->quantity - $order_detail->discount_price;
+                    $order_detail_all_price = (int)$order_detail->price*(int)$order_detail->quantity - (int)$order_detail->discount_price;
+                    $company_discount_price = $company_discount_price + (int)$order_detail->discount_price;
+
                     $products[] = [$order_detail, $order_detail_all_price];
                 }elseif(!$order_detail->warehouse_id && $order_detail->product_id){
                     $product_types = $product_types + 1;
                     $uploads=Uploads::where('relation_type', Constants::PRODUCT)->where('relation_id', $order_detail->product_id)->get();
+
+                    $company_product_price = $company_product_price + $order_detail->price*$order_detail->quantity - $order_detail->discount_price;
+                    $order_detail_all_price = (int)$order_detail->price*(int)$order_detail->quantity - (int)$order_detail->discount_price;
+                    $company_discount_price = $company_discount_price + (int)$order_detail->discount_price;
+
                     foreach ($uploads as $upload){
                         if (!$upload->image) {
                             $upload->image = 'no';
@@ -67,7 +67,15 @@ class CompanyOrderController extends Controller
                     $products_with_anime[] = [$order_detail, $order_detail_all_price, $products_with_anime_uploads];
                 }
             }
-            $order_coupon_price = $order->coupon_price??0;
+            if((int)$order->coupon_price>0){
+                if($order->coupon){
+                    $order_coupon_price = $this->setOrderCoupon($order->coupon, $company_product_price);
+                }else{
+                    $order_coupon_price = $order->coupon_price??0;
+                }
+            }else{
+                $order_coupon_price = $order->coupon_price??0;
+            }
             if($order_has == true){
                 $order_data[] = [
                     'order'=>$order,
@@ -77,10 +85,11 @@ class CompanyOrderController extends Controller
                     'products'=>$products,
                     'products_with_anime'=>$products_with_anime,
                     'company_product_price'=>$company_product_price - $order_coupon_price,
+                    'order_coupon_price'=>$order_coupon_price,
+                    'company_discount_price'=>$company_discount_price
                 ];
             }
         }
-
         return view('company.order.index', ['order_data'=>$order_data, 'id'=>$id]);
     }
 

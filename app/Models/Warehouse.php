@@ -53,13 +53,13 @@ class Warehouse extends Model
 
     public function discount_withouth_expire()
     {
-        $maxValue = Discount::max('end_date');
+        $maxValue = Discount::where('type', 2)->max('end_date');
         return $this->hasOne(Discount::class, 'warehouse_id','id')->where('type', 2)->where('end_date', $maxValue);
     }
 
     public function product_discount_withouth_expire()
     {
-        $maxValue = Discount::max('end_date');
+        $maxValue = Discount::where('type', 2)->max('end_date');
         return $this->hasOne(Discount::class, 'product_id','product_id')->where('type', 1)->where('end_date', $maxValue);
     }
 }
