@@ -24,28 +24,44 @@
                     <tr>
                         <td>
                             <a class="show_page" href="{{route('company_order.index', \App\Constants::ORDERED)}}">
-                                <span>{{translate('Ordered')}}<span class="badge bg-danger">{{translate('new')}}</span></span>
+                                <span>{{translate('Ordered')}}
+                                    @if($ordered_orders > 0)
+                                        <span class="badge bg-danger"> {{translate('new')}} {{$ordered_orders}}</span>
+                                    @endif
+                                </span>
                             </a>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <a class="show_page" href="{{route('company_order.index', \App\Constants::PERFORMED)}}">
-                                {{translate('Performed')}}
+                                <span>{{translate('Performed')}}
+                                    @if($performed_orders > 0)
+                                        <span class="badge bg-success"> {{$performed_orders}}</span>
+                                    @endif
+                                </span>
                             </a>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <a class="show_page" href="{{route('company_order.index', \App\Constants::CANCELLED)}}">
-                                {{translate('Cancelled')}}
+                                <span>{{translate('Cancelled')}}
+                                    @if($cancelled_orders > 0)
+                                        <span class="badge bg-danger"> {{$cancelled_orders}}</span>
+                                    @endif
+                                </span>
                             </a>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <a class="show_page" href="{{route('company_order.index', \App\Constants::ACCEPTED_BY_RECIPIENT)}}">
-                                {{translate('Accepted by recipient')}}
+                                <span>{{translate('Accepted by recipient')}}
+                                    @if($accepted_by_recipient_orders>0)
+                                        <span class="badge bg-danger"> {{$accepted_by_recipient_orders}}</span>
+                                    @endif
+                                </span>
                             </a>
                         </td>
                     </tr>

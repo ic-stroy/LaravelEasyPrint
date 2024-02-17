@@ -165,18 +165,6 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div>
-    <div id="cancell-alert-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="text-center">
-                        <i class="dripicons-warning h1 text-danger"></i>
-                        <h4 class="mt-2">{{translate('Cancelled')}}</h4>
-                    </div>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div>
     <div id="accepted-success-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
@@ -223,7 +211,6 @@
                     @break
                 @endswitch
             </h4>
-
             @php
                 $i=0
             @endphp
@@ -246,15 +233,28 @@
                                    aria-expanded="true" aria-controls="collapseNine">
                                     <div class="row align-items-center">
                                         <div class="col-8 d-flex flex-column justify-content-center">
-                                            <span style="line-height: 2; font-size: 16px">
+                                            @if((int)$order['product_types'] < count($order['order']->orderDetail))
+                                                <h4 style="line-height: 2; font-size: 16px">
+                                                    {{translate('There are ')}}
+                                                    <b>{{count($order['order']->orderDetail)}}</b>
+                                                    {{translate('items in order. these are selling for')}}
+                                                    <b>{{$order['order']->all_price}}</b>
+                                                    @if($order['order']->coupon_price)
+                                                        {{translate('all coupon costed')}}
+                                                        <b style="color: #10C469">{{$order['order']->coupon_price}}</b>
+                                                    @endif
+                                                </h4>
+                                                <hr style="margin:4px">
+                                            @endif
+                                            <h4 style="line-height: 2; font-size: 16px">
                                                 @if($user_name){{$user_name}}@endif
-                                                    {{translate('ordered')}}
+                                                <span style="color: orange">{{translate('Ordered')}}</span>
                                                     @if($order['product_types'] != 0)
                                                         <b>{{ $order['product_types'] }}</b>
-                                                        {{translate('products are yours. you are selling for')}}
+                                                        {{translate('products are yours. you will sell for')}}
                                                         <b style="color: #10C469">{{$order['company_product_price']}}</b>
                                                         @if($order['order_coupon_price'] != 0)
-                                                            {{translate('your coupon is costed')}}
+                                                            {{translate('Your coupon is costed')}}
                                                             <b style="color: red">{{$order['order_coupon_price']}}</b>
                                                         @endif
                                                         @if($order['company_discount_price'] != 0)
@@ -262,43 +262,74 @@
                                                             <b style="color: red">{{$order['company_discount_price']}}</b>
                                                     @endif
                                                 @endif
-                                            </span>
-                                            <span style="line-height: 2; font-size: 16px">
-{{--                                                @if((int)$order['product_types'] < count($order['order']->orderDetail))--}}
-                                                    <b>{{count($order['order']->orderDetail)}}</b>
-                                                    {{translate('are all products. these are selling for')}}
-                                                    <b>{{$order['order']->all_price}}</b>
-                                                    @if($order['order']->coupon_price)
-                                                        {{translate('all coupon costed')}}
-                                                        <b style="color: #10C469">{{$order['order']->coupon_price}}</b>
+                                            </h4>
+                                            @if($order['performed_company_product_price'] != 0)
+                                                <hr style="margin:4px">
+                                                <h4 style="line-height: 2; font-size: 16px">
+                                                    <span style="color: #10C469">{{translate('Performed')}}</span>
+                                                    @if($order['performed_product_types'] != 0)
+                                                        <b>{{ $order['performed_product_types'] }}</b>
+                                                        {{translate('you are selling for')}}
+                                                        <b style="color: #10C469">{{$order['performed_company_product_price']}}</b>
+                                                        @if($order['performed_order_coupon_price'] != 0)
+                                                            {{translate('your coupon is costed')}}
+                                                            <b style="color: red">{{$order['performed_order_coupon_price']}}</b>
+                                                        @endif
+                                                        @if($order['performed_company_discount_price'] != 0)
+                                                            {{translate('your discount is costed')}}
+                                                            <b style="color: red">{{$order['performed_company_discount_price']}}</b>
+                                                        @endif
                                                     @endif
-{{--                                                @endif--}}
+                                                </h4>
+                                            @elseif($order['order']->status == \App\Constants::CANCELLED)
+                                                <hr style="margin:4px">
+                                                <b style="line-height: 2; font-size: 16px; color: red">{{translate('You cancelled all products !')}}</b>
+                                            @endif
+                                        </div>
+                                        <div class="col-4 d-flex justify-content-between">
+                                                @if($order['order']->status)
+                                                    @switch($order['order']->status)
+                                                        @case(\App\Constants::ORDERED)
+                                                            <span style="line-height: 1; font-size: 16px">
+                                                                <b>{{translate('ORDERED')}}</b>
+                                                            </span>
+                                                            <span class="badge bg-danger">
+                                                                {{translate('New')}}
+                                                            </span>
+                                                        @break
+                                                        @case(\App\Constants::PERFORMED)
+                                                            <span style="line-height: 1; font-size: 16px">
+                                                                <b>{{translate('PERFORMED')}}</b>
+                                                            </span>
+                                                            <span class="badge bg-success">
+                                                                {{translate('In progress')}}
+                                                            </span>
+                                                        @break
+                                                        @case(\App\Constants::CANCELLED)
+                                                            <span style="line-height: 1; font-size: 16px">
+                                                                <b>{{translate('CANCELLED')}}</b>
+                                                            </span>
+                                                            <span class="badge bg-danger">
+                                                                {{translate('Cancelled')}}
+                                                            </span>
+                                                        @break
+                                                        @case(\App\Constants::ACCEPTED_BY_RECIPIENT)
+                                                            <span style="line-height: 1; font-size: 16px">
+                                                                <b>{{translate('ACCEPTED BY RECIPIENT')}}</b>
+                                                            </span>
+                                                            <span class="badge bg-info">>
+                                                                {{translate('Delivered')}}
+                                                            </span>
+                                                        @break
+                                                    @endswitch
+                                                @endif
+{{--                                            @if($order['order_detail_is_ordered'] == true)--}}
+{{--                                                <span class="badge bg-danger">{{translate('new')}}</span>--}}
+{{--                                            @endif--}}
+                                            <span>
+                                                <i class="mdi mdi-chevron-down accordion-arrow"></i>
                                             </span>
                                         </div>
-                                        <span class="col-2" style="line-height: 2; font-size: 16px">
-                                            @if($order['order']->status)
-                                                @switch($order['order']->status)
-                                                    @case(\App\Constants::ORDERED)
-                                                        <b>{{translate('ORDERED')}}</b>
-                                                    @break
-                                                    @case(\App\Constants::PERFORMED)
-                                                        <b>{{translate('PERFORMED')}}</b>
-                                                    @break
-                                                    @case(\App\Constants::CANCELLED)
-                                                        <b>{{translate('CANCELLED')}}</b>
-                                                    @break
-                                                    @case(\App\Constants::ACCEPTED_BY_RECIPIENT)
-                                                        <b>{{translate('ACCEPTED BY RECIPIENT')}}</b>
-                                                    @break
-                                                @endswitch
-                                            @endif
-                                        </span>
-                                        @if($order['order_detail_is_ordered'] == true)
-                                            <span class="col-1 badge bg-danger">{{translate('new')}}</span>
-                                        @endif
-                                        <span class="col-1">
-                                            <i class="mdi mdi-chevron-down accordion-arrow"></i>
-                                        </span>
                                     </div>
                                 </a>
                             </span>
@@ -370,29 +401,29 @@
                                     </div>
                                     <div class="col-1 d-flex justify-content-around align-items-center">
                                         @switch($products_with_anime[0]->status)
-                                            @case(\App\Constants::ORDER_DETAIL_ORDERED):
+                                            @case(\App\Constants::ORDER_DETAIL_ORDERED)
                                                 <div>
-                                                    <span class="badge bg-danger">{{translate('new')}}</span>
+                                                    <span class="badge bg-danger">{{translate('New')}}</span>
                                                 </div>
                                             @break
-                                            @case(\App\Constants::ORDER_DETAIL_PERFORMED):
+                                            @case(\App\Constants::ORDER_DETAIL_PERFORMED)
                                                 <div>
-                                                    <span class="badge bg-success">{{translate('performed')}}</span>
+                                                    <span class="badge bg-success">{{translate('Performed')}}</span>
                                                 </div>
                                             @break
-                                            @case(\App\Constants::ORDER_DETAIL_CANCELLED):
+                                            @case(\App\Constants::ORDER_DETAIL_CANCELLED)
                                                 <div>
-                                                    <span class="badge bg-danger">{{translate('cancelled')}}</span>
+                                                    <span class="badge bg-danger">{{translate('Cancelled')}}</span>
                                                 </div>
                                             @break
-                                            {{--                                            @case(\App\Constants::ORDER_DETAIL_PERFORMED_BY_SUPERADMIN):--}}
-                                            {{--                                                <div>--}}
-                                            {{--                                                    <span class="badge bg-danger">{{translate('new')}}</span>--}}
-                                            {{--                                                </div> --}}
-                                            {{--                                            @break--}}
-                                            @case(\App\Constants::ORDER_DETAIL_ACCEPTED_BY_RECIPIENT):
+                                            @case(\App\Constants::ORDER_DETAIL_PERFORMED_BY_SUPERADMIN):
                                                 <div>
-                                                    <span class="badge bg-info">{{translate('finished')}}</span>
+                                                    <span class="badge bg-danger">{{translate('Performed by superadmin')}}</span>
+                                                </div>
+                                            @break
+                                            @case(\App\Constants::ORDER_DETAIL_ACCEPTED_BY_RECIPIENT)
+                                                <div>
+                                                    <span class="badge bg-info">{{translate('Finished')}}</span>
                                                 </div>
                                             @break
                                         @endswitch
@@ -418,7 +449,6 @@
                                                             <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products_with_anime[0]->id)}}")' data-url=""><i class="fa fa-times"></i></button>
                                                         @break
                                                         @case(\App\Constants::ORDER_DETAIL_PERFORMED)
-                                                            <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#accepted-success-modal" title="{{translate('Performed by admin')}}"><i class="fa fa-ellipsis-h"></i></button>
                                                         {{--                                                    <button type="button" class="btn btn-warning delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#waiting-to-perform-alert-modal" title="{{translate('Waiting for superadmin performing')}}"><i class="fa fa-question"></i></button>--}}
                                                             <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products_with_anime[0]->id)}}")' data-url=""><i class="fa fa-times"></i></button>
                                                         @break
@@ -435,7 +465,6 @@
                                                                     )' data-url="">
                                                                 <i class="fa fa-check"></i>
                                                             </button>
-                                                            <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#cancell-alert-modal" title="{{translate('Cancelled')}}"><i class="fa fa-ellipsis-h"></i></button>
                                                         @break
                                                         @case(\App\Constants::ORDER_DETAIL_PERFORMED_BY_SUPERADMIN)
                                                             <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#accepted-success-modal" title="{{translate('Performed by admin')}}"><i class="fa fa-ellipsis-h"></i></button>
@@ -446,10 +475,37 @@
                                                     @endswitch
                                                 @break
                                                 @case(\App\Constants::PERFORMED)
-                                                    <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#accepted-success-modal" title="{{translate('Performed by admin')}}">{{translate('Performed')}}</button>
+                                                @switch($products_with_anime[0]->status)
+                                                    @case(\App\Constants::ORDER_DETAIL_PERFORMED)
+                                                        <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products_with_anime[0]->id)}}")' data-url="">{{translate('Cancel')}}</button>
+                                                    @break
+                                                    @case(\App\Constants::ORDER_DETAIL_CANCELLED)
+                                                        <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#success-alert-modal" data-url=""
+                                                                onclick='accepting_anime_order(
+                                                                    "{{$products_with_anime[0]->quantity??''}}",
+                                                                    "{{!empty($products_with_anime[0]->product)?$products_with_anime[0]->product->name:''}}",
+                                                                    "{{!empty($products_with_anime[0]->size)?$products_with_anime[0]->size->name:''}}",
+                                                                    "{{!empty($products_with_anime[0]->color)?$products_with_anime[0]->color->name:''}}",
+                                                                    "{{isset($images[0])?$images[0]:''}}",
+                                                                    "{{isset($images[1])?$images[1]:''}}",
+                                                                    "{{route('perform_order_detail', $products_with_anime[0]->id)}}")' >
+                                                            {{translate('Perform')}}
+                                                        </button>
+                                                    @break
+                                                @endswitch
                                                 @break
                                                 @case(\App\Constants::CANCELLED)
-                                                    <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#cancell-alert-modal" title="{{translate('Cancelled')}}">{{translate('Cancelled')}}</button>
+                                                <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#success-alert-modal" data-url=""
+                                                        onclick='accepting_order(
+                                                            "{{$products_with_anime[0]->quantity??''}}",
+                                                            "{{!empty($products_with_anime[0]->product)?$products_with_anime[0]->product->name:''}}",
+                                                            "{{!empty($products_with_anime[0]->size)?$products_with_anime[0]->size->name:''}}",
+                                                            "{{!empty($products_with_anime[0]->color)?$products_with_anime[0]->color->name:''}}",
+                                                            "{{isset($images[0])?$images[0]:''}}",
+                                                            "{{isset($images[1])?$images[1]:''}}",
+                                                            "{{route('perform_order_detail', $products_with_anime[0]->id)}}")' >
+                                                    {{translate('Perform')}}
+                                                </button>
                                                 @break
                                             @endswitch
                                         </div>
@@ -514,27 +570,27 @@
                                         @switch($products[0]->status)
                                             @case(\App\Constants::ORDER_DETAIL_ORDERED):
                                                 <div>
-                                                    <span class="badge bg-danger">{{translate('new')}}</span>
+                                                    <span class="badge bg-danger">{{translate('New')}}</span>
                                                 </div>
                                             @break
-                                            @case(\App\Constants::ORDER_DETAIL_PERFORMED):
+                                            @case(\App\Constants::ORDER_DETAIL_PERFORMED)
                                                 <div>
-                                                    <span class="badge bg-success">{{translate('performed')}}</span>
+                                                    <span class="badge bg-success">{{translate('Performed')}}</span>
                                                 </div>
                                             @break
-                                            @case(\App\Constants::ORDER_DETAIL_CANCELLED):
+                                            @case(\App\Constants::ORDER_DETAIL_CANCELLED)
                                                 <div>
-                                                    <span class="badge bg-danger">{{translate('cancelled')}}</span>
+                                                    <span class="badge bg-danger">{{translate('Cancelled')}}</span>
                                                 </div>
                                             @break
-{{--                                            @case(\App\Constants::ORDER_DETAIL_PERFORMED_BY_SUPERADMIN):--}}
-{{--                                                <div>--}}
-{{--                                                    <span class="badge bg-danger">{{translate('new')}}</span>--}}
-{{--                                                </div> --}}
-{{--                                            @break--}}
-                                            @case(\App\Constants::ORDER_DETAIL_ACCEPTED_BY_RECIPIENT):
+                                            @case(\App\Constants::ORDER_DETAIL_PERFORMED_BY_SUPERADMIN)
                                                 <div>
-                                                    <span class="badge bg-info">{{translate('finished')}}</span>
+                                                    <span class="badge bg-danger">{{translate('Performed by superadmin')}}</span>
+                                                </div>
+                                            @break
+                                            @case(\App\Constants::ORDER_DETAIL_ACCEPTED_BY_RECIPIENT)
+                                                <div>
+                                                    <span class="badge bg-info">{{translate('Finished')}}</span>
                                                 </div>
                                             @break
                                         @endswitch
@@ -548,50 +604,88 @@
                                                     $product_name = $products[0]->warehouse->product->name??'';
                                                 }
                                             @endphp
-
-                                            @switch($products[0]->status)
-                                                @case(\App\Constants::ORDER_DETAIL_ORDERED)
+                                            @switch($id)
+                                                @case(\App\Constants::ORDERED)
+                                                    @switch($products[0]->status)
+                                                        @case(\App\Constants::ORDER_DETAIL_ORDERED)
+                                                            <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#success-alert-modal" data-url=""
+                                                                onclick='accepting_order(
+                                                                    "{{$products[0]->quantity}}",
+                                                                    "{{$products[0]->warehouse->quantity - $products[0]->quantity }}",
+                                                                    "{{!empty($products[0]->color)?$products[0]->color->name:''}}",
+                                                                    "{{!empty($products[0]->size)?$products[0]->size->name:''}}",
+                                                                    "{{$product_name}}",
+                                                                    "{{isset($images[0])?$images[0]:''}}",
+                                                                    "{{isset($images[1])?$images[1]:''}}",
+                                                                    "{{route('perform_order_detail', $products[0]->id)}}"
+                                                                )'>
+                                                                <i class="fa fa-check"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products[0]->id)}}")' data-url=""><i class="fa fa-times"></i></button>
+                                                        @break
+                                                        @case(\App\Constants::ORDER_DETAIL_PERFORMED)
+                                                        {{--                                                    <button type="button" class="btn btn-warning delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#waiting-to-perform-alert-modal" title="{{translate('Waiting for superadmin performing')}}"><i class="fa fa-question"></i></button>--}}
+                                                            <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products[0]->id)}}")' data-url=""><i class="fa fa-times"></i></button>
+                                                        @break
+                                                        @case(\App\Constants::ORDER_DETAIL_CANCELLED)
+                                                            <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#success-alert-modal" data-url=""
+                                                                onclick='accepting_order(
+                                                                "{{$products[0]->quantity}}",
+                                                                "{{$products[0]->warehouse->quantity - $products[0]->quantity }}",
+                                                                "{{!empty($products[0]->color)?$products[0]->color->name:''}}",
+                                                                "{{!empty($products[0]->size)?$products[0]->size->name:''}}",
+                                                                "{{$product_name}}",
+                                                                "{{isset($images[0])?$images[0]:''}}",
+                                                                "{{isset($images[1])?$images[1]:''}}",
+                                                                "{{route('perform_order_detail', $products[0]->id)}}"
+                                                                    )'>
+                                                                <i class="fa fa-check"></i>
+                                                            </button>
+                                                        @break
+                                                        @case(\App\Constants::ORDER_DETAIL_PERFORMED_BY_SUPERADMIN)
+                                                            <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#accepted-success-modal" title="{{translate('Performed by admin')}}"><i class="fa fa-ellipsis-h"></i></button>
+                                                        @break
+                                                        @case(\App\Constants::ORDER_DETAIL_ACCEPTED_BY_RECIPIENT)
+                                                            <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#accepted-by-recepient-success-modal" title="{{translate('Order accepted by recipient')}}"><i class="fa fa-ellipsis-h"></i></button>
+                                                        @break
+                                                    @endswitch
+                                                @break
+                                                @case(\App\Constants::PERFORMED)
+                                                    @switch($products[0]->status)
+                                                        @case(\App\Constants::ORDER_DETAIL_PERFORMED)
+                                                            <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products[0]->id)}}")' data-url="">{{translate('Cancel')}}</button>
+                                                        @break
+                                                        @case(\App\Constants::ORDER_DETAIL_CANCELLED)
+                                                        <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#success-alert-modal" data-url=""
+                                                                onclick='accepting_order(
+                                                                    "{{$products[0]->quantity}}",
+                                                                    "{{$products[0]->warehouse->quantity - $products[0]->quantity }}",
+                                                                    "{{!empty($products[0]->color)?$products[0]->color->name:''}}",
+                                                                    "{{!empty($products[0]->size)?$products[0]->size->name:''}}",
+                                                                    "{{$product_name}}",
+                                                                    "{{isset($images[0])?$images[0]:''}}",
+                                                                    "{{isset($images[1])?$images[1]:''}}",
+                                                                    "{{route('perform_order_detail', $products[0]->id)}}"
+                                                                    )'>
+                                                            {{translate('Perform')}}
+                                                        </button>
+                                                    @break
+                                                    @endswitch
+                                                @break
+                                                @case(\App\Constants::CANCELLED)
                                                     <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#success-alert-modal" data-url=""
-                                                        onclick='accepting_order(
-                                                            "{{$products[0]->quantity}}",
-                                                            "{{$products[0]->warehouse->quantity - $products[0]->quantity }}",
-                                                            "{{!empty($products[0]->color)?$products[0]->color->name:''}}",
-                                                            "{{!empty($products[0]->size)?$products[0]->size->name:''}}",
-                                                            "{{$product_name}}",
-                                                            "{{isset($images[0])?$images[0]:''}}",
-                                                            "{{isset($images[1])?$images[1]:''}}",
-                                                            "{{route('perform_order_detail', $products[0]->id)}}"
-                                                        )'>
-                                                        <i class="fa fa-check"></i>
+                                                            onclick='accepting_order(
+                                                                "{{$products[0]->quantity}}",
+                                                                "{{$products[0]->warehouse->quantity - $products[0]->quantity }}",
+                                                                "{{!empty($products[0]->color)?$products[0]->color->name:''}}",
+                                                                "{{!empty($products[0]->size)?$products[0]->size->name:''}}",
+                                                                "{{$product_name}}",
+                                                                "{{isset($images[0])?$images[0]:''}}",
+                                                                "{{isset($images[1])?$images[1]:''}}",
+                                                                "{{route('perform_order_detail', $products[0]->id)}}"
+                                                                )'>
+                                                        {{translate('Perform')}}
                                                     </button>
-                                                    <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products[0]->id)}}")' data-url=""><i class="fa fa-times"></i></button>
-                                                @break
-                                                @case(\App\Constants::ORDER_DETAIL_PERFORMED)
-                                                    <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#accepted-success-modal" title="{{translate('Performed by admin')}}"><i class="fa fa-ellipsis-h"></i></button>
-                                                {{--                                                    <button type="button" class="btn btn-warning delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#waiting-to-perform-alert-modal" title="{{translate('Waiting for superadmin performing')}}"><i class="fa fa-question"></i></button>--}}
-                                                    <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products[0]->id)}}")' data-url=""><i class="fa fa-times"></i></button>
-                                                @break
-                                                @case(\App\Constants::ORDER_DETAIL_CANCELLED)
-                                                    <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#success-alert-modal" data-url=""
-                                                        onclick='accepting_order(
-                                                        "{{$products[0]->quantity}}",
-                                                        "{{$products[0]->warehouse->quantity - $products[0]->quantity }}",
-                                                        "{{!empty($products[0]->color)?$products[0]->color->name:''}}",
-                                                        "{{!empty($products[0]->size)?$products[0]->size->name:''}}",
-                                                        "{{$product_name}}",
-                                                        "{{isset($images[0])?$images[0]:''}}",
-                                                        "{{isset($images[1])?$images[1]:''}}",
-                                                        "{{route('perform_order_detail', $products[0]->id)}}"
-                                                            )'>
-                                                        <i class="fa fa-check"></i>
-                                                    </button>
-                                                    <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#cancell-alert-modal" title="{{translate('Cancelled')}}"><i class="fa fa-ellipsis-h"></i></button>
-                                                @break
-                                                @case(\App\Constants::ORDER_DETAIL_PERFORMED_BY_SUPERADMIN)
-                                                    <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#accepted-success-modal" title="{{translate('Performed by admin')}}"><i class="fa fa-ellipsis-h"></i></button>
-                                                @break
-                                                @case(\App\Constants::ORDER_DETAIL_ACCEPTED_BY_RECIPIENT)
-                                                    <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#accepted-by-recepient-success-modal" title="{{translate('Order accepted by recipient')}}"><i class="fa fa-ellipsis-h"></i></button>
                                                 @break
                                             @endswitch
                                         </div>
