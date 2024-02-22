@@ -85,7 +85,6 @@ class WarehousePrintController extends Controller
     public function destroy(string $id)
     {
         $model = Warehouse::where('type', Constants::PRINT_TYPE)->find($id);
-
         if (!$model->image_front) {
             $model->image_front = 'no';
         }

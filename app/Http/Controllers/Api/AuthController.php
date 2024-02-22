@@ -236,9 +236,14 @@ class AuthController extends Controller
         $token = $user->createToken('myapptoken')->plainTextToken;
         $user->token = $token;
         $user->save();
+        $is_admin = false;
+        if(in_array($user->role_id, [2, 3])){
+            $is_admin = true;
+        }
         $data = [
             'user' => $user,
-            'token' => $token
+            'token' => $token,
+            'is_admin'=>$is_admin
         ];
         $message = translate_api('success', $language);
         return $this->success($message, 200, $data);
