@@ -66,17 +66,42 @@ class ProductController extends Controller
 //            ->select(DB::raw('MAX(id) as id')) // assuming 'id' is the primary key
             ->groupBy('company_id', 'product_id')
             ->whereNull('deleted_at')
+            ->where('type', 0)
             ->pluck(DB::raw('MAX(id) as id'))
             ->all();
+        $warehouse_anime_products_id = DB::table('warehouses')
+            ->whereNull('deleted_at')
+            ->where('type', 1)
+            ->pluck('id')
+            ->all();
         $warehouse_products = [];
-        $warehouse_products_ = Warehouse::whereIn('id', $warehouse_products_id)->get();
+        $warehouse_products_ = Warehouse::whereIn('id', array_merge($warehouse_products_id, $warehouse_anime_products_id))->get();
 
         foreach ($warehouse_products_ as $warehouse_product_) {
-            if (count($this->getImages($warehouse_product_, 'warehouse'))>0) {
-                $warehouseProducts = $this->getImages($warehouse_product_, 'warehouse');
-            } else {
-                $warehouseProducts = $this->getImages($warehouse_product_->product, 'product');
+            if($warehouse_product_->type == 0){
+                if (count($this->getImages($warehouse_product_, 'warehouse'))>0) {
+                    $warehouseProducts = $this->getImages($warehouse_product_, 'warehouse');
+                } else {
+                    $warehouseProducts = $this->getImages($warehouse_product_->product, 'product');
+                }
+            }else{
+                $warehouseProducts = [];
+                if (!$warehouse_product_->image_front) {
+                    $warehouse_product_->image_front = 'no';
+                }
+                $model_image_front = storage_path('app/public/warehouse/'.$warehouse_product_->image_front);
+                if (!$warehouse_product_->image_back) {
+                    $warehouse_product_->image_back = 'no';
+                }
+                $model_image_back = storage_path('app/public/warehouse/'.$warehouse_product_->image_back);
+                if(file_exists($model_image_front)){
+                    $warehouseProducts[] = asset("/storage/warehouse/$warehouse_product_->image_front");
+                }
+                if(file_exists($model_image_back)){
+                    $warehouseProducts[] = asset("/storage/warehouse/$warehouse_product_->image_back");
+                }
             }
+
             $translate_name=table_translate($warehouse_product_,'warehouse_category', $language);
             // dd($translate_name);
             //  join qilish kere
