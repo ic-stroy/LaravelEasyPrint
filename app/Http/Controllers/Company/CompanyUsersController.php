@@ -161,7 +161,9 @@ class CompanyUsersController extends Controller
                 $model->password = Hash::make($request->new_password);
             }
         }
-        $model->role_id = 3;
+        if(!$request->user_edit == 1){
+            $model->role_id = 3;
+        }
         $model->personal_info_id = $personal_info->id;
         $model->phone_number = $request->phone_number;
         $model->language = 'ru';
@@ -179,7 +181,12 @@ class CompanyUsersController extends Controller
         $address->longitude = $request->address_long;
         $address->user_id = $model->id;
         $address->save();
-        return redirect()->route('company_user.index')->with('status', translate('Successfully updated'));
+
+        if($request->user_edit == 1){
+            return redirect()->route('getCompanyUser')->with('status', translate('Successfully updated'));
+        }else {
+            return redirect()->route('company_user.index')->with('status', translate('Successfully updated'));
+        }
     }
 
     public function imageSave($file, $personal_info, $text){
@@ -235,4 +242,45 @@ class CompanyUsersController extends Controller
         return redirect()->route('company_user.index')->with('status', translate('Successfully deleted'));
     }
 
+    public function getUser(){
+        $model = Auth::user();
+        $year_old = '';
+        if(isset($model->personalInfo->birth_date)){
+            $birth_date_array = explode(' ', $model->personalInfo->birth_date);
+            $now_time = strtotime('now');
+            $birth_time = strtotime($birth_date_array[0]);
+            $month = date('m', ($now_time));
+            $day = date('d', ($now_time));
+            $birth_month = date('m', ($birth_time));
+            $birth_date = date('d', ($birth_time));
+            $year = date('Y', ($now_time));
+            $birth_year = date('Y', ($birth_time));
+            $year_old = 0;
+            if($year > $birth_year){
+                $year_old = $year - $birth_year - 1;
+                if($month > $birth_month){
+                    $year_old = $year_old +1;
+                }elseif($month == $birth_month){
+                    if($day >= $birth_date){
+                        $year_old = $year_old +1;
+                    }
+                }
+            }
+        }
+        return view('company-user.show', [
+            'model' => $model,
+            'year_old' => $year_old
+        ]);
+    }
+
+    public function editUser(){
+        $companies = Company::all();
+        $user = Auth::user();
+        $roles = Role::select('id', 'name')->get();
+        return view('company-user.edit', [
+            'user' => $user,
+            'roles' => $roles,
+            'companies'=>$companies
+        ]);
+    }
 }

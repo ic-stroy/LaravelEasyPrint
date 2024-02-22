@@ -1,4 +1,4 @@
-@extends('layout.layout')
+@extends('company.layout.layout')
 
 @section('title')
     {{-- Your page title --}}
@@ -25,7 +25,7 @@
                     </ul>
                 </div>
             @endif
-            <form action="{{route('user.update', $user->id)}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
+            <form action="{{route('company_user.update', $user->id)}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="row">
@@ -91,38 +91,18 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="mb-3 col-6">
-                        <label for="role" class="form-label">{{__("Users' role")}}</label><br>
-                        <select id="role_id" class="form-select" name="role_id">
-                            <option value="" disabled>{{translate('Choose..')}}</option>
-                            @foreach($roles as $role)
-                                <option {{$user->role_id == $role->id?'selected':''}} value="{{$role->id}}">{{$role->name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3 col-6 display-none" id="company_content">
-                        <label for="company_id" class="form-label">{{__("Select Company")}}</label><br>
-                        <select id="company_id" class="form-select" name="company_id">
-                            <option value="" {{!($user->company_id)?'selected':''}} disabled>{{translate('Choose..')}}</option>
-                            @foreach($companies as $company)
-                                <option value="{{$company->id}}" {{$user->company_id==$company->id??'selected'}}>{{$company->name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3 col-6">
+                    <div class="mb-3 col-4">
                         <label class="form-label">{{translate('Birth date')}}</label>
                         @php
                             $birth_date = explode(' ', $user->personalInfo->birth_date??'');
                         @endphp
                         <input type="date" class="form-control" name="birth_date" value="{{$birth_date[0]}}"/>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="mb-3 col-6">
+                    <div class="mb-3 col-4">
                         <label class="form-label">{{translate('Login')}}</label>
                         <input type="email" class="form-control" name="email" required value="{{$user->email??''}}"/>
                     </div>
-                    <div class="mb-3 col-6">
+                    <div class="mb-3 col-4">
                         <label class="form-label">{{translate('Current password')}}</label>
                         <input type="password" class="form-control" name="password" value=""/>
                     </div>
@@ -163,6 +143,7 @@
                 <input type="hidden" name="district" id="district" value="{{$user->address->district??''}}">
                 <input type="hidden" name="address_lat" id="address_lat" value="{{$user->address->latitude??''}}">
                 <input type="hidden" name="address_long" id="address_long" value="{{$user->address->longitude??''}}">
+                <input type="hidden" name="user_edit" value="1">
                 <div class="mt-2">
                     <button type="submit" class="btn btn-primary waves-effect waves-light">{{translate('Update')}}</button>
                     <button type="reset" class="btn btn-secondary waves-effect">{{translate('Cancel')}}</button>
@@ -174,40 +155,12 @@
     <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
     <script>
         let page = true
-        let company_content = document.getElementById('company_content')
-        let company_id = document.getElementById('company_id')
-        let role_id = document.getElementById('role_id')
-        if([2, 3].includes(parseInt(role_id.value))){
-            if(company_content.classList.contains('display-none')){
-                company_content.classList.remove('display-none')
-            }
-            if(!company_id.hasAttribute('required')){
-                company_id.required = true
-            }
-        }
-        role_id.addEventListener('change', function(){
-            if([2, 3].includes(parseInt(role_id.value))){
-                if(company_content.classList.contains('display-none')){
-                    company_content.classList.remove('display-none')
-                }
-                if(!company_id.hasAttribute('required')){
-                    company_id.required = true
-                }
-            }else{
-                if(!company_content.classList.contains('display-none')){
-                    company_content.classList.add('display-none')
-                }
-                if(company_id.hasAttribute('required')){
-                    company_id.required = false
-                }
-            }
-        })
         @if(isset($user->address) && isset($user->address->cities))
-            let current_region = "{{$user->address->cities->region->id??''}}"
-            let current_district = "{{$user->address->cities->id??''}}"
+        let current_region = "{{$user->address->cities->region->id??''}}"
+        let current_district = "{{$user->address->cities->id??''}}"
         @else
-            let current_region = ''
-            let current_district = ''
+        let current_region = ''
+        let current_district = ''
         @endif
         let current_latitude = "{{$user->address->latitude??''}}"
         let current_longitude = "{{$user->address->longitude??''}}"

@@ -163,6 +163,7 @@
                 <input type="hidden" name="district" id="district" value="{{$user->address->district??''}}">
                 <input type="hidden" name="address_lat" id="address_lat" value="{{$user->address->latitude??''}}">
                 <input type="hidden" name="address_long" id="address_long" value="{{$user->address->longitude??''}}">
+                <input type="hidden" name="user_edit" value="1">
                 <div class="mt-2">
                     <button type="submit" class="btn btn-primary waves-effect waves-light">{{translate('Update')}}</button>
                     <button type="reset" class="btn btn-secondary waves-effect">{{translate('Cancel')}}</button>

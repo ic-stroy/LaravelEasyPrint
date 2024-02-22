@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Constants;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -44,6 +45,14 @@ class Warehouse extends Model
     public function discount()
     {
         return $this->hasOne(Discount::class, 'warehouse_id','id')->where('type', 2)->where('start_date', '<=', date('Y-m-d H:i:s'))->where('end_date', '>=', date('Y-m-d H:i:s'));
+    }
+
+    public function uploads(){
+        return $this->hasMany(Uploads::class, 'relation_id', 'id');
+    }
+
+    public function company(){
+        return $this->hasOne(Company::class, 'id', 'company_id');
     }
 
     public function product_discount()

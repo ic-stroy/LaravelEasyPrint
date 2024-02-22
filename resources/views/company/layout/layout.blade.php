@@ -201,7 +201,9 @@
                 <a class="nav-link dropdown-toggle waves-effect waves-light" data-bs-toggle="dropdown"
                    href="#" role="button" aria-haspopup="false" aria-expanded="false">
                     <i class="fe-bell noti-icon"></i>
-                    <span class="badge bg-danger rounded-circle noti-icon-badge">{{count($current_user->unreadnotifications)}}</span>
+                    @if(count($current_user->unreadnotifications)>0)
+                        <span class="badge bg-danger rounded-circle noti-icon-badge">{{count($current_user->unreadnotifications)}}</span>
+                    @endif
                 </a>
                 <div class="dropdown-menu dropdown-menu-end dropdown-lg">
 
@@ -342,25 +344,25 @@
 
             <!-- User box -->
             <div class="user-box text-center">
-                {{--                    @if(isset($current_user->personalInfo))--}}
-                {{--                        @php--}}
-                {{--                        if(!isset($current_user->personalInfo->avatar)){--}}
-                {{--                            $current_user->personalInfo->avatar = 'no';--}}
-                {{--                        }--}}
-                {{--                            $sms_avatar = storage_path('app/public/user/'.$current_user->personalInfo->avatar);--}}
-                {{--                        @endphp--}}
-                {{--                        @if(file_exists($sms_avatar))--}}
-                {{--                            <img class="rounded-circle img-thumbnail avatar-md" src="{{asset('storage/user/'.$current_user->personalInfo->avatar)}}" alt="">--}}
-                {{--                        @else--}}
-                <img class="rounded-circle img-thumbnail avatar-md" src="{{asset('assets/images/man.jpg')}}" alt="">
-                {{--                        @endif--}}
-                {{--                    @endif--}}
+                @if(isset($current_user->personalInfo) && !empty($current_user->personalInfo))
+                    @php
+                        if(!$current_user->personalInfo->avatar){
+                            $current_user->personalInfo->avatar = 'no';
+                        }
+                        $sms_avatar = storage_path('app/public/user/'.$current_user->personalInfo->avatar);
+                    @endphp
+                    @if(file_exists($sms_avatar))
+                        <img class="rounded-circle img-thumbnail avatar-md" src="{{asset('storage/user/'.$current_user->personalInfo->avatar)}}" alt="">
+                    @else
+                        <img class="rounded-circle img-thumbnail avatar-md" src="{{asset('assets/images/man.jpg')}}" alt="">
+                    @endif
+                @endif
                 <div class="dropdown">
                     <a href="#" class="user-name dropdown-toggle h5 mt-2 mb-1 d-block"
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        {{--                            @if(isset($current_user) && isset($current_user->personalInfo))--}}
-                        {{--                                {{$current_user?$current_user->personalInfo->first_name:''}} {{$current_user?$current_user->personalInfo->last_name:''}}--}}
-                        {{--                            @endif--}}
+                        @if(!empty($current_user) && !empty($current_user->personalInfo))
+                            {{$current_user->personalInfo->first_name??''}} {{$current_user->personalInfo->last_name??''}}
+                        @endif
                     </a>
                     <div class="dropdown-menu user-pro-dropdown">
 
@@ -390,9 +392,7 @@
                 <ul class="list-inline">
                     <li class="list-inline-item dropdown notification-list topbar-dropdown">
                         <a class="nav-link dropdown-toggle nav-user d-flex me-0 waves-effect waves-light mt-8"
-                           data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false"
-                           aria-expanded="false">
-                            <i class="mdi mdi-cog"></i>
+                           href="{{route('getCompanyUser')}}"><i class="mdi mdi-cog"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-center profile-dropdown ">
                             <!-- item-->
@@ -435,14 +435,17 @@
 
                     <li>
                         <a href="#catalog" data-bs-toggle="collapse">
-                            <i class="mdi mdi-car-outline"></i>
-                            <span> {{ translate('Catalog') }} </span>
+                            <i class="mdi mdi-warehouse"></i>
+                            <span> {{ translate('Warehouse') }} </span>
                             <span class="menu-arrow"></span>
                         </a>
                         <div class="collapse" id="catalog">
                             <ul class="nav-second-level">
                                 <li>
-                                    <a href="{{route('warehouse.category')}}">{{ translate('Warehouse') }}</a>
+                                    <a href="{{route('warehouse.category')}}">{{ translate('Products') }}</a>
+                                </li>
+                                <li>
+                                    <a href="{{route('print.category')}}">{{ translate('Print products') }}</a>
                                 </li>
                             </ul>
                         </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cities;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
 class HomeController extends Controller
@@ -25,6 +26,10 @@ class HomeController extends Controller
      */
     public function index(){
 
+        $user = Auth::user();
+        $token = $user->createToken('myapptoken')->plainTextToken;
+        $user->token = $token;
+        $user->save();
         return view('index');
     }
 

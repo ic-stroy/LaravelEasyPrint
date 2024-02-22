@@ -1,4 +1,4 @@
-@extends('layout.layout')
+@extends('company.layout.layout')
 
 @section('title')
     {{-- Your page title --}}
@@ -18,7 +18,8 @@
         <div class="card-body">
             <h4 class="mt-0 header-title">{{translate('User informations')}}</h4>
             <div class="dropdown float-end">
-{{--                <a class="form_functions btn btn-success" href="{{route('user.create')}}">{{translate('Create')}}</a>--}}
+
+                <a class="form_functions btn btn-info" href="{{route('editCompanyUser')}}"><i class="fe-edit-2"></i></a>
             </div>
             <div class="account">
                 <div class="profile_box">
@@ -46,7 +47,12 @@
                                 </b>
                             </p>
                             <p>{{translate('Phone').': '}}<b>{{$model->phone_number??''}}</b></p>
-                            <p>{{translate('Age').': '}}<b>{{$year_old??''}}</b></p>
+                            @if($year_old !=0)
+                                <p>{{translate('Age').': '}}<b>{{$year_old}}</b></p>
+                            @endif
+                            @if(!empty($model->company))
+                                <p>{{translate('Company').': '}}<b>{{$model->company->name}}</b></p>
+                            @endif
                         </div>
                     </div>
                     <div class="profile_box_content">
@@ -74,6 +80,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div style="width: auto;">
                             <div class="d-flex justify-content-between" style="align-items: center">
                                 <h3 class="text_name">{{translate('Full Name')}}:</h3>
@@ -97,7 +104,7 @@
                                 </div>
                             </div>
                             <div class="d-flex justify-content-between" style="margin-top: 20px; align-items: center">
-                                <h3 class="text_name">{{translate('Updated at')}}:</h3>
+                                <h3 class="text_name">{{translate('Update at')}}:</h3>
                                 <div class="text_value">
                                     {{$model->updated_at??''}}
                                 </div>

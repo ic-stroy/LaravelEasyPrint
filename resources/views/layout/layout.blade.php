@@ -201,7 +201,9 @@
                         <a class="nav-link dropdown-toggle waves-effect waves-light" data-bs-toggle="dropdown"
                            href="#" role="button" aria-haspopup="false" aria-expanded="false">
                             <i class="fe-bell noti-icon"></i>
-                            <span class="badge bg-danger rounded-circle noti-icon-badge">9</span>
+                            @if(count($current_user->unreadnotifications)>0)
+                                <span class="badge bg-danger rounded-circle noti-icon-badge">{{count($current_user->unreadnotifications)}}</span>
+                            @endif
                         </a>
                         <div class="dropdown-menu dropdown-menu-end dropdown-lg">
 
@@ -217,27 +219,35 @@
                             </div>
 
                             <div class="noti-scroll" data-simplebar>
-
+                                @forelse($current_user->unreadnotifications as $notification)
+                                    @if($notification->type == "App\Notifications\OrderNotification")
+                                        @if(!empty($notification->data))
+                                            <a href="{{route('company_order.index', 2)}}" class="dropdown-item notify-item">
+                                                <div class="notify-icon">
+                                                    <img src="{{isset($notification->data['product_images'])?$notification->data['product_images']:''}}" class="img-fluid" alt="" />
+                                                </div>
+                                                <p class="notify-details">
+                                                    @if(isset($notification->data['product_name']))
+                                                        {{strlen($notification->data['product_name'])>24?substr($notification->data['product_name'], 0, 24):$notification->data['product_name']}}...  <b>{{$notification->data['order_all_price']}}</b>
+                                                    @endif
+                                                </p>
+                                                <p class="text-muted mb-0 user-msg">
+                                                    @if(isset($notification->data['user']))
+                                                        <small>{{$notification->data['user']?$notification->data['user']:''}}</small>
+                                                    @endif
+                                                </p>
+                                            </a>
+                                            <hr style="margin: 0px">
+                                        @endif
+                                    @endif
+                                @empty
+                                    <a href="javascript:void(0);"
+                                       class="dropdown-item text-center text-primary notify-item notify-all">
+                                        {{ translate('No notifications')}}
+                                        <i class="fe-arrow-right"></i>
+                                    </a>
+                                @endforelse
                                 <!-- item-->
-{{--                                @forelse($current_user->notifications as $notification)--}}
-{{--                                    <a href="javascript:void(0);" class="dropdown-item notify-item active">--}}
-{{--                                        <div class="notify-icon">--}}
-{{--                                            <img src="{{ asset('assets/images/user/user-1.jpg') }}" class="img-fluid rounded-circle"--}}
-{{--                                                 alt="" />--}}
-{{--                                        </div>--}}
-{{--                                        <p class="notify-details">{{$notification->data['name']}}</p>--}}
-{{--                                        <p class="text-muted mb-0 user-msg">--}}
-{{--                                            <small>{{$notification->data['all_price']}}</small>--}}
-{{--                                        </p>--}}
-{{--                                    </a>--}}
-{{--                                @empty--}}
-{{--                                    <a href="javascript:void(0);"--}}
-{{--                                       class="dropdown-item text-center text-primary notify-item notify-all">--}}
-{{--                                        {{ translate('No notifications')}}--}}
-{{--                                        <i class="fe-arrow-right"></i>--}}
-{{--                                    </a>--}}
-{{--                                @endforelse--}}
-
 {{--                                <a href="javascript:void(0);" class="dropdown-item notify-item active">--}}
 {{--                                    <div class="notify-icon">--}}
 {{--                                        <img src="{{ asset('assets/images/user/user-1.jpg') }}" class="img-fluid rounded-circle"--}}
@@ -344,25 +354,25 @@
 
                 <!-- User box -->
                 <div class="user-box text-center">
-{{--                    @if(isset($current_user->personalInfo))--}}
-{{--                        @php--}}
-{{--                        if(!isset($current_user->personalInfo->avatar)){--}}
-{{--                            $current_user->personalInfo->avatar = 'no';--}}
-{{--                        }--}}
-{{--                            $sms_avatar = storage_path('app/public/user/'.$current_user->personalInfo->avatar);--}}
-{{--                        @endphp--}}
-{{--                        @if(file_exists($sms_avatar))--}}
-{{--                            <img class="rounded-circle img-thumbnail avatar-md" src="{{asset('storage/user/'.$current_user->personalInfo->avatar)}}" alt="">--}}
-{{--                        @else--}}
+                    @if(isset($current_user->personalInfo) && !empty($current_user->personalInfo))
+                        @php
+                            if(!$current_user->personalInfo->avatar){
+                                $current_user->personalInfo->avatar = 'no';
+                            }
+                            $sms_avatar = storage_path('app/public/user/'.$current_user->personalInfo->avatar);
+                        @endphp
+                        @if(file_exists($sms_avatar))
+                            <img class="rounded-circle img-thumbnail avatar-md" src="{{asset('storage/user/'.$current_user->personalInfo->avatar)}}" alt="">
+                        @else
                             <img class="rounded-circle img-thumbnail avatar-md" src="{{asset('assets/images/man.jpg')}}" alt="">
-{{--                        @endif--}}
-{{--                    @endif--}}
+                        @endif
+                    @endif
                     <div class="dropdown">
                         <a href="#" class="user-name dropdown-toggle h5 mt-2 mb-1 d-block"
                             data-bs-toggle="dropdown" aria-expanded="false">
-{{--                            @if(isset($current_user) && isset($current_user->personalInfo))--}}
-{{--                                {{$current_user?$current_user->personalInfo->first_name:''}} {{$current_user?$current_user->personalInfo->last_name:''}}--}}
-{{--                            @endif--}}
+                            @if(!empty($current_user) && !empty($current_user->personalInfo))
+                                {{$current_user->personalInfo->first_name??''}} {{$current_user->personalInfo->last_name??''}}
+                            @endif
                         </a>
                         <div class="dropdown-menu user-pro-dropdown">
 
@@ -392,33 +402,12 @@
                     <ul class="list-inline">
                         <li class="list-inline-item dropdown notification-list topbar-dropdown">
                             <a class="nav-link dropdown-toggle nav-user d-flex me-0 waves-effect waves-light mt-8"
-                               data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false"
-                               aria-expanded="false">
+                               href="{{route('getUser')}}">
                                 <i class="mdi mdi-cog"></i>
                             </a>
-                            <div class="dropdown-menu dropdown-menu-center profile-dropdown ">
-                                <!-- item-->
-                                <div class="dropdown-header noti-title">
-                                    <h6 class="text-overflow m-0">{{ translate('Welcome !')}}</h6>
-                                </div>
-
-                                <!-- item-->
-{{--                                <a href="{{route('account')}}" class="dropdown-item notify-item">--}}
-{{--                                    <i class="fe-user"></i>--}}
-{{--                                    <span>{{translate('My Account')}}</span>--}}
-{{--                                </a>--}}
-
-                                <!-- item-->
-                                <a href="auth-lock-screen.html" class="dropdown-item notify-item">
-                                    <i class="fe-lock"></i>
-                                    <span>{{ translate('Lock Screen')}}</span>
-                                </a>
-
-                                <div class="dropdown-divider"></div>
-                            </div>
                         </li>
                         <li class="list-inline-item">
-                            <button  type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#logout-alert-modal" data-url="{{ route('logout') }}" style="border: 0px; background-color: transparent; color: #98a6ad">
+                            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#logout-alert-modal" data-url="{{ route('logout') }}" style="border: 0px; background-color: transparent; color: #98a6ad">
                                 <i class="mdi mdi-power" style="color: red"></i>
                             </button>
                         </li>
@@ -430,7 +419,7 @@
                         <li>
                             <a href="{{route('dashboard')}}">
                             <i class="mdi mdi-home-outline"></i>
-                                 <span class="badge bg-success rounded-pill float-end">9+</span>
+                                 <span class="badge bg-success rounded-pill float-end">+9</span>
                                 <span> {{translate('Home')}} </span>
                             </a>
                         </li>
@@ -875,7 +864,7 @@
     <script src="{{ asset('assets/libs/jquery-knob/jquery.knob.min.js') }}"></script>
 
     <!--Morris Chart-->
-    <script src="{{ asset('assets/libs/morris.js06/morris.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/morris.js/morris.min.js') }}"></script>
     <script src="{{ asset('assets/libs/raphael/raphael.min.js') }}"></script>
 
     <!-- Dashboar init js-->

@@ -7,6 +7,7 @@ use \App\Http\Controllers\Company\WarehouseController;
 use \App\Http\Controllers\Company\CompanyUsersController;
 use \App\Http\Controllers\Company\CompanyOrderController;
 use \App\Http\Controllers\Company\CompanyCouponController;
+use \App\Http\Controllers\Company\WarehousePrintController;
 use \App\Http\Controllers\BannerController;
 use \App\Http\Controllers\UsersController;
 use \App\Http\Controllers\OrderController;
@@ -47,6 +48,8 @@ Auth::routes();
         Route::resource('color', ColorController::class);
         Route::resource('size', SizesController::class);
         Route::resource('user', UsersController::class);
+        Route::get('get-user', [UsersController::class, 'getUser'])->name('getUser');
+        Route::get('edit-user', [UsersController::class, 'editUser'])->name('editUser');
         Route::get('user-category', [UsersController::class, 'category'])->name('user.category');
         Route::get('user-by-category/{id}', [UsersController::class, 'user'])->name('user.category.user');
         Route::resource('product', ProductsController::class);
@@ -101,6 +104,9 @@ Auth::routes();
      });
     Route::group(['middleware'=>'company_auth'], function (){
         Route::group(['prefix' => 'companies'], function () {
+            Route::get('get-user', [CompanyUsersController::class, 'getUser'])->name('getCompanyUser');
+            Route::get('edit-user', [CompanyUsersController::class, 'editUser'])->name('editCompanyUser');
+//            Route::put('update-user', [CompanyUsersController::class, 'update'])->name('updateCompanyUser');
             Route::get('/', [CompanyHomeController::class, 'index'])->name('company_dashboard');
             Route::group(['prefix' => 'product'], function () {
                 Route::resource('warehouse', WarehouseController::class);
@@ -109,6 +115,14 @@ Auth::routes();
                 Route::get('warehouse-by-category/{id}', [WarehouseController::class, 'warehouse'])->name('warehouse.category.warehouse');
                 Route::get('create-warehouse-by-category/{id}', [WarehouseController::class, 'createWarehouse'])->name('warehouse.category.create_warehouse');
                 Route::get('get-warehouses-by-product', [WarehouseController::class, 'getWarehousesByProduct'])->name('warehouse.product.warehouse');
+            });
+            Route::group(['prefix' => 'warehouse-print'], function () {
+                Route::resource('print', WarehousePrintController::class);
+                Route::get('warehouse-category', [WarehousePrintController::class, 'category'])->name('print.category');
+                Route::get('product-by-category/{id}', [WarehousePrintController::class, 'product'])->name('print.category.product');
+                Route::get('warehouse-by-category/{id}', [WarehousePrintController::class, 'warehouse'])->name('print.category.warehouse');
+                Route::get('create-warehouse-by-category/{id}', [WarehousePrintController::class, 'createWarehouse'])->name('print.category.create_warehouse');
+                Route::get('get-warehouses-by-product', [WarehousePrintController::class, 'getWarehousesByProduct'])->name('print.product.warehouse');
             });
             Route::group(['prefix' => 'user'], function () {
                 Route::resource('company_user', CompanyUsersController::class)->middleware('is_admin');

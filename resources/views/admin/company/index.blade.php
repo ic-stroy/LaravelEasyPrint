@@ -36,12 +36,12 @@
                             </th>
                             <td>
                                 <a class="show_page" href="{{route('company.show', $company->id)}}">
-                                    @if(isset($company->delivery_price)){{ $company->delivery_price }}@else <div class="no_text"></div> @endif
+                                    @if(isset($company->name)){{ $company->name }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('company.show', $company->id)}}">
-                                    @if(isset($company->name)){{ $company->name }}@else <div class="no_text"></div> @endif
+                                    @if(isset($company->delivery_price)){{ $company->delivery_price }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>

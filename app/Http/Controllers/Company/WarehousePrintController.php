@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Language;
 use App\Models\Category;
 use App\Models\RoleTranslations;
+use App\Models\Uploads;
 use App\Models\Warehouse;
 use App\Models\Color;
 use App\Models\Products;
@@ -15,7 +16,7 @@ use App\Models\WarehouseTranslations;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class WarehouseController extends Controller
+class WarehousePrintController extends Controller
 {
 
     /**
@@ -23,68 +24,8 @@ class WarehouseController extends Controller
      */
     public function index()
     {
-        $products = Warehouse::orderBy('created_at', 'desc')->where('type', Constants::WAREHOUSE_TYPE)->get();
-        return view('company.warehouse.index', ['products'=> $products]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        $products = Products::all();
-        $colors = Color::all();
-        return view('company.warehouse.create', ['colors'=> $colors, 'products'=> $products]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $user = Auth::user();
-        $IsExistWarehouse = Warehouse::where(['size_id'=>$request->size_id, 'color_id'=>$request->color_id, 'product_id'=>$request->product_id, 'type'=>Constants::WAREHOUSE_TYPE])->first();
-        if($IsExistWarehouse){
-            $model = $IsExistWarehouse;
-            if($request->quantity){
-                $model->quantity = (int)$IsExistWarehouse->quantity + (int)$request->quantity;
-            }
-        }else{
-            $model = new Warehouse();
-            $model->quantity = $request->quantity;
-        }
-        $model->size_id = $request->size_id;
-        $model->color_id = $request->color_id;
-        $model->product_id = $request->product_id;
-        if($request->name){
-            $model->name = $request->name;
-        }
-        $model->company_id = $user->company_id;
-        if($request->price){
-            $model->price = $request->price;
-        }
-        if($request->description){
-            $model->description = $request->description;
-        }
-        if($request->manufacturer_country){
-            $model->manufacturer_country = $request->manufacturer_country;
-        }
-        if($request->material_composition){
-            $model->material_composition = $request->material_composition;
-        }
-        $model->material_id = $request->material_id;
-        $model->type = Constants::WAREHOUSE_TYPE;
-        $images = $request->file('images');
-        $model->images = $this->imageSave($model, $images, 'store');
-        $model->save();
-        foreach (Language::all() as $language) {
-            $warehouse_translations = WarehouseTranslations::where(['lang' => $language->code, 'warehouse_id' => $model->id])->firstOrNew();
-            $warehouse_translations->lang = $language->code;
-            $warehouse_translations->name = $model->name;
-            $warehouse_translations->warehouse_id = $model->id;
-            $warehouse_translations->save();
-        }
-        return redirect()->route('warehouse.category.warehouse', $request->product_id)->with('status', translate('Successfully created'));
+        $products = Warehouse::where('type', Constants::PRINT_TYPE)->orderBy('created_at', 'desc')->get();
+        return view('company.print.index', ['products'=> $products]);
     }
 
     /**
@@ -92,8 +33,8 @@ class WarehouseController extends Controller
      */
     public function show(string $id)
     {
-        $model = Warehouse::where('type', Constants::WAREHOUSE_TYPE)->find($id);
-        return view('company.warehouse.show', ['model'=>$model]);
+        $model = Warehouse::where('type', Constants::PRINT_TYPE)->find($id);
+        return view('company.print.show', ['model'=>$model]);
     }
 
     /**
@@ -102,7 +43,7 @@ class WarehouseController extends Controller
 
     public function edit(string $id)
     {
-        $warehouse = Warehouse::where('type', Constants::WAREHOUSE_TYPE)->find($id);
+        $warehouse = Warehouse::where('type', Constants::PRINT_TYPE)->find($id);
         if(isset($warehouse->product)){
             $product = $warehouse->product;
             $current_category = $this->getProductCategory($warehouse->product);
@@ -113,7 +54,7 @@ class WarehouseController extends Controller
             $product = 'no';
         }
         $colors = Color::all();
-        return view('company.warehouse.edit', ['warehouse'=> $warehouse, 'sizes'=> $sizes, 'current_category'=> $current_category, 'colors'=> $colors, 'product'=> $product]);
+        return view('company.print.edit', ['warehouse'=> $warehouse, 'sizes'=> $sizes, 'current_category'=> $current_category, 'colors'=> $colors, 'product'=> $product]);
     }
 
     /**
@@ -122,7 +63,7 @@ class WarehouseController extends Controller
     public function update(Request $request, string $id)
     {
         $user = Auth::user();
-        $model = Warehouse::where('type', Constants::WAREHOUSE_TYPE)->find($id);
+        $model = Warehouse::where('type', Constants::PRINT_TYPE)->find($id);
         $model->size_id = $request->size_id;
         $model->color_id = $request->color_id;
         $model->product_id = $request->product_id;
@@ -134,8 +75,6 @@ class WarehouseController extends Controller
         $model->manufacturer_country = $request->manufacturer_country;
         $model->material_composition = $request->material_composition;
         $model->material_id = $request->material_id;
-        $images = $request->file('images');
-        $model->images = $this->imageSave($model, $images, 'update');
         $model->save();
         return redirect()->route('warehouse.category.warehouse', $request->product_id)->with('status', translate('Successfully updated'));
     }
@@ -145,7 +84,33 @@ class WarehouseController extends Controller
      */
     public function destroy(string $id)
     {
-        $model = Warehouse::where('type', Constants::WAREHOUSE_TYPE)->find($id);
+        $model = Warehouse::where('type', Constants::PRINT_TYPE)->find($id);
+
+        if (!$model->image_front) {
+            $model->image_front = 'no';
+        }
+        $model_image_front = storage_path('app/public/warehouse/'.$model->image_front);
+        if (!$model->image_back) {
+            $model->image_back = 'no';
+        }
+        $model_image_back = storage_path('app/public/warehouse/'.$model->image_back);
+        if(file_exists($model_image_front)){
+            unlink($model_image_front);
+        }
+        if(file_exists($model_image_back)){
+            unlink($model_image_back);
+        }
+        $uploads=Uploads::where('relation_type', Constants::WAREHOUSE)->where('relation_id', $model->id)->get();
+        foreach ($uploads as $upload){
+            if (!$upload->image) {
+                $upload->image = 'no';
+            }
+            $order_detail_upload = storage_path('app/public/print/'.$upload->image);
+            if(file_exists($order_detail_upload)){
+                unlink($order_detail_upload);
+            }
+            $upload->delete();
+        }
         foreach (Language::all() as $language) {
             $warehouse_translations = WarehouseTranslations::where(['lang' => $language->code, 'warehouse_id' => $model->id])->get();
             foreach ($warehouse_translations as $warehouse_translation){
@@ -153,13 +118,13 @@ class WarehouseController extends Controller
             }
         }
         $model->delete();
-        return redirect()->route('warehouse.category.warehouse', $model->product_id)->with('status', translate('Successfully deleted'));
+        return redirect()->route('print.category.warehouse', $model->product_id)->with('status', translate('Successfully deleted'));
     }
 
     public function category()
     {
         $category = Category::where('step', 0)->get();
-        return view('company.warehouse.category', ['categories'=>$category]);
+        return view('company.print.category', ['categories'=>$category]);
     }
 
     public function product($id)
@@ -176,21 +141,21 @@ class WarehouseController extends Controller
         }
         $category_ids[] = $category->id;
         $products = Products::whereIn('category_id', $category_ids)->get();
-        return view('company.warehouse.products', ['products'=>$products]);
+        return view('company.print.products', ['products'=>$products]);
     }
 
     public function warehouse($id){
-        $warehouse = Warehouse::where('type', Constants::WAREHOUSE_TYPE)->where('product_id', $id)->get();
-        $product = Products::select('id', 'name')->find($id);
-        return view('company.warehouse.warehouse', ['warehouse'=>$warehouse, 'product'=>$product]);
+        $warehouse = Warehouse::where(['product_id'=>$id, 'type'=>Constants::PRINT_TYPE])->get();
+        $product = Products::select( 'id', 'name')->find($id);
+        return view('company.print.warehouse', ['warehouse'=>$warehouse, 'product'=>$product]);
     }
 
     public function createWarehouse($id){
         $colors = Color::all();
         $product = Products::find($id);
         $current_category = $this->getProductCategory($product);
-        $warehouse = Warehouse::where('type', Constants::WAREHOUSE_TYPE)->where('product_id', $id)->get();
-        return view('company.warehouse.create_warehouse', ['warehouse'=>$warehouse, 'product'=>$product, 'colors'=>$colors, 'current_category'=>$current_category]);
+        $warehouse = Warehouse::where(['product_id'=>$id, 'type'=>Constants::PRINT_TYPE])->get();
+        return view('company.print.create_warehouse', ['warehouse'=>$warehouse, 'product'=>$product, 'colors'=>$colors, 'current_category'=>$current_category]);
     }
 
     public function getProductCategory($product){
@@ -223,35 +188,11 @@ class WarehouseController extends Controller
         return $current_category;
     }
 
-    public function imageSave($warehouse, $images, $text){
-        if($text == 'update'){
-            if(isset($warehouse->images) && !is_array($warehouse->images)){
-                $warehouse_images = json_decode($warehouse->images);
-            }else{
-                $warehouse_images = [];
-            }
-        }else{
-            $warehouse_images = [];
-        }
-        if(isset($images)){
-            $WarehouseImage = [];
-            foreach($images as $image){
-                $random = $this->setRandom();
-                $warehouse_image_name = $random.''.date('Y-m-dh-i-s').'.'.$image->extension();
-                $image->storeAs('public/warehouses/', $warehouse_image_name);
-                $WarehouseImage[] = $warehouse_image_name;
-            }
-            $all_warehouse_images = array_values(array_merge($warehouse_images, $WarehouseImage));
-        }
-        $warehouseImages = json_encode($all_warehouse_images??$warehouse_images);
-        return $warehouseImages;
-    }
-
     // backend json api
 
     public function getWarehousesByProduct(Request $request){
         $user = Auth::user();
-        $warehouses_ = Warehouse::where(['product_id'=>$request->product_id, 'company_id'=>$user->company_id, 'type'=>Constants::WAREHOUSE_TYPE])->get();
+        $warehouses_ = Warehouse::where(['product_id'=>$request->product_id, 'type'=>Constants::PRINT_TYPE, 'company_id'=>$user->company_id])->get();
         $warehouses = [];
         foreach ($warehouses_ as $warehouse_){
             $warehouses[] = [
@@ -269,7 +210,7 @@ class WarehouseController extends Controller
     }
 
     public function deleteWarehouseImage(Request $request){
-        $warehouse = Warehouse::where('type', Constants::WAREHOUSE_TYPE)->find($request->id);
+        $warehouse = Warehouse::where('type', Constants::PRINT_TYPE)->find($request->id);
         if(isset($warehouse->images) && !is_array($warehouse->images)){
             $warehouse_images_base = json_decode($warehouse->images);
         }else{

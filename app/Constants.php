@@ -16,7 +16,7 @@ class Constants {
    const ACCEPTED_BY_RECIPIENT = 5;
    // 1 basked 2 ordered 3 performed 4 cancelled 5 accepted by recipient
 
-    //Order detail companyalar ga notificatsiya borganda ular qabul qilishi yoki kechiktrishi
+    //Order detail companiyalar ga notifikatsiya borganda ular qabul qilishi yoki kechiktrishi
 
     const ORDER_DETAIL_BASKET = 1;
     const ORDER_DETAIL_ORDERED = 2;
@@ -55,4 +55,15 @@ class Constants {
     const DISCOUNT_PRODUCT_TYPE = 1;
     const DISCOUNT_WAREHOUSE_TYPE = 2;
 
+    //      Warehouse types
+    const WAREHOUSE_TYPE = 0;
+    const PRINT_TYPE = 1;
+
+    //    Warehouse status
+    const POSTED = 1;
+    const APPROVED = 2;
+    const PREPARING = 3;
+    const READY = 4;
+    const DELIVERING = 5;
+    const DELIVERED = 6;
 }

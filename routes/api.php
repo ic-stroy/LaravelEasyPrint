@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\CardController;
 use App\Http\Controllers\Api\HeaderController;
+use App\Http\Controllers\Api\WarehouseApiController;
 use \App\Http\Controllers\Company\WarehouseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -68,6 +69,8 @@ Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
     Route::get('show-card', [CardController::class, 'showCard']);
     Route::post('destroy-card', [CardController::class, 'destroyCard']);
     Route::get('pick-up-point', [AddressController::class, 'pickUpFunction']);
+    Route::post('print-store', [WarehouseApiController::class, 'store']);
+    Route::post('print-update', [WarehouseApiController::class, 'update']);
     Route::group(['prefix' => 'order'], function () {
         Route::post('/set-warehouse', [OrderController::class, 'setWarehouse']);
         Route::post('/add-coupon', [OrderController::class, 'addCoupon']);

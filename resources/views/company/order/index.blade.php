@@ -249,18 +249,23 @@
                                             <h4 style="line-height: 2; font-size: 16px">
                                                 @if($user_name){{$user_name}}@endif
                                                 <span style="color: orange">{{translate('Ordered')}}</span>
-                                                    @if($order['product_types'] != 0)
-                                                        <b>{{ $order['product_types'] }}</b>
-                                                        {{translate('products are yours. you will sell for')}}
-                                                        <b style="color: #10C469">{{$order['company_product_price']}}</b>
-                                                        @if($order['order_coupon_price'] != 0)
-                                                            {{translate('Your coupon is costed')}}
-                                                            <b style="color: red">{{$order['order_coupon_price']}}</b>
-                                                        @endif
-                                                        @if($order['company_discount_price'] != 0)
-                                                            {{translate('your discount is costed')}}
-                                                            <b style="color: red">{{$order['company_discount_price']}}</b>
+                                                @if($order['product_types'] != 0)
+                                                    <b>{{ $order['product_types'] }}</b>
+                                                    {{translate('products are yours. you will sell for')}}
+                                                    <b style="color: #10C469">{{$order['company_product_price']}}</b>
+                                                    @if($order['order_coupon_price'] != 0)
+                                                        {{translate('Your coupon is costed')}}
+                                                        <b style="color: red">{{$order['order_coupon_price']}}</b>
                                                     @endif
+                                                    @if($order['company_discount_price'] != 0)
+                                                        {{translate('your discount is costed')}}
+                                                        <b style="color: red">{{$order['company_discount_price']}}</b>
+                                                    @endif
+                                                @endif
+                                                @if($order['order']->payment_method == \App\Constants::CASH_ON_DELIVERY)
+                                                    {{translate('cash on delivery')}}
+                                                 @elseif($order['order']->payment_method == \App\Constants::BANK_CARD)
+                                                    {{translate('bank card')}}
                                                 @endif
                                             </h4>
                                             @if($order['performed_company_product_price'] != 0)
