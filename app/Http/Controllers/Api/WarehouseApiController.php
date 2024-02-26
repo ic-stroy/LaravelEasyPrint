@@ -38,6 +38,7 @@ class WarehouseApiController extends Controller
             }
         }
         $model->size_id = $request->size_id;
+        $model->status = $request->status;
         $model->color_id = $request->color_id;
         $model->product_id = $request->product_id;
         $model->type = Constants::PRINT_TYPE;
@@ -126,6 +127,7 @@ class WarehouseApiController extends Controller
         $model->color_id = $request->color_id;
         $model->product_id = $request->product_id;
         $model->name = $request->name;
+        $model->status = $request->status;
         $model->company_id = $user->company_id;
         $model->quantity = $request->quantity;
         $model->price = $request->price;
