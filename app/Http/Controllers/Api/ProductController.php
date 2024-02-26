@@ -78,6 +78,7 @@ class ProductController extends Controller
         $warehouse_products_ = Warehouse::whereIn('id', array_merge($warehouse_products_id, $warehouse_anime_products_id))->get();
 
         foreach ($warehouse_products_ as $warehouse_product_) {
+
             if($warehouse_product_->type == 0){
                 if (count($this->getImages($warehouse_product_, 'warehouse'))>0) {
                     $warehouseProducts = $this->getImages($warehouse_product_, 'warehouse');
@@ -178,25 +179,36 @@ class ProductController extends Controller
             ->where('dt2.id' , $warehouse_product_id)
             ->select('dt2.id as warehouse_product_id','dt2.name as warehouse_product_name','dt2.quantity as quantity', 'dt2.images as images', 'dt2.description as description',
                 'dt2.product_id as product_id', 'dt2.company_id as company_id', 'dt2.price as price','dt2.material_composition','dt2.manufacturer_country',
+                'dt2.type as type', 'dt2.image_front as image_front', 'dt2.image_back as image_back', 'dt2.type as type',
                 'dt8.name as company_name','dt7.name as material_name', 'dt3.id as size_id',
                 'dt3.name as size_name','dt4.id as color_id','dt4.name as color_name','dt4.code as color_code',
                 'dt5.name as product_name', 'dt5.images as product_images', 'dt5.description as product_description', 'dt6.percent AS discount')
             ->first();
+            $warehouse_products = [];
+            $images = [];
             if($warehouse_product){
-                if ($warehouse_product->images) {
-                    $images_ = json_decode($warehouse_product->images);
-                    $images = [];
-                    foreach ($images_ as $image_) {
-                        $images[] = asset('storage/warehouses/' . $image_);
+                if($warehouse_product->type == Constants::WAREHOUSE_TYPE){
+                    if (count($this->getImages($warehouse_product, 'warehouse'))>0) {
+                        $warehouseProducts = $this->getImages($warehouse_product, 'warehouse');
+                    } else {
+                        $warehouseProducts = $this->getImages($warehouse_product->product, 'product');
                     }
-                } elseif ($warehouse_product->product_images) {
-                    $images_ = json_decode($warehouse_product->product_images);
-                    $images = [];
-                    foreach ($images_ as $image_){
-                        $images[] = asset('storage/products/' . $image_);
+                }else{
+                    $warehouseProducts = [];
+                    if (!$warehouse_product->image_front) {
+                        $warehouse_product->image_front = 'no';
                     }
-                } else {
-                    $images = [];
+                    $model_image_front = storage_path('app/public/warehouse/'.$warehouse_product->image_front);
+                    if (!$warehouse_product->image_back) {
+                        $warehouse_product->image_back = 'no';
+                    }
+                    $model_image_back = storage_path('app/public/warehouse/'.$warehouse_product->image_back);
+                    if(file_exists($model_image_front)){
+                        $warehouseProducts[] = asset("/storage/warehouse/$warehouse_product->image_front");
+                    }
+                    if(file_exists($model_image_back)){
+                        $warehouseProducts[] = asset("/storage/warehouse/$warehouse_product->image_back");
+                    }
                 }
 
                 if ($warehouse_product->product_id) {
@@ -330,7 +342,7 @@ class ProductController extends Controller
                                 // "manufacturer_country"=>$warehouse_product->manufacturer_country,
                                 // "material_composition"=>$warehouse_product->material_composition,
                                 "description" => $warehouse_product->description ?? $warehouse_product->product_description,
-                                "images" => $images,
+                                "images" => $warehouseProducts,
                                 "color" => [
                                     "id" => $warehouse_product->color_id,
                                     "code" => $warehouse_product->color_code,
@@ -363,7 +375,7 @@ class ProductController extends Controller
                                 // "manufacturer_country"=>$warehouse_product->manufacturer_country,
                                 // "material_composition"=>$warehouse_product->material_composition,
                                 "description" => $warehouse_product->description ?? $warehouse_product->product_description,
-                                "images" => $images,
+                                "images" => $warehouseProducts,
                                 "color" => [
                                     "id" => $warehouse_product->color_id,
                                     "code" => $warehouse_product->color_code,
