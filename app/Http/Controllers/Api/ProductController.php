@@ -124,8 +124,8 @@ class ProductController extends Controller
                 'id' => $product_->id,
                 'name' => $product_->name,
                 'price' => $product_->price,
-                'discount' => $product_->product_discount ? $product_->product_discount->percent : NULL,
-                'price_discount' => $product_->product_discount ? $product_->price - ($product_->price / 100 * $product_->product_discount->percent) : NULL,
+                'discount' => $product_->discount ? $product_->discount->percent : NULL,
+                'price_discount' => $product_->discount ? $product_->price - ($product_->price / 100 * $product_->discount->percent) : NULL,
                 'images' => $this->getImages($product_, 'product')
             ];
         }
