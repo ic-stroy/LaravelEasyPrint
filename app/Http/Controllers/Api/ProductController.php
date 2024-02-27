@@ -83,7 +83,10 @@ class ProductController extends Controller
                 if (count($this->getImages($warehouse_product_, 'warehouse'))>0) {
                     $warehouseProducts = $this->getImages($warehouse_product_, 'warehouse');
                 } else {
-                    $warehouseProducts = $this->getImages($warehouse_product_->product, 'product');
+                    $parentProduct = Products::find($warehouse_product_->product_id);
+                    if($parentProduct){
+                        $warehouseProducts = $this->getImages($parentProduct, 'product');
+                    }
                 }
             }else{
                 $warehouseProducts = [];
@@ -135,7 +138,7 @@ class ProductController extends Controller
             'warehouse_product_list' => $warehouse_products
         ];
 
-        $message = translate_api('success',$language);
+        $message = translate_api('success', $language);
         return $this->success($message, 200, $data);
     }
 
@@ -148,7 +151,7 @@ class ProductController extends Controller
     }
 
     /**
-     * bu funksiya frontga Kompaniyaga tegishli bitta productni show qilingandagi malumotlarni  berishda   qo'llaniladi
+     * bu funksiya frontga Kompaniyaga tegishli bitta productni show qilingandagi malumotlarni berishda qo'llaniladi
      */
     public function show(Request $request)
     {
@@ -191,7 +194,10 @@ class ProductController extends Controller
                     if (count($this->getImages($warehouse_product, 'warehouse'))>0) {
                         $warehouseProducts = $this->getImages($warehouse_product, 'warehouse');
                     } else {
-                        $warehouseProducts = $this->getImages($warehouse_product->product, 'product');
+                        $parentProduct = Products::find($warehouse_product->product_id);
+                        if($parentProduct){
+                            $warehouseProducts = $this->getImages($parentProduct, 'product');
+                        }
                     }
                 }else{
                     $warehouseProducts = [];
