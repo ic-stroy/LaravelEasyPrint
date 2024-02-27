@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Constants;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -42,11 +43,11 @@ class Products extends Model
 
     public function discount()
     {
-        return $this->hasOne(Discount::class, 'product_id','id')->where('type', 1)->where('start_date', '<=', date('Y-m-d H:i:s'))->where('end_date', '>=', date('Y-m-d H:i:s'));
+        return $this->hasOne(Discount::class, 'product_id','id')->where('type', Constants::DISCOUNT_PRODUCT_TYPE)->where('start_date', '<=', date('Y-m-d H:i:s'))->where('end_date', '>=', date('Y-m-d H:i:s'));
     }
     public function discount_whithout_expire()
     {
-        $maxValue = Discount::where('type', 1)->max('end_date');
-        return $this->hasOne(Discount::class, 'product_id','id')->where('type', 1)->where('end_date', $maxValue);
+        $maxValue = Discount::where('type', Constants::DISCOUNT_PRODUCT_TYPE)->max('end_date');
+        return $this->hasOne(Discount::class, 'product_id','id')->where('type', Constants::DISCOUNT_PRODUCT_TYPE)->where('end_date', $maxValue);
     }
 }

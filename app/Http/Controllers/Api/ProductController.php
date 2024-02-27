@@ -60,7 +60,6 @@ class ProductController extends Controller
      */
     public function getWarehouses(Request $request)
     {
-        // dd('dsfdfs');
         $language = $request->header('language');
         $warehouse_products_id = DB::table('warehouses')
 //            ->select(DB::raw('MAX(id) as id')) // assuming 'id' is the primary key
@@ -78,7 +77,6 @@ class ProductController extends Controller
         $warehouse_products_ = Warehouse::whereIn('id', array_merge($warehouse_products_id, $warehouse_anime_products_id))->get();
 
         foreach ($warehouse_products_ as $warehouse_product_) {
-
             if($warehouse_product_->type == 0){
                 if (count($this->getImages($warehouse_product_, 'warehouse'))>0) {
                     $warehouseProducts = $this->getImages($warehouse_product_, 'warehouse');
@@ -107,7 +105,7 @@ class ProductController extends Controller
             }
 
             $translate_name=table_translate($warehouse_product_,'warehouse_category', $language);
-            // dd($translate_name);
+
             //  join qilish kere
             $warehouse_products[] = [
                 // 'product_id' => $warehouse_product_->product_id,
@@ -120,7 +118,6 @@ class ProductController extends Controller
             ];
         }
         $products_ = Products::where('slide_show', Constants::ACTIVE)->get();
-
         $products = [];
         foreach ($products_ as $product_) {
             $products[] = [
