@@ -19,8 +19,13 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $products = Products::orderBy('created_at', 'desc')->get();
-        return view('admin.products.index', ['products'=> $products]);
+        $categories = Category::where('step', 0)->get();
+        $all_products = [];
+        foreach($categories as $category){
+            $products = Products::orderBy('created_at', 'desc')->where('category_id', $category->id)->get();
+            $all_products[$category->id] = $products;
+        }
+        return view('admin.products.index', ['all_products'=> $all_products, 'categories'=> $categories]);
     }
 
     /**
@@ -57,7 +62,7 @@ class ProductsController extends Controller
             $product_translations->product_id = $model->id;
             $product_translations->save();
         }
-        return redirect()->route('product.category.product', $request->category_id)->with('status', translate('Successfully created'));
+        return redirect()->route('product.index')->with('status', translate('Successfully created'));
     }
 
     /**
@@ -140,7 +145,7 @@ class ProductsController extends Controller
         $images = $request->file('images');
         $model->images = $this->imageSave($model, $images, 'update');
         $model->save();
-        return redirect()->route('product.category.product', $request->category_id)->with('status', translate('Successfully updated'));
+        return redirect()->route('product.index')->with('status', translate('Successfully updated'));
     }
 
     /**
@@ -165,7 +170,7 @@ class ProductsController extends Controller
             }
         }
         $model->delete();
-        return redirect()->route('product.category')->with('status', translate('Successfully deleted'));
+        return redirect()->route('product.index')->with('status', translate('Successfully deleted'));
     }
 
     public function getSizes($id){
@@ -177,11 +182,11 @@ class ProductsController extends Controller
         return response()->json($respone, 200);
     }
 
-    public function category()
-    {
-        $category = Category::where('step', 0)->get();
-        return view('admin.products.category', ['categories'=>$category]);
-    }
+//    public function category()
+//    {
+//        $category = Category::where('step', 0)->get();
+//        return view('admin.products.category', ['categories'=>$category]);
+//    }
 
     public function product($id)
     {
@@ -218,7 +223,7 @@ class ProductsController extends Controller
             $model->delete();
         }
 
-        return redirect()->route('product.category')->with('status', translate('Successfully deleted'));
+        return redirect()->route('product.index')->with('status', translate('Successfully deleted'));
     }
 
     public function SlideShow(){

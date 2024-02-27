@@ -442,7 +442,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('user.category') }}">
+                            <a href="{{ route('user.index') }}">
                                 <i class="mdi mdi-account-star-outline"></i>
                                 <span> {{ translate('Users') }} </span>
                             </a>
@@ -462,7 +462,7 @@
                             <div class="collapse" id="productMenus">
                                 <ul class="nav-second-level">
                                     <li>
-                                        <a href="{{ route('product.category') }}">
+                                        <a href="{{ route('product.index') }}">
                                             <span> {{ translate('Products') }} </span>
                                         </a>
                                     </li>

@@ -22,9 +22,13 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('created_at', 'desc')->get();
+        $superadmins = User::where('role_id', 1)->get();
+        $admins = User::where('role_id', 2)->get();
+        $managers = User::where('role_id', 3)->get();
+        $users = User::where('role_id', 4)->get();
+
         return view('admin.user.index', [
-            'users' => $users
+            'superadmins'=>$superadmins, 'admins'=>$admins, 'managers'=>$managers, 'users'=>$users
         ]);
     }
 
@@ -71,7 +75,7 @@ class UsersController extends Controller
         $address->longitude = $request->address_long;
         $address->user_id = $model->id;
         $address->save();
-        return redirect()->route('user.category.user', $request->role_id)->with('status', translate('Successfully created'));
+        return redirect()->route('user.index')->with('status', translate('Successfully created'));
     }
 
     /**
@@ -175,7 +179,7 @@ class UsersController extends Controller
         if($request->user_edit == 1){
             return redirect()->route('getUser')->with('status', translate('Successfully updated'));
         }else{
-            return redirect()->route('user.category.user', $request->role_id)->with('status', translate('Successfully updated'));
+            return redirect()->route('user.index')->with('status', translate('Successfully updated'));
         }
     }
 
@@ -229,19 +233,22 @@ class UsersController extends Controller
         if($address){
             $address->delete();
         }
-        return redirect()->route('user.category.user', $model->role_id)->with('status', translate('Successfully deleted'));
+        return redirect()->route('user.index')->with('status', translate('Successfully deleted'));
     }
 
-    public function category()
-    {
-        $roles = Role::all();
-        return view('admin.user.category', ['roles'=>$roles]);
-    }
+//    public function category()
+//    {
+//        $roles = Role::all();
+//        return view('admin.user.category', ['roles'=>$roles]);
+//    }
 
-    public function user($id)
+    public function user()
     {
-        $users = User::where('role_id', $id)->get();
-        return view('admin.user.user', ['users'=>$users, 'role_id'=>$id]);
+        $superadmins = User::where('role_id', 1)->get();
+        $admins = User::where('role_id', 2)->get();
+        $managers = User::where('role_id', 3)->get();
+        $users = User::where('role_id', 4)->get();
+        return view('admin.user.user', ['superadmins'=>$superadmins, 'admins'=>$admins, 'managers'=>$managers, 'users'=>$users]);
     }
 
     public function getUser(){
