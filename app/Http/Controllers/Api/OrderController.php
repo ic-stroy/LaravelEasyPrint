@@ -312,16 +312,47 @@ class OrderController extends Controller
                          })
                         ->where('dt1.id', $order_detail->id)
                         ->join('companies as dt5', 'dt5.id', '=', 'dt2.company_id')
-                        ->select('dt1.image_front as image_front', 'dt1.image_back as image_back', 'dt2.id as warehouse_product_id', 'dt2.name as warehouse_product_name', 'dt2.quantity as max_quantity',
+                        ->select('dt1.image_front as image_front', 'dt1.image_back as image_back', 'dt2.id as warehouse_product_id',
+                            'dt2.name as warehouse_product_name', 'dt2.quantity as max_quantity',
                             'dt2.images as images', 'dt2.description as description', 'dt2.product_id as product_id',
-                            'dt2.company_id as company_id', 'dt2.price as warehouse_price', 'dt3.id as size_id', 'dt3.name as size_name',
+                            'dt2.company_id as company_id', 'dt2.price as warehouse_price', 'dt2.type as type',
+                            'dt2.image_front', 'dt2.image_back', 'dt3.id as size_id', 'dt3.name as size_name',
                             'dt4.id as color_id', 'dt4.name as color_name', 'dt4.code as color_code', 'dt5.name as company_name',
                         'dt6.percent as discount_percent')
                         ->first();
                     $relation_type = 'warehouse_product';
                     $relation_id = $order_detail->warehouse_id;
-                    $list_product = Products::find($warehouse_product->product_id);
-                    $list_images = count($this->getImages($warehouse_product, 'warehouses')) > 0 ? $this->getImages($warehouse_product, 'warehouses') : $this->getImages($list_product, 'product');
+
+                    if($warehouse_product->type == 0){
+                        if (count($this->getImages($warehouse_product, 'warehouse'))>0) {
+                            $warehouseProductImages = $this->getImages($warehouse_product, 'warehouse');
+                        } else {
+                            $parentProduct = Products::find($warehouse_product->product_id);
+                            if($parentProduct){
+                                $warehouseProductImages = $this->getImages($parentProduct, 'product');
+                            }
+                        }
+                    }else{
+                        if (!$warehouse_product->image_front) {
+                            $warehouse_product->image_front = 'no';
+                        }
+                        $model_image_front = storage_path('app/public/warehouse/'.$warehouse_product->image_front);
+                        if (!$warehouse_product->image_back) {
+                            $warehouse_product->image_back = 'no';
+                        }
+                        $model_image_back = storage_path('app/public/warehouse/'.$warehouse_product->image_back);
+                        if(file_exists($model_image_front)){
+                            $warehouseProductImages = asset("/storage/warehouse/$warehouse_product->image_front");
+                        }
+                        if(file_exists($model_image_back)){
+                            $warehouseProductImages = asset("/storage/warehouse/$warehouse_product->image_back");
+                        }
+                    }
+
+//                    $list_product = Products::find($warehouse_product->product_id);
+
+//                    $list_images = count($this->getImages($warehouse_product, 'warehouses')) > 0 ? $this->getImages($warehouse_product, 'warehouses') : $this->getImages($list_product, 'product');
+
                     $translate_name = table_translate($warehouse_product, 'warehouse', $language);
 
                     if(!empty($warehouse_product) && $warehouse_product->warehouse_product_id){
@@ -366,7 +397,7 @@ class OrderController extends Controller
                         "discount_price" => $order_detail->discount_price,
                         "total_price" => $total_price,
                         "company_name" => $warehouse_product->company_name,
-                        "images" => $list_images,
+                        "images" => $warehouseProductImages,
                         "color" => [
                             "id" => $warehouse_product->color_id,
                             "code" => $warehouse_product->color_code,

@@ -18,12 +18,12 @@
         <div class="card-body">
             <ul class="nav nav-pills navtab-bg nav-justified">
                 <li class="nav-item">
-                    <a href="#superadmins" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+                    <a href="#superadmins" data-bs-toggle="tab" aria-expanded="true" class="nav-link active">
                         {{translate('Superadmins')}}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#admins" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
+                    <a href="#admins" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                         {{translate('Admins')}}
                     </a>
                 </li>

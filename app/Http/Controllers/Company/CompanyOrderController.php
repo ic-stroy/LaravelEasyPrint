@@ -18,7 +18,25 @@ class CompanyOrderController extends Controller
 {
     public function index($id){
         $user = Auth::user();
-        $orders = Order::where('status', $id)->get();
+        $orderedOrders_ = Order::where('status', Constants::ORDERED)->get();
+        $performedOrders_ = Order::where('status', Constants::PERFORMED)->get();
+        $cancelledOrders_ = Order::where('status', Constants::CANCELLED)->get();
+        $acceptedByRecipientOrders_ = Order::where('status', Constants::ACCEPTED_BY_RECIPIENT)->get();
+        $orderedOrders = $this->getOrders($orderedOrders_, $user);
+        $performedOrders = $this->getOrders($performedOrders_, $user);
+        $cancelledOrders = $this->getOrders($cancelledOrders_, $user);
+        $acceptedByRecipientOrders = $this->getOrders($acceptedByRecipientOrders_, $user);
+        return view('company.order.index', [
+            'orderedOrders'=>$orderedOrders,
+            'performedOrders'=>$performedOrders,
+            'cancelledOrders'=>$cancelledOrders,
+            'acceptedByRecipientOrders'=>$acceptedByRecipientOrders,
+            'id'=>$id,
+            'user'=>$user
+        ]);
+    }
+
+    public function getOrders($orders, $user){
         $order_data = [];
         foreach($orders as $order){
 //        $not_read_order_quantity = OrderDetail::where('order_id', $id)->where('is_read', 0)->count();
@@ -112,8 +130,7 @@ class CompanyOrderController extends Controller
                 ];
             }
         }
-
-        return view('company.order.index', ['order_data'=>$order_data, 'id'=>$id]);
+        return $order_data;
     }
 
     public function category(){
