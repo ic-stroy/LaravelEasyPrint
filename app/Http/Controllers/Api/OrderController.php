@@ -324,14 +324,8 @@ class OrderController extends Controller
                     $relation_id = $order_detail->warehouse_id;
 
                     if($warehouse_product->type == 0){
-                        if (count($this->getImages($warehouse_product, 'warehouse'))>0) {
-                            $list_images = $this->getImages($warehouse_product, 'warehouse');
-                        } else {
-                            $parentProduct = Products::find($warehouse_product->product_id);
-                            if($parentProduct){
-                                $list_images = $this->getImages($parentProduct, 'product');
-                            }
-                        }
+                        $list_product = Products::find($warehouse_product->product_id);
+                        $list_images = count($this->getImages($warehouse_product, 'warehouses')) > 0 ? $this->getImages($warehouse_product, 'warehouses') : $this->getImages($list_product, 'product');
                     }else{
                         if (!$warehouse_product->image_front) {
                             $warehouse_product->image_front = 'no';
@@ -348,10 +342,6 @@ class OrderController extends Controller
                             $list_images[] = asset("/storage/warehouse/$warehouse_product->image_back");
                         }
                     }
-
-//                    $list_product = Products::find($warehouse_product->product_id);
-
-//                    $list_images = count($this->getImages($warehouse_product, 'warehouses')) > 0 ? $this->getImages($warehouse_product, 'warehouses') : $this->getImages($list_product, 'product');
 
                     $translate_name = table_translate($warehouse_product, 'warehouse', $language);
 
