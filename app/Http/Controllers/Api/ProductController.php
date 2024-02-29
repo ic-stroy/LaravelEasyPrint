@@ -197,6 +197,7 @@ class ProductController extends Controller
                         }
                     }
                 }else{
+                    $warehouseProducts = [];
                     if (!$warehouse_product->image_front) {
                         $warehouse_product->image_front = 'no';
                     }

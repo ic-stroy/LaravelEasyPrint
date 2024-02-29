@@ -325,11 +325,11 @@ class OrderController extends Controller
 
                     if($warehouse_product->type == 0){
                         if (count($this->getImages($warehouse_product, 'warehouse'))>0) {
-                            $warehouseProductImages = $this->getImages($warehouse_product, 'warehouse');
+                            $list_images = $this->getImages($warehouse_product, 'warehouse');
                         } else {
                             $parentProduct = Products::find($warehouse_product->product_id);
                             if($parentProduct){
-                                $warehouseProductImages = $this->getImages($parentProduct, 'product');
+                                $list_images = $this->getImages($parentProduct, 'product');
                             }
                         }
                     }else{
@@ -342,10 +342,10 @@ class OrderController extends Controller
                         }
                         $model_image_back = storage_path('app/public/warehouse/'.$warehouse_product->image_back);
                         if(file_exists($model_image_front)){
-                            $warehouseProductImages = asset("/storage/warehouse/$warehouse_product->image_front");
+                            $list_images[] = asset("/storage/warehouse/$warehouse_product->image_front");
                         }
                         if(file_exists($model_image_back)){
-                            $warehouseProductImages = asset("/storage/warehouse/$warehouse_product->image_back");
+                            $list_images[] = asset("/storage/warehouse/$warehouse_product->image_back");
                         }
                     }
 
