@@ -397,7 +397,7 @@ class OrderController extends Controller
                         "discount_price" => $order_detail->discount_price,
                         "total_price" => $total_price,
                         "company_name" => $warehouse_product->company_name,
-                        "images" => $warehouseProductImages,
+                        "images" => $list_images,
                         "color" => [
                             "id" => $warehouse_product->color_id,
                             "code" => $warehouse_product->color_code,
