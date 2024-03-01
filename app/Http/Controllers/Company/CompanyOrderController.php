@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Notification;
 
 class CompanyOrderController extends Controller
 {
-    public function index($id){
+    public function index(){
         $user = Auth::user();
         $orderedOrders_ = Order::where('status', Constants::ORDERED)->get();
         $performedOrders_ = Order::where('status', Constants::PERFORMED)->get();
@@ -31,7 +31,6 @@ class CompanyOrderController extends Controller
             'performedOrders'=>$performedOrders,
             'cancelledOrders'=>$cancelledOrders,
             'acceptedByRecipientOrders'=>$acceptedByRecipientOrders,
-            'id'=>$id,
             'user'=>$user
         ]);
     }
@@ -146,16 +145,16 @@ class CompanyOrderController extends Controller
 //            }
 //        }
 
-        $ordered_orders = Order::where('status', Constants::ORDERED)->count();
-        $performed_orders = Order::where('status', Constants::PERFORMED)->count();
-        $cancelled_orders = Order::where('status', Constants::CANCELLED)->count();
-        $accepted_by_recipient_orders = Order::where('status', Constants::ACCEPTED_BY_RECIPIENT)->count();
-        return view('company.order.category', [
-            'ordered_orders'=>$ordered_orders,
-            'performed_orders'=>$performed_orders,
-            'cancelled_orders'=>$cancelled_orders,
-            'accepted_by_recipient_orders'=>$accepted_by_recipient_orders
-        ]);
+//        $ordered_orders = Order::where('status', Constants::ORDERED)->count();
+//        $performed_orders = Order::where('status', Constants::PERFORMED)->count();
+//        $cancelled_orders = Order::where('status', Constants::CANCELLED)->count();
+//        $accepted_by_recipient_orders = Order::where('status', Constants::ACCEPTED_BY_RECIPIENT)->count();
+//        return view('company.order.category', [
+//            'ordered_orders'=>$ordered_orders,
+//            'performed_orders'=>$performed_orders,
+//            'cancelled_orders'=>$cancelled_orders,
+//            'accepted_by_recipient_orders'=>$accepted_by_recipient_orders
+//        ]);
     }
 
     public function show($id){
@@ -188,6 +187,7 @@ class CompanyOrderController extends Controller
             $orderDetail->save();
             $order = Order::whereIn('status', [Constants::ORDERED, Constants::PERFORMED, Constants::CANCELLED])->find($orderDetail->order_id);
             if($order){
+                sleep(1);
                 $order_details_status = OrderDetail::where('order_id', $orderDetail->order_id)->pluck('status')->all();
                 if(!in_array(Constants::ORDER_DETAIL_BASKET, $order_details_status) && !in_array(Constants::ORDER_DETAIL_ORDERED, $order_details_status)){
                     foreach($order->orderDetail as $order_detail){
@@ -199,7 +199,7 @@ class CompanyOrderController extends Controller
                             $cancelled_has = true;
                         }
                     }
-                    if($order_detail_price == 0 && $cancelled_has == true){
+                    if($order_detail_price <= 0 && $cancelled_has == true){
                         $order->status = Constants::CANCELLED;
                     }else{
                         $order->price = $order_detail_price;
@@ -218,10 +218,9 @@ class CompanyOrderController extends Controller
                         $order->all_price = $order->all_price - $coupon_price;
                         $order->status = Constants::PERFORMED;
                     }
-
                     $order->save();
 
-                    return redirect()->route('company_order.category')->with('cancelled', 'Product is cancelled');
+                    return redirect()->route('company_order.index')->with('cancelled', 'Product is cancelled');
                 }
             }
 //        $user = User::where('role_id', 1)->first();
@@ -239,7 +238,7 @@ class CompanyOrderController extends Controller
 //        ];
 //        Notification::send($user, new OrderNotification($data));
         }
-        return redirect()->route('company_order.category')->with('cancelled', 'Product is cancelled');
+        return redirect()->route('company_order.index')->with('cancelled', 'Product is cancelled');
     }
 
     public function performOrderDetail($id){
@@ -260,8 +259,9 @@ class CompanyOrderController extends Controller
                 }
             }
             $orderDetail->save();
-            $order = Order::where('status', Constants::ORDERED)->find($orderDetail->order_id);
+            $order = Order::whereIn('status', [Constants::ORDERED, Constants::PERFORMED, Constants::CANCELLED])->find($orderDetail->order_id);
             if($order){
+                sleep(1);
                 $order_details_status = OrderDetail::where('order_id', $orderDetail->order_id)->pluck('status')->all();
                 if(!in_array(Constants::ORDER_DETAIL_BASKET, $order_details_status) && !in_array(Constants::ORDER_DETAIL_ORDERED, $order_details_status)){
                     foreach($order->orderDetail as $order_detail){
@@ -274,23 +274,24 @@ class CompanyOrderController extends Controller
 //                            $order_detail->delete();
 //                        }
                     }
-                    $order->price = $order_detail_price;
-                    $order->discount_price = $order_details_discount_price;
-                    $order->all_price = $order_detail_price - $order_details_discount_price;
-                    if((int)$order->coupon_price>0){
-                        if($order->coupon){
-                            $coupon_price = $this->setOrderCoupon($order->coupon, $order->all_price);
+                    if($order_detail_price>0){
+                        $order->price = $order_detail_price;
+                        $order->discount_price = $order_details_discount_price;
+                        $order->all_price = $order_detail_price - $order_details_discount_price;
+                        if((int)$order->coupon_price>0){
+                            if($order->coupon){
+                                $coupon_price = $this->setOrderCoupon($order->coupon, $order->all_price);
+                            }else{
+                                $coupon_price = $order->coupon_price;
+                            }
+                            $order->coupon_price = $coupon_price;
                         }else{
-                            $coupon_price = $order->coupon_price;
+                            $coupon_price = 0;
                         }
-                        $order->coupon_price = $coupon_price;
-                    }else{
-                        $coupon_price = 0;
+                        $order->all_price = $order->all_price - $coupon_price;
+                        $order->status = Constants::PERFORMED;
+                        $order->save();
                     }
-                    $order->all_price = $order->all_price - $coupon_price;
-                    $order->status = Constants::PERFORMED;
-
-                    $order->save();
                 }
             }
 //        $user = User::where('role_id', 1)->first();
@@ -309,7 +310,7 @@ class CompanyOrderController extends Controller
 //        Notification::send($user, new OrderNotification($data));
         }
 
-        return redirect()->route('company_order.category')->with('performed', 'Product is performed');
+        return redirect()->route('company_order.index')->with('performed', 'Product is performed');
     }
 
     public function getImages($model, $text){

@@ -129,8 +129,8 @@ Auth::routes();
             });
             Route::resource('company_coupons', CompanyCouponController::class);
             Route::group(['prefix' => 'company-order'], function () {
-                Route::get('/index/{id}', [CompanyOrderController::class, 'index'])->name('company_order.index');
-                Route::get('/category', [CompanyOrderController::class, 'category'])->name('company_order.category');
+                Route::get('/index', [CompanyOrderController::class, 'index'])->name('company_order.index');
+//                Route::get('/category', [CompanyOrderController::class, 'category'])->name('company_order.category');
                 Route::get('/show/{id}', [CompanyOrderController::class, 'show'])->name('company_order.show');
                 Route::get('/destroy/{id}', [CompanyOrderController::class, 'destroy'])->name('company_order.destroy');
             });

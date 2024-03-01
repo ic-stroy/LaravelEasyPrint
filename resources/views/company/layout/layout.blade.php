@@ -223,7 +223,7 @@
                         @forelse($current_user->unreadnotifications as $notification)
                             @if($notification->type == "App\Notifications\OrderNotification")
                                 @if(!empty($notification->data))
-                                    <a href="{{route('company_order.index', 2)}}" class="dropdown-item notify-item">
+                                    <a href="{{route('company_order.index')}}" class="dropdown-item notify-item">
                                         <div class="notify-icon">
                                             <img src="{{isset($notification->data['product_images'])?$notification->data['product_images']:''}}" class="img-fluid" alt="" />
                                         </div>
@@ -459,7 +459,7 @@
                         </li>
                     @endif
                     <li>
-                        <a href="{{ route('company_order.category') }}">
+                        <a href="{{ route('company_order.index') }}">
                             <i class="mdi mdi-account-check-outline"></i>
                             <span> {{ translate('Orders') }} </span>
                         </a>

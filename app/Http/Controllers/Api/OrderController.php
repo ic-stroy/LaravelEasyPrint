@@ -553,14 +553,34 @@ class OrderController extends Controller
                             ->select('dt2.name as warehouse_product_name', 'dt2.id as warehouse_id',
                                 'dt2.quantity as max_quantity', 'dt2.images as images', 'dt2.description as description',
                                 'dt2.product_id as product_id', 'dt2.company_id as company_id', 'dt2.images as images',
+                                'dt2.type', 'dt2.image_front', 'dt2.image_back',
                                 'dt3.id as size_id', 'dt3.name as size_name','dt4.id as color_id','dt4.name as color_name', 'dt4.code as color_code',
                                 'dt5.name as product_name'
                             )
                             ->first();
-                        $product = Products::find($warehouse_product->product_id);
+                        $images = [];
                         $relation_type='warehouse_product';
                         $relation_id=$order_detail->warehouse_id;
-                        $images = count($this->getImages($warehouse_product, 'warehouses'))>0?$this->getImages($warehouse_product, 'warehouses'):$this->getImages($product, 'product');
+                        if($warehouse_product->type == 0){
+                            $list_product = Products::find($warehouse_product->product_id);
+                            $images = count($this->getImages($warehouse_product, 'warehouses')) > 0 ? $this->getImages($warehouse_product, 'warehouses') : $this->getImages($list_product, 'product');
+                        }else{
+                            if (!$warehouse_product->image_front) {
+                                $warehouse_product->image_front = 'no';
+                            }
+                            $model_image_front = storage_path('app/public/warehouse/'.$warehouse_product->image_front);
+                            if (!$warehouse_product->image_back) {
+                                $warehouse_product->image_back = 'no';
+                            }
+                            $model_image_back = storage_path('app/public/warehouse/'.$warehouse_product->image_back);
+                            if(file_exists($model_image_front)){
+                                $images[] = asset("/storage/warehouse/$warehouse_product->image_front");
+                            }
+                            if(file_exists($model_image_back)){
+                                $images[] = asset("/storage/warehouse/$warehouse_product->image_back");
+                            }
+                        }
+
                         $list=[
                             "id"=>$order_detail->id,
                             "relation_type"=>$relation_type,
