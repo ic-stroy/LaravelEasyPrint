@@ -23,8 +23,16 @@ class WarehouseController extends Controller
      */
     public function index()
     {
-        $products = Warehouse::orderBy('created_at', 'desc')->where('type', Constants::WAREHOUSE_TYPE)->get();
-        return view('company.warehouse.index', ['products'=> $products]);
+        $categories = Category::where('step', 0)->get();
+        $all_products = [];
+        foreach($categories as $category) {
+            $categories_id = Category::where('parent_id', $category->id)->pluck('id')->all();
+            array_push($categories_id, $category->id);
+            $products = Products::orderBy('created_at', 'desc')->whereIn('category_id', $categories_id)->get();
+//            $products = Warehouse::orderBy('created_at', 'desc')->where('type', Constants::WAREHOUSE_TYPE)->get();
+            $all_products[$category->id] = $products;
+        }
+        return view('company.warehouse.index', ['products'=> $products, 'categories'=> $categories, 'all_products'=> $all_products]);
     }
 
     /**
@@ -176,7 +184,7 @@ class WarehouseController extends Controller
         }
         $category_ids[] = $category->id;
         $products = Products::whereIn('category_id', $category_ids)->get();
-        return view('company.warehouse.products', ['products'=>$products]);
+        return view('warehouse.index', ['products'=>$products]);
     }
 
     public function warehouse($id){

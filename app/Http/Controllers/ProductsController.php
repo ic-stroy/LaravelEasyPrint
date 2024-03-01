@@ -22,7 +22,9 @@ class ProductsController extends Controller
         $categories = Category::where('step', 0)->get();
         $all_products = [];
         foreach($categories as $category){
-            $products = Products::orderBy('created_at', 'desc')->where('category_id', $category->id)->get();
+            $categories_id = Category::where('parent_id', $category->id)->pluck('id')->all();
+            array_push($categories_id, $category->id);
+            $products = Products::orderBy('created_at', 'desc')->whereIn('category_id', $categories_id)->get();
             $all_products[$category->id] = $products;
         }
         return view('admin.products.index', ['all_products'=> $all_products, 'categories'=> $categories]);

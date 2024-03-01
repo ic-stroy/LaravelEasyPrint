@@ -442,7 +442,7 @@
                         <div class="collapse" id="catalog">
                             <ul class="nav-second-level">
                                 <li>
-                                    <a href="{{route('warehouse.category')}}">{{ translate('Products') }}</a>
+                                    <a href="{{route('warehouse.index')}}">{{ translate('Products') }}</a>
                                 </li>
                                 <li>
                                     <a href="{{route('print.category')}}">{{ translate('Print products') }}</a>
