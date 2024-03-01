@@ -1292,21 +1292,44 @@ class OrderController extends Controller
             if($warehouse->name){
                 $warehouse_translate_name=table_translate($warehouse,'warehouse', $language);
             }
-            if ($warehouse->images) {
-                $images_ = json_decode($warehouse->images);
-                $images = [];
-                foreach ($images_ as $image_) {
-                    $images[] = asset('storage/warehouses/' . $image_);
+
+            $images = [];
+
+            if($warehouse->type == 0){
+                $list_product = Products::find($warehouse->product_id);
+                $images = count($this->getImages($warehouse, 'warehouses')) > 0 ? $this->getImages($warehouse, 'warehouses') : $this->getImages($list_product, 'product');
+            }else{
+                if (!$warehouse->image_front) {
+                    $warehouse->image_front = 'no';
                 }
-            } elseif (isset($warehouse->product->images)) {
-                $images_ = json_decode($warehouse->product->images);
-                $images = [];
-                foreach ($images_ as $image_){
-                    $images[] = asset('storage/products/' . $image_);
+                $model_image_front = storage_path('app/public/warehouse/'.$warehouse->image_front);
+                if (!$warehouse->image_back) {
+                    $warehouse->image_back = 'no';
                 }
-            } else {
-                $images = [];
+                $model_image_back = storage_path('app/public/warehouse/'.$warehouse->image_back);
+                if(file_exists($model_image_front)){
+                    $images[] = asset("/storage/warehouse/$warehouse->image_front");
+                }
+                if(file_exists($model_image_back)){
+                    $images[] = asset("/storage/warehouse/$warehouse->image_back");
+                }
             }
+
+//            if ($warehouse->images) {
+//                $images_ = json_decode($warehouse->images);
+//                $images = [];
+//                foreach ($images_ as $image_) {
+//                    $images[] = asset('storage/warehouses/' . $image_);
+//                }
+//            } elseif (isset($warehouse->product->images)) {
+//                $images_ = json_decode($warehouse->product->images);
+//                $images = [];
+//                foreach ($images_ as $image_){
+//                    $images[] = asset('storage/products/' . $image_);
+//                }
+//            } else {
+//                $images = [];
+//            }
 
             $list = [
                 "id" => $warehouse->id,
