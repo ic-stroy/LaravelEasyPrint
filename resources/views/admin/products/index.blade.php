@@ -23,19 +23,22 @@
                     <li class="nav-item">
                         <a href="#category_{{$category->id}}" data-bs-toggle="tab" aria-expanded="{{$i == 1?'true':'false'}}" class="nav-link {{$i == 1?'active':''}}">
                             {{$category->name??''}}
+                            @if(count($all_products[$category->id]) > 0)
+                                <span class="badge bg-danger">{{count($all_products[$category->id])}}</span>
+                            @endif
                         </a>
                     </li>
                 @endforeach
             </ul>
             <div class="tab-content">
                 @php
-                    $i = 0;
+                    $j = 0;
                 @endphp
                 @foreach($categories as $category)
                     @php
-                        $i++;
+                        $j++;
                     @endphp
-                    <div class="tab-pane{{$i == 1?' show active':''}}" id="category_{{$category->id}}">
+                    <div class="tab-pane{{$j == 1?' show active':''}}" id="category_{{$category->id}}">
                         <table class="table table-striped table-bordered dt-responsive nowrap">
                             <thead>
                                 <tr>

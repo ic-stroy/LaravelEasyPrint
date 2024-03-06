@@ -20,21 +20,33 @@
                 <li class="nav-item">
                     <a href="#superadmins" data-bs-toggle="tab" aria-expanded="true" class="nav-link active">
                         {{translate('Superadmins')}}
+                        @if(count($superadmins) > 0)
+                            <span class="badge bg-danger">{{count($superadmins)}}</span>
+                        @endif
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#admins" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                         {{translate('Admins')}}
+                        @if(count($admins) > 0)
+                            <span class="badge bg-danger">{{count($admins)}}</span>
+                        @endif
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#managers" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                         {{translate('Managers')}}
+                        @if(count($managers) > 0)
+                            <span class="badge bg-danger">{{count($managers)}}</span>
+                        @endif
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#users" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                         {{translate('Users')}}
+                        @if(count($users) > 0)
+                            <span class="badge bg-danger">{{count($users)}}</span>
+                        @endif
                     </a>
                 </li>
             </ul>
