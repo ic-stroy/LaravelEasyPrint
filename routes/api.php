@@ -56,6 +56,7 @@ Route::get('/anime-category-size-color', [OrderController::class, 'AnimeCategory
 
 Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
     Route::get('user-info', [CategoryController::class, 'userInfo']);
+    Route::post('password-reset', [UsersController::class, 'passwordReset']);
     Route::post('register', [AuthController::class, 'register']);
     Route::post('personal-information', [UsersController::class, 'setPersonalInformation']);
     Route::get('personal-information', [UsersController::class, 'getPersonalInformation']);

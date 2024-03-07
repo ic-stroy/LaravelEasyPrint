@@ -156,6 +156,8 @@ class UsersController extends Controller
             }
             if ($request->new_password == $request->new_password_confirmation) {
                 $model->password = Hash::make($request->new_password);
+            }else{
+                return redirect()->back()->with('error_status', translate('Your new password confirmation is incorrect'));
             }
         }
         $model->role_id = $request->role_id;

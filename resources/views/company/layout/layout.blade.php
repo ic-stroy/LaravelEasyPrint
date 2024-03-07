@@ -445,7 +445,7 @@
                                     <a href="{{route('warehouse.index')}}">{{ translate('Products') }}</a>
                                 </li>
                                 <li>
-                                    <a href="{{route('print.category')}}">{{ translate('Print products') }}</a>
+                                    <a href="{{route('print.index')}}">{{ translate('Print products') }}</a>
                                 </li>
                             </ul>
                         </div>

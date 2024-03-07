@@ -11,7 +11,7 @@
     </style>
     <div class="card">
         <div class="card-body">
-            <div class="dropdown float-end">
+            <div class="dropdown float-end mb-2">
                 <a class="form_functions btn btn-success" onclick="createCompany()">{{translate('Create')}}</a>
             </div>
 {{--            <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap">--}}

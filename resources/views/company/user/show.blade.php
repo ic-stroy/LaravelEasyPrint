@@ -4,16 +4,6 @@
     {{-- Your page title --}}
 @endsection
 @section('content')
-    <style>
-        .hide_pagination{
-            position: absolute;
-            z-index:4;
-            background-color: white;
-            width: 270px;
-            height: 80px;
-            margin-top: -80px
-        }
-    </style>
     <div class="card">
         <div class="card-body">
             <h4 class="mt-0 header-title">{{translate('User informations')}}</h4>
@@ -26,7 +16,8 @@
                         <div>
                             @if(isset($model->personalInfo->id))
                                 @php
-                                    $sms_avatar = storage_path('app/public/user/'.$model->personalInfo->avatar??'no');
+                                    $model->personalInfo->avatar = $model->personalInfo->avatar??'no';
+                                    $sms_avatar = storage_path('app/public/user/'.$model->personalInfo->avatar);
                                 @endphp
                                 @if(file_exists($sms_avatar))
                                     <img class="user_photo_2" src="{{asset('storage/user/'.$model->personalInfo->avatar)}}" alt="">
@@ -168,16 +159,5 @@
             </tr>
             </tbody>
         </table>
-        <div class="d-flex justify-content-end">
-            <div class="hide_pagination"></div>
-        </div>
     </div>
-    <script>
-        let hide_pagination = document.getElementsByClassName('hide_pagination')
-        if(localStorage.getItem('layout_local') == undefined || localStorage.getItem('layout_local') == null){
-            hide_pagination[0].style.backgroundColor = 'white'
-        }else{
-            hide_pagination[0].style.backgroundColor = '#313844'
-        }
-    </script>
 @endsection

@@ -7,9 +7,6 @@
     <div class="card">
         <div class="card-body">
             <h4 class="mt-0 header-title">{{translate('Products lists')}}</h4>
-            <div class="dropdown float-end mb-2">
-                <a class="form_functions btn btn-success" href="{{route('warehouse.create')}}">{{translate('Create')}}</a>
-            </div>
             <ul class="nav nav-pills navtab-bg nav-justified">
                 @php
                     $i = 0;

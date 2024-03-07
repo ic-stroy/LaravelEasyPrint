@@ -76,7 +76,7 @@ class UserRequest extends BaseFormRequest
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore(Route::current()->parameters()['user'])],
             'password' => 'nullable|string|min:8',
             'new_password' => 'nullable|string|min:8',
-            'new_password_confirmation' => 'nullable|string|min:8|confirmed',
+            'new_password_confirmation' => 'nullable|string|min:8',
             'role_id' => 'required|integer',
             'company_id' => 'nullable|integer',
             'avatar' => 'nullable|mimes:jpeg,jpg,png,webp|max:10240',

@@ -24,8 +24,15 @@ class WarehousePrintController extends Controller
      */
     public function index()
     {
-        $products = Warehouse::where('type', Constants::PRINT_TYPE)->orderBy('created_at', 'desc')->get();
-        return view('company.print.index', ['products'=> $products]);
+        $categories = Category::where('step', 0)->get();
+        $all_products = [];
+        foreach($categories as $category) {
+            $categories_id = Category::where('parent_id', $category->id)->pluck('id')->all();
+            array_push($categories_id, $category->id);
+            $products = Products::orderBy('created_at', 'desc')->whereIn('category_id', $categories_id)->get();
+            $all_products[$category->id] = $products;
+        }
+        return view('company.print.index', ['products'=> $products, 'categories'=> $categories, 'all_products'=> $all_products]);
     }
 
     /**
@@ -120,28 +127,28 @@ class WarehousePrintController extends Controller
         return redirect()->route('print.category.warehouse', $model->product_id)->with('status', translate('Successfully deleted'));
     }
 
-    public function category()
-    {
-        $category = Category::where('step', 0)->get();
-        return view('company.print.category', ['categories'=>$category]);
-    }
+//    public function category()
+//    {
+//        $category = Category::where('step', 0)->get();
+//        return view('company.print.category', ['categories'=>$category]);
+//    }
 
-    public function product($id)
-    {
-        $category = Category::find($id);
-        $subcategories = $category->subcategory;
-        $category_ids = [];
-        foreach ($subcategories as $subcategory){
-            $category_ids[] = $subcategory->id;
-        }
-        $subsubcategories = Category::WhereIn('parent_id', $category_ids)->get();
-        foreach ($subsubcategories as $subsubcategory){
-            $category_ids[] = $subsubcategory->id;
-        }
-        $category_ids[] = $category->id;
-        $products = Products::whereIn('category_id', $category_ids)->get();
-        return view('company.print.products', ['products'=>$products]);
-    }
+//    public function product($id)
+//    {
+//        $category = Category::find($id);
+//        $subcategories = $category->subcategory;
+//        $category_ids = [];
+//        foreach ($subcategories as $subcategory){
+//            $category_ids[] = $subcategory->id;
+//        }
+//        $subsubcategories = Category::WhereIn('parent_id', $category_ids)->get();
+//        foreach ($subsubcategories as $subsubcategory){
+//            $category_ids[] = $subsubcategory->id;
+//        }
+//        $category_ids[] = $category->id;
+//        $products = Products::whereIn('category_id', $category_ids)->get();
+//        return view('company.print.products', ['products'=>$products]);
+//    }
 
     public function warehouse($id){
         $warehouse = Warehouse::where(['product_id'=>$id, 'type'=>Constants::PRINT_TYPE])->get();

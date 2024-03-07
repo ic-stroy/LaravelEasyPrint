@@ -8,6 +8,7 @@ use App\Models\Address;
 use App\Models\PersonalInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UsersController extends Controller
 {
@@ -116,6 +117,26 @@ class UsersController extends Controller
             $personal_info->avatar = $image_name;
             return $personal_info;
         }
+    }
+
+    public function passwordReset(Request $request){
+        $language = $request->header('language');
+        $user = Auth::user();
+        if (isset($request->new_password) && isset($request->password)) {
+            if(!password_verify($request->password, $user->password)){
+                $message = translate_api('Your password is incorrect', $language);
+                return $this->error($message, 200);
+            }
+            if ($request->new_password == $request->new_password_confirmation) {
+                $user->password = Hash::make($request->new_password);
+                $user->save();
+            }else{
+                $message = translate_api('Your new password confirmation is incorrect', $language);
+                return $this->error($message, 200);
+            }
+        }
+        $message = translate_api('Successfully reseted', $language);
+        return $this->success($message, 200);
     }
 
 }
