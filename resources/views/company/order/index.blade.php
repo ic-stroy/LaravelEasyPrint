@@ -363,13 +363,23 @@
                                      data-bs-parent="#custom-accordion-one">
                                     @foreach($order['products_with_anime'] as $products_with_anime)
                                         @php
-                                            $order_detail_image_front_exists = storage_path('app/public/warehouse/'.$products_with_anime[0]->image_front);
+                                            if($products_with_anime[0]->image_front){
+                                                $order_detail_image_front_name = $products_with_anime[0]->image_front;
+                                            }else{
+                                                $order_detail_image_front_name = 'no';
+                                            }
+                                            $order_detail_image_front_exists = storage_path('app/public/warehouse/'.$order_detail_image_front_name);
                                             if(file_exists($order_detail_image_front_exists)){
                                                 $order_detail_image_front = asset('storage/warehouse/'.$products_with_anime[0]->image_front);
                                             }else{
                                                 $order_detail_image_front = null;
                                             }
-                                            $order_detail_image_back_exists = storage_path('app/public/warehouse/'.$products_with_anime[0]->image_back);
+                                            if($products_with_anime[0]->image_back){
+                                                $order_detail_image_back_name = $products_with_anime[0]->image_back;
+                                            }else{
+                                                $order_detail_image_back_name = 'no';
+                                            }
+                                            $order_detail_image_back_exists = storage_path('app/public/warehouse/'.$order_detail_image_back_name);
                                             if(file_exists($order_detail_image_back_exists)){
                                                 $order_detail_image_back = asset('storage/warehouse/'.$products_with_anime[0]->image_back);
                                             }else{
@@ -399,7 +409,7 @@
                                                 <img src="{{$images[0]}}" alt="" height="144px">
                                             </div>
                                             <div class="col-2 order_product_images" onclick='getUploads("{{implode(" ", $products_with_anime[2])}}")' data-bs-toggle="modal" data-bs-target="#carousel-upload-modal">
-                                                <img src="{{$products_with_anime[2][0]}}" alt="" height="144px">
+                                                <img src="{{!empty($products_with_anime[2])?$products_with_anime[2][0]:asset('public/icon/no_photo.jpg')}}" alt="" height="144px">
                                             </div>
                                             <div class="col-4 order_content">
                                                 <h4>{{translate('Animated order')}}</h4>
@@ -779,13 +789,23 @@
                                      data-bs-parent="#custom-accordion-one">
                                     @foreach($order['products_with_anime'] as $products_with_anime)
                                         @php
-                                            $order_detail_image_front_exists = storage_path('app/public/warehouse/'.$products_with_anime[0]->image_front);
+                                            if($products_with_anime[0]->image_front){
+                                                $order_detail_image_front_name = $products_with_anime[0]->image_front;
+                                            }else{
+                                                $order_detail_image_front_name = 'no';
+                                            }
+                                            $order_detail_image_front_exists = storage_path('app/public/warehouse/'.$order_detail_image_front_name);
                                             if(file_exists($order_detail_image_front_exists)){
                                                 $order_detail_image_front = asset('storage/warehouse/'.$products_with_anime[0]->image_front);
                                             }else{
                                                 $order_detail_image_front = null;
                                             }
-                                            $order_detail_image_back_exists = storage_path('app/public/warehouse/'.$products_with_anime[0]->image_back);
+                                            if($products_with_anime[0]->image_back){
+                                                $order_detail_image_back_name = $products_with_anime[0]->image_back;
+                                            }else{
+                                                $order_detail_image_back_name = 'no';
+                                            }
+                                            $order_detail_image_back_exists = storage_path('app/public/warehouse/'.$order_detail_image_back_name);
                                             if(file_exists($order_detail_image_back_exists)){
                                                 $order_detail_image_back = asset('storage/warehouse/'.$products_with_anime[0]->image_back);
                                             }else{
@@ -815,7 +835,7 @@
                                                 <img src="{{$images[0]}}" alt="" height="144px">
                                             </div>
                                             <div class="col-2 order_product_images" onclick='getUploads("{{implode(" ", $products_with_anime[2])}}")' data-bs-toggle="modal" data-bs-target="#carousel-upload-modal">
-                                                <img src="{{$products_with_anime[2][0]}}" alt="" height="144px">
+                                                <img src="{{!empty($products_with_anime[2])?$products_with_anime[2][0]:asset('public/icon/no_photo.jpg')}}" alt="" height="144px">
                                             </div>
                                             <div class="col-4 order_content">
                                                 <h4>{{translate('Animated order')}}</h4>
@@ -1149,13 +1169,23 @@
                                      data-bs-parent="#custom-accordion-one">
                                     @foreach($order['products_with_anime'] as $products_with_anime)
                                         @php
-                                            $order_detail_image_front_exists = storage_path('app/public/warehouse/'.$products_with_anime[0]->image_front);
+                                            if($products_with_anime[0]->image_front){
+                                                $order_detail_image_front_name = $products_with_anime[0]->image_front;
+                                            }else{
+                                                $order_detail_image_front_name = 'no';
+                                            }
+                                            $order_detail_image_front_exists = storage_path('app/public/warehouse/'.$order_detail_image_front_name);
                                             if(file_exists($order_detail_image_front_exists)){
                                                 $order_detail_image_front = asset('storage/warehouse/'.$products_with_anime[0]->image_front);
                                             }else{
                                                 $order_detail_image_front = null;
                                             }
-                                            $order_detail_image_back_exists = storage_path('app/public/warehouse/'.$products_with_anime[0]->image_back);
+                                            if($products_with_anime[0]->image_back){
+                                                $order_detail_image_back_name = $products_with_anime[0]->image_back;
+                                            }else{
+                                                $order_detail_image_back_name = 'no';
+                                            }
+                                            $order_detail_image_back_exists = storage_path('app/public/warehouse/'.$order_detail_image_back_name);
                                             if(file_exists($order_detail_image_back_exists)){
                                                 $order_detail_image_back = asset('storage/warehouse/'.$products_with_anime[0]->image_back);
                                             }else{
@@ -1185,7 +1215,7 @@
                                                 <img src="{{$images[0]}}" alt="" height="144px">
                                             </div>
                                             <div class="col-2 order_product_images" onclick='getUploads("{{implode(" ", $products_with_anime[2])}}")' data-bs-toggle="modal" data-bs-target="#carousel-upload-modal">
-                                                <img src="{{$products_with_anime[2][0]}}" alt="" height="144px">
+                                                <img src="{{!empty($products_with_anime[2])?$products_with_anime[2][0]:asset('public/icon/no_photo.jpg')}}" alt="" height="144px">
                                             </div>
                                             <div class="col-4 order_content">
                                                 <h4>{{translate('Animated order')}}</h4>
@@ -1505,13 +1535,23 @@
                                      data-bs-parent="#custom-accordion-one">
                                     @foreach($order['products_with_anime'] as $products_with_anime)
                                         @php
-                                            $order_detail_image_front_exists = storage_path('app/public/warehouse/'.$products_with_anime[0]->image_front);
+                                            if($products_with_anime[0]->image_front){
+                                                $order_detail_image_front_name = $products_with_anime[0]->image_front;
+                                            }else{
+                                                $order_detail_image_front_name = 'no';
+                                            }
+                                            $order_detail_image_front_exists = storage_path('app/public/warehouse/'.$order_detail_image_front_name);
                                             if(file_exists($order_detail_image_front_exists)){
                                                 $order_detail_image_front = asset('storage/warehouse/'.$products_with_anime[0]->image_front);
                                             }else{
                                                 $order_detail_image_front = null;
                                             }
-                                            $order_detail_image_back_exists = storage_path('app/public/warehouse/'.$products_with_anime[0]->image_back);
+                                            if($products_with_anime[0]->image_back){
+                                                $order_detail_image_back_name = $products_with_anime[0]->image_back;
+                                            }else{
+                                                $order_detail_image_back_name = 'no';
+                                            }
+                                            $order_detail_image_back_exists = storage_path('app/public/warehouse/'.$order_detail_image_back_name);
                                             if(file_exists($order_detail_image_back_exists)){
                                                 $order_detail_image_back = asset('storage/warehouse/'.$products_with_anime[0]->image_back);
                                             }else{
@@ -1541,7 +1581,7 @@
                                                 <img src="{{$images[0]}}" alt="" height="144px">
                                             </div>
                                             <div class="col-2 order_product_images" onclick='getUploads("{{implode(" ", $products_with_anime[2])}}")' data-bs-toggle="modal" data-bs-target="#carousel-upload-modal">
-                                                <img src="{{$products_with_anime[2][0]}}" alt="" height="144px">
+                                                <img src="{{!empty($products_with_anime[2])?$products_with_anime[2][0]:asset('storage/icon/no_photo.jpg')}}" alt="" height="144px">
                                             </div>
                                             <div class="col-4 order_content">
                                                 <h4>{{translate('Animated order')}}</h4>

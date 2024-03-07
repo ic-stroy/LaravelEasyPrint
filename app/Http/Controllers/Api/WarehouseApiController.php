@@ -24,6 +24,9 @@ class WarehouseApiController extends Controller
     {
         $language = $request->header('language');
         $user = Auth::user();
+        if(!in_array($user->role_id, [2, 3])){
+            return $this->error(translate_api("You are not admin or manager", $language), 400);
+        }
         $model = new Warehouse();
         $model->quantity = $request->quantity;
         if(!Color::where('id', $request->color_id)->exists()){
@@ -106,7 +109,9 @@ class WarehouseApiController extends Controller
     {
         $language = $request->header('language');
         $user = Auth::user();
-
+        if(!in_array($user->role_id, [2, 3])){
+            return $this->error(translate_api("You are not admin or manager", $language), 400);
+        }
         if(!Warehouse::where('id', $request->id)->exists()){
             return $this->error(translate_api('Warehouse not found', $language), 400);
         }

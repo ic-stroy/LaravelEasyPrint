@@ -322,82 +322,84 @@ class OrderController extends Controller
                         ->first();
                     $relation_type = 'warehouse_product';
                     $relation_id = $order_detail->warehouse_id;
-
-                    if($warehouse_product->type == 0){
-                        $list_product = Products::find($warehouse_product->product_id);
-                        $list_images = count($this->getImages($warehouse_product, 'warehouses')) > 0 ? $this->getImages($warehouse_product, 'warehouses') : $this->getImages($list_product, 'product');
-                    }else{
-                        if (!$warehouse_product->image_front) {
-                            $warehouse_product->image_front = 'no';
-                        }
-                        $model_image_front = storage_path('app/public/warehouse/'.$warehouse_product->image_front);
-                        if (!$warehouse_product->image_back) {
-                            $warehouse_product->image_back = 'no';
-                        }
-                        $model_image_back = storage_path('app/public/warehouse/'.$warehouse_product->image_back);
-                        if(file_exists($model_image_front)){
-                            $list_images[] = asset("/storage/warehouse/$warehouse_product->image_front");
-                        }
-                        if(file_exists($model_image_back)){
-                            $list_images[] = asset("/storage/warehouse/$warehouse_product->image_back");
-                        }
-                    }
-
-                    $translate_name = table_translate($warehouse_product, 'warehouse', $language);
-
-                    if(!empty($warehouse_product) && $warehouse_product->warehouse_product_id){
-                        if($warehouse_product->discount_percent){
-                            $order_detail->discount = $warehouse_product->discount_percent;
+                    if($warehouse_product){
+                        if($warehouse_product->type == Constants::WAREHOUSE_TYPE){
+                            $list_product = Products::find($warehouse_product->product_id);
+                            $list_images = count($this->getImages($warehouse_product, 'warehouses')) > 0 ? $this->getImages($warehouse_product, 'warehouses') : $this->getImages($list_product, 'product');
                         }else{
-                            $order_detail->discount = 0;
-                        }
-                        if($order_detail->price != $warehouse_product->warehouse_price){
-                            $order_detail->price = $warehouse_product->warehouse_price;
-                            $order_price = $order_price + $order_detail->price * $order_detail->quantity;
-                            if($order_detail->discount && $order_detail->discount != 0){
-                                $order_detail->discount_price = ($order_detail->price*$order_detail->discount)/100*$order_detail->quantity;
-                                $order_discount_price = $order_discount_price + $order_detail->discount_price;
-                            }else{
-                                $order_detail->discount_price = 0;
+                            if (!$warehouse_product->image_front) {
+                                $warehouse_product->image_front = 'no';
                             }
-                        }else{
-                            $order_price = $order_price + $order_detail->price * $order_detail->quantity;
-                            if($order_detail->discount && $order_detail->discount != 0) {
-                                $order_detail->discount_price = ($order_detail->price*$order_detail->discount)/100*$order_detail->quantity;
-                                $order_discount_price = $order_discount_price + $order_detail->discount_price;
-                            }else{
-                                $order_detail->discount_price = 0;
+                            $model_image_front = storage_path('app/public/warehouse/'.$warehouse_product->image_front);
+                            if (!$warehouse_product->image_back) {
+                                $warehouse_product->image_back = 'no';
+                            }
+                            $model_image_back = storage_path('app/public/warehouse/'.$warehouse_product->image_back);
+                            if(file_exists($model_image_front)){
+                                $list_images[] = asset("/storage/warehouse/$warehouse_product->image_front");
+                            }
+                            if(file_exists($model_image_back)){
+                                $list_images[] = asset("/storage/warehouse/$warehouse_product->image_back");
                             }
                         }
-                        $order_detail->status = Constants::ORDER_DETAIL_BASKET;
-                        $order_detail->save();
-                    }
-                    $total_price = $order_detail->price*$order_detail->quantity - (int)$order_detail->discount_price;
 
-                    $list = [
-                        "id" => $order_detail->id,
-                        "relation_type" => $relation_type,
-                        "relation_id" => $relation_id,
-                        'name' => $translate_name,
-                        "price" => $order_detail->price,
-                        "quantity" => $order_detail->quantity,
-                        "max_quantity" => $warehouse_product->max_quantity,
-                        "description" => $warehouse_product->description,
-                        "discount" => $order_detail->discount,
-                        "discount_price" => $order_detail->discount_price,
-                        "total_price" => $total_price,
-                        "company_name" => $warehouse_product->company_name,
-                        "images" => $list_images,
-                        "color" => [
-                            "id" => $warehouse_product->color_id,
-                            "code" => $warehouse_product->color_code,
-                            "name" => $warehouse_product->color_name,
-                        ],
-                        "size" => [
-                            "id" => $warehouse_product->size_id,
-                            "name" => $warehouse_product->size_name,
-                        ]
-                    ];
+                        $translate_name = table_translate($warehouse_product, 'warehouse', $language);
+
+                        if(!empty($warehouse_product) && $warehouse_product->warehouse_product_id){
+                            if($warehouse_product->discount_percent){
+                                $order_detail->discount = $warehouse_product->discount_percent;
+                            }else{
+                                $order_detail->discount = 0;
+                            }
+                            if($order_detail->price != $warehouse_product->warehouse_price){
+                                $order_detail->price = $warehouse_product->warehouse_price;
+                                $order_price = $order_price + $order_detail->price * $order_detail->quantity;
+                                if($order_detail->discount && $order_detail->discount != 0){
+                                    $order_detail->discount_price = ($order_detail->price*$order_detail->discount)/100*$order_detail->quantity;
+                                    $order_discount_price = $order_discount_price + $order_detail->discount_price;
+                                }else{
+                                    $order_detail->discount_price = 0;
+                                }
+                            }else{
+                                $order_price = $order_price + $order_detail->price * $order_detail->quantity;
+                                if($order_detail->discount && $order_detail->discount != 0) {
+                                    $order_detail->discount_price = ($order_detail->price*$order_detail->discount)/100*$order_detail->quantity;
+                                    $order_discount_price = $order_discount_price + $order_detail->discount_price;
+                                }else{
+                                    $order_detail->discount_price = 0;
+                                }
+                            }
+                            $order_detail->status = Constants::ORDER_DETAIL_BASKET;
+                            $order_detail->save();
+                        }
+                        $total_price = $order_detail->price*$order_detail->quantity - (int)$order_detail->discount_price;
+
+                        $list = [
+                            "id" => $order_detail->id,
+                            "relation_type" => $relation_type,
+                            "relation_id" => $relation_id,
+                            'name' => $translate_name,
+                            "price" => $order_detail->price,
+                            "quantity" => $order_detail->quantity,
+                            "max_quantity" => $warehouse_product->max_quantity,
+                            "description" => $warehouse_product->description,
+                            "discount" => $order_detail->discount,
+                            "discount_price" => $order_detail->discount_price,
+                            "total_price" => $total_price,
+                            "company_name" => $warehouse_product->company_name,
+                            "images" => $list_images,
+                            "color" => [
+                                "id" => $warehouse_product->color_id,
+                                "code" => $warehouse_product->color_code,
+                                "name" => $warehouse_product->color_name,
+                            ],
+                            "size" => [
+                                "id" => $warehouse_product->size_id,
+                                "name" => $warehouse_product->size_name,
+                            ]
+                        ];
+                    }
+
 
                 } else {
                     $relation_type = 'product';
@@ -900,12 +902,19 @@ class OrderController extends Controller
                 $message=translate_api('Address not found', $language);
                 return $this->error($message, 400);
             }
-            $user_card = UserCard::where('user_id', $order->user_id)->find($data['user_card_id']);
-            if(!$user_card && $data['payment_method'] == Constants::BANK_CARD){
-                $order->user_card_id = $data['user_card_id'];
-                $message=translate_api('your card not found', $language);
-                return $this->error($message, 400);
+            if($data['payment_method'] == Constants::BANK_CARD){
+                if(!isset($data['user_card_id'])){
+                    $message=translate_api('you must enter user card_id', $language);
+                    return $this->error($message, 400);
+                }
+                $user_card = UserCard::where('user_id', $order->user_id)->find($data['user_card_id']);
+                if(!$user_card){
+                    $order->user_card_id = $data['user_card_id'];
+                    $message=translate_api('your card not found', $language);
+                    return $this->error($message, 400);
+                }
             }
+
             $order->address_id = $data['address_id'];
             $order->receiver_name = $data['receiver_name'];
             $order->phone_number = $data['receiver_phone'];
