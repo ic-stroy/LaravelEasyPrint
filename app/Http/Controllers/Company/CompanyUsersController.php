@@ -151,7 +151,6 @@ class CompanyUsersController extends Controller
         $personal_info->gender = $request->gender;
         $personal_info->birth_date = $request->birth_date;
         $personal_info->save();
-
         $model->email =  $request->email;
         if (isset($request->new_password) && isset($request->password)) {
             if(!password_verify($request->password, $model->password)){
@@ -159,6 +158,8 @@ class CompanyUsersController extends Controller
             }
             if ($request->new_password == $request->new_password_confirmation) {
                 $model->password = Hash::make($request->new_password);
+            }else{
+                return redirect()->back()->with('error_status', translate('Your new password confirmation is incorrect'));
             }
         }
         if(!$request->user_edit == 1){

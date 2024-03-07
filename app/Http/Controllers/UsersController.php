@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserRequest;
 use App\Models\Category;
 use App\Models\Company;
+use App\Models\EskizToken;
 use App\Models\PersonalInfo;
 use App\Models\Products;
+use App\Models\UserVerify;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request as GuzzleRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
@@ -294,4 +298,6 @@ class UsersController extends Controller
             'companies'=>$companies
         ]);
     }
+
+
 }

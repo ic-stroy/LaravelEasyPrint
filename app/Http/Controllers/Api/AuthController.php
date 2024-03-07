@@ -187,16 +187,19 @@ class AuthController extends Controller
         $user = Auth::user();
         $fields = $request->validate([
             'name' => 'required|string',
+            'surname' => 'required|string',
             'password' => 'required|string|confirmed'
         ]);
         $user->password = bcrypt($fields['password']);
         if(isset($user->personalInfo)){
             $personal_info = $user->personalInfo;
             $personal_info->first_name = $fields['name'];
+            $personal_info->last_name = $fields['surname'];
             $personal_info->save();
         }else{
             $personal_info = new PersonalInfo();
             $personal_info->first_name = $fields['name'];
+            $personal_info->last_name = $fields['surname'];
             $personal_info->save();
             $user->personal_info_id = $personal_info->id;
         }
@@ -207,9 +210,15 @@ class AuthController extends Controller
         }else{
             $first_name = null;
         }
+        if($user->personalInfo){
+            $last_name = $user->personalInfo ?$user->personalInfo->last_name:null;
+        }else{
+            $last_name = null;
+        }
         $data = [
             'user' => [
                 "first_name"=>$first_name,
+                "last_name"=>$last_name,
                 "email"=> $user->email,
                 "role_id"=> $user->role_id,
                 "updated_at"=> $user->updated_at,

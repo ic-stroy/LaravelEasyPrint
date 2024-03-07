@@ -155,6 +155,12 @@
     <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
     <script>
         let page = true
+        let error_status = "{{session('error_status')}}"
+        if(error_status != "" && error_status != null && error_status != undefined){
+            $(document).ready(function(){
+                toastr.warning(error_status)
+            });
+        }
         @if(isset($user->address) && isset($user->address->cities))
         let current_region = "{{$user->address->cities->region->id??''}}"
         let current_district = "{{$user->address->cities->id??''}}"

@@ -71,7 +71,7 @@ class CompanyUserRequest extends BaseFormRequest
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore(Route::current()->parameters()['company_user'])],
             'password' => 'nullable|string|min:8',
             'new_password' => 'nullable|string|min:8',
-            'new_password_confirmation' => 'nullable|string|min:8|confirmed',
+            'new_password_confirmation' => 'nullable|string|min:8',
             'avatar' => 'nullable|mimes:jpeg,jpg,png,webp|max:10240',
             'district' => 'nullable|string',
             'address_name' => 'nullable|string',
