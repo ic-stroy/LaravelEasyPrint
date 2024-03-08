@@ -58,6 +58,10 @@ class CompanyOrderController extends Controller
                 $product_quantity = $product_quantity + $order_detail->quantity;
                 $order_has = true;
 
+                $discount_withouth_expire = 0;
+                $product_discount_withouth_expire = 0;
+                $images = [];
+
                 if($order_detail->warehouse_id && $order_detail->product_id == NULL &&
                     !empty($order_detail->warehouse) && $order_detail->warehouse->company_id == $user->company_id){
                     $product_types = $product_types + 1;
@@ -72,7 +76,32 @@ class CompanyOrderController extends Controller
                     $order_detail_all_price = (int)$order_detail->price * (int)$order_detail->quantity - (int)$order_detail->discount_price;
                     $company_discount_price = $company_discount_price + (int)$order_detail->discount_price;
 
-                    $products[] = [$order_detail, $order_detail_all_price];
+                    if(!empty($order_detail->warehouse)){
+                        $discount_withouth_expire = !empty($order_detail->warehouse->discount_withouth_expire)?$order_detail->warehouse->discount_withouth_expire->percent:0;
+                        $product_discount_withouth_expire = !empty($order_detail->warehouse->product_discount_withouth_expire)?$order_detail->warehouse->product_discount_withouth_expire->percent:0;
+                    }else{
+                        $discount_withouth_expire = 0;
+                        $product_discount_withouth_expire = 0;
+                    }
+                    if(!empty($order_detail->warehouse) && $order_detail->warehouse->images){
+                        $images_ = json_decode($order_detail->warehouse->images);
+                        $images = [];
+                        foreach ($images_ as $key => $image_){
+                            $images[] = asset('storage/warehouses/'.$image_);
+                        }
+                    }elseif(!empty($order_detail->warehouse->product) && $order_detail->warehouse->product->images){
+                        $images_ = json_decode($order_detail->warehouse->product->images);
+                        $images = [];
+                        foreach ($images_ as $key => $image_){
+                            $images[] = asset('storage/products/'.$image_);
+                        }
+                    }else{
+                        $images = [];
+                    }
+
+                    $products[] = [$order_detail, $order_detail_all_price, 'images'=>$images,
+                        'discount_withouth_expire'=>$discount_withouth_expire, 'product_discount_withouth_expire'=>$product_discount_withouth_expire
+                    ];
                 }elseif(!$order_detail->warehouse_id && $order_detail->product_id){
                     $product_types = $product_types + 1;
                     $uploads=Uploads::where('relation_type', Constants::PRODUCT)->where('relation_id', $order_detail->product_id)->get();
@@ -96,7 +125,49 @@ class CompanyOrderController extends Controller
                             $products_with_anime_uploads[] = asset('storage/print/'.$upload->image);
                         }
                     }
-                    $products_with_anime[] = [$order_detail, $order_detail_all_price, $products_with_anime_uploads];
+
+                    if($order_detail->image_front){
+                        $order_detail_image_front_name = $order_detail->image_front;
+                    }else{
+                        $order_detail_image_front_name = 'no';
+                    }
+                    $order_detail_image_front_exists = storage_path('app/public/warehouse/'.$order_detail_image_front_name);
+                    if(file_exists($order_detail_image_front_exists)){
+                        $order_detail_image_front = asset('storage/warehouse/'.$order_detail->image_front);
+                    }else{
+                        $order_detail_image_front = null;
+                    }
+                    if($order_detail->image_back){
+                        $order_detail_image_back_name = $order_detail->image_back;
+                    }else{
+                        $order_detail_image_back_name = 'no';
+                    }
+                    $order_detail_image_back_exists = storage_path('app/public/warehouse/'.$order_detail_image_back_name);
+                    if(file_exists($order_detail_image_back_exists)){
+                        $order_detail_image_back = asset('storage/warehouse/'.$order_detail->image_back);
+                    }else{
+                        $order_detail_image_back = null;
+                    }
+                    if(!$order_detail_image_front && !$order_detail_image_back){
+                        if($order_detail->product->images){
+                            $images_ = json_decode($order_detail->product->images);
+                            $images = [];
+                            foreach ($images_ as $key => $image_){
+                                if($key < 2){
+                                    $images[] = asset('storage/products/'.$image_);
+                                }
+                            }
+                        }else{
+                            $images = [];
+                        }
+
+                    }else{
+                        $images = [$order_detail_image_front??'no', $order_detail_image_back??'no'];
+                    }
+                    $product_discount_withouth_expire = !empty($order_detail->product->discount_whithout_expire)?$order_detail->product->discount_whithout_expire->percent:0;
+
+                    $products_with_anime[] = [$order_detail, $order_detail_all_price, $products_with_anime_uploads,
+                        'images'=>$images, 'product_discount_withouth_expire'=>$product_discount_withouth_expire];
                 }
             }
             if((int)$order->coupon_price>0){
@@ -238,7 +309,7 @@ class CompanyOrderController extends Controller
 //        ];
 //        Notification::send($user, new OrderNotification($data));
         }
-        return redirect()->route('company_order.index')->with('cancelled', 'Product is cancelled');
+        return redirect()->route('company_order.index')->with('cancelled', 'Order is cancelled');
     }
 
     public function performOrderDetail($id){
@@ -310,7 +381,27 @@ class CompanyOrderController extends Controller
 //        Notification::send($user, new OrderNotification($data));
         }
 
-        return redirect()->route('company_order.index')->with('performed', 'Product is performed');
+        return redirect()->route('company_order.index')->with('performed', 'Order is performed');
+    }
+
+    public function acceptedByRecipient($id){
+        $order = Order::where('status', Constants::PERFORMED)->find($id);
+        if(!$order){
+            return redirect()->route('company_order.index')->with('error', 'Order not found');
+        }
+        $order->status = Constants::ACCEPTED_BY_RECIPIENT;
+        $order->save();
+        return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
+    }
+
+    public function cancellAcceptedByRecipient($id){
+        $order = Order::where('status', Constants::ACCEPTED_BY_RECIPIENT)->find($id);
+        if(!$order){
+            return redirect()->route('company_order.index')->with('error', 'Order not found');
+        }
+        $order->status = Constants::PERFORMED;
+        $order->save();
+        return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
     }
 
     public function getImages($model, $text){

@@ -106,7 +106,6 @@ Auth::routes();
         Route::group(['prefix' => 'companies'], function () {
             Route::get('get-user', [CompanyUsersController::class, 'getUser'])->name('getCompanyUser');
             Route::get('edit-user', [CompanyUsersController::class, 'editUser'])->name('editCompanyUser');
-//            Route::put('update-user', [CompanyUsersController::class, 'update'])->name('updateCompanyUser');
             Route::get('/', [CompanyHomeController::class, 'index'])->name('company_dashboard');
             Route::group(['prefix' => 'product'], function () {
                 Route::resource('warehouse', WarehouseController::class);
@@ -130,6 +129,8 @@ Auth::routes();
             Route::resource('company_coupons', CompanyCouponController::class);
             Route::group(['prefix' => 'company-order'], function () {
                 Route::get('/index', [CompanyOrderController::class, 'index'])->name('company_order.index');
+                Route::post('/accepted-by-recipient/{id}', [CompanyOrderController::class, 'acceptedByRecipient'])->name('accepted_by_recipient');
+                Route::post('/cancell-accepted-by-recipient/{id}', [CompanyOrderController::class, 'cancellAcceptedByRecipient'])->name('cancell_accepted_by_recipient');
 //                Route::get('/category', [CompanyOrderController::class, 'category'])->name('company_order.category');
                 Route::get('/show/{id}', [CompanyOrderController::class, 'show'])->name('company_order.show');
                 Route::get('/destroy/{id}', [CompanyOrderController::class, 'destroy'])->name('company_order.destroy');
