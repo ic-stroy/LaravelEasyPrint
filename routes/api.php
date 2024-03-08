@@ -55,9 +55,9 @@ Route::get('product', [ProductController::class, 'getProduct']);
 Route::get('/anime-category-size-color', [OrderController::class, 'AnimeCategorySizeColor']);
 Route::post('send-code', [UsersController::class, 'sendCode']);
 Route::post('verify-token', [UsersController::class, 'verifyToken']);
-Route::post('password-reset', [UsersController::class, 'passwordReset']);
 
 Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
+    Route::post('password-reset', [UsersController::class, 'passwordReset']);
     Route::get('user-info', [CategoryController::class, 'userInfo']);
     Route::post('register', [AuthController::class, 'register']);
     Route::post('personal-information', [UsersController::class, 'setPersonalInformation']);

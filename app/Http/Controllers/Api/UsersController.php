@@ -106,7 +106,6 @@ class UsersController extends Controller
             $letters = range('a', 'z');
             $random_array = [$letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)]];
             $random = implode("", $random_array);
-
             if($text == 'update'){
                 if(isset($personal_info->avatar)){
                     $sms_avatar = storage_path('app/public/user/' . $personal_info->avatar);
@@ -274,7 +273,7 @@ class UsersController extends Controller
         $language = $request->header('language');
         $user = Auth::user();
         if (isset($request->password) && isset($request->password_confirmation)) {
-            if ($request->password == $request->password_confirmation) {
+            if ($request->password != '' && $request->password == $request->password_confirmation) {
                 $user->password = Hash::make($request->password);
                 $user->save();
             }else{
