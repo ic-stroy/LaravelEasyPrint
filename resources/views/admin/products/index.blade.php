@@ -7,7 +7,7 @@
     <div class="card">
         <div class="card-header">
             <h4 class="mt-0 header-title">{{translate('Products lists')}}</h4>
-            <div class="dropdown float-end">
+            <div class="dropdown float-end mb-2">
                 <a class="form_functions btn btn-success" href="{{route('product.create')}}">{{translate('Create')}}</a>
             </div>
         </div>
@@ -44,7 +44,6 @@
                                 <tr>
                                     <th>#</th>
                                     <th>{{translate('Name')}}</th>
-                                    <th>{{translate('Current category')}}</th>
                                     <th>{{translate('Status')}}</th>
                                     <th>{{translate('Images')}}</th>
                                     <th>{{translate('Updated_at')}}</th>
@@ -58,11 +57,6 @@
                             @foreach($all_products[$category->id] as $product)
                                 @php
                                     $i++;
-                                    if(isset($product->subCategory->id)){
-                                        $current_category = $product->subCategory->name;
-                                    }elseif(isset($product->category->id)){
-                                        $current_category = $product->category->name;
-                                    }
                                 @endphp
                                 <tr>
                                     <th scope="row">
@@ -79,11 +73,6 @@
                                             @else
                                                 <div class="no_text"></div>
                                             @endif
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a class="show_page" href="{{route('product.show', $product->id)}}">
-                                            @if(isset($current_category)){{ $current_category }}@else <div class="no_text"></div> @endif
                                         </a>
                                     </td>
                                     <td>

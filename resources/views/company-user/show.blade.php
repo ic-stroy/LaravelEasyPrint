@@ -17,7 +17,7 @@
     <div class="card">
         <div class="card-body">
             <h4 class="mt-0 header-title">{{translate('User informations')}}</h4>
-            <div class="dropdown float-end">
+            <div class="dropdown float-end mb-2">
 
                 <a class="form_functions btn btn-info" href="{{route('editCompanyUser')}}"><i class="fe-edit-2"></i></a>
             </div>

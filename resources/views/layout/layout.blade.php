@@ -510,7 +510,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('subcategory.category') }}">
+                                        <a href="{{ route('subcategory.index') }}">
                                             <span> {{ translate('Sub Category') }} </span>
                                         </a>
                                     </li>

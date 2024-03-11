@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Products;
 use App\Models\SubCategory;
 use Illuminate\Http\Request;
 
@@ -16,8 +17,19 @@ class SubCategoryController extends Controller
      */
     public function index()
     {
-        $SubCategory = Category::where('step', 1)->orderBy('created_at', 'desc')->get();
-        return view('admin.sub-category.index', ['subcategories'=> $SubCategory]);
+
+        $categories = Category::where('step', 0)->get();
+        $all_categories = [];
+        foreach($categories as $category){
+            $sub_categories = $category->subcategory;
+            if(!empty($sub_categories)){
+                $all_categories[$category->id] = $sub_categories;
+            }else{
+                $all_categories[$category->id] = [];
+
+            }
+        }
+        return view('admin.sub-category.index', ['all_categories'=> $all_categories, 'categories'=>$categories]);
     }
 
     /**
@@ -39,7 +51,7 @@ class SubCategoryController extends Controller
         $model->parent_id = $request->category_id;
         $model->step = 1;
         $model->save();
-        return redirect()->route('subcategory.subcategory', $request->category_id)->with('status', translate('Successfully created'));
+        return redirect()->route('subcategory.index', $request->category_id)->with('status', translate('Successfully created'));
     }
 
     /**
@@ -71,7 +83,7 @@ class SubCategoryController extends Controller
         $model->parent_id = $request->category_id;
         $model->step = 1;
         $model->save();
-        return redirect()->route('subcategory.subcategory', $request->category_id)->with('status', translate('Successfully updated'));
+        return redirect()->route('subcategory.index', $request->category_id)->with('status', translate('Successfully updated'));
     }
 
     /**
@@ -81,7 +93,7 @@ class SubCategoryController extends Controller
     {
         $model = Category::where('step', 1)->find($id);
         $model->delete();
-        return redirect()->route('subcategory.subcategory', $model->category->id)->with('status', translate('Successfully deleted'));
+        return redirect()->route('subcategory.index', $model->category->id)->with('status', translate('Successfully deleted'));
     }
 
     public function category()

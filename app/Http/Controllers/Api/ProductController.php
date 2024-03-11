@@ -36,6 +36,7 @@ class ProductController extends Controller
 
         $sizes = DB::table('sizes')
         ->select('id','name')
+            ->where('status', 1)
         ->get();
 
         foreach ($products_ as $product_) {

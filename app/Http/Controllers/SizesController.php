@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Color;
+use App\Models\Products;
 use App\Models\Sizes;
 use Illuminate\Http\Request;
 
@@ -14,8 +15,15 @@ class SizesController extends Controller
      */
     public function index()
     {
-        $sizes = Sizes::orderBy('created_at', 'desc')->get();
-        return view('admin.sizes.index', ['sizes'=> $sizes]);
+        $categories = Category::where('step', 0)->get();
+        $all_sizes = [];
+        foreach($categories as $category){
+            $categories_id = Category::where('parent_id', $category->id)->pluck('id')->all();
+            array_push($categories_id, $category->id);
+            $products = Sizes::orderBy('created_at', 'desc')->whereIn('category_id', $categories_id)->get();
+            $all_sizes[$category->id] = $products;
+        }
+        return view('admin.sizes.index', ['all_sizes'=> $all_sizes, 'categories'=> $categories]);
     }
 
     /**

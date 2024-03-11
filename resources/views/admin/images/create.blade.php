@@ -12,7 +12,7 @@
             <br>
              <form action="{{route('images.store')}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
                 @csrf @method("POST")
-                <input type="file" name="images[]" class="form-control"  multiple/>
+                <input type="file" name="image" class="form-control"/>
                 <br>
                 <button type="submit" class="btn btn-success">{{ translate('Save') }}</button>
             </form>
