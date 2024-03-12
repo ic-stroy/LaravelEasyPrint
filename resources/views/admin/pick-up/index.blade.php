@@ -10,7 +10,7 @@
             <div class="dropdown float-end mb-2">
                 <a class="form_functions btn btn-success" href="{{route('pick_up.create')}}">{{translate('Create')}}</a>
             </div>
-            <table class="table table-striped table-bordered dt-responsive nowrap">
+            <table class="table table-striped table-bordered dt-responsive nowrap text-center">
                 <thead>
                     <tr>
                         <th>#</th>

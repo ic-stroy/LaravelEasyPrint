@@ -52,7 +52,7 @@
             </ul>
             <div class="tab-content">
                 <div class="tab-pane show active" id="superadmins">
-                    <table class="table table-striped table-bordered dt-responsive nowrap">
+                    <table class="table table-striped table-bordered dt-responsive nowrap text-center">
                         <thead>
                         <tr>
                             <th>#</th>

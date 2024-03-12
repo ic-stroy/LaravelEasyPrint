@@ -37,11 +37,12 @@
                         $j++;
                     @endphp
                     <div class="tab-pane{{$j == 1?' show active':''}}" id="category_{{$category->id}}">
-                        <table class="table table-striped table-bordered dt-responsive nowrap">
+                        <table class="table table-striped table-bordered dt-responsive nowrap text-center">
                             <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>{{translate('Name')}}</th>
+                                    <th>{{translate('Status')}}</th>
                                     <th>{{translate('Updated_at')}}</th>
                                     <th class="text-center">{{translate('Functions')}}</th>
                                 </tr>
@@ -61,6 +62,15 @@
                                     <td>
                                         <a class="show_page" href="{{route('size.show', $size->id)}}">
                                             @if(isset($size->name)){{ $size->name }}@else <div class="no_text"></div> @endif
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a class="show_page" href="{{route('size.show', $size->id)}}">
+                                            @if($size->status == 1)
+                                                {{translate('Active')}}
+                                            @else
+                                                {{translate('Not active')}}
+                                            @endif
                                         </a>
                                     </td>
                                     <td>

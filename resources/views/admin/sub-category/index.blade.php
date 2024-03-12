@@ -37,7 +37,7 @@
                         $j++;
                     @endphp
                     <div class="tab-pane{{$j == 1?' show active':''}}" id="category_{{$category->id}}">
-                        <table class="table table-striped table-bordered dt-responsive nowrap">
+                        <table class="table table-striped table-bordered dt-responsive nowrap text-center">
                             <thead>
                                 <tr>
                                     <th>#</th>
