@@ -85,6 +85,11 @@ class OrderController extends Controller
             $order = new Order();
             $order->user_id = $user->id;
             $order->status = Constants::BASKED;
+            if(!$order->code){
+                $length = 8;
+                $order_code = str_pad($order->id, $length, '0', STR_PAD_LEFT);
+                $order->code = $order_code;
+            }
             $order->price = (int)$request_order_price;
             $order->discount_price = (int)$request_order_discount_price;
             $order->all_price = (int)$request_order_price - $request_order_discount_price;
@@ -261,6 +266,7 @@ class OrderController extends Controller
         if ($language == null) {
             $language = env("DEFAULT_LANGUAGE", 'ru');
         }
+
         $order = $user->orderBasket;
         $order_detail_list = [];
         if (isset($user->orderBasket->orderDetail)) {
@@ -1045,8 +1051,30 @@ class OrderController extends Controller
                     }
                 }
             }
+
+            if(!empty($order->address)){
+                $address = $order->address->name;
+                if(!empty($order->address->cities)){
+                    $city = $order->address->cities->name;
+                    if(!empty($order->address->cities->region)){
+                        $region = $order->address->cities->region->name;
+                        $address_name = $address.' '.$city.' '.$region;
+                    }else{
+                        $address_name = $address.' '.$city;
+                    }
+                }else{
+                    $address_name = $address;
+                }
+            }else{
+                $address_name = '';
+            }
+            $data = [
+                'code'=>$order->code,
+                'address'=>$address_name,
+            ];
+
             $message = translate_api('success', $language);
-            return $this->success($message, 200);
+            return $this->success($message, 200, $data);
         } else {
             $message = translate_api('this order not in the basket or not exist', $language);
             return $this->error($message, 400);
