@@ -257,7 +257,7 @@ class OrderController extends Controller
     public function getBasket(Request $request)
     {
         $user = Auth::user();
-        $language = $request->language;
+        $language = $request->header('language');
         if ($language == null) {
             $language = env("DEFAULT_LANGUAGE", 'ru');
         }
@@ -525,7 +525,7 @@ class OrderController extends Controller
      * bu funksiya savatchaga qo'shilgan products va warehouses larni frontga chiqarib berishda qollaniladi (Order status Ordered bo'ladi Get zapros) Farqi bunda Orderni ichidagi productlarni o'zgartirib bo'lmaydi
      */
     public function getOrder(Request $request){
-        $language = $request->language;
+        $language = $request->header('language');
         if ($language == null) {
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
@@ -764,7 +764,7 @@ class OrderController extends Controller
      * bu funksiya  orderga Coupon qo'shishda qollaniladi (Order status Ordered bo'ladi Post zapros) productlarga tegishli faqat bitta coupon active bo'ladi
      */
     public function addCoupon(Request $request){
-        $language=$request->language;
+        $language=$request->headers('language');
         if ($language == null) {
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
