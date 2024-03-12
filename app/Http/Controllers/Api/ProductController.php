@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
+use App\Models\Category;
 use App\Models\Color;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
@@ -183,11 +184,31 @@ class ProductController extends Controller
                 'dt2.type as type', 'dt2.image_front as image_front', 'dt2.image_back as image_back', 'dt2.type as type',
                 'dt8.name as company_name','dt7.name as material_name', 'dt3.id as size_id',
                 'dt3.name as size_name','dt4.id as color_id','dt4.name as color_name','dt4.code as color_code',
-                'dt5.name as product_name', 'dt5.images as product_images', 'dt5.description as product_description', 'dt6.percent AS discount')
+                'dt5.name as product_name', 'dt5.category_id as category_id', 'dt5.images as product_images', 'dt5.description as product_description', 'dt6.percent AS discount')
             ->first();
             $warehouse_products = [];
             $images = [];
             if($warehouse_product){
+                $product__category = Category::find($warehouse_product->category_id);
+                if($product__category->step == 0){
+                    $product_category_translate_name=table_translate($product__category,'category', $language);
+                    $product_category = [
+                        'id'=>$product__category->id,
+                        'name'=>$product_category_translate_name,
+                    ];
+                    $product_sub_category = NULL;
+                }else{
+                    $product_sub_category_translate_name=table_translate($product__category,'category', $language);
+                    $product_sub_category = [
+                        'id'=>$product__category->id,
+                        'name'=>$product_sub_category_translate_name,
+                    ];
+                    $product_category_translate_name=table_translate($product__category->category,'category', $language);
+                    $product_category = [
+                        'id'=>$product__category->category->id,
+                        'name'=>$product_category_translate_name,
+                    ];
+                }
                 if($warehouse_product->type == Constants::WAREHOUSE_TYPE){
                     if (count($this->getImages($warehouse_product, 'warehouse'))>0) {
                         $warehouseProducts = $this->getImages($warehouse_product, 'warehouse');
@@ -329,71 +350,75 @@ class ProductController extends Controller
                         !empty($warehouse_product->material_composition) ||
                         !empty($warehouse_product->manufacturer_country)) {
 
-                            $list = [
-                                "id" => $warehouse_product->warehouse_product_id,
-                                "name" => $warehouse_translate_name ?? $warehouse_product->product_name,
-                                // "relation_id" => $relation_id,
-                                "price" => $warehouse_product->price,
-                                'discount' => $warehouse_product->discount?$warehouse_product->discount : NULL,
-                                'price_discount' => $warehouse_product->discount ? $warehouse_product->price - ($warehouse_product->price / 100 * $warehouse_product->discount) : NULL,
-                                // "discounts" => $warehouse_product->price,
-                                "quantity" => $warehouse_product->quantity??NULL,
-                                "composition" => $warehouse_product->material_name.' '. $warehouse_product->material_composition .' '. $warehouse_product->manufacturer_country,
-                                // "max_quantity" => $warehouse_product->max_quantity,
-                                // "material_name"=>$warehouse_product->material_name,
-                                "company_name"=>$warehouse_product->company_name,
-                                "company_id"=>$warehouse_product->company_id,
-                                // "manufacturer_country"=>$warehouse_product->manufacturer_country,
-                                // "material_composition"=>$warehouse_product->material_composition,
-                                "description" => $warehouse_product->description ?? $warehouse_product->product_description,
-                                "images" => $warehouseProducts,
-                                "color" => [
-                                    "id" => $warehouse_product->color_id,
-                                    "code" => $warehouse_product->color_code,
-                                    "name" => $color_translate_name??'',
-                                ],
-                                "size" => [
-                                    "id" => $warehouse_product->size_id,
-                                    "name" => $warehouse_product->size_name,
-                                ],
-                                "color_by_size" => $size_list,
-                                "size_by_color" => $aaa_color_list,
-                                "get_sizes"=>$get_sizes,
-                                "get_colors"=>$get_colors
-                            ];
+                        $list = [
+                            "id" => $warehouse_product->warehouse_product_id,
+                            "name" => $warehouse_translate_name ?? $warehouse_product->product_name,
+                            // "relation_id" => $relation_id,
+                            "price" => $warehouse_product->price,
+                            'discount' => $warehouse_product->discount?$warehouse_product->discount : NULL,
+                            'price_discount' => $warehouse_product->discount ? $warehouse_product->price - ($warehouse_product->price / 100 * $warehouse_product->discount) : NULL,
+                            // "discounts" => $warehouse_product->price,
+                            "quantity" => $warehouse_product->quantity??NULL,
+                            "composition" => $warehouse_product->material_name.' '. $warehouse_product->material_composition .' '. $warehouse_product->manufacturer_country,
+                            // "max_quantity" => $warehouse_product->max_quantity,
+                            // "material_name"=>$warehouse_product->material_name,
+                            "company_name"=>$warehouse_product->company_name,
+                            "company_id"=>$warehouse_product->company_id,
+                            // "manufacturer_country"=>$warehouse_product->manufacturer_country,
+                            // "material_composition"=>$warehouse_product->material_composition,
+                            "description" => $warehouse_product->description ?? $warehouse_product->product_description,
+                            "images" => $warehouseProducts,
+                            "color" => [
+                                "id" => $warehouse_product->color_id,
+                                "code" => $warehouse_product->color_code,
+                                "name" => $color_translate_name??'',
+                            ],
+                            "size" => [
+                                "id" => $warehouse_product->size_id,
+                                "name" => $warehouse_product->size_name,
+                            ],
+                            "color_by_size" => $size_list,
+                            "size_by_color" => $aaa_color_list,
+                            "get_sizes"=>$get_sizes,
+                            "get_colors"=>$get_colors,
+                            "product_category"=>$product_category,
+                            "product_sub_category"=>$product_sub_category
+                        ];
                     }
                     else{
                         $list = [
-                                "id" => $warehouse_product->warehouse_product_id,
-                                "name" => $warehouse_translate_name ?? $warehouse_product->product_name,
-                                // "relation_id" => $relation_id,
-                                "price" => $warehouse_product->price,
-                                'discount' => $warehouse_product->discount ? $warehouse_product->discount : NULL,
-                                'price_discount' => $warehouse_product->discount ? $warehouse_product->price - ($warehouse_product->price / 100 * $warehouse_product->discount) : NULL,
-                                // "discounts" => $warehouse_product->price,
-                                "quantity" => $warehouse_product->quantity??NULL,
-                                // "max_quantity" => $warehouse_product->max_quantity,
-                                // "material_name"=>$warehouse_product->material_name,
-                                "company_name"=>$warehouse_product->company_name,
-                                "company_id"=>$warehouse_product->company_id,
-                                // "manufacturer_country"=>$warehouse_product->manufacturer_country,
-                                // "material_composition"=>$warehouse_product->material_composition,
-                                "description" => $warehouse_product->description ?? $warehouse_product->product_description,
-                                "images" => $warehouseProducts,
-                                "color" => [
-                                    "id" => $warehouse_product->color_id,
-                                    "code" => $warehouse_product->color_code,
-                                    "name" => $color_translate_name??'',
-                                ],
-                                "size" => [
-                                    "id" => $warehouse_product->size_id,
-                                    "name" => $warehouse_product->size_name,
-                                ],
-                                "color_by_size" => $size_list,
-                                "size_by_color" => $aaa_color_list,
-                                "get_sizes"=>$get_sizes,
-                                "get_colors"=>$get_colors
-                            ];
+                            "id" => $warehouse_product->warehouse_product_id,
+                            "name" => $warehouse_translate_name ?? $warehouse_product->product_name,
+                            // "relation_id" => $relation_id,
+                            "price" => $warehouse_product->price,
+                            'discount' => $warehouse_product->discount ? $warehouse_product->discount : NULL,
+                            'price_discount' => $warehouse_product->discount ? $warehouse_product->price - ($warehouse_product->price / 100 * $warehouse_product->discount) : NULL,
+                            // "discounts" => $warehouse_product->price,
+                            "quantity" => $warehouse_product->quantity??NULL,
+                            // "max_quantity" => $warehouse_product->max_quantity,
+                            // "material_name"=>$warehouse_product->material_name,
+                            "company_name"=>$warehouse_product->company_name,
+                            "company_id"=>$warehouse_product->company_id,
+                            // "manufacturer_country"=>$warehouse_product->manufacturer_country,
+                            // "material_composition"=>$warehouse_product->material_composition,
+                            "description" => $warehouse_product->description ?? $warehouse_product->product_description,
+                            "images" => $warehouseProducts,
+                            "color" => [
+                                "id" => $warehouse_product->color_id,
+                                "code" => $warehouse_product->color_code,
+                                "name" => $color_translate_name??'',
+                            ],
+                            "size" => [
+                                "id" => $warehouse_product->size_id,
+                                "name" => $warehouse_product->size_name,
+                            ],
+                            "color_by_size" => $size_list,
+                            "size_by_color" => $aaa_color_list,
+                            "get_sizes"=>$get_sizes,
+                            "get_colors"=>$get_colors,
+                            "product_category"=>$product_category,
+                            "product_sub_category"=>$product_sub_category
+                        ];
                     }
                 } else {
                     $list = [];
