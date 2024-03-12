@@ -154,7 +154,7 @@ class ProductController extends Controller
      */
     public function show(Request $request)
     {
-        $language = $request->language;
+        $language = $request->header('language');
         if ($language == null) {
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
