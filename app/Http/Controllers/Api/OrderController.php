@@ -87,7 +87,8 @@ class OrderController extends Controller
             $order->status = Constants::BASKED;
             if(!$order->code){
                 $length = 8;
-                $order_code = str_pad($order->id, $length, '0', STR_PAD_LEFT);
+                $order_id = (string)$order->id;
+                $order_code = (string)str_pad($order_id, $length, '0', STR_PAD_LEFT);
                 $order->code = $order_code;
             }
             $order->price = (int)$request_order_price;
@@ -99,7 +100,8 @@ class OrderController extends Controller
 
         if(!$order->code){
             $length = 8;
-            $order_code = str_pad($order->id, $length, '0', STR_PAD_LEFT);
+            $order_id = (string)$order->id;
+            $order_code = (string)str_pad($order_id, $length, '0', STR_PAD_LEFT);
             $order->code=$order_code;
         }
 
@@ -261,12 +263,20 @@ class OrderController extends Controller
      */
     public function getBasket(Request $request)
     {
+        $all_orders = Order::all();
+        foreach($all_orders as $all_order){
+            $length = 8;
+            $data_id = (string)$all_order->id;
+            $order_code = (string)str_pad($data_id, $length, '0', STR_PAD_LEFT);
+            $all_order->code = $order_code;
+            $all_order->save();
+        }
+
         $user = Auth::user();
         $language = $request->header('language');
         if ($language == null) {
             $language = env("DEFAULT_LANGUAGE", 'ru');
         }
-
         $order = $user->orderBasket;
         $order_detail_list = [];
         if (isset($user->orderBasket->orderDetail)) {
@@ -1041,8 +1051,9 @@ class OrderController extends Controller
                     $newOrder->status = Constants::BASKED;
                     if(!$newOrder->code){
                         $length = 8;
-                        $order_code = str_pad($newOrder->id, $length, '0', STR_PAD_LEFT);
-                        $newOrder->code=$order_code;
+                        $newOrderId = (string)$newOrder->id;
+                        $order_code = (string)str_pad($newOrderId, $length, '0', STR_PAD_LEFT);
+                        $newOrder->code = $order_code;
                     }
                     $newOrder->save();
                     foreach($newOrderDetail as $new_order_detail){
@@ -1051,12 +1062,29 @@ class OrderController extends Controller
                     }
                 }
             }
-
+            $is_tashkent = false;
+            if((int)date('H') < 17){
+                $delivering_time = translate_api('The day after tomorrow', $language);
+            }elseif((int)date('H') == 17 && (int)date('i') == 0){
+                $delivering_time = translate_api('The day after tomorrow', $language);
+            }else{
+                $delivering_time = translate_api('After three days', $language);
+            }
             if(!empty($order->address)){
                 $address = $order->address->name;
                 if(!empty($order->address->cities)){
                     $city = $order->address->cities->name;
                     if(!empty($order->address->cities->region)){
+                        if($order->address->cities->region->name == 'Toshkent shahri'){
+                            $is_tashkent = true;
+                            if((int)date('H') < 17){
+                                $delivering_time = translate_api('Tomorrow', $language);
+                            }elseif((int)date('H') == 17 && (int)date('i') == 0){
+                                $delivering_time = translate_api('Tomorrow', $language);
+                            }else{
+                                $delivering_time = translate_api('The day after tomorrow', $language);
+                            }
+                        }
                         $region = $order->address->cities->region->name;
                         $address_name = $address.' '.$city.' '.$region;
                     }else{
@@ -1068,9 +1096,11 @@ class OrderController extends Controller
             }else{
                 $address_name = '';
             }
+
             $data = [
                 'code'=>$order->code,
                 'address'=>$address_name,
+                'pick_up_time'=>$delivering_time
             ];
 
             $message = translate_api('success', $language);
@@ -1200,6 +1230,7 @@ class OrderController extends Controller
                 'region'=>$region,
                 'city'=>$city,
             ];
+
             $response[] = [
                 "id" => $data->id,
                 "price" => $data->price,
