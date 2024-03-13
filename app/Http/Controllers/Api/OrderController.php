@@ -263,15 +263,6 @@ class OrderController extends Controller
      */
     public function getBasket(Request $request)
     {
-        $all_orders = Order::all();
-        foreach($all_orders as $all_order){
-            $length = 8;
-            $data_id = (string)$all_order->id;
-            $order_code = (string)str_pad($data_id, $length, '0', STR_PAD_LEFT);
-            $all_order->code = $order_code;
-            $all_order->save();
-        }
-
         $user = Auth::user();
         $language = $request->header('language');
         if ($language == null) {
