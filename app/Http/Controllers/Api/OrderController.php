@@ -85,25 +85,19 @@ class OrderController extends Controller
             $order = new Order();
             $order->user_id = $user->id;
             $order->status = Constants::BASKED;
-            if(!$order->code){
-                $length = 8;
-                $order_id = (string)$order->id;
-                $order_code = (string)str_pad($order_id, $length, '0', STR_PAD_LEFT);
-                $order->code = $order_code;
-            }
+
             $order->price = (int)$request_order_price;
             $order->discount_price = (int)$request_order_discount_price;
             $order->all_price = (int)$request_order_price - $request_order_discount_price;
         }
-
         $order->save();
-
         if(!$order->code){
             $length = 8;
             $order_id = (string)$order->id;
             $order_code = (string)str_pad($order_id, $length, '0', STR_PAD_LEFT);
             $order->code=$order_code;
         }
+        $order->save();
 
         $message = translate_api('Success', $language);
         if ($request->warehouse_product_id) {
@@ -263,6 +257,17 @@ class OrderController extends Controller
      */
     public function getBasket(Request $request)
     {
+        $all_orders = Order::withTrashed()->get();
+        foreach($all_orders as $all_order){
+            $length = 8;
+            $data_id = (string)$all_order->id;
+            $order_code = (string)str_pad($data_id, $length, '0', STR_PAD_LEFT);
+            $all_order->code = $order_code;
+            $all_order->save();
+        }
+        return response()->json($all_orders);
+
+
         $user = Auth::user();
         $language = $request->header('language');
         if ($language == null) {
@@ -1042,7 +1047,6 @@ class OrderController extends Controller
                 $newOrder->user_id = $order->user_id;
                 $newOrder->status = Constants::BASKED;
                 $newOrder->save();
-                usleep(444000);
                 if(!$newOrder->code){
                     $length = 8;
                     $newOrderId = (string)$newOrder->id;
