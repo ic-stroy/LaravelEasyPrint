@@ -1042,6 +1042,7 @@ class OrderController extends Controller
                 $newOrder->user_id = $order->user_id;
                 $newOrder->status = Constants::BASKED;
                 $newOrder->save();
+                usleep(444000);
                 if(!$newOrder->code){
                     $length = 8;
                     $newOrderId = (string)$newOrder->id;
@@ -1103,7 +1104,7 @@ class OrderController extends Controller
             $message = translate_api('success', $language);
             return $this->success($message, 200, $data);
         } else {
-            $message = translate_api('this order not in the basket or not exist', $language);
+            $message = translate_api('This order not in the basket or not exists', $language);
             return $this->error($message, 400);
         }
     }
@@ -1213,11 +1214,9 @@ class OrderController extends Controller
                 $street = $data->address->name;
                 if(!empty($data->address->cities)){
                     if(!empty($data->address->cities->region)){
-                        $region = $data->address->cities->region?$data->address->cities->region->name:null;
-                        $city = $data->address->cities->name;
-                    }else{
-                        $region = $data->address->cities->name;
+                        $region = $data->address->cities->region->name;
                     }
+                    $city = $data->address->cities->name;
                 }
             }
 
