@@ -62,8 +62,13 @@ class CategoryController extends Controller
                     'id' => $category->id,
                     'name' => $translate_category_name,
                 ];
-
-                $subCategory = [];
+                foreach($category->subcategory as $sub_category){
+                    $translate_sub_category_name=table_translate($sub_category,'category',$language);
+                    $subCategory[] = [
+                        'id' => $sub_category->id,
+                        'name' => $translate_sub_category_name,
+                    ];
+                }
             } elseif ($category->step == 1) {
                 $translate_category_name=table_translate($category->category,'category',$language);
                 $category_ = [
@@ -72,7 +77,7 @@ class CategoryController extends Controller
                 ];
 
                 $translate_sub_category_name=table_translate($category,'category',$language);
-                $subCategory = [
+                $subCategory[] = [
                     'id' => $category->id,
                     'name' => $translate_sub_category_name,
                 ];
