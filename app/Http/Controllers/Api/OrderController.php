@@ -263,6 +263,16 @@ class OrderController extends Controller
      */
     public function getBasket(Request $request)
     {
+        $all_orders = Order::withTrashed()->get();
+        foreach($all_orders as $all_order){
+            $length = 8;
+            $data_id = (string)$all_order->id;
+            $order_code = (string)str_pad($data_id, $length, '0', STR_PAD_LEFT);
+            $all_order->code = $order_code;
+            $all_order->save();
+        }
+        return response()->json($all_orders);
+
         $user = Auth::user();
         $language = $request->header('language');
         if ($language == null) {
@@ -540,6 +550,7 @@ class OrderController extends Controller
         $order_id = $request->order_id;
 
         if ($order_id  && $order = Order::where('id', $order_id)->first()) {
+
             $data=[];
             $order_detail_list=[];
             $coupon = $order->coupon;
@@ -1053,12 +1064,15 @@ class OrderController extends Controller
                     }
                 }
             }
-            $is_tashkent = false;
+
             if((int)date('H') < 17){
+                $deliver_date = strtotime('+2 days');
                 $delivering_time = translate_api('The day after tomorrow', $language);
             }elseif((int)date('H') == 17 && (int)date('i') == 0){
+                $deliver_date = strtotime('+2 days');
                 $delivering_time = translate_api('The day after tomorrow', $language);
             }else{
+                $deliver_date = strtotime('+3 days');
                 $delivering_time = translate_api('After three days', $language);
             }
             if(!empty($order->address)){
@@ -1067,12 +1081,14 @@ class OrderController extends Controller
                     $city = $order->address->cities->name;
                     if(!empty($order->address->cities->region)){
                         if($order->address->cities->region->name == 'Toshkent shahri'){
-                            $is_tashkent = true;
                             if((int)date('H') < 17){
+                                $deliver_date = strtotime('+1 day');
                                 $delivering_time = translate_api('Tomorrow', $language);
                             }elseif((int)date('H') == 17 && (int)date('i') == 0){
+                                $deliver_date = strtotime('+1 day');
                                 $delivering_time = translate_api('Tomorrow', $language);
                             }else{
+                                $deliver_date = strtotime('+2 days');
                                 $delivering_time = translate_api('The day after tomorrow', $language);
                             }
                         }
@@ -1087,7 +1103,8 @@ class OrderController extends Controller
             }else{
                 $address_name = '';
             }
-
+            $order->delivery_date = date('Y-m-d H:i:s', $deliver_date);
+            $order->save();
             $data = [
                 'code'=>$order->code,
                 'address'=>$address_name,
@@ -1108,7 +1125,7 @@ class OrderController extends Controller
         $language = $request->header('language');
         $order_detail_id=$request->order_detail_id;
 
-        if ($order_detail=OrderDetail::where('id',$order_detail_id)->whereIn('status', [Constants::ORDER_DETAIL_BASKET, Constants::ORDER_DETAIL_ORDERED])->first()) {
+        if ($order_detail=OrderDetail::where('id', $order_detail_id)->whereIn('status', [Constants::ORDER_DETAIL_BASKET, Constants::ORDER_DETAIL_ORDERED])->first()) {
             $order = $order_detail->order;
             $order->price = (int)$order->price - ((int)$order_detail->price * (int)$order_detail->quantity);
             $order->discount_price = (int)$order->discount_price - (int)$order_detail->discount_price;
@@ -1202,19 +1219,19 @@ class OrderController extends Controller
             $region = null;
             $city = null;
             $street = null;
-            if($data->address){
+            if(!empty($data->address)){
                 $address_id = $data->address->id;
                 $street = $data->address->name;
-                if($data->address->cities){
-                    if($data->address->cities->region){
+                if(!empty($data->address->cities)){
+                    if(!empty($data->address->cities->region)){
                         $region = $data->address->cities->region?$data->address->cities->region->name:null;
                         $city = $data->address->cities->name;
                     }else{
                         $region = $data->address->cities->name;
-                        $city = null;
                     }
                 }
             }
+
             $address = [
                 'id'=>$address_id,
                 'street'=>$street,
@@ -1373,22 +1390,6 @@ class OrderController extends Controller
                     $images[] = asset("/storage/warehouse/$warehouse->image_back");
                 }
             }
-
-//            if ($warehouse->images) {
-//                $images_ = json_decode($warehouse->images);
-//                $images = [];
-//                foreach ($images_ as $image_) {
-//                    $images[] = asset('storage/warehouses/' . $image_);
-//                }
-//            } elseif (isset($warehouse->product->images)) {
-//                $images_ = json_decode($warehouse->product->images);
-//                $images = [];
-//                foreach ($images_ as $image_){
-//                    $images[] = asset('storage/products/' . $image_);
-//                }
-//            } else {
-//                $images = [];
-//            }
 
             $list = [
                 "id" => $warehouse->id,
