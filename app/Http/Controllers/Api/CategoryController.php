@@ -52,11 +52,11 @@ class CategoryController extends Controller
         $category_ = [];
         $subCategory = [];
         $productId = [];
-
+        $category_active = null;
         if ($category) {
             $translate_category_name=table_translate($category,'category',$language);
             if ($category->step == 0) {
-
+                $category_active = true;
                 // $translate_category_name=table_translate($warehouse_product,'category',$language);
                 $category_ = [
                     'id' => $category->id,
@@ -70,6 +70,7 @@ class CategoryController extends Controller
                     ];
                 }
             } elseif ($category->step == 1) {
+                $category_active = false;
                 $translate_category_name=table_translate($category->category,'category',$language);
                 $category_ = [
                     'id' => $category->category->id,
@@ -189,6 +190,7 @@ class CategoryController extends Controller
         }
 
         $data[] = [
+            'category_active'=>$category_active,
             'category' => $category_,
             'sub_category' => $subCategory,
             'products' => $warehouse_products,
