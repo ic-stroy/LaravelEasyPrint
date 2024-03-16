@@ -1048,58 +1048,77 @@ class OrderController extends Controller
                     $new_order_detail->save();
                 }
             }
-            if((int)date('H') < 17){
-                $deliver_date = strtotime('+2 days');
-                $delivering_time = translate_api('The day after tomorrow', $language);
-            }elseif((int)date('H') == 17 && (int)date('i') == 0){
-                $deliver_date = strtotime('+2 days');
-                $delivering_time = translate_api('The day after tomorrow', $language);
-            }else{
-                $deliver_date = strtotime('+3 days');
-                $delivering_time = translate_api('After three days', $language);
-            }
-            if(!empty($order->address)){
-                $address = $order->address->name;
-                if(!empty($order->address->cities)){
-                    $city = $order->address->cities->name;
-                    if(!empty($order->address->cities->region)){
-                        if($order->address->cities->region->name == 'Toshkent shahri'){
-                            if((int)date('H') < 17){
-                                $deliver_date = strtotime('+1 day');
-                                $delivering_time = translate_api('Tomorrow', $language);
-                            }elseif((int)date('H') == 17 && (int)date('i') == 0){
-                                $deliver_date = strtotime('+1 day');
-                                $delivering_time = translate_api('Tomorrow', $language);
-                            }else{
-                                $deliver_date = strtotime('+2 days');
-                                $delivering_time = translate_api('The day after tomorrow', $language);
-                            }
-                        }
-                        $region = $order->address->cities->region->name;
-                        $address_name = $address.' '.$city.' '.$region;
-                    }else{
-                        $address_name = $address.' '.$city;
-                    }
-                }else{
-                    $address_name = $address;
-                }
-            }else{
-                $address_name = '';
-            }
-            $order->delivery_date = date('Y-m-d H:i:s', $deliver_date);
-            $order->save();
+
+            $pick_up_info = $this->getPickUpInfo($order, $language);
+            $pick_up_info['order']->save();
             $data = [
-                'code'=>$order->code,
-                'address'=>$address_name,
-                'pick_up_time'=>$delivering_time
+                'code'=>$pick_up_info['order']->code,
+                'address'=>$pick_up_info['address'],
+                'pick_up_time'=>$pick_up_info['pick_up_time']
             ];
 
             $message = translate_api('success', $language);
             return $this->success($message, 200, $data);
-        } else {
+        }elseif($order_id  && $order = Order::where('id',$order_id)->where('status', Constants::ORDERED)->first()){
+            $pick_up_info = $this->getPickUpInfo($order, $language);
+            $data = [
+                'code'=>$pick_up_info['order']->code,
+                'address'=>$pick_up_info['address'],
+                'pick_up_time'=>$pick_up_info['pick_up_time']
+            ];
+            $message = translate_api('success', $language);
+            return $this->success($message, 200, $data);
+        }else {
             $message = translate_api('This order not in the basket or not exists', $language);
             return $this->error($message, 400);
         }
+    }
+
+    public function getPickUpInfo($order, $language){
+        if((int)date('H') < 17){
+            $deliver_date = strtotime('+2 days');
+            $delivering_time = translate_api('The day after tomorrow', $language);
+        }elseif((int)date('H') == 17 && (int)date('i') == 0){
+            $deliver_date = strtotime('+2 days');
+            $delivering_time = translate_api('The day after tomorrow', $language);
+        }else{
+            $deliver_date = strtotime('+3 days');
+            $delivering_time = translate_api('After three days', $language);
+        }
+        if(!empty($order->address)){
+            $address = $order->address->name;
+            if(!empty($order->address->cities)){
+                $city = $order->address->cities->name;
+                if(!empty($order->address->cities->region)){
+                    if($order->address->cities->region->name == 'Toshkent shahri'){
+                        if((int)date('H') < 17){
+                            $deliver_date = strtotime('+1 day');
+                            $delivering_time = translate_api('Tomorrow', $language);
+                        }elseif((int)date('H') == 17 && (int)date('i') == 0){
+                            $deliver_date = strtotime('+1 day');
+                            $delivering_time = translate_api('Tomorrow', $language);
+                        }else{
+                            $deliver_date = strtotime('+2 days');
+                            $delivering_time = translate_api('The day after tomorrow', $language);
+                        }
+                    }
+                    $region = $order->address->cities->region->name;
+                    $address_name = $address.' '.$city.' '.$region;
+                }else{
+                    $address_name = $address.' '.$city;
+                }
+            }else{
+                $address_name = $address;
+            }
+        }else{
+            $address_name = '';
+        }
+        $order->delivery_date = date('Y-m-d H:i:s', $deliver_date);
+        return [
+            'order'=>$order,
+            'address'=>$address_name,
+            'pick_up_time'=>$delivering_time
+        ];
     }
     /**
      * bu funksiya Orderning ichidagi orderDetail ni o'chirishda qo'llaniladi  (Order status ORDERED gacha ishlaydi Post zapros)
