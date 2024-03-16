@@ -54,7 +54,7 @@ class CategoryController extends Controller
         $productId = [];
         $category_active = null;
         if ($category) {
-            $translate_category_name=table_translate($category,'category',$language);
+            $translate_category_name=table_translate($category,'category', $language);
             if ($category->step == 0) {
                 $category_active = true;
                 // $translate_category_name=table_translate($warehouse_product,'category',$language);
@@ -63,7 +63,7 @@ class CategoryController extends Controller
                     'name' => $translate_category_name,
                 ];
                 foreach($category->subcategory as $sub_category){
-                    $translate_sub_category_name=table_translate($sub_category,'category',$language);
+                    $translate_sub_category_name=table_translate($sub_category,'category', $language);
                     $subCategory[] = [
                         'id' => $sub_category->id,
                         'name' => $translate_sub_category_name,
@@ -84,49 +84,47 @@ class CategoryController extends Controller
                 ];
             }
 
-//            $products = Products::select('id', 'name', 'category_id', 'images', 'material_id', 'manufacturer_country', 'material_composition', 'price', 'description')->with('discount')->where('category_id', $category->id)->get();
+            $products = Products::select('id', 'name', 'category_id', 'images', 'material_id', 'manufacturer_country', 'material_composition', 'price', 'description')->with('discount')->where('category_id', $category->id)->get();
             $productsId = Products::where('category_id', $category->id)->pluck('id')->all();
         } else {
             $subCategory = [];
-//            $products = [];
+            $products = [];
             $category_= [];
         }
-//        foreach ($products as $product) {
+        foreach ($products as $product) {
+            $images_array = [];
+            if (!is_array($product->images)) {
+                $images = json_decode($product->images);
+            }
+            foreach ($images as $image) {
+                if (!$image) {
+                    $product_image = 'no';
+                } else {
+                    $product_image = $image;
+                }
 
-//            $images_array = [];
-//            if (!is_array($product->images)) {
-//                $images = json_decode($product->images);
-//            }
-//            foreach ($images as $image) {
-//                if (!$image) {
-//                    $product_image = 'no';
-//                } else {
-//                    $product_image = $image;
-//                }
-//
-//                $avatar_main = storage_path('app/public/products/' . $product_image);
-//                if (file_exists($avatar_main)) {
-//                    $images_array[] = asset('storage/products/' . $image);
-//                }
-//            }
-//
-//            $translate_product_name=table_translate($product,'product', $language);
-//
-//            $productId[] = $product->id;
-//            $products_data[] = [
-//                'id' => $product->id,
-//                'name' => $translate_product_name,
-//                'category_id' => $product->category_id,
-//                'images' => $images_array,
-//                'material_id' => $product->material_id,
-//                'description' => $product->description,
-//                'price' => $product->price,
-//                'discount' => (isset($product->discount)) > 0 ? $product->discount->percent : NULL,
-//                'price_discount' => (isset($product->discount)) > 0 ? $product->price - ($product->price / 100 * $product->discount->percent) : NULL,
-//                'manufacturer_country' => $product->manufacturer_country,
-//                'material_composition' => $product->material_composition,
-//            ];
-//        }
+                $avatar_main = storage_path('app/public/products/' . $product_image);
+                if (file_exists($avatar_main)) {
+                    $images_array[] = asset('storage/products/' . $image);
+                }
+            }
+
+            $translate_product_name=table_translate($product,'product', $language);
+
+            $products_data[] = [
+                'id' => $product->id,
+                'name' => $translate_product_name,
+                'category_id' => $product->category_id,
+                'images' => $images_array,
+                'material_id' => $product->material_id,
+                'description' => $product->description,
+                'price' => $product->price,
+                'discount' => (isset($product->discount)) > 0 ? $product->discount->percent : NULL,
+                'price_discount' => (isset($product->discount)) > 0 ? $product->price - ($product->price / 100 * $product->discount->percent) : NULL,
+                'manufacturer_country' => $product->manufacturer_country,
+                'material_composition' => $product->material_composition,
+            ];
+        }
 
         $warehouse_products_ = Warehouse::whereIn('product_id', $productsId)->distinct('product_id')->get();
         $warehouse_products = [];
@@ -173,8 +171,6 @@ class CategoryController extends Controller
             }
             //  join qilish kere
             $warehouse_products[] = [
-
-                // 'product_id' => $warehouse_product_->product_id,
                 'id' => $warehouse_product_->id,
                 'name' => $translate_name ?? $translate_product_name,
                 'price' => $warehouse_product_->price,
@@ -185,7 +181,8 @@ class CategoryController extends Controller
                 'material_composition' => !empty($warehouse_product_->product)?$warehouse_product_->product->material_composition:'',
                 'discount' => $discount??NULL,
                 'price_discount' => $price_discount??NULL,
-                'images' => $warehouseProducts
+                'images' => $warehouseProducts,
+                'product_id' => $warehouse_product_->product_id,
             ];
         }
 
@@ -194,7 +191,7 @@ class CategoryController extends Controller
             'category' => $category_,
             'sub_category' => $subCategory,
             'products' => $warehouse_products,
-//            'warehouse_products' => $warehouse_products
+            'products_data' => $products_data
         ];
 
         $message = translate_api('Success', $language);

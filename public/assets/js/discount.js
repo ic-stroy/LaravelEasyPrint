@@ -76,7 +76,7 @@ if(coupon_product_id != undefined && coupon_product_id != '' && coupon_product_i
                 all_products.text = text_all_products
                 all_products.value = "all"
                 product_id.add(all_products)
-                data.data[0].products.forEach(couponAddOptionToProduct)
+                data.data[0].products_data.forEach(couponAddOptionToProduct)
             },
             error: function (e) {
                 if(!product_exists.classList.contains('display-none')){
@@ -163,7 +163,7 @@ subcategory_id.addEventListener('change', function () {
                 all_products.text = text_all_products
                 all_products.value = "all"
                 product_id.add(all_products)
-                data.data[0].products.forEach(addOptionToProduct)
+                data.data[0].products_data.forEach(addOptionToProduct)
             },
             error: function (e) {
                 if(!product_exists.classList.contains('display-none')){

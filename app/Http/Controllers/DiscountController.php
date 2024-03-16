@@ -18,14 +18,27 @@ class DiscountController extends Controller
     {
         $discounts_distinct = Discount::distinct('discount_number')->get();
         $discounts_data = [];
+        $subcategory = '';
+        $category = '';
         foreach ($discounts_distinct as $discount_distinct) {
             $discount_number = Discount::where('discount_number', $discount_distinct->discount_number)->get()->count();
+            $discount_data = Discount::where('discount_number', $discount_distinct->discount_number)->get();
+            foreach($discount_data as $discount__data){
+                if(!empty($discount__data->category)){
+                    $category = $discount__data->category->name;
+                }elseif(!empty($discount__data->subCategory)){
+                    if(!empty($discount__data->subCategory->category)){
+                        $category = $discount__data->subCategory->category->name;
+                    }
+                    $subcategory = $discount__data->subCategory->name;
+                }
+            }
             $discounts_data[] = [
-                'discount'=>$discount_distinct,
+                'discount'=>$discount_data,
                 'number'=>$discount_number
             ];
         }
-        return view('admin.discount.index', ['discounts_data'=> $discounts_data]);
+        return view('admin.discount.index', ['discounts_data'=> $discounts_data, 'subcategory'=>$subcategory, 'category'=>$category]);
     }
 
     /**
@@ -51,7 +64,7 @@ class DiscountController extends Controller
             $discount_number = 1;
         }
         $products = $this->getProducts($request);
-        if($request->company_id){
+        if(isset($request->company_id) && $request->company_id){
             foreach ($products as $product){
                 $warehouses_id = Warehouse::where('company_id', $request->company_id)->where('product_id', $product->id)->pluck('id');
                 $datas[] = [
@@ -84,15 +97,19 @@ class DiscountController extends Controller
 
     public function getProducts($request){
         $sub_category = [];
-        if (isset($request->subcategory_id) && $request->subcategory_id != "all" && $request->subcategory_id){
-            $sub_category[] = $request->subcategory_id;
-        }else{
+        if(isset($request->product_id) && $request->product_id != "all" && $request->product_id){
+            $products = Products::where('id', $request->product_id)->get();
+        }elseif(isset($request->subcategory_id) && $request->subcategory_id != "all" && $request->subcategory_id){
+            $sub_category = $request->subcategory_id;
+            $products = Products::where('category_id', $sub_category)->get();
+        }elseif(isset($request->category_id) && $request->category_id != "all" && $request->category_id){
             $category = Category::where('step', 0)->find($request->category_id);
             foreach($category->subcategory as $subcategory){
                 $sub_category[] = $subcategory->id;
             }
+            array_push($sub_category, $request->category_id);
+            $products = Products::whereIn('category_id', $sub_category)->get();
         }
-        $products = Products::whereIn('category_id', $sub_category)->get();
         return $products;
     }
 
@@ -111,24 +128,17 @@ class DiscountController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
     {
         $model = Discount::find($id);
         $discount_number = Discount::where('discount_number', $model->discount_number)->get()->count();
+        $discounts = Discount::where('discount_number', $model->discount_number)->get();
         $discounts_data = [
-            'discount'=>$model,
-            'number'=>$discount_number
+            'discounts'=>$discounts,
+            'number'=>$discount_number,
         ];
-        if($model->category){
-            $category = $model->category->name;
-            $subcategory = '';
-        }elseif($model->subCategory){
-            $category = $model->subCategory->category?$model->subCategory->category->name:'';
-            $subcategory = $model->subCategory->name;
-        }else{
-            $category = '';
-            $subcategory = '';
-        }
+        $category = !empty($model->category)?$model->category->name:'';
+        $subcategory = !empty($model->subCategory)?$model->subCategory->name:'';
         return view('admin.discount.show', ['model'=>$model, 'discounts_data'=>$discounts_data, 'category'=>$category, 'subcategory'=>$subcategory]);
     }
 
@@ -139,15 +149,13 @@ class DiscountController extends Controller
     {
         $discount = Discount::find($id);
         $categories = Category::where('step', 0)->orderBy('id', 'asc')->get();
+        $category_id = '';
+        $subcategory_id = '';
         if($discount->category){
             $category_id = $discount->category->id;
-            $subcategory_id = '';
         }elseif($discount->subCategory){
-            $category_id = $discount->subCategory->category?$discount->subCategory->category->id:'';
+            $category_id = !empty($discount->subCategory->category)?$discount->subCategory->category->id:'';
             $subcategory_id = $discount->subCategory->id;
-        }else{
-            $category_id = '';
-            $subcategory_id = '';
         }
         if($discount->company){
             $discount_company = $discount->company;
@@ -178,7 +186,7 @@ class DiscountController extends Controller
         foreach ($current_discount_group as $currentDiscount){
             $currentDiscount->delete();
         }
-        if(isset($request->company_id)){
+        if(isset($request->company_id) && $request->company_id){
             foreach($products as $product){
                 $warehouses_id = Warehouse::where('company_id', $request->company_id)->where('product_id', $product->id)->pluck('id');
                 $datas[] = [

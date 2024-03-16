@@ -463,21 +463,25 @@
                                 <ul class="nav-second-level">
                                     <li>
                                         <a href="{{ route('product.index') }}">
+                                            <i class="mdi mdi-basket-outline"></i>
                                             <span> {{ translate('Products') }} </span>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="{{ route('coupons.index') }}">
+                                            <i class="mdi mdi-gift-outline"></i>
                                             <span> {{ translate('Coupon') }} </span>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="{{ route('discount.index') }}">
+                                            <i class="mdi mdi-percent-outline"></i>
                                             <span> {{ translate('Discount') }} </span>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="{{ route('slide_show.index') }}">
+                                            <i class="mdi mdi-image-outline"></i>
                                             <span> {{ translate('Slide show') }} </span>
                                         </a>
                                     </li>
@@ -506,11 +510,13 @@
                                 <ul class="nav-second-level">
                                     <li>
                                         <a href="{{ route('category.index') }}">
+                                            <i class="mdi mdi-format-list-bulleted"></i>
                                             <span> {{ translate('Category') }} </span>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="{{ route('subcategory.index') }}">
+                                            <i class="mdi mdi-format-list-bulleted"></i>
                                             <span> {{ translate('Sub Category') }} </span>
                                         </a>
                                     </li>
