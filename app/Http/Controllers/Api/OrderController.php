@@ -1217,7 +1217,7 @@ class OrderController extends Controller
             $order_status_date_hour = date('H', strtotime($data->updated_at));
             $order_status_date_minute = date('i', strtotime($data->updated_at));
             $order_status_date = "$order_status_date_week, $order_status_date_day $order_status_date_month $order_status_date_year ".translate('Y').'.'.translate('at').' '."$order_status_date_hour:$order_status_date_minute";
-
+            $address_id = null;
             $region = null;
             $city = null;
             $street = null;
@@ -1231,13 +1231,17 @@ class OrderController extends Controller
                     $city = $data->address->cities->name;
                 }
             }
+            if($address_id != null){
+                $address = [
+                    'id'=>$address_id,
+                    'street'=>$street,
+                    'region'=>$region,
+                    'city'=>$city,
+                ];
+            }else{
+                $address = [];
+            }
 
-            $address = [
-                'id'=>$address_id,
-                'street'=>$street,
-                'region'=>$region,
-                'city'=>$city,
-            ];
 
             $response[] = [
                 "id" => $data->id,
