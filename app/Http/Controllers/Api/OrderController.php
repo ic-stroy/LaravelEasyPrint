@@ -936,7 +936,11 @@ class OrderController extends Controller
             $orderedOrderDiscountPrice = 0;
             $newOrderDetail = [];
             $orderedOrderDetail = 0;
-            $users = User::whereIn('company_id', $companies_id)->get();
+            if(!empty($companies_id)){
+                $users = User::whereIn('company_id', $companies_id)->get();
+            }else{
+                $users = [];
+            }
             $order_product_quantity_array = OrderDetail::where('order_id', $order->id)->pluck('quantity')->all();
             $order_product_quantity = array_sum($order_product_quantity_array);
             foreach($order->orderDetail as $orderDetail){

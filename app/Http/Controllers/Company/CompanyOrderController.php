@@ -406,7 +406,7 @@ class CompanyOrderController extends Controller
         }
         $order->status = Constants::PERFORMED;
         $order->save();
-        $order_details = OrderDetail::where(['order_id'=>$order->id, 'status'=>3])->get();
+        $order_details = OrderDetail::where(['order_id'=>$order->id, 'status'=>6])->get();
         foreach($order_details as $order_detail){
             $order_detail->status = Constants::ORDER_DETAIL_PERFORMED;
             $order_detail->save();
