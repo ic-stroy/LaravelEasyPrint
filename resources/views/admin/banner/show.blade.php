@@ -55,7 +55,7 @@
                     <tr>
                         <th>{{translate('Carousel image')}}</th>
                         <td>
-                            <div class="d-flex">
+                            <div class="row">
                                 @if(!is_array($banner_images))
                                     @php
                                         if(!isset($banner_images->carousel) && count($banner_images->carousel)>0){
