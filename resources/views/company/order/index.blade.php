@@ -65,6 +65,13 @@
         .color_reddish{
             color:#ff8000;
         }
+        .color_text{
+            width:24px;
+            height: 24px;
+            border-radius:50%;
+            border:solid 1px green
+        }
+
     </style>
     @if(!empty($orderedOrders) || !empty($performedOrders) || !empty($cancelledOrders) || !empty($acceptedByRecipientOrders))
     <div id="success-alert-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -407,7 +414,7 @@
                                                     <span>{{translate('Discount')}}: <b style="color:red">{{$products_with_anime['product_discount_withouth_expire']}} %</b></span>
                                                 @endif
                                                 @if($products_with_anime[1])
-                                                    <span>{{translate('Price')}}: <b>{{$products_with_anime[0]->price}}</b> {!! !empty($products_with_anime[0]->quantity)?translate('Quantity').": <b>". $products_with_anime[0]->quantity."</b>":'' !!}</span>
+                                                    <span>{{translate('Price')}}: <b>{{$products_with_anime[0]->price}}</b> {!! $products_with_anime[0]->quantity?translate('Quantity').": <b>". $products_with_anime[0]->quantity."</b>":'' !!}</span>
                                                 @endif
                                                 @if($products_with_anime[1])
                                                     <span>{{translate('Sum')}}: <b>{{$products_with_anime[1]}}</b></span>
@@ -417,6 +424,13 @@
                                                 @endif
                                                 @if(!empty($products_with_anime[0]->color))
                                                     <span>{{translate('Color')}}: <b>{{$products_with_anime[0]->color->name}}</b></span>
+                                                @endif
+                                                @if(!empty($products_with_anime[0]->font))
+                                                    <span>{{translate('Text font')}}: <b>{{$products_with_anime[0]->font}}</b>
+                                                        {!! $products_with_anime[0]->font_text?translate('Text').": <b>". $products_with_anime[0]->font_text."</b>":'' !!}
+                                                        {!! $products_with_anime[0]->font_color?translate('Text color').": <div class='color_text' style=".
+                                                        'background-color:'.$products_with_anime[0]->font_color."></div>":'' !!}
+                                                    </span>
                                                 @endif
                                                 @if(!empty($products_with_anime[0]->updated_at))
                                                     <span>{{translate('Ordered')}}: <b>{{$products_with_anime[0]->updated_at}}</b></span>
