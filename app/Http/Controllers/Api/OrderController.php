@@ -95,7 +95,7 @@ class OrderController extends Controller
             $length = 8;
             $order_id = (string)$order->id;
             $order_code = (string)str_pad($order_id, $length, '0', STR_PAD_LEFT);
-            $order->code=$order_code;
+            $order->code = $order_code;
         }
         $order->save();
 
@@ -182,6 +182,9 @@ class OrderController extends Controller
             $order_detail->quantity = $request->quantity;
             $order_detail->color_id = $request->color_id;
             $order_detail->size_id = $request->size_id;
+            $order_detail->font = $request->font;
+            $order_detail->font_text = $request->font_text;
+            $order_detail->font_color = $request->font_color;
             $images_print = $request->file('imagesPrint');
             $order_detail->price = $request->price;
             $order_detail->image_price = $request->image_price;
@@ -1248,24 +1251,24 @@ class OrderController extends Controller
 
 
             $response[] = [
-                "id" => $data->id,
-                "price" => $data->price,
-                "status" => $this->getOrderStatus($data->status),
-                "order_status_date"=>$order_status_date,
-                "order_date"=>$order_date,
-                "delivery_date" => $data->delivery_date,
-                "delivery_price" => $data->delivery_price,
-                "all_price" => $data->all_price,
-                "coupon_id" => $data->coupon_id,
-                "address" => $address,
-                "receiver_name" => $data->receiver_name,
-                "phone_number" => $data->phone_number,
-                "payment_method" => $data->payment_method,
+                "id" => $data->id??null,
+                "price" => $data->price??null,
+                "status" => $this->getOrderStatus($data->status)??null,
+                "order_status_date"=>$order_status_date??null,
+                "order_date"=>$order_date??null,
+                "delivery_date" => $data->delivery_date?date('Y-m-d', strtotime($data->delivery_date)):null,
+                "delivery_price" => $data->delivery_price??null,
+                "all_price" => $data->all_price??null,
+                "coupon_id" => $data->coupon_id??null,
+                "address" => $address??null,
+                "receiver_name" => $data->receiver_name??null,
+                "phone_number" => $data->phone_number??null,
+                "payment_method" => $data->payment_method??null,
                 "user_card_id" => $data->user_card_id,
                 "discount_price" => $data->discount_price?(int)$data->discount_price:0,
                 "coupon_price" => $data->coupon_price?(int)$data->coupon_price:0,
                 "product_quantity" => count($data->orderDetail),
-                "code" => $data->code
+                "code" => $data->code??null
             ];
         }
         return $response;
