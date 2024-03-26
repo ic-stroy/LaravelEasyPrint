@@ -28,20 +28,6 @@
                         $i = 0
                     @endphp
                     @foreach($discounts_data as $discount_data)
-                        @php
-                            $i++;
-                            $category = '';
-                            $subcategory = '';
-                            if($discount_data['discount'][0]->product){
-                                if($discount_data['discount'][0]->product->category){
-                                    $category = $discount_data['discount'][0]->product->category->name;
-                                    $subcategory = '';
-                                }elseif($discount_data['discount'][0]->product->subCategory){
-                                    $category = $discount_data['discount'][0]->product->subCategory->category?$discount_data['discount'][0]->product->subCategory->category->name:'';
-                                    $subcategory = $discount_data['discount'][0]->product->subCategory->name;
-                                }
-                            }
-                        @endphp
                         <tr>
                             <td>
                                 <a class="show_page" href="{{route('discount.show', $discount_data['discount'][0]->id)}}">
@@ -59,8 +45,8 @@
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('discount.show', $discount_data['discount'][0]->id)}}">
-                                    @if($category != '' || $subcategory != '')
-                                        {{implode(', ', [$category, $subcategory])}}
+                                    @if(!empty($discount_data['category'][0]) || !empty($discount_data['subcategory'][0]))
+                                        {{implode(', ', [$discount_data['category'][0], $discount_data['subcategory'][0]])}}
                                     @else
                                         <div class="no_text"></div>
                                     @endif

@@ -11,7 +11,7 @@
                 <a class="form_functions btn btn-success" href="{{route('discount.create')}}">{{translate('Create')}}</a>
             </div>
 {{--            <table id="datatable-buttons" class="table dt-responsive nowrap table_show">--}}
-            @if(isset($discounts_data['discounts'][0]))
+            @if(isset($discount_data['discounts'][0]))
                 <table class="table dt-responsive nowrap table_show">
                     <thead>
                         <tr>
@@ -23,45 +23,47 @@
                         <tr>
                             <th>{{translate('Category')}}</th>
                             <td>
-                                @if($category != '' || $subcategory != '')
-                                    {{$category}} {{' '.$subcategory}}
+                                @if(!empty($discount_data['category'][0]) || !empty($discount_data['subcategory'][0]))
+                                    {{implode(', ', [$discount_data['category'][0], $discount_data['subcategory'][0]])}}
                                 @endif
                             </td>
                         </tr>
                         <tr>
                             <th>{{translate('Discount percent')}}</th>
                             <td>
-                                @if($discounts_data['discounts'][0]->percent != null)
-                                    {{$discounts_data['discounts'][0]->percent}} {{translate(' %')}}
+                                @if($discount_data['discounts'][0]->percent != null)
+                                    {{$discount_data['discounts'][0]->percent}} {{translate(' %')}}
                                 @endif
                             </td>
                         </tr>
                         <tr>
-                            @switch($discounts_data['discounts'][0]->type)
+                            @switch($discount_data['discounts'][0]->type)
                                 @case(\App\Constants::DISCOUNT_WAREHOUSE_TYPE)
                                     <th>{{translate('Number of warehouses')}}</th>
+                                @break
                                 @case(\App\Constants::DISCOUNT_PRODUCT_TYPE)
                                     <th>{{translate('Number of products')}}</th>
+                                @break
                             @endswitch
                             <td>
-                                @if($discounts_data['number'] != null)
-                                    {{$discounts_data['number']}}
+                                @if($discount_data['number'] != null)
+                                    {{$discount_data['number']}}
                                 @endif
                             </td>
                         </tr>
-                        @if(!empty($discounts_data['discounts'][0]->product))
+                        @if(!empty($discount_data['discounts'][0]->product))
                             <tr>
                                 <th>{{translate('Product')}}</th>
                                 <td>
-                                    @foreach($discounts_data['discounts'] as $discount_data)
-                                        {{$discount_data->product->name??''}}. <br>
+                                    @foreach($discount_data['discounts'] as $discount)
+                                        {{$discount->product->name??''}}. <br>
                                     @endforeach
                                 </td>
                             </tr>
                         @endif
                         <tr>
                             <th>{{translate('Updated at')}}</th>
-                            <td>{{$discounts_data['discounts'][0]->updated_at??''}}</td>
+                            <td>{{$discount_data['discounts'][0]->updated_at??''}}</td>
                         </tr>
                     </tbody>
                 </table>

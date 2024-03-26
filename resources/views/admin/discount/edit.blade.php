@@ -77,7 +77,13 @@
     <script>
         let coupon_category_id = "{{$category_id}}"
         let coupon_subcategory_id = "{{$subcategory_id}}"
-        let coupon_product_id = "{{$discount->product_id}}"
+        @if($quantity == 1)
+            let coupon_product_id = "{{$discount->product_id}}"
+        @elseif($quantity > 1)
+            let coupon_product_id = "two"
+        @else
+            let coupon_product_id = ""
+        @endif
         let coupon_percent_value = "{{$discount->percent??''}}"
         let text_select_sub_category = "{{translate('Select sub category')}}"
         let text_all_subcategory_products = "{{translate('All subcategories`s products')}}"

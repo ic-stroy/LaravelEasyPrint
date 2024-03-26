@@ -18,27 +18,52 @@ class DiscountController extends Controller
     {
         $discounts_distinct = Discount::distinct('discount_number')->get();
         $discounts_data = [];
-        $subcategory = '';
-        $category = '';
         foreach ($discounts_distinct as $discount_distinct) {
-            $discount_number = Discount::where('discount_number', $discount_distinct->discount_number)->get()->count();
+            $subcategory = [];
+            $category = [];
+            $discount_number = Discount::where('discount_number', $discount_distinct->discount_number)->count();
             $discount_data = Discount::where('discount_number', $discount_distinct->discount_number)->get();
             foreach($discount_data as $discount__data){
                 if(!empty($discount__data->category)){
-                    $category = $discount__data->category->name;
+                    if(!in_array($discount__data->category->name, $category)){
+                        $category[] = $discount__data->category->name;
+                    }
+                    $subcategory = [1, 2];
                 }elseif(!empty($discount__data->subCategory)){
                     if(!empty($discount__data->subCategory->category)){
-                        $category = $discount__data->subCategory->category->name;
+                        if(!in_array($discount__data->subCategory->category->name, $category)){
+                            $category[] = $discount__data->subCategory->category->name;
+                        }
                     }
-                    $subcategory = $discount__data->subCategory->name;
+                    if(!in_array($discount__data->subCategory->name, $subcategory)){
+                        $subcategory[] = $discount__data->subCategory->name;
+                    }
                 }
+            }
+            if(count($category) == 1){
+                $category = [$category[0]];
+            }elseif(count($category) > 1){
+                $category = [translate('All categories')];
+            }else{
+                $category = [''];
+            }
+
+            if(count($subcategory) == 1){
+                $subcategory = [$subcategory[0]];
+            }elseif(count($subcategory) > 1){
+                $subcategory = [translate('All subcategories')];
+            }else{
+                $subcategory = [''];
             }
             $discounts_data[] = [
                 'discount'=>$discount_data,
-                'number'=>$discount_number
+                'number'=>$discount_number,
+                'category'=>$category,
+                'subcategory'=>$subcategory
             ];
         }
-        return view('admin.discount.index', ['discounts_data'=> $discounts_data, 'subcategory'=>$subcategory, 'category'=>$category]);
+
+        return view('admin.discount.index', ['discounts_data'=> $discounts_data]);
     }
 
     /**
@@ -69,12 +94,13 @@ class DiscountController extends Controller
                 $warehouses_id = Warehouse::where('company_id', $request->company_id)->where('product_id', $product->id)->pluck('id');
                 $datas[] = [
                   'product_id'=>$product->id,
+                  'category_id'=>$product->category_id,
                   'warehouses_id'=>$warehouses_id
                 ];
             }
             foreach ($datas as $data){
                 foreach($data['warehouses_id'] as $warehouse_id){
-                    $discount = $this->newDiscount($request);
+                    $discount = $this->newDiscount($request, $data['category_id']);
                     $discount->type = Constants::DISCOUNT_WAREHOUSE_TYPE;
                     $discount->warehouse_id = $warehouse_id;
                     $discount->product_id = $data['product_id'];
@@ -85,7 +111,7 @@ class DiscountController extends Controller
             }
         }else{
             foreach($products as $product){
-                $discount = $this->newDiscount($request);
+                $discount = $this->newDiscount($request, $product->category_id);
                 $discount->type = Constants::DISCOUNT_PRODUCT_TYPE;
                 $discount->product_id = $product->id;
                 $discount->discount_number = $discount_number;
@@ -102,26 +128,38 @@ class DiscountController extends Controller
         }elseif(isset($request->subcategory_id) && $request->subcategory_id != "all" && $request->subcategory_id){
             $sub_category = $request->subcategory_id;
             $products = Products::where('category_id', $sub_category)->get();
-        }elseif(isset($request->category_id) && $request->category_id != "all" && $request->category_id){
+        }elseif(isset($request->category_id) && $request->category_id){
             $category = Category::where('step', 0)->find($request->category_id);
             foreach($category->subcategory as $subcategory){
                 $sub_category[] = $subcategory->id;
             }
             array_push($sub_category, $request->category_id);
             $products = Products::whereIn('category_id', $sub_category)->get();
+        }else{
+            $categories = Category::where('step', 0)->get();
+            $categories_id = [];
+            foreach($categories as $category){
+                foreach($category->subcategory as $subcategory){
+                    $sub_category[] = $subcategory->id;
+                }
+                $categories_id[] = $category->id;
+            }
+            $products = Products::whereIn('category_id', array_merge($sub_category, $categories_id))->get();
         }
         return $products;
     }
 
-    public function newDiscount($request){
+    public function newDiscount($request, $category_id){
         $discount = new Discount();
         $discount->percent = $request->percent;
         $discount->start_date = $request->start_date;
         $discount->end_date = $request->end_date;
         if (isset($request->subcategory_id) && $request->subcategory_id != "all" && $request->subcategory_id){
             $discount->category_id = $request->subcategory_id;
-        }else{
+        }elseif(isset($request->category_id) && $request->category_id){
             $discount->category_id = $request->category_id;
+        }else{
+            $discount->category_id = $category_id;
         }
         return $discount;
     }
@@ -130,16 +168,52 @@ class DiscountController extends Controller
      */
     public function show(string $id): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
     {
-        $model = Discount::find($id);
-        $discount_number = Discount::where('discount_number', $model->discount_number)->get()->count();
+        $model = Discount::select('discount_number')->find($id);
+        $discount_number = Discount::where('discount_number', $model->discount_number)->count();
         $discounts = Discount::where('discount_number', $model->discount_number)->get();
-        $discounts_data = [
+        $subcategory = [];
+        $category = [];
+        foreach($discounts as $discount){
+            if(!empty($discount->category)){
+                if(!in_array($discount->category->name, $category)){
+                    $category[] = $discount->category->name;
+                }
+                $subcategory = [1, 2];
+            }elseif(!empty($discount->subCategory)){
+                if(!empty($discount->subCategory->category)){
+                    if(!in_array($discount->subCategory->category->name, $category)){
+                        $category[] = $discount->subCategory->category->name;
+                    }
+                }
+                if(!in_array($discount->subCategory->name, $subcategory)){
+                    $subcategory[] = $discount->subCategory->name;
+                }
+            }
+        }
+
+        if(count($category) == 1){
+            $category = [$category[0]];
+        }elseif(count($category) > 1){
+            $category = [__('All categories')];
+        }else{
+            $category = [''];
+        }
+
+        if(count($subcategory) == 1){
+            $subcategory = [$subcategory[0]];
+        }elseif(count($subcategory) > 1){
+            $subcategory = [__('All subcategories')];
+        }else{
+            $subcategory = [''];
+        }
+
+        $discount_data = [
             'discounts'=>$discounts,
             'number'=>$discount_number,
+            'category'=>$category,
+            'subcategory'=>$subcategory,
         ];
-        $category = !empty($model->category)?$model->category->name:'';
-        $subcategory = !empty($model->subCategory)?$model->subCategory->name:'';
-        return view('admin.discount.show', ['model'=>$model, 'discounts_data'=>$discounts_data, 'category'=>$category, 'subcategory'=>$subcategory]);
+        return view('admin.discount.show', ['discount_data'=>$discount_data]);
     }
 
     /**
@@ -148,15 +222,48 @@ class DiscountController extends Controller
     public function edit(string $id)
     {
         $discount = Discount::find($id);
-        $categories = Category::where('step', 0)->orderBy('id', 'asc')->get();
-        $category_id = '';
-        $subcategory_id = '';
-        if($discount->category){
-            $category_id = $discount->category->id;
-        }elseif($discount->subCategory){
-            $category_id = !empty($discount->subCategory->category)?$discount->subCategory->category->id:'';
-            $subcategory_id = $discount->subCategory->id;
+        $category_id = [];
+        $subcategory_id = [];
+        $quantity = 0;
+        $discount_data = Discount::where('discount_number', $discount->discount_number)->get();
+        foreach($discount_data as $discount__data){
+            if($discount__data->type == Constants::DISCOUNT_PRODUCT_TYPE){
+                $quantity++;
+            }
+            if(!empty($discount__data->category)){
+                if(!in_array($discount__data->category->id, $category_id)){
+                    $category_id[] = $discount__data->category->id;
+                }
+                $subcategory_id = ['a', 'a'];
+            }elseif(!empty($discount__data->subCategory)){
+                if(!empty($discount__data->subCategory->category)){
+                    if(!in_array($discount__data->subCategory->category->id, $category_id)){
+                        $category_id[] = $discount__data->subCategory->category->id;
+                    }
+                }
+                if(!in_array($discount__data->subCategory->id, $subcategory_id)){
+                    $subcategory_id[] = $discount__data->subCategory->id;
+                }
+            }
         }
+        if(count($category_id) == 1){
+            $category_id = $category_id[0];
+        }elseif(count($category_id) > 1){
+            $category_id = 'two';
+        }else{
+            $category_id = '';
+        }
+
+        if(count($subcategory_id) == 1){
+            $subcategory_id = $subcategory_id[0];
+        }elseif(count($subcategory_id) > 1){
+            $subcategory_id = 'two';
+        }else{
+            $subcategory_id = '';
+        }
+
+        $categories = Category::where('step', 0)->orderBy('id', 'asc')->get();
+
         if($discount->company){
             $discount_company = $discount->company;
         }else{
@@ -166,7 +273,15 @@ class DiscountController extends Controller
             ]));
         }
         $companies = Company::all();
-        return view('admin.discount.edit', ['discount'=> $discount, 'companies'=>$companies, 'categories'=>$categories, 'discount_company'=>$discount_company, 'category_id'=>$category_id, 'subcategory_id'=>$subcategory_id]);
+        return view('admin.discount.edit', [
+            'discount'=> $discount,
+            'companies'=>$companies,
+            'categories'=>$categories,
+            'discount_company'=>$discount_company,
+            'category_id'=>$category_id,
+            'subcategory_id'=>$subcategory_id,
+            'quantity'=>$quantity,
+        ]);
     }
 
     /**
@@ -191,12 +306,13 @@ class DiscountController extends Controller
                 $warehouses_id = Warehouse::where('company_id', $request->company_id)->where('product_id', $product->id)->pluck('id');
                 $datas[] = [
                     'product_id'=>$product->id,
+                    'category_id'=>$product->category_id,
                     'warehouses_id'=>$warehouses_id
                 ];
             }
             foreach ($datas as $data){
                 foreach($data['warehouses_id'] as $warehouse_id){
-                    $discount = $this->newDiscount($request);
+                    $discount = $this->newDiscount($request, $data['category_id']);
                     $discount->type = Constants::DISCOUNT_WAREHOUSE_TYPE;
                     $discount->warehouse_id = $warehouse_id;
                     $discount->product_id = $data['product_id'];
@@ -207,7 +323,7 @@ class DiscountController extends Controller
             }
         }else{
             foreach($products as $product){
-                $discount = $this->newDiscount($request);
+                $discount = $this->newDiscount($request, $product->category_id);
                 $discount->type = Constants::DISCOUNT_PRODUCT_TYPE;
                 $discount->product_id = $product->id;
                 $discount->discount_number = $discount_number;

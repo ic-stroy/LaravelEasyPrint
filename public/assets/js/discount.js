@@ -9,12 +9,15 @@ function couponAddOption(item, index){
     let option = document.createElement('option')
     option.value = item.id
     option.text = item.name
-    if(item.id == coupon_subcategory_id){
-        option.selected = true
+
+    if(coupon_subcategory_id != 'two'){
+        if(item.id == coupon_subcategory_id){
+            option.selected = true
+        }
     }
     subcategory_id.add(option)
 }
-if(coupon_subcategory_id != ''){
+if(coupon_subcategory_id != '' && coupon_category_id != 'two' && coupon_category_id != ''){
     subcategory_id.innerHTML = ""
     product_id.innerHTML = ""
     $(document).ready(function () {
@@ -25,7 +28,6 @@ if(coupon_subcategory_id != ''){
                 if(subcategory_exists.classList.contains('display-none')){
                     subcategory_exists.classList.remove('display-none')
                 }
-                data.data.forEach(couponAddOption)
                 let disabled_option = document.createElement('option')
                 disabled_option.text = text_select_product
                 disabled_option.disabled = true
@@ -34,6 +36,7 @@ if(coupon_subcategory_id != ''){
                 all_subcategories.text = text_all_subcategory_products
                 all_subcategories.value = "all"
                 subcategory_id.add(all_subcategories)
+                data.data.forEach(couponAddOption)
             },
             error: function (e) {
                 if(!subcategory_exists.classList.contains('display-none')){
@@ -53,12 +56,14 @@ function couponAddOptionToProduct(item, index){
     let option = document.createElement('option')
     option.value = item.id
     option.text = item.name
-    if(item.id == coupon_product_id){
-        option.selected = true
+    if(coupon_product_id != 'two'){
+        if(item.id == coupon_product_id){
+            option.selected = true
+        }
     }
     product_id.add(option)
 }
-if(coupon_product_id != undefined && coupon_product_id != '' && coupon_product_id != null){
+if(coupon_product_id != undefined && coupon_product_id != '' && coupon_product_id != null && coupon_subcategory_id != 'two' && coupon_subcategory_id != ''){
     product_id.innerHTML = ""
     $(document).ready(function () {
         $.ajax({
