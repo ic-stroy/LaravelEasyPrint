@@ -41,6 +41,11 @@ class Products extends Model
         return $this->hasMany(OrderDetail::class, 'product_id', 'id');
     }
 
+    public function categoryDiscount()
+    {
+        return $this->hasOne(Discount::class, 'category_id','category_id')->where('type', Constants::DISCOUNT_PRODUCT_TYPE)->where('start_date', '<=', date('Y-m-d H:i:s'))->where('end_date', '>=', date('Y-m-d H:i:s'));
+    }
+
     public function discount()
     {
         return $this->hasOne(Discount::class, 'product_id','id')->where('type', Constants::DISCOUNT_PRODUCT_TYPE)->where('start_date', '<=', date('Y-m-d H:i:s'))->where('end_date', '>=', date('Y-m-d H:i:s'));

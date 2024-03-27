@@ -55,6 +55,7 @@ class DiscountController extends Controller
             }else{
                 $subcategory = [''];
             }
+
             $discounts_data[] = [
                 'discount'=>$discount_data,
                 'number'=>$discount_number,

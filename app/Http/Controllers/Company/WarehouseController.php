@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Company;
 
 use App\Constants;
 use App\Http\Controllers\Controller;
+use App\Models\Discount;
 use App\Models\Language;
 use App\Models\Category;
 use App\Models\RoleTranslations;
@@ -85,6 +86,20 @@ class WarehouseController extends Controller
         $images = $request->file('images');
         $model->images = $this->imageSave($model, $images, 'store');
         $model->save();
+        $categoryDiscount = Discount::where(['product_id' => $model->product_id, 'type'=>2])->first();
+        if($categoryDiscount){
+            $discount = new Discount();
+            $discount->percent = $model->categoryDiscount->percent;
+            $discount->start_date = $model->categoryDiscount->start_date;
+            $discount->end_date = $model->categoryDiscount->end_date;
+            $discount = $model->category_id;
+            $discount->type = Constants::DISCOUNT_WAREHOUSE_TYPE;
+            $discount->product_id = $model->product_id;
+            $discount->warehouse_id = $model->id;
+            $discount->discount_number = $model->categoryDiscount->discount_number;
+            $discount->save();
+        }
+
         foreach (Language::all() as $language) {
             $warehouse_translations = WarehouseTranslations::where(['lang' => $language->code, 'warehouse_id' => $model->id])->firstOrNew();
             $warehouse_translations->lang = $language->code;

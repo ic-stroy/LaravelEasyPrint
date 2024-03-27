@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Constants;
+use App\Models\Discount;
 use App\Models\Language;
 use App\Models\Products;
 use App\Models\ProductTranslations;
@@ -57,6 +58,19 @@ class ProductsController extends Controller
         $images = $request->file('images');
         $model->images = $this->imageSave($model, $images, 'store');
         $model->save();
+        if(!empty($model->categoryDiscount)){
+            if(empty($model->discount)){
+                $discount = new Discount();
+                $discount->percent = $model->categoryDiscount->percent;
+                $discount->start_date = $model->categoryDiscount->start_date;
+                $discount->end_date = $model->categoryDiscount->end_date;
+                $discount = $model->category_id;
+                $discount->type = Constants::DISCOUNT_PRODUCT_TYPE;
+                $discount->product_id = $model->id;
+                $discount->discount_number = $model->categoryDiscount->discount_number;
+                $discount->save();
+            }
+        }
         foreach (Language::all() as $language) {
             $product_translations = ProductTranslations::firstOrNew(['lang' => $language->code, 'product_id' => $model->id]);
             $product_translations->lang = $language->code;
@@ -147,6 +161,19 @@ class ProductsController extends Controller
         $images = $request->file('images');
         $model->images = $this->imageSave($model, $images, 'update');
         $model->save();
+        if(!empty($model->categoryDiscount)){
+            if(empty($model->discount)){
+                $discount = new Discount();
+                $discount->percent = $model->categoryDiscount->percent;
+                $discount->start_date = $model->categoryDiscount->start_date;
+                $discount->end_date = $model->categoryDiscount->end_date;
+                $discount = $model->category_id;
+                $discount->type = Constants::DISCOUNT_PRODUCT_TYPE;
+                $discount->product_id = $model->id;
+                $discount->discount_number = $model->categoryDiscount->discount_number;
+                $discount->save();
+            }
+        }
         return redirect()->route('product.index')->with('status', translate('Successfully updated'));
     }
 
