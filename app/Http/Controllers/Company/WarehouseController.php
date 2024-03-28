@@ -93,7 +93,7 @@ class WarehouseController extends Controller
                 $discount->percent = $model->categoryDiscount->percent;
                 $discount->start_date = $model->categoryDiscount->start_date;
                 $discount->end_date = $model->categoryDiscount->end_date;
-                $discount = $model->category_id;
+                $discount->category_id = $model->category_id;
                 $discount->type = Constants::DISCOUNT_WAREHOUSE_TYPE;
                 $discount->product_id = $model->product_id;
                 $discount->warehouse_id = $model->id;
@@ -101,7 +101,6 @@ class WarehouseController extends Controller
                 $discount->save();
             }
         }
-
         foreach (Language::all() as $language) {
             $warehouse_translations = WarehouseTranslations::where(['lang' => $language->code, 'warehouse_id' => $model->id])->firstOrNew();
             $warehouse_translations->lang = $language->code;
@@ -163,6 +162,20 @@ class WarehouseController extends Controller
         $model->images = $this->imageSave($model, $images, 'update');
         $model->save();
         $categoryDiscount = Discount::where(['product_id' => $model->product_id, 'type'=>2])->first();
+        if($categoryDiscount){
+            if(!empty($model->discount)){
+                $discount = new Discount();
+                $discount->percent = $model->categoryDiscount->percent;
+                $discount->start_date = $model->categoryDiscount->start_date;
+                $discount->end_date = $model->categoryDiscount->end_date;
+                $discount->category_id = $model->category_id;
+                $discount->type = Constants::DISCOUNT_WAREHOUSE_TYPE;
+                $discount->product_id = $model->product_id;
+                $discount->warehouse_id = $model->id;
+                $discount->discount_number = $model->categoryDiscount->discount_number;
+                $discount->save();
+            }
+        }
         return redirect()->route('warehouse.category.warehouse', $request->product_id)->with('status', translate('Successfully updated'));
     }
 
