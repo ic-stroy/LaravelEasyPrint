@@ -65,7 +65,7 @@ class ProductsController extends Controller
                 $discount->start_date = $model->categoryDiscount->start_date;
                 $discount->end_date = $model->categoryDiscount->end_date;
                 $discount = $model->category_id;
-                $discount->type = Constants::DISCOUNT_PRODUCT_TYPE;
+                $discount->type = (int)Constants::DISCOUNT_PRODUCT_TYPE;
                 $discount->product_id = $model->id;
                 $discount->discount_number = $model->categoryDiscount->discount_number;
                 $discount->save();
@@ -168,7 +168,7 @@ class ProductsController extends Controller
                 $discount->start_date = $model->categoryDiscount->start_date;
                 $discount->end_date = $model->categoryDiscount->end_date;
                 $discount = $model->category_id;
-                $discount->type = Constants::DISCOUNT_PRODUCT_TYPE;
+                $discount->type = (int)Constants::DISCOUNT_PRODUCT_TYPE;
                 $discount->product_id = $model->id;
                 $discount->discount_number = $model->categoryDiscount->discount_number;
                 $discount->save();
