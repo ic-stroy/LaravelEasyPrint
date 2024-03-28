@@ -64,7 +64,7 @@ class ProductsController extends Controller
                 $discount->percent = $model->categoryDiscount->percent;
                 $discount->start_date = $model->categoryDiscount->start_date;
                 $discount->end_date = $model->categoryDiscount->end_date;
-                $discount = $model->category_id;
+                $discount->category_id = $model->category_id;
                 $discount->type = (int)Constants::DISCOUNT_PRODUCT_TYPE;
                 $discount->product_id = $model->id;
                 $discount->discount_number = $model->categoryDiscount->discount_number;
@@ -167,7 +167,7 @@ class ProductsController extends Controller
                 $discount->percent = $model->categoryDiscount->percent;
                 $discount->start_date = $model->categoryDiscount->start_date;
                 $discount->end_date = $model->categoryDiscount->end_date;
-                $discount = $model->category_id;
+                $discount->category_id = $model->category_id;
                 $discount->type = (int)Constants::DISCOUNT_PRODUCT_TYPE;
                 $discount->product_id = $model->id;
                 $discount->discount_number = $model->categoryDiscount->discount_number;
