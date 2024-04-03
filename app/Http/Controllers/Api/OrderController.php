@@ -1210,18 +1210,18 @@ class OrderController extends Controller
     public function orderToArray($modal){
         $response = [];
         foreach ($modal as $data){
-            $order_date_year = date('Y', strtotime($data->created_at));
-            $order_date_month = date('F', strtotime($data->created_at));
-            $order_date_week = date('l', strtotime($data->created_at));
-            $order_date_day = date('d', strtotime($data->created_at));
-            $order_date_hour = date('H', strtotime($data->created_at));
-            $order_date_minute = date('i', strtotime($data->created_at));
+            $order_date_year = date('Y', strtotime($data->updated_at));
+            $order_date_month = date('F', strtotime($data->updated_at));
+            $order_date_week = date('l', strtotime($data->updated_at));
+            $order_date_day = date('d', strtotime($data->updated_at));
+            $order_date_hour = date('H', strtotime($data->updated_at));
+            $order_date_minute = date('i', strtotime($data->updated_at));
             $order_date = "$order_date_week, $order_date_day $order_date_month $order_date_year ".translate('Y').'.'.translate('at').' '."$order_date_hour:$order_date_minute";
 
-            $order_status_date_year = date('Y', strtotime($data->created_at));
+            $order_status_date_year = date('Y', strtotime($data->updated_at));
             $order_status_date_month = date('F', strtotime($data->updated_at));
-            $order_status_date_week = date('l', strtotime($data->created_at));
-            $order_status_date_day = date('d', strtotime($data->created_at));
+            $order_status_date_week = date('l', strtotime($data->updated_at));
+            $order_status_date_day = date('d', strtotime($data->updated_at));
             $order_status_date_hour = date('H', strtotime($data->updated_at));
             $order_status_date_minute = date('i', strtotime($data->updated_at));
             $order_status_date = "$order_status_date_week, $order_status_date_day $order_status_date_month $order_status_date_year ".translate('Y').'.'.translate('at').' '."$order_status_date_hour:$order_status_date_minute";
