@@ -780,6 +780,7 @@ class OrderController extends Controller
             ->where('end_date', '>=', date('Y-m-d H:i:s'))->first()) {
             if ($order=Order::where('id', $request->order_id)->first()) {
                 $order_count = Order::where('user_id', $order->user_id)->where('status', '!=', Constants::BASKED)->count();
+                $order_count = $order_count+1;
                 if (!$order->coupon_id) {
                     if($order->all_price < $coupon->min_price){
                         $message=translate_api("this order sum isn't enough for coupon. Coupon min price $coupon->min_price", $language);
