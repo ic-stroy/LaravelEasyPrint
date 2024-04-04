@@ -361,6 +361,7 @@ class CompanyOrderController extends Controller
                         }
                         $order->all_price = $order->all_price - $coupon_price;
                         $order->status = Constants::PERFORMED;
+                        $order->company_id = $user->company_id;
                         $order->save();
                     }
                 }

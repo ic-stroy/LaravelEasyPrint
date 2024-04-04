@@ -96,19 +96,24 @@ function getImages(images) {
 }
 function getUploads(images) {
     let all_uploads = images.split(' ')
+    console.log(all_uploads)
     let uploads_content = ''
     for(let i=0; i<all_uploads.length; i++){
-        if(i == 0){
-            uploads_content = uploads_content +
-                `<div class="carousel-item active">
+        if(all_uploads[i] != ''){
+            if(i == 0){
+                uploads_content = uploads_content +
+                    `<div class="carousel-item active">
                         <img class="d-block img-fluid" src="${all_uploads[i]}" alt="First slide">
                     </div>`
-        }else{
-            uploads_content = uploads_content +
-                `<div class="carousel-item">
+            }else{
+                uploads_content = uploads_content +
+                    `<div class="carousel-item">
                         <img class="d-block img-fluid" src="${all_uploads[i]}" alt="First slide">
                     </div>`
+            }
         }
     }
-    carousel_product_upload_images.innerHTML = uploads_content
+    if(uploads_content != ''){
+        carousel_product_upload_images.innerHTML = uploads_content
+    }
 }

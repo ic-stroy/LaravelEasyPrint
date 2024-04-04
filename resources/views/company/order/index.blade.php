@@ -177,6 +177,11 @@
                         <span class="visually-hidden">Next</span>
                     </a>
                 </div>
+                <div class="d-none" id="carousel-upload-modal-order">
+                    <span class="badge bg-warning">
+                        <h2>{{translate('No orders')}}</h2>
+                    </span>
+                </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
@@ -404,9 +409,13 @@
                                             <div class="col-2 order_product_images" onclick='getImages("{{implode(" ", $products_with_anime['images'])}}")' data-bs-toggle="modal" data-bs-target="#carousel-modal">
                                                 <img src="{{$products_with_anime['images'][0]}}" alt="" height="144px">
                                             </div>
-                                            <div class="col-2 order_product_images" onclick='getUploads("{{implode(" ", $products_with_anime[2])}}")' data-bs-toggle="modal" data-bs-target="#carousel-upload-modal">
-                                                <img src="{{!empty($products_with_anime[2])?$products_with_anime[2][0]:asset('public/icon/no_photo.jpg')}}" alt="" height="144px">
-                                            </div>
+                                            @if(!empty($products_with_anime[2]))
+                                                <div class="col-2 order_product_images" onclick='getUploads("{{implode(" ", $products_with_anime[2])}}")' data-bs-toggle="modal" data-bs-target="#carousel-upload-modal">
+                                                    <img src="{{!empty($products_with_anime[2])?$products_with_anime[2][0]:asset('public/icon/no_photo.jpg')}}" alt="" height="144px">
+                                                </div>
+                                            @else
+                                                <div class="col-2 order_product_images"></div>
+                                            @endif
                                             <div class="col-4 order_content">
                                                 <h4>{{translate('Animated order')}}</h4>
                                                 <span>{{!empty($products_with_anime[0]->product)?$products_with_anime[0]->product->name:''}}</span>
@@ -764,9 +773,13 @@
                                             <div class="col-2 order_product_images" onclick='getImages("{{implode(" ", $products_with_anime['images'])}}")' data-bs-toggle="modal" data-bs-target="#carousel-modal">
                                                 <img src="{{$products_with_anime['images'][0]}}" alt="" height="144px">
                                             </div>
-                                            <div class="col-2 order_product_images" onclick='getUploads("{{implode(" ", $products_with_anime[2])}}")' data-bs-toggle="modal" data-bs-target="#carousel-upload-modal">
-                                                <img src="{{!empty($products_with_anime[2])?$products_with_anime[2][0]:asset('public/icon/no_photo.jpg')}}" alt="" height="144px">
-                                            </div>
+                                            @if(!empty($products_with_anime[2]))
+                                                <div class="col-2 order_product_images" onclick='getUploads("{{implode(" ", $products_with_anime[2])}}")' data-bs-toggle="modal" data-bs-target="#carousel-upload-modal">
+                                                    <img src="{{!empty($products_with_anime[2])?$products_with_anime[2][0]:asset('public/icon/no_photo.jpg')}}" alt="" height="144px">
+                                                </div>
+                                            @else
+                                                <div class="col-2 order_product_images"></div>
+                                            @endif
                                             <div class="col-4 order_content">
                                                 <h4>{{translate('Animated order')}}</h4>
                                                 <span>{{!empty($products_with_anime[0]->product)?$products_with_anime[0]->product->name:''}}</span>
@@ -847,7 +860,9 @@
                                         <hr>
                                         <div class="row">
                                             <div class="col-3 order_product_images" onclick='getImages("{{implode(" ", $products['images'])}}")'  data-bs-toggle="modal" data-bs-target="#carousel-modal">
-                                                <img src="{{$products['images'][0]}}" alt="" height="144px">
+                                                @if(!empty($products['images']))
+                                                    <img src="{{$products['images'][0]}}" alt="" height="144px">
+                                                @endif
                                             </div>
                                             <div class="col-1"></div>
                                             <div class="col-4 order_content">
@@ -1073,9 +1088,13 @@
                                             <div class="col-2 order_product_images" onclick='getImages("{{implode(" ", $products_with_anime['images'])}}")' data-bs-toggle="modal" data-bs-target="#carousel-modal">
                                                 <img src="{{$products_with_anime['images'][0]}}" alt="" height="144px">
                                             </div>
-                                            <div class="col-2 order_product_images" onclick='getUploads("{{implode(" ", $products_with_anime[2])}}")' data-bs-toggle="modal" data-bs-target="#carousel-upload-modal">
-                                                <img src="{{!empty($products_with_anime[2])?$products_with_anime[2][0]:asset('public/icon/no_photo.jpg')}}" alt="" height="144px">
-                                            </div>
+                                            @if(!empty($products_with_anime[2]))
+                                                <div class="col-2 order_product_images" onclick='getUploads("{{implode(" ", $products_with_anime[2])}}")' data-bs-toggle="modal" data-bs-target="#carousel-upload-modal">
+                                                    <img src="{{!empty($products_with_anime[2])?$products_with_anime[2][0]:asset('public/icon/no_photo.jpg')}}" alt="" height="144px">
+                                                </div>
+                                            @else
+                                                <div class="col-2 order_product_images"></div>
+                                            @endif
                                             <div class="col-4 order_content">
                                                 <h4>{{translate('Animated order')}}</h4>
                                                 <span>{{!empty($products_with_anime[0]->product)?$products_with_anime[0]->product->name:''}}</span>
@@ -1369,9 +1388,13 @@
                                             <div class="col-2 order_product_images" onclick='getImages("{{implode(" ", $products_with_anime['images'])}}")' data-bs-toggle="modal" data-bs-target="#carousel-modal">
                                                 <img src="{{$products_with_anime['images'][0]}}" alt="" height="144px">
                                             </div>
-                                            <div class="col-2 order_product_images" onclick='getUploads("{{implode(" ", $products_with_anime[2])}}")' data-bs-toggle="modal" data-bs-target="#carousel-upload-modal">
-                                                <img src="{{!empty($products_with_anime[2])?$products_with_anime[2][0]:asset('storage/icon/no_photo.jpg')}}" alt="" height="144px">
-                                            </div>
+                                            @if(!empty($products_with_anime[2]))
+                                                <div class="col-2 order_product_images" onclick='getUploads("{{implode(" ", $products_with_anime[2])}}")' data-bs-toggle="modal" data-bs-target="#carousel-upload-modal">
+                                                    <img src="{{!empty($products_with_anime[2])?$products_with_anime[2][0]:asset('storage/icon/no_photo.jpg')}}" alt="" height="144px">
+                                                </div>
+                                            @else
+                                                <div class="col-2 order_product_images"></div>
+                                            @endif
                                             <div class="col-4 order_content">
                                                 <h4>{{translate('Animated order')}}</h4>
                                                 <span>{{!empty($products_with_anime[0]->product)?$products_with_anime[0]->product->name:''}}</span>
