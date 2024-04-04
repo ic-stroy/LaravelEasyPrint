@@ -48,7 +48,8 @@ class OrderController extends Controller
                 return $this->error(translate_api('Product not found', $language), 400);
             }
         }
-        $request_price = $request->price + (int)$request->image_price;
+//        $request_price = $request->price + (int)$request->image_price;
+        $request_price = $request->price;
         $request_discount = $request->discount??0;
         $request_order_discount_price = ($request_price/100)*$request_discount*$request->quantity;
         $request_order_price = $request_price*$request->quantity;

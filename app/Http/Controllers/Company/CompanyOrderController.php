@@ -68,11 +68,11 @@ class CompanyOrderController extends Controller
 
                     if($order_detail->status == Constants::ORDER_DETAIL_PERFORMED) {
                         $performed_product_types = $performed_product_types + 1;
-                        $performed_company_product_price = $performed_company_product_price + $order_detail->price * $order_detail->quantity - $order_detail->discount_price;
+                        $performed_company_product_price = $performed_company_product_price + $order_detail->price * $order_detail->quantity - (int)$order_detail->discount_price;
                         $performed_company_discount_price = $performed_company_discount_price + (int)$order_detail->discount_price;
                     }
 
-                    $company_product_price = $company_product_price + $order_detail->price * $order_detail->quantity - $order_detail->discount_price;
+                    $company_product_price = $company_product_price + $order_detail->price * $order_detail->quantity - (int)$order_detail->discount_price;
                     $order_detail_all_price = (int)$order_detail->price * (int)$order_detail->quantity - (int)$order_detail->discount_price;
                     $company_discount_price = $company_discount_price + (int)$order_detail->discount_price;
 
@@ -83,22 +83,33 @@ class CompanyOrderController extends Controller
                         $discount_withouth_expire = 0;
                         $product_discount_withouth_expire = 0;
                     }
-                    if(!empty($order_detail->warehouse) && $order_detail->warehouse->images){
-                        $images_ = json_decode($order_detail->warehouse->images);
-                        $images = [];
-                        foreach ($images_ as $key => $image_){
-                            $images[] = asset('storage/warehouses/'.$image_);
-                        }
-                    }elseif(!empty($order_detail->warehouse->product) && $order_detail->warehouse->product->images){
-                        $images_ = json_decode($order_detail->warehouse->product->images);
-                        $images = [];
-                        foreach ($images_ as $key => $image_){
-                            $images[] = asset('storage/products/'.$image_);
+                    if(!empty($order_detail->warehouse)) {
+                        if ($order_detail->warehouse->images) {
+                            if ($order_detail->warehouse->images) {
+                                $images_ = json_decode($order_detail->warehouse->images);
+                            } else {
+                                $images_ = [];
+                            }
+                            $images = [];
+                            foreach ($images_ as $key => $image_) {
+                                $images[] = asset('storage/warehouses/' . $image_);
+                            }
+                        } elseif (!empty($order_detail->warehouse->product)) {
+                            if ($order_detail->warehouse->product->images) {
+                                $images_ = json_decode($order_detail->warehouse->product->images);
+                            } else {
+                                $images_ = [];
+                            }
+                            $images = [];
+                            foreach ($images_ as $key => $image_) {
+                                $images[] = asset('storage/products/' . $image_);
+                            }
+                        } else {
+                            $images = [];
                         }
                     }else{
                         $images = [];
                     }
-
                     $products[] = [$order_detail, $order_detail_all_price, 'images'=>$images,
                         'discount_withouth_expire'=>$discount_withouth_expire, 'product_discount_withouth_expire'=>$product_discount_withouth_expire
                     ];
@@ -149,18 +160,21 @@ class CompanyOrderController extends Controller
                         $order_detail_image_back = null;
                     }
                     if(!$order_detail_image_front && !$order_detail_image_back){
-                        if($order_detail->product->images){
-                            $images_ = json_decode($order_detail->product->images);
-                            $images = [];
-                            foreach ($images_ as $key => $image_){
-                                if($key < 2){
-                                    $images[] = asset('storage/products/'.$image_);
+                        if(!empty($order_detail->product)){
+                            if($order_detail->product->images){
+                                $images_ = json_decode($order_detail->product->images);
+                                $images = [];
+                                foreach ($images_ as $key => $image_){
+                                    if($key < 2){
+                                        $images[] = asset('storage/products/'.$image_);
+                                    }
                                 }
+                            }else{
+                                $images = [];
                             }
                         }else{
                             $images = [];
                         }
-
                     }else{
                         $images = [$order_detail_image_front??'no', $order_detail_image_back??'no'];
                     }
