@@ -888,7 +888,7 @@
                                             </div>
                                             <div class="col-1 d-flex justify-content-around align-items-center">
                                                 @switch($products[0]->status)
-                                                    @case(\App\Constants::ORDER_DETAIL_ORDERED):
+                                                    @case(\App\Constants::ORDER_DETAIL_ORDERED)
                                                     <div>
                                                         <span class="badge bg-danger">{{translate('New')}}</span>
                                                     </div>
@@ -1193,7 +1193,7 @@
                                             </div>
                                             <div class="col-1 d-flex justify-content-around align-items-center">
                                                 @switch($products[0]->status)
-                                                    @case(\App\Constants::ORDER_DETAIL_ORDERED):
+                                                    @case(\App\Constants::ORDER_DETAIL_ORDERED)
                                                     <div>
                                                         <span class="badge bg-danger">{{translate('New')}}</span>
                                                     </div>

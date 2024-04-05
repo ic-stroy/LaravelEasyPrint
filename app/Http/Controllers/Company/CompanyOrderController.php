@@ -259,12 +259,15 @@ class CompanyOrderController extends Controller
         $cancelled_has = false;
         if($orderDetail){
             $orderDetail->status = Constants::ORDER_DETAIL_CANCELLED;
-            foreach($user->unreadnotifications as $notification){
-                if($notification->type == "App\Notifications\OrderNotification"){
-                    if(!empty($notification->data)){
-                        if($notification->data['order_detail_id'] == $orderDetail->id){
-                            $notification->read_at = date('Y-m-d H:i:s');
-                            $notification->save();
+            $users = User::where('company_id', $user->company_id)->get();
+            foreach($users as $user) {
+                foreach ($user->unreadnotifications as $notification) {
+                    if ($notification->type == "App\Notifications\OrderNotification") {
+                        if (!empty($notification->data)) {
+                            if ($notification->data['order_detail_id'] == $orderDetail->id) {
+                                $notification->read_at = date('Y-m-d H:i:s');
+                                $notification->save();
+                            }
                         }
                     }
                 }
@@ -333,16 +336,20 @@ class CompanyOrderController extends Controller
         $order_detail_price = 0;
         if($orderDetail){
             $orderDetail->status = Constants::ORDER_DETAIL_PERFORMED;
-            foreach($user->unreadnotifications as $notification){
-                if($notification->type == "App\Notifications\OrderNotification"){
-                    if(!empty($notification->data)){
-                        if($notification->data['order_detail_id'] == $orderDetail->id){
-                            $notification->read_at = date('Y-m-d H:i:s');
-                            $notification->save();
-                        };
+            $users = User::where('company_id', $user->company_id)->get();
+            foreach($users as $user){
+                foreach($user->unreadnotifications as $notification){
+                    if($notification->type == "App\Notifications\OrderNotification"){
+                        if(!empty($notification->data)){
+                            if($notification->data['order_detail_id'] == $orderDetail->id){
+                                $notification->read_at = date('Y-m-d H:i:s');
+                                $notification->save();
+                            };
+                        }
                     }
                 }
             }
+
             $orderDetail->save();
             $order = Order::whereIn('status', [Constants::ORDERED, Constants::PERFORMED, Constants::CANCELLED])->find($orderDetail->order_id);
             if($order){
