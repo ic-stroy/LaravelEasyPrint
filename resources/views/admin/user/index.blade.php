@@ -8,6 +8,12 @@
         .delete-datas{
             border-radius: 8px;
         }
+        #datatable-buttons{
+            width: 100% !important;
+         }
+        .buttons-pdf, .buttons-copy{
+            display: none;
+        }
     </style>
     <div class="card">
         <div class="card-header">
@@ -303,7 +309,7 @@
                     </table>
                 </div>
                 <div class="tab-pane" id="users">
-                    <table class="table table-striped table-bordered dt-responsive nowrap">
+                    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap">
                         <thead>
                         <tr>
                             <th>#</th>

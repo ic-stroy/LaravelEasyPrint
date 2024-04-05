@@ -28,6 +28,9 @@
                         $i = 0
                     @endphp
                     @foreach($discounts_data as $discount_data)
+                        @php
+                            $i++
+                        @endphp
                         <tr>
                             <td>
                                 <a class="show_page" href="{{route('discount.show', $discount_data['discount'][0]->id)}}">

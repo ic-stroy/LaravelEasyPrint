@@ -1330,7 +1330,7 @@
                                             @endif
                                         </div>
                                         <div class="col-4 d-flex justify-content-between">
-                                                @if($order['order']->status)
+                                            @if($order['order']->status)
                                                 @switch($order['order']->status)
                                                     @case(\App\Constants::ORDERED)
                                                     <span style="line-height: 1; font-size: 16px">
