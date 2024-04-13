@@ -35,8 +35,9 @@
         }
         .login_button{
             background-color: #3C7CFB;
-            padding: 10px 70px 10px 70px;
+            padding: 10px 0px;
             width: 50%;
+            text-align: center;
             border-radius: 12px;
             border: 0px;
             color: white;

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants;
 use App\Models\Cities;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -27,10 +29,16 @@ class HomeController extends Controller
     public function index(){
 
         $user = Auth::user();
-        $token = $user->createToken('myapptoken')->plainTextToken;
-        $user->token = $token;
-        $user->save();
-        return view('index');
+        $ordered_orders = Order::where('status', Constants::ORDERED)->count();
+        $performed_orders = Order::where('status', Constants::PERFORMED)->count();
+        $cancelled_orders = Order::where('status', Constants::CANCELLED)->count();
+        $accepted_orders = Order::where('status', Constants::ACCEPTED_BY_RECIPIENT)->count();
+        return view('index', [
+            'ordered_orders'=>$ordered_orders,
+            'performed_orders'=>$performed_orders,
+            'cancelled_orders'=>$cancelled_orders,
+            'accepted_orders'=>$accepted_orders
+        ]);
     }
 
     public function setCities(){
