@@ -462,7 +462,7 @@
                                                         <span class="badge bg-danger">{{translate('Cancelled')}}</span>
                                                     </div>
                                                     @break
-                                                    @case(\App\Constants::ORDER_DETAIL_PERFORMED_BY_SUPERADMIN):
+                                                    @case(\App\Constants::ORDER_DETAIL_PERFORMED_BY_SUPERADMIN)
                                                     <div>
                                                         <span class="badge bg-danger">{{translate('Performed by superadmin')}}</span>
                                                     </div>
@@ -553,7 +553,7 @@
                                             </div>
                                             <div class="col-1 d-flex justify-content-around align-items-center">
                                                 @switch($products[0]->status)
-                                                    @case(\App\Constants::ORDER_DETAIL_ORDERED):
+                                                    @case(\App\Constants::ORDER_DETAIL_ORDERED)
                                                     <div>
                                                         <span class="badge bg-danger">{{translate('New')}}</span>
                                                     </div>
@@ -819,7 +819,7 @@
                                                         <span class="badge bg-danger">{{translate('Cancelled')}}</span>
                                                     </div>
                                                     @break
-                                                    @case(\App\Constants::ORDER_DETAIL_PERFORMED_BY_SUPERADMIN):
+                                                    @case(\App\Constants::ORDER_DETAIL_PERFORMED_BY_SUPERADMIN)
                                                     <div>
                                                         <span class="badge bg-danger">{{translate('Performed by superadmin')}}</span>
                                                     </div>
@@ -1132,7 +1132,7 @@
                                                         <span class="badge bg-danger">{{translate('Cancelled')}}</span>
                                                     </div>
                                                     @break
-                                                    @case(\App\Constants::ORDER_DETAIL_PERFORMED_BY_SUPERADMIN):
+                                                    @case(\App\Constants::ORDER_DETAIL_PERFORMED_BY_SUPERADMIN)
                                                     <div>
                                                         <span class="badge bg-danger">{{translate('Performed by superadmin')}}</span>
                                                     </div>
@@ -1432,7 +1432,7 @@
                                                         <span class="badge bg-danger">{{translate('Cancelled')}}</span>
                                                     </div>
                                                     @break
-                                                    @case(\App\Constants::ORDER_DETAIL_PERFORMED_BY_SUPERADMIN):
+                                                    @case(\App\Constants::ORDER_DETAIL_PERFORMED_BY_SUPERADMIN)
                                                     <div>
                                                         <span class="badge bg-danger">{{translate('Performed by superadmin')}}</span>
                                                     </div>
@@ -1483,7 +1483,7 @@
                                             </div>
                                             <div class="col-1 d-flex justify-content-around align-items-center">
                                                 @switch($products[0]->status)
-                                                    @case(\App\Constants::ORDER_DETAIL_ORDERED):
+                                                    @case(\App\Constants::ORDER_DETAIL_ORDERED)
                                                     <div>
                                                         <span class="badge bg-danger">{{translate('New')}}</span>
                                                     </div>
