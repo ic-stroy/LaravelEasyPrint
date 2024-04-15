@@ -84,12 +84,8 @@ class CompanyOrderController extends Controller
                         $product_discount_withouth_expire = 0;
                     }
                     if(!empty($order_detail->warehouse)) {
-                        if ($order_detail->warehouse->images) {
-                            if ($order_detail->warehouse->images) {
-                                $images_ = json_decode($order_detail->warehouse->images);
-                            } else {
-                                $images_ = [];
-                            }
+                        if ($order_detail->warehouse->images && $order_detail->warehouse->images != '[]') {
+                            $images_ = json_decode($order_detail->warehouse->images);
                             $images = [];
                             foreach ($images_ as $key => $image_) {
                                 $images[] = asset('storage/warehouses/' . $image_);
