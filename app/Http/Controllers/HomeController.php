@@ -27,8 +27,6 @@ class HomeController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index(){
-
-        $user = Auth::user();
         $ordered_orders = Order::where('status', Constants::ORDERED)->count();
         $performed_orders = Order::where('status', Constants::PERFORMED)->count();
         $cancelled_orders = Order::where('status', Constants::CANCELLED)->count();

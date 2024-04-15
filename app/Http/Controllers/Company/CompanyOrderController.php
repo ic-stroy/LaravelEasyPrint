@@ -19,9 +19,9 @@ class CompanyOrderController extends Controller
     public function index(){
         $user = Auth::user();
         $orderedOrders_ = Order::where('status', Constants::ORDERED)->get();
-        $performedOrders_ = Order::where('status', Constants::PERFORMED)->get();
-        $cancelledOrders_ = Order::where('status', Constants::CANCELLED)->get();
-        $acceptedByRecipientOrders_ = Order::where('status', Constants::ACCEPTED_BY_RECIPIENT)->get();
+        $performedOrders_ = Order::where('status', Constants::PERFORMED)->where('company_id', $user->company_id)->get();
+        $cancelledOrders_ = Order::where('status', Constants::CANCELLED)->where('company_id', $user->company_id)->get();
+        $acceptedByRecipientOrders_ = Order::where('status', Constants::ACCEPTED_BY_RECIPIENT)->where('company_id', $user->company_id)->get();
         $orderedOrders = $this->getOrders($orderedOrders_, $user);
         $performedOrders = $this->getOrders($performedOrders_, $user);
         $cancelledOrders = $this->getOrders($cancelledOrders_, $user);
@@ -56,7 +56,6 @@ class CompanyOrderController extends Controller
                     $order_detail_is_ordered = true;
                 }
                 $product_quantity = $product_quantity + $order_detail->quantity;
-                $order_has = true;
 
                 $discount_withouth_expire = 0;
                 $product_discount_withouth_expire = 0;
@@ -64,6 +63,7 @@ class CompanyOrderController extends Controller
 
                 if($order_detail->warehouse_id && $order_detail->product_id == NULL &&
                     !empty($order_detail->warehouse) && $order_detail->warehouse->company_id == $user->company_id){
+                    $order_has = true;
                     $product_types = $product_types + 1;
 
                     if($order_detail->status == Constants::ORDER_DETAIL_PERFORMED) {
@@ -115,6 +115,7 @@ class CompanyOrderController extends Controller
                     ];
                 }elseif(!$order_detail->warehouse_id && $order_detail->product_id){
                     $product_types = $product_types + 1;
+                    $order_has = true;
                     $uploads=Uploads::where('relation_type', Constants::PRODUCT)->where('relation_id', $order_detail->product_id)->get();
 
                     if($order_detail->status == Constants::ORDER_DETAIL_PERFORMED) {
@@ -305,6 +306,7 @@ class CompanyOrderController extends Controller
                         }
                         $order->all_price = $order->all_price - $coupon_price;
                         $order->status = Constants::PERFORMED;
+                        $order->company_id = $user->company_id;
                     }
                     $order->save();
 

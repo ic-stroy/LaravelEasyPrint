@@ -1091,7 +1091,7 @@
     </script>
     <script>
         "use strict";
-        let orders_ordered = {name:"{{translate('Offers on hold')}}", count:"{{$ordered_orders}}"}
+        let orders_ordered = {name:"{{translate('Ordered orders')}}", count:"{{$ordered_orders}}"}
         let orders_performed = {name:"{{translate('Orders active')}}", count:"{{$performed_orders}}"}
         let order_cancelled = {name:"{{translate('Cancelled orders')}}", count:"{{$cancelled_orders}}"}
         let orders_accepted = {name:"{{translate('Completed orders')}}", count:"{{$accepted_orders}}"}
