@@ -1089,67 +1089,69 @@
             }
         });
     </script>
-    <script>
-        "use strict";
-        let orders_ordered = {name:"{{translate('Ordered orders')}}", count:"{{$ordered_orders}}"}
-        let orders_performed = {name:"{{translate('Orders active')}}", count:"{{$performed_orders}}"}
-        let order_cancelled = {name:"{{translate('Cancelled orders')}}", count:"{{$cancelled_orders}}"}
-        let orders_accepted = {name:"{{translate('Completed orders')}}", count:"{{$accepted_orders}}"}
-        {{--let monthly_orders_count = {!! 74??0 !!}--}}
-        {{--let monthly_offers_count = {!! 12??0 !!}--}}
-        {{--let order_created = "{{translate('Order created')}}"--}}
-        {{--let offer_created = "{{translate('Offer created')}}"--}}
-        const month_names = ["","January","February","March","April","May","June","July",
-            "August","September","October","November","December"];
-        !function(e){
-            function a(){
-                this.$realData=[]
-            }
-            a.prototype.createBarChart=function(e,a,r,t,o,i){
-                Morris.Bar({
-                    element:e,data:a,xkey:r,ykeys:t,labels:o,hideHover:"auto",resize:!0,gridLineColor:"rgba(173, 181, 189, 0.1)",barSizeRatio:.2,dataLabels:!1,barColors:i
-                })
-            },
-                a.prototype.createDonutChart=function(e,a,r)
-                {
-                    Morris.Donut({element:e,data:a,resize:!0,colors:r,backgroundColor:"transparent"})
+    @if(isset($ordered_orders) && isset($performed_orders) && isset($cancelled_orders) && isset($accepted_orders))
+        <script>
+            "use strict";
+            let orders_ordered = {name:"{{translate('Ordered orders')}}", count:"{{$ordered_orders}}"}
+            let orders_performed = {name:"{{translate('Orders active')}}", count:"{{$performed_orders}}"}
+            let order_cancelled = {name:"{{translate('Cancelled orders')}}", count:"{{$cancelled_orders}}"}
+            let orders_accepted = {name:"{{translate('Completed orders')}}", count:"{{$accepted_orders}}"}
+            {{--let monthly_orders_count = {!! 74??0 !!}--}}
+            {{--let monthly_offers_count = {!! 12??0 !!}--}}
+            {{--let order_created = "{{translate('Order created')}}"--}}
+            {{--let offer_created = "{{translate('Offer created')}}"--}}
+            const month_names = ["","January","February","March","April","May","June","July",
+                "August","September","October","November","December"];
+            !function(e){
+                function a(){
+                    this.$realData=[]
+                }
+                a.prototype.createBarChart=function(e,a,r,t,o,i){
+                    Morris.Bar({
+                        element:e,data:a,xkey:r,ykeys:t,labels:o,hideHover:"auto",resize:!0,gridLineColor:"rgba(173, 181, 189, 0.1)",barSizeRatio:.2,dataLabels:!1,barColors:i
+                    })
                 },
-                a.prototype.init=function(){
-                    e("#morris-bar-example").empty(),
-                    e("#morris-line-example").empty(),
-                    e("#morris-donut-example").empty();
-                    this.createDonutChart(
-                        "morris-donut-example",
-                        [
-                            {label: orders_ordered.name, value: orders_ordered.count},
-                            {label: orders_performed.name, value: orders_performed.count},
-                        ],
-                        ["#FF6C37", "#10C469"]
-                    )
-                    this.createDonutChart(
-                        "morris-donut-example-1",
-                        [
-                            {label: orders_ordered.name, value: orders_ordered.count},
-                            {label: orders_performed.name, value: orders_performed.count},
-                            {label: order_cancelled.name, value: order_cancelled.count},
-                            {label: orders_accepted.name, value: orders_accepted.count}
-                        ],
-                        ["#FF6C37", "#10C469", "#00ADD7", "#FF0000"]
-                    )
-                    this.createDonutChart(
-                        "morris-donut-example-2",
-                        [
-                            {label: order_cancelled.name, value: order_cancelled.count},
-                            {label: orders_accepted.name, value: orders_accepted.count}
-                        ],
-                        ["#00ADD7", "#FF0000"]
-                    )
-                },
-                e.Dashboard1=new a,
-                e.Dashboard1.Constructor=a
-        }(window.jQuery),function(a){a.Dashboard1.init(),window.addEventListener("adminto.setBoxed",function(e){a.Dashboard1.init()}),window.addEventListener("adminto.setFluid",function(e){a.Dashboard1.init()})}(window.jQuery);
+                    a.prototype.createDonutChart=function(e,a,r)
+                    {
+                        Morris.Donut({element:e,data:a,resize:!0,colors:r,backgroundColor:"transparent"})
+                    },
+                    a.prototype.init=function(){
+                        e("#morris-bar-example").empty(),
+                        e("#morris-line-example").empty(),
+                        e("#morris-donut-example").empty();
+                        this.createDonutChart(
+                            "morris-donut-example",
+                            [
+                                {label: orders_ordered.name, value: orders_ordered.count},
+                                {label: orders_performed.name, value: orders_performed.count},
+                            ],
+                            ["#FF6C37", "#10C469"]
+                        )
+                        this.createDonutChart(
+                            "morris-donut-example-1",
+                            [
+                                {label: orders_ordered.name, value: orders_ordered.count},
+                                {label: orders_performed.name, value: orders_performed.count},
+                                {label: order_cancelled.name, value: order_cancelled.count},
+                                {label: orders_accepted.name, value: orders_accepted.count}
+                            ],
+                            ["#FF6C37", "#10C469", "#00ADD7", "#FF0000"]
+                        )
+                        this.createDonutChart(
+                            "morris-donut-example-2",
+                            [
+                                {label: order_cancelled.name, value: order_cancelled.count},
+                                {label: orders_accepted.name, value: orders_accepted.count}
+                            ],
+                            ["#00ADD7", "#FF0000"]
+                        )
+                    },
+                    e.Dashboard1=new a,
+                    e.Dashboard1.Constructor=a
+            }(window.jQuery),function(a){a.Dashboard1.init(),window.addEventListener("adminto.setBoxed",function(e){a.Dashboard1.init()}),window.addEventListener("adminto.setFluid",function(e){a.Dashboard1.init()})}(window.jQuery);
 
-    </script>
+        </script>
+    @endif
 </body>
 
 </html>
