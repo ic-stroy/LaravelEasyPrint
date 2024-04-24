@@ -36,19 +36,13 @@
                     <div class="tab-pane{{$i == 1?' show active':''}}" id="category_{{$category->id}}">
                         <table class="table table-striped table-bordered dt-responsive nowrap">
                             <thead>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                            </tr>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
                             </thead>
                             <tbody class="table_body">
-                            @php
-                                $i = 0
-                            @endphp
                             @foreach($all_products[$category->id] as $product)
-                                @php
-                                    $i++
-                                @endphp
                                 <tr>
                                     <td>
                                         <a class="show_page" href="{{route('print.category.warehouse', $product->id)}}">

@@ -25,6 +25,10 @@
                         @endif
                     </tr>
                     <tr>
+                        <th>{{translate('Current category')}}</th>
+                        <td>@if(!empty($category_array)){{ implode(", ", $category_array) }}@endif</td>
+                    </tr>
+                    <tr>
                         <th>{{translate('Size')}}</th>
                         <td>
                             @if(isset($model->size->name)){{ $model->size->name }}@endif

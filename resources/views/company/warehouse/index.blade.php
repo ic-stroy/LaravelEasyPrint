@@ -42,13 +42,7 @@
                                 </tr>
                             </thead>
                             <tbody class="table_body">
-                            @php
-                                $i = 0
-                            @endphp
                             @foreach($all_products[$category->id] as $product)
-                                @php
-                                    $i++
-                                @endphp
                                 <tr>
                                     <td>
                                         <a class="show_page" href="{{route('warehouse.category.warehouse', $product->id)}}">

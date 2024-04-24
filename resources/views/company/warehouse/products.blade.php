@@ -9,10 +9,10 @@
             <h4 class="mt-0 header-title">{{translate('Warehouse products lists')}}</h4>
             <table class="table table-striped table-bordered dt-responsive nowrap">
                 <thead>
-                <tr>
-                    <th></th>
-                    <th></th>
-                </tr>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                    </tr>
                 </thead>
                 <tbody class="table_body">
                 @php

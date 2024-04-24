@@ -87,10 +87,27 @@ class ProductsController extends Controller
     public function show(string $id)
     {
         $model = Products::find($id);
-        $subcategories = Category::where('parent_id', 1)->get();
-        $categories = Category::where('parent_id', 0)->orderBy('id', 'asc')->get();
-        $firstcategory = Category::where('parent_id', 0)->orderBy('id', 'asc')->first();
-        return view('admin.products.show', ['model'=>$model, 'subcategories'=> $subcategories, 'categories'=> $categories, 'firstcategory'=> $firstcategory]);
+        $category_ = '';
+        $category_array = [];
+        $sub_category_ = '';
+        if($model){
+            if(!empty($model->category)){
+                $category_ = $model->category->name;
+                $category_array = [$category_];
+            }elseif(!empty($model->subCategory)){
+                $category_ = !empty($model->subCategory->category)?$model->subCategory->category->name:'';
+                $sub_category_ = $model->subCategory->name;
+                if($category_ != ''){
+                    $category_array = [$category_, $sub_category_];
+                }else{
+                    $category_array = [$sub_category_];
+                }
+            }
+        }
+        return view('admin.products.show', [
+            'model'=>$model,
+            'category_array'=> $category_array
+        ]);
     }
 
     /**

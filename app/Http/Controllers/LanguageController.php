@@ -26,12 +26,6 @@ class LanguageController extends Controller
      * @return Renderable
      */
 
-    // public function getNotification(){
-    //     $notification = ['Booking', 'BookingPrepayment'];
-    //     $all_task = Notification_::where('type', 'Task')->where(['read_at' => NULL,  'user_id' => Auth::user()->id])->orderBy('created_at', 'desc')->get();
-    //     $all_booking = Notification_::whereIn('type', $notification)->where('read_at', NULL)->orderBy('created_at', 'desc')->get();
-    //     return ['all_task'=>$all_task, 'all_booking'=>$all_booking];
-    // }
 
     public function changeLanguage(Request $request)
     {

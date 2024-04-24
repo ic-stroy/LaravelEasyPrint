@@ -41,7 +41,24 @@ class WarehousePrintController extends Controller
     public function show(string $id)
     {
         $model = Warehouse::where('type', Constants::PRINT_TYPE)->find($id);
-        return view('company.print.show', ['model'=>$model]);
+        $category_ = '';
+        $category_array = [];
+        $sub_category_ = '';
+        if($product = $model->product){
+            if(!empty($product->category)){
+                $category_ = $product->category->name;
+                $category_array = [$category_];
+            }elseif(!empty($product->subCategory)){
+                $category_ = !empty($product->subCategory->category)?$product->subCategory->category->name:'';
+                $sub_category_ = $product->subCategory->name;
+                if($category_ != ''){
+                    $category_array = [$category_, $sub_category_];
+                }else{
+                    $category_array = [$sub_category_];
+                }
+            }
+        }
+        return view('company.print.show', ['model'=>$model, 'category_array'=>$category_array]);
     }
 
     /**

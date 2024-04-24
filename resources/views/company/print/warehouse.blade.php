@@ -6,7 +6,7 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <h4 class="mt-0 header-title">{{__($product->name??'')}}{{translate(' print product lists')}}</h4>
+            <h4 class="mt-0 header-title">{{__($product->name??'')}} {{translate(' print product lists')}}</h4>
 {{--            <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap">--}}
             <table class="table table-striped table-bordered dt-responsive nowrap">
                 <thead>

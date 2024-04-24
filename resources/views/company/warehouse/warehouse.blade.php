@@ -6,7 +6,7 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <h4 class="mt-0 header-title">{{__($product->name??'')}}{{translate(' product lists')}}</h4>
+            <h4 class="mt-0 header-title">{{__($product->name??'')}} {{translate(' product lists')}}</h4>
             <div class="dropdown float-end mb-2">
                 <a class="form_functions btn btn-success" href="{{route('warehouse.category.create_warehouse', $product->id)}}">{{translate('Create')}}</a>
             </div>
