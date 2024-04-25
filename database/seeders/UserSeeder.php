@@ -17,23 +17,20 @@ class UserSeeder extends Seeder
     {
         $is_exist_user = User::withTrashed()->where('email', 'admin@example.com')->first();
         if(!isset($is_exist_user->id)){
-            $personal_info_last_id = PersonalInfo::withTrashed()->select('id')->orderBy('id', 'desc')->first();
-            $last_id = isset($personal_info_last_id->id)?$personal_info_last_id->id:0;
             $personal_info = [
-                'id'=>(int)$last_id+1,
                 'first_name'=>'Superadmin',
                 'last_name'=>'Super',
                 'middle_name'=>'Admin',
                 'gender'=>1,
             ];
+            $personalInfo = PersonalInfo::create($personal_info);
             $user = [
                 'email'=>'admin@example.com',
                 'role_id'=>1,
                 'language'=>'ru',
                 'password'=>Hash::make('12345678'),
-                'personal_info_id'=>(int)$last_id+1
+                'personal_info_id'=>(int)$personalInfo->id
             ];
-            PersonalInfo::create($personal_info);
             User::create($user);
         }else{
             if(!isset($is_exist_user->deleted_at)){
