@@ -329,9 +329,9 @@
                                                         @if($order['product_types'] != 0)
                                                             <b>{{ $order['product_types'] }}</b>
                                                             @if($order['order']->status != \App\Constants::ACCEPTED_BY_RECIPIENT)
-                                                                {{translate('products are yours. you will sell for')}}
+                                                                {{translate('products are yours. You will sell for')}}
                                                             @else
-                                                                {{translate('products are yours. you sold for')}}
+                                                                {{translate('products are yours. You sold for')}}
                                                             @endif
                                                             <b style="color: #10C469">{{$order['company_product_price']}}</b>
                                                             @if($order['order_coupon_price'] != 0)
