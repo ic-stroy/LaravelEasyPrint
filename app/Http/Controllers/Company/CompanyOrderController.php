@@ -26,11 +26,14 @@ class CompanyOrderController extends Controller
         $performedOrders = $this->getOrders($performedOrders_, $user);
         $cancelledOrders = $this->getOrders($cancelledOrders_, $user);
         $acceptedByRecipientOrders = $this->getOrders($acceptedByRecipientOrders_, $user);
-        return view('company.order.index', [
+        $all_orders = [
             'orderedOrders'=>$orderedOrders,
             'performedOrders'=>$performedOrders,
             'cancelledOrders'=>$cancelledOrders,
             'acceptedByRecipientOrders'=>$acceptedByRecipientOrders,
+        ];
+        return view('company.order.index', [
+            'all_orders'=>$all_orders,
             'user'=>$user
         ]);
     }
@@ -39,6 +42,13 @@ class CompanyOrderController extends Controller
         $order_data = [];
         foreach($orders as $order){
 //        $not_read_order_quantity = OrderDetail::where('order_id', $id)->where('is_read', 0)->count();
+            $user_name = '';
+            if(!empty($order->user->personalInfo)){
+                $first_name = isset($order->user->personalInfo->first_name)?$order->user->personalInfo->first_name.' ':'';
+                $last_name = isset($order->user->personalInfo->last_name)?$order->user->personalInfo->last_name.' ':'';
+                $middle_name = isset($order->user->personalInfo->middle_name)?$order->user->personalInfo->middle_name:'';
+                $user_name = $first_name.''.$last_name.''.$middle_name;
+            }
             $products_with_anime = [];
             $products = [];
             $product_types = 0;
@@ -196,6 +206,7 @@ class CompanyOrderController extends Controller
             if($order_has == true){
                 $order_data[] = [
                     'order'=>$order,
+                    'user_name'=>$user_name,
                     'order_detail_is_ordered'=>$order_detail_is_ordered,
                     'product_types'=>$product_types,
                     'performed_product_types'=>$performed_product_types,
