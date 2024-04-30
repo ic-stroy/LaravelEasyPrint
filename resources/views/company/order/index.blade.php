@@ -415,12 +415,12 @@
                                     @foreach($order['products_with_anime'] as $products_with_anime)
                                         <hr>
                                         <div class="row">
-                                            <div class="col-2 order_product_images" onclick='getImages("{{implode(" ", $products_with_anime['images'])}}")' data-bs-toggle="modal" data-bs-target="#carousel-modal">
-                                                <img src="{{!empty($products_with_anime['images'])?$products_with_anime['images'][0]:asset('icon/no_photo.jpg')}}" alt="" height="144px">
+                                            <div class="col-2 order_product_images">
+                                                <img  onclick='getImages("{{implode(" ", $products_with_anime['images'])}}")' data-bs-toggle="modal" data-bs-target="#carousel-modal" src="{{!empty($products_with_anime['images'])?$products_with_anime['images'][0]:asset('icon/no_photo.jpg')}}" alt="" height="144px">
                                             </div>
                                             @if(!empty($products_with_anime[2]))
-                                                <div class="col-2 order_product_images" onclick='getUploads("{{implode(" ", $products_with_anime[2])}}")' data-bs-toggle="modal" data-bs-target="#carousel-upload-modal">
-                                                    <img src="{{!empty($products_with_anime[2])?$products_with_anime[2][0]:asset('icon/no_photo.jpg')}}" alt="" height="144px">
+                                                <div class="col-2 order_product_images">
+                                                    <img onclick='getUploads("{{implode(" ", $products_with_anime[2])}}")' data-bs-toggle="modal" data-bs-target="#carousel-upload-modal" src="{{!empty($products_with_anime[2])?$products_with_anime[2][0]:asset('icon/no_photo.jpg')}}" alt="" height="144px">
                                                 </div>
                                             @else
                                                 <div class="col-2 order_product_images"></div>
@@ -583,10 +583,10 @@
                                     @foreach($order['products'] as $products)
                                         <hr>
                                         <div class="row">
-                                            <div class="col-2 order_product_images" onclick='getImages("{{implode(" ", $products['images'])}}")'  data-bs-toggle="modal" data-bs-target="#carousel-modal">
-                                                <img src="{{!empty($products['images'])?$products['images'][0]:asset('icon/no_photo.jpg')}}" alt="" height="144px">
+                                            <div class="col-3 order_product_images">
+                                                <img onclick='getImages("{{implode(" ", $products['images'])}}")' data-bs-toggle="modal" data-bs-target="#carousel-modal" src="{{!empty($products['images'])?$products['images'][0]:asset('icon/no_photo.jpg')}}" alt="" height="144px">
                                             </div>
-                                            <div class="col-2"></div>
+                                            <div class="col-1"></div>
                                             <div class="col-4 order_content">
                                                 <h4>{{translate('Order')}}</h4>
                                                 @if(!empty($products[0]->warehouse) && $products[0]->warehouse->name)
