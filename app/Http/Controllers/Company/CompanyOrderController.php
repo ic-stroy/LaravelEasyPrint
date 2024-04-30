@@ -422,11 +422,11 @@ class CompanyOrderController extends Controller
         }
         $order->status = Constants::ACCEPTED_BY_RECIPIENT;
         $order->save();
-        $order_details = OrderDetail::where(['order_id'=>$order->id, 'status'=>3])->get();
-        foreach($order_details as $order_detail){
-            $order_detail->status = Constants::ORDER_DETAIL_ACCEPTED_BY_RECIPIENT;
-            $order_detail->save();
-        }
+//        $order_details = OrderDetail::where(['order_id'=>$order->id, 'status'=>3])->get();
+//        foreach($order_details as $order_detail){
+//            $order_detail->status = Constants::ORDER_DETAIL_ACCEPTED_BY_RECIPIENT;
+//            $order_detail->save();
+//        }
         return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
     }
 
@@ -437,11 +437,11 @@ class CompanyOrderController extends Controller
         }
         $order->status = Constants::PERFORMED;
         $order->save();
-        $order_details = OrderDetail::where(['order_id'=>$order->id, 'status'=>6])->get();
-        foreach($order_details as $order_detail){
-            $order_detail->status = Constants::ORDER_DETAIL_PERFORMED;
-            $order_detail->save();
-        }
+//        $order_details = OrderDetail::where(['order_id'=>$order->id, 'status'=>6])->get();
+//        foreach($order_details as $order_detail){
+//            $order_detail->status = Constants::ORDER_DETAIL_PERFORMED;
+//            $order_detail->save();
+//        }
         return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
     }
 
