@@ -320,7 +320,7 @@
                                                         <hr style="margin:4px">
                                                     @endif
                                                     <h4 style="line-height: 2; font-size: 16px">
-                                                        @if($user_name){{$user_name}}@endif
+                                                        @if($order['user_name']){{$order['user_name']}}@endif
                                                         <span style="color: orange">{{translate('Ordered')}}</span>
                                                         @if($order['product_types'] != 0)
                                                             <b>{{ $order['product_types'] }}</b>
