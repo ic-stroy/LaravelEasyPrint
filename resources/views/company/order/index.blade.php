@@ -328,7 +328,11 @@
                                                         <span style="color: orange">{{translate('Ordered')}}</span>
                                                         @if($order['product_types'] != 0)
                                                             <b>{{ $order['product_types'] }}</b>
-                                                            {{translate('products are yours. you will sell for')}}
+                                                            @if($order['order']->status != \App\Constants::ACCEPTED_BY_RECIPIENT)
+                                                                {{translate('products are yours. you will sell for')}}
+                                                            @else
+                                                                {{translate('products are yours. you sold for')}}
+                                                            @endif
                                                             <b style="color: #10C469">{{$order['company_product_price']}}</b>
                                                             @if($order['order_coupon_price'] != 0)
                                                                 {{translate('Your coupon is costed')}}
@@ -369,7 +373,7 @@
                                                     @endif
                                                 </div>
                                                 <div class="col-4 d-flex justify-content-between">
-                                                        @if($order['order']->status)
+                                                    @if($order['order']->status)
                                                         @switch($order['order']->status)
                                                             @case(\App\Constants::ORDERED)
                                                                 <span style="line-height: 1; font-size: 16px">
