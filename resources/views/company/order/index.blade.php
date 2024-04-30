@@ -73,7 +73,7 @@
         }
 
     </style>
-    @if(!empty($orderedOrders) || !empty($performedOrders) || !empty($cancelledOrders) || !empty($acceptedByRecipientOrders))
+    @if(!empty($all_orders['orderedOrders']) || !empty($all_orders['performedOrders']) || !empty($all_orders['cancelledOrders']) || !empty($all_orders['acceptedByRecipientOrders']))
     <div id="success-alert-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
@@ -247,32 +247,32 @@
                 <li class="nav-item">
                     <a href="#ordered" data-bs-toggle="tab" aria-expanded="true" class="nav-link active">
                         {{translate('Ordered')}}
-                        @if(count($orderedOrders) > 0)
-                            <span class="badge bg-danger"> {{translate('new')}} {{count($orderedOrders)}}</span>
+                        @if(count($all_orders['orderedOrders']) > 0)
+                            <span class="badge bg-danger"> {{translate('new')}} {{count($all_orders['orderedOrders'])}}</span>
                         @endif
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#performed" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                         {{translate('Performed')}}
-                        @if(count($performedOrders) > 0)
-                            <span class="badge bg-danger"> {{count($performedOrders)}}</span>
+                        @if(count($all_orders['performedOrders']) > 0)
+                            <span class="badge bg-danger"> {{count($all_orders['performedOrders'])}}</span>
                         @endif
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#cancelled" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                         {{translate('Cancelled')}}
-                        @if(count($cancelledOrders) > 0)
-                            <span class="badge bg-danger"> {{count($cancelledOrders)}}</span>
+                        @if(count($all_orders['cancelledOrders']) > 0)
+                            <span class="badge bg-danger"> {{count($all_orders['cancelledOrders'])}}</span>
                         @endif
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#accepted_by_recepient" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                         {{translate('Accepted by recepient')}}
-                        @if(count($acceptedByRecipientOrders) > 0)
-                            <span class="badge bg-danger"> {{count($acceptedByRecipientOrders)}}</span>
+                        @if(count($all_orders['acceptedByRecipientOrders']) > 0)
+                            <span class="badge bg-danger"> {{count($all_orders['acceptedByRecipientOrders'])}}</span>
                         @endif
                     </a>
                 </li>
@@ -281,20 +281,19 @@
                 @foreach($all_orders as $key_order => $all_order)
                 <div
                     @switch($key_order)
-                    @case("orderedOrders")
-                        class="tab-pane show active" id="ordered"
-                        @break
-                    @case("performedOrders")
-                        class="tab-pane" id="performed"
-                        @break
-                    @case("cancelledOrders")
-                        class="tab-pane" id="cancelled"
-                        @break
-                    @case("acceptedByRecipientOrders")
-                        class="tab-pane" id="accepted_by_recepient"
-                        @break
-                    @endswitch
-                >
+                        @case("orderedOrders")
+                            class="tab-pane show active" id="ordered"
+                            @break
+                        @case("performedOrders")
+                            class="tab-pane" id="performed"
+                            @break
+                        @case("cancelledOrders")
+                            class="tab-pane" id="cancelled"
+                            @break
+                        @case("acceptedByRecipientOrders")
+                            class="tab-pane" id="accepted_by_recepient"
+                            @break
+                    @endswitch >
                     <h4 class="mt-0 header-title">{{translate('Ordered orders list')}}</h4>
                     @php
                         $i=0

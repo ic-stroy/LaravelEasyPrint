@@ -32,7 +32,6 @@ class CompanyOrderController extends Controller
             'cancelledOrders'=>$cancelledOrders,
             'acceptedByRecipientOrders'=>$acceptedByRecipientOrders,
         ];
-        dd($all_orders);
         return view('company.order.index', [
             'all_orders'=>$all_orders,
             'user'=>$user
