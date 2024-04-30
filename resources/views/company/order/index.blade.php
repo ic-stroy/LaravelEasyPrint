@@ -50,6 +50,10 @@
         .carousel-inner{
             padding:0px;
         }
+        .order_product_images{
+            display: flex;
+            justify-content: center;
+        }
         .order_product_images>img{
             transition: 0.4s;
         }
