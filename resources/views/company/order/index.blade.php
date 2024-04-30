@@ -583,10 +583,10 @@
                                     @foreach($order['products'] as $products)
                                         <hr>
                                         <div class="row">
-                                            <div class="col-3 order_product_images" onclick='getImages("{{implode(" ", $products['images'])}}")'  data-bs-toggle="modal" data-bs-target="#carousel-modal">
+                                            <div class="col-2 order_product_images" onclick='getImages("{{implode(" ", $products['images'])}}")'  data-bs-toggle="modal" data-bs-target="#carousel-modal">
                                                 <img src="{{!empty($products['images'])?$products['images'][0]:asset('icon/no_photo.jpg')}}" alt="" height="144px">
                                             </div>
-                                            <div class="col-1"></div>
+                                            <div class="col-2"></div>
                                             <div class="col-4 order_content">
                                                 <h4>{{translate('Order')}}</h4>
                                                 @if(!empty($products[0]->warehouse) && $products[0]->warehouse->name)
