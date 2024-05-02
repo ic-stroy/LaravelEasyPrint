@@ -51,8 +51,48 @@ class UsersController extends Controller
         $user->personal_info_id = $personal_info->id;
         $user->save();
 
+        if(isset($user->personalInfo)){
+            $user_image = null;
+            if(isset($user->personalInfo->avatar)){
+                $sms_avatar = storage_path('app/public/user/' . $user->personalInfo->avatar);
+            }else{
+                $sms_avatar = storage_path('app/public/user/' . 'no');
+            }
+            if (file_exists($sms_avatar)) {
+                $user_image = asset('storage/user/'.$user->personalInfo->avatar);
+            }
+            switch ($user->personalInfo->gender){
+                case 1:
+                    $gender = Constants::MALE;
+                    break;
+                case 2:
+                    $gender = Constants::FEMALE;
+                    break;
+                default:
+                    $gender = null;
+            }
+            if($user->personalInfo->birth_date){
+                $birth_date = date("d.m.Y", strtotime($user->personalInfo->birth_date));
+            }else{
+                $birth_date = null;
+            }
+
+            $data = [
+                "id"=>$user->id,
+                "first_name" => $user->personalInfo->first_name??null,
+                "last_name" => $user->personalInfo->last_name??null,
+                "phone_number" => $user->personalInfo->phone_number??null,
+                "gender" => $gender,
+                "email" => $user->personalInfo->email??null,
+                "image"=>$user_image,
+                "birth_date"=>$birth_date
+            ];
+        }else{
+            $data = [];
+        }
+
          $message = translate_api('Success', $language);
-        return $this->success($message, 200, []);
+        return $this->success($message, 200, $data);
     }
 
     public function getPersonalInformation(Request $request){
