@@ -589,6 +589,13 @@
                                         </div>
                                     @endforeach
                                     @foreach($order['products'] as $products)
+                                        @php
+                                            if(!empty($products[0]->warehouse) && $products[0]->warehouse->name){
+                                                $product_name = $products[0]->warehouse->name??'';
+                                            }else if(!empty($products[0]->warehouse->product) && $products[0]->warehouse->product->name){
+                                                $product_name = $products[0]->warehouse->product->name??'';
+                                            }
+                                        @endphp
                                         <hr>
                                         <div class="row">
                                             <div class="col-3 order_product_images">
@@ -651,13 +658,6 @@
                                                 @switch($key_order)
                                                     @case("orderedOrders")
                                                     <div class="d-flex justify-content-around">
-                                                        @php
-                                                            if(!empty($products[0]->warehouse) && $products[0]->warehouse->name){
-                                                                $product_name = $products[0]->warehouse->name??'';
-                                                            }else if(!empty($products[0]->warehouse->product) && $products[0]->warehouse->product->name){
-                                                                $product_name = $products[0]->warehouse->product->name??'';
-                                                            }
-                                                        @endphp
                                                         @switch($products[0]->status)
                                                             @case(\App\Constants::ORDER_DETAIL_ORDERED)
                                                             <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#success-alert-modal" data-url=""
@@ -705,13 +705,6 @@
                                                         @break
                                                     @case("performedOrders")
                                                     <div class="d-flex justify-content-around">
-                                                        @php
-                                                            if(!empty($products[0]->warehouse) && $products[0]->warehouse->name){
-                                                                $product_name = $products[0]->warehouse->name??'';
-                                                            }else if(!empty($products[0]->warehouse->product) && $products[0]->warehouse->product->name){
-                                                                $product_name = $products[0]->warehouse->product->name??'';
-                                                            }
-                                                        @endphp
                                                         @switch($products[0]->status)
                                                             @case(\App\Constants::ORDER_DETAIL_PERFORMED)
                                                             <button type="button" class="btn btn-info btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#accepted-by-recipient-modal" onclick='accepted_by_recipient("{{route('accepted_by_recipient', $order['order']->id)}}")' data-url=""><i class="fa fa-check"></i></button>
@@ -737,13 +730,6 @@
                                                         @break
                                                     @case("cancelledOrders")
                                                     <div class="d-flex justify-content-around">
-                                                        @php
-                                                            if(!empty($products[0]->warehouse) && $products[0]->warehouse->name){
-                                                                $product_name = $products[0]->warehouse->name??'';
-                                                            }else if(!empty($products[0]->warehouse->product) && $products[0]->warehouse->product->name){
-                                                                $product_name = $products[0]->warehouse->product->name??'';
-                                                            }
-                                                        @endphp
                                                         <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#success-alert-modal" data-url=""
                                                                 onclick='accepting_order(
                                                                     "{{$products[0]->quantity}}",
