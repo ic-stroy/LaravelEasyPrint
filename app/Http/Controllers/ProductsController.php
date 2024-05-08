@@ -168,7 +168,6 @@ class ProductsController extends Controller
     public function update(Request $request, string $id)
     {
         $model = Products::find($id);
-        $model->name = $request->name;
         if($request->subcategory_id){
             $model->category_id = $request->subcategory_id;
         }else{
@@ -181,6 +180,16 @@ class ProductsController extends Controller
         $model->material_composition = $request->material_composition;
         $images = $request->file('images');
         $model->images = $this->imageSave($model, $images, 'update');
+        if($request->name != $model->name){
+            foreach (Language::all() as $language) {
+                $product_translations = ProductTranslations::firstOrNew(['lang' => $language->code, 'product_id' => $model->id]);
+                $product_translations->lang = $language->code;
+                $product_translations->name = $model->name;
+                $product_translations->product_id = $model->id;
+                $product_translations->save();
+            }
+        }
+        $model->name = $request->name;
         $model->save();
         if(!empty($model->categoryDiscount)){
             if(empty($model->discount)){
@@ -195,6 +204,7 @@ class ProductsController extends Controller
                 $discount->save();
             }
         }
+
         return redirect()->route('product.index')->with('status', translate('Successfully updated'));
     }
 

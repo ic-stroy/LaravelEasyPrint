@@ -93,6 +93,15 @@ class CompanyController extends Controller
         $address->latitude = $request->address_lat;
         $address->longitude = $request->address_long;
         $address->save();
+        if($request->name != $model->name){
+            foreach (Language::all() as $language) {
+                $company_translations = CompanyTranslations::firstOrNew(['lang' => $language->code, 'company_id' => $model->id]);
+                $company_translations->lang = $language->code;
+                $company_translations->name = $model->name;
+                $company_translations->company_id = $model->id;
+                $company_translations->save();
+            }
+        }
         $model->name = $request->name;
         $model->delivery_price = $request->delivery_price;
         $model->address_id = $address->id;

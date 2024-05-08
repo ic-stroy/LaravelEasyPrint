@@ -167,6 +167,15 @@ class WarehouseController extends Controller
         $model->size_id = $request->size_id;
         $model->color_id = $request->color_id;
         $model->product_id = $request->product_id;
+        if($request->name != $model->name){
+            foreach (Language::all() as $language) {
+                $warehouse_translations = WarehouseTranslations::where(['lang' => $language->code, 'warehouse_id' => $model->id])->firstOrNew();
+                $warehouse_translations->lang = $language->code;
+                $warehouse_translations->name = $model->name;
+                $warehouse_translations->warehouse_id = $model->id;
+                $warehouse_translations->save();
+            }
+        }
         $model->name = $request->name;
         $model->company_id = $user->company_id;
         $model->quantity = $request->quantity;

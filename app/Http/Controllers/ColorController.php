@@ -84,6 +84,15 @@ class ColorController extends Controller
             'code.required'=>translate('Please select a color'),
         ]);
         $model = Color::find($id);
+        if($request->name != $model->name){
+            foreach (Language::all() as $language) {
+                $color_translations = ColorTranslations::firstOrNew(['lang' => $language->code, 'color_id' => $model->id]);
+                $color_translations->lang = $language->code;
+                $color_translations->name = $model->name;
+                $color_translations->color_id = $model->id;
+                $color_translations->save();
+            }
+        }
         $model->name = $request->name;
         $model->code = $request->code;
         $model->save();

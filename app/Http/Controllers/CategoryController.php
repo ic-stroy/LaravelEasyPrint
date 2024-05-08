@@ -71,6 +71,15 @@ class CategoryController extends Controller
     public function update(Request $request, string $id)
     {
         $model = Category::where('step', 0)->find($id);
+        if($request->name != $model->name){
+            foreach (Language::all() as $language) {
+                $category_translations = CategoryTranslations::firstOrNew(['lang' => $language->code, 'category_id' => $model->id]);
+                $category_translations->lang = $language->code;
+                $category_translations->name = $model->name;
+                $category_translations->category_id = $model->id;
+                $category_translations->save();
+            }
+        }
         $model->name = $request->name;
         $model->step = 0;
         $model->save();
