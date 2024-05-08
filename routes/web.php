@@ -133,6 +133,7 @@ Auth::routes();
                 Route::post('/cancell-accepted-by-recipient/{id}', [CompanyOrderController::class, 'cancellAcceptedByRecipient'])->name('cancell_accepted_by_recipient');
 //                Route::get('/category', [CompanyOrderController::class, 'category'])->name('company_order.category');
                 Route::get('/show/{id}', [CompanyOrderController::class, 'show'])->name('company_order.show');
+                Route::post('/make-all-notifications-as-read', [CompanyOrderController::class, 'makeAllNotificationsAsRead'])->name('company_order.make_all_notifications_as_read');
                 Route::get('/destroy/{id}', [CompanyOrderController::class, 'destroy'])->name('company_order.destroy');
             });
             Route::delete('/order-detail/cancell/{id}', [CompanyOrderController::class, 'cancellOrderDetail'])->name('cancell_order_detail');
