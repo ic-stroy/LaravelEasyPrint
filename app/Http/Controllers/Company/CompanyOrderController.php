@@ -18,10 +18,10 @@ class CompanyOrderController extends Controller
 {
     public function index(){
         $user = Auth::user();
-        $orderedOrders_ = Order::where('status', Constants::ORDERED)->get();
-        $performedOrders_ = Order::where('status', Constants::PERFORMED)->where('company_id', $user->company_id)->get();
-        $cancelledOrders_ = Order::where('status', Constants::CANCELLED)->where('company_id', $user->company_id)->get();
-        $acceptedByRecipientOrders_ = Order::where('status', Constants::ACCEPTED_BY_RECIPIENT)->where('company_id', $user->company_id)->get();
+        $orderedOrders_ = Order::where('status', Constants::ORDERED)->orderBy('updated_at', 'desc')->get();
+        $performedOrders_ = Order::where('status', Constants::PERFORMED)->where('company_id', $user->company_id)->orderBy('updated_at', 'desc')->get();
+        $cancelledOrders_ = Order::where('status', Constants::CANCELLED)->where('company_id', $user->company_id)->orderBy('updated_at', 'desc')->get();
+        $acceptedByRecipientOrders_ = Order::where('status', Constants::ACCEPTED_BY_RECIPIENT)->where('company_id', $user->company_id)->orderBy('created_at', 'desc')->get();
         $orderedOrders = $this->getOrders($orderedOrders_, $user);
         $performedOrders = $this->getOrders($performedOrders_, $user);
         $cancelledOrders = $this->getOrders($cancelledOrders_, $user);
