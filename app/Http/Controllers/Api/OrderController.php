@@ -965,7 +965,7 @@ class OrderController extends Controller
                                     'order_detail_id'=>$orderDetail->id,
                                     'order_all_price'=>$orderDetail->price*$orderDetail->quantity - (int)$orderDetail->discount_price - $coupon_price,
                                     'product'=>[
-                                        'name'=>$orderDetail->warehouse->name,
+                                        'name'=>$orderDetail->warehouse->name??$orderDetail->warehouse->product->name,
                                         'images'=>$list_images
                                     ],
                                     'receiver_name'=>$order->receiver_name,
@@ -1002,7 +1002,7 @@ class OrderController extends Controller
                                 'order_detail_id' => $orderDetail->id,
                                 'order_all_price' => $orderDetail->price * $orderDetail->quantity - (int)$orderDetail->discount_price - $coupon_price,
                                 'product' => [
-                                    'name' => $orderDetail->product->name,
+                                    'name' => $orderDetail->product->name??$orderDetail->warehouse->product->name,
                                     'images' => $images
                                 ],
                                 'receiver_name' => $order->receiver_name,

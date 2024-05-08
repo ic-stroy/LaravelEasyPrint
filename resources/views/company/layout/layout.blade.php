@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 @php
-    $current_user = \Illuminate\Support\Facades\Auth::user();
+$current_user = \Illuminate\Support\Facades\Auth::user();
 @endphp
 <head>
     <meta charset="utf-8" />
