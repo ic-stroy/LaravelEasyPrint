@@ -16,6 +16,12 @@ body {
     overflow-x: hidden;
     font-family: Rubik;
 }
+.notify-icon{
+    background-size: cover;
+}
+.notify-item{
+    height: 58px;
+}
 .delete-datas{
     border-radius: 8px;
 }

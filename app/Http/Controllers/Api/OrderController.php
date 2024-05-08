@@ -350,33 +350,31 @@ class OrderController extends Controller
 
                         $translate_name = table_translate($warehouse_product, 'warehouse', $language);
 
-                        if(!empty($warehouse_product) && $warehouse_product->warehouse_product_id){
-                            if($warehouse_product->discount_percent){
-                                $order_detail->discount = $warehouse_product->discount_percent;
-                            }else{
-                                $order_detail->discount = 0;
-                            }
-                            if($order_detail->price != $warehouse_product->warehouse_price){
-                                $order_detail->price = $warehouse_product->warehouse_price;
-                                $order_price = $order_price + $order_detail->price * $order_detail->quantity;
-                                if($order_detail->discount && $order_detail->discount != 0){
-                                    $order_detail->discount_price = ($order_detail->price*$order_detail->discount)/100*$order_detail->quantity;
-                                    $order_discount_price = $order_discount_price + $order_detail->discount_price;
-                                }else{
-                                    $order_detail->discount_price = 0;
-                                }
-                            }else{
-                                $order_price = $order_price + $order_detail->price * $order_detail->quantity;
-                                if($order_detail->discount && $order_detail->discount != 0) {
-                                    $order_detail->discount_price = ($order_detail->price*$order_detail->discount)/100*$order_detail->quantity;
-                                    $order_discount_price = $order_discount_price + $order_detail->discount_price;
-                                }else{
-                                    $order_detail->discount_price = 0;
-                                }
-                            }
-                            $order_detail->status = Constants::ORDER_DETAIL_BASKET;
-                            $order_detail->save();
+                        if($warehouse_product->discount_percent){
+                            $order_detail->discount = $warehouse_product->discount_percent;
+                        }else{
+                            $order_detail->discount = 0;
                         }
+                        if($order_detail->price != $warehouse_product->warehouse_price){
+                            $order_detail->price = $warehouse_product->warehouse_price;
+                            $order_price = $order_price + $order_detail->price * $order_detail->quantity;
+                            if($order_detail->discount && $order_detail->discount != 0){
+                                $order_detail->discount_price = ($order_detail->price*$order_detail->discount)/100*$order_detail->quantity;
+                                $order_discount_price = $order_discount_price + $order_detail->discount_price;
+                            }else{
+                                $order_detail->discount_price = 0;
+                            }
+                        }else{
+                            $order_price = $order_price + $order_detail->price * $order_detail->quantity;
+                            if($order_detail->discount && $order_detail->discount != 0) {
+                                $order_detail->discount_price = ($order_detail->price*$order_detail->discount)/100*$order_detail->quantity;
+                                $order_discount_price = $order_discount_price + $order_detail->discount_price;
+                            }else{
+                                $order_detail->discount_price = 0;
+                            }
+                        }
+                        $order_detail->status = Constants::ORDER_DETAIL_BASKET;
+                        $order_detail->save();
                         $total_price = $order_detail->price*$order_detail->quantity - (int)$order_detail->discount_price;
 
                         $list = [

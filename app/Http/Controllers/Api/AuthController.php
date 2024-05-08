@@ -25,7 +25,7 @@ class AuthController extends Controller
             'phone'=>'required|string'
         ]);
         $client = new Client();
-        $eskiz_token = EskizToken::first();
+        $eskiz_token = EskizToken::firstOrNew();
         $user_verify = UserVerify::withTrashed()->where('phone_number', (int)$fields['phone'])->first();
         $random = rand(100000, 999999);
         if(!$user_verify){
@@ -48,19 +48,11 @@ class AuthController extends Controller
                 ]
             ]
         ];
-        if(!$eskiz_token->expire_date){
+        if(!$eskiz_token->expire_date && strtotime('now') > (int)$eskiz_token->expire_date){
             $guzzle_request = new GuzzleRequest('POST', 'https://notify.eskiz.uz/api/auth/login');
             $res = $client->sendAsync($guzzle_request, $token_options)->wait();
             $res_array = json_decode($res->getBody());
-            $eskizToken = new EskizToken();
-            $eskizToken->token = $res_array->data->token;
-            $eskizToken->expire_date = strtotime('+28 days');
-            $eskizToken->save();
-        }elseif(strtotime('now') > (int)$eskiz_token->expire_date){
-            $guzzle_request = new GuzzleRequest('POST', 'https://notify.eskiz.uz/api/auth/login');
-            $res = $client->sendAsync($guzzle_request, $token_options)->wait();
-            $res_array = json_decode($res->getBody());
-            $eskizToken = EskizToken::first();
+            $eskizToken = EskizToken::firstOrNew();
             $eskizToken->token = $res_array->data->token;
             $eskizToken->expire_date = strtotime('+28 days');
             $eskizToken->save();

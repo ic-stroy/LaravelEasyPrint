@@ -223,9 +223,7 @@
                                     @if($notification->type == "App\Notifications\OrderNotification")
                                         @if(!empty($notification->data))
                                             <a href="{{route('company_order.index', 2)}}" class="dropdown-item notify-item">
-                                                <div class="notify-icon">
-                                                    <img src="{{isset($notification->data['product_images'])?$notification->data['product_images']:''}}" class="img-fluid" alt="" />
-                                                </div>
+                                                <div class="notify-icon" style="background-image: url({{isset($notification->data['product_images'])?$notification->data['product_images']:''}})"></div>
                                                 <p class="notify-details">
                                                     @if(isset($notification->data['product_name']))
                                                         {{strlen($notification->data['product_name'])>24?substr($notification->data['product_name'], 0, 24):$notification->data['product_name']}}...  <b>{{$notification->data['order_all_price']}}</b>
