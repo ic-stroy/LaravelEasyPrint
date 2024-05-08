@@ -100,7 +100,7 @@ class WarehousePrintController extends Controller
         $model->material_composition = $request->material_composition;
         $model->material_id = $request->material_id;
         $model->save();
-        return redirect()->route('warehouse.category.warehouse', $request->product_id)->with('status', translate('Successfully updated'));
+        return redirect()->route('print.category.warehouse', $request->product_id)->with('status', translate('Successfully updated'));
     }
 
     /**
