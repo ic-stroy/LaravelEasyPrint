@@ -6,6 +6,7 @@ use App\Constants;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\Products;
 use App\Models\Uploads;
 use App\Models\User;
 use App\Models\Warehouse;
@@ -94,25 +95,55 @@ class CompanyOrderController extends Controller
                         $product_discount_withouth_expire = 0;
                     }
                     if(!empty($order_detail->warehouse)) {
-                        if ($order_detail->warehouse->images && $order_detail->warehouse->images != '[]') {
-                            $images_ = json_decode($order_detail->warehouse->images);
-                            $images = [];
-                            foreach ($images_ as $key => $image_) {
-                                $images[] = asset('storage/warehouses/' . $image_);
-                            }
-                        } elseif (!empty($order_detail->warehouse->product)) {
-                            if ($order_detail->warehouse->product->images) {
-                                $images_ = json_decode($order_detail->warehouse->product->images);
+                        $images = [];
+                        $warehouse__ = $order_detail->warehouse;
+                        if($warehouse__->type == Constants::WAREHOUSE_TYPE){
+                            if (count($this->getImages($warehouse__, 'warehouse'))>0) {
+                                $images = $this->getImages($warehouse__, 'warehouse');
                             } else {
-                                $images_ = [];
+                                $parentProduct = Products::find($warehouse__->product_id);
+                                if($parentProduct){
+                                    $images = $this->getImages($parentProduct, 'product');
+                                }
                             }
-                            $images = [];
-                            foreach ($images_ as $key => $image_) {
-                                $images[] = asset('storage/products/' . $image_);
+                        }else{
+                            if (!$warehouse__->image_front) {
+                                $warehouse__->image_front = 'no';
                             }
-                        } else {
-                            $images = [];
+                            $model_image_front = storage_path('app/public/warehouse/'.$warehouse__->image_front);
+                            if (!$warehouse__->image_back) {
+                                $warehouse__->image_back = 'no';
+                            }
+                            $model_image_back = storage_path('app/public/warehouse/'.$warehouse__->image_back);
+                            if(file_exists($model_image_front)){
+                                $images[] = asset("/storage/warehouse/$warehouse__->image_front");
+                            }
+                            if(file_exists($model_image_back)){
+                                $images[] = asset("/storage/warehouse/$warehouse__->image_back");
+                            }
                         }
+
+
+//                        if ($warehouse__->images && $warehouse__->images != '[]') {
+//                            $images_ = json_decode($warehouse__->images);
+//                            $images = [];
+//                            foreach ($images_ as $key => $image_) {
+//                                $images[] = asset('storage/warehouses/' . $image_);
+//                            }
+//                        } elseif (!empty($warehouse__->product)) {
+//                            if ($warehouse__->product->images) {
+//                                $images_ = json_decode($warehouse__->product->images);
+//                            } else {
+//                                $images_ = [];
+//                            }
+//                            $images = [];
+//                            foreach ($images_ as $key => $image_) {
+//                                $images[] = asset('storage/products/' . $image_);
+//                            }
+//                        } else {
+//                            $images = [];
+//                        }
+
                     }else{
                         $images = [];
                     }
