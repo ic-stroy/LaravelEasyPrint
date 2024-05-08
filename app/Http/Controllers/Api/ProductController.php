@@ -67,19 +67,19 @@ class ProductController extends Controller
 //            ->select(DB::raw('MAX(id) as id')) // assuming 'id' is the primary key
             ->groupBy('company_id', 'product_id')
             ->whereNull('deleted_at')
-            ->where('type', 0)
+            ->where('type', Constants::WAREHOUSE_TYPE)
             ->pluck(DB::raw('MAX(id) as id'))
             ->all();
         $warehouse_anime_products_id = DB::table('warehouses')
             ->whereNull('deleted_at')
-            ->where('type', 1)
+            ->where('type', Constants::PRINT_TYPE)
             ->pluck('id')
             ->all();
         $warehouse_products = [];
         $warehouse_products_ = Warehouse::whereIn('id', array_merge($warehouse_products_id, $warehouse_anime_products_id))->get();
-
+//        dd($warehouse_products_id, $warehouse_anime_products_id);
         foreach ($warehouse_products_ as $warehouse_product_) {
-            if($warehouse_product_->type == 0){
+            if($warehouse_product_->type == Constants::WAREHOUSE_TYPE){
                 if (count($this->getImages($warehouse_product_, 'warehouse'))>0) {
                     $warehouseProducts = $this->getImages($warehouse_product_, 'warehouse');
                 } else {
@@ -105,14 +105,20 @@ class ProductController extends Controller
                     $warehouseProducts[] = asset("/storage/warehouse/$warehouse_product_->image_back");
                 }
             }
-
+            $warehouse__name = '';
             $translate_name=table_translate($warehouse_product_,'warehouse_category', $language);
-
+            if($translate_name){
+                $warehouse__name = $translate_name;
+            }elseif($warehouse_product_->name){
+                $warehouse__name = $warehouse_product_->name;
+            }elseif($warehouse_product_->product->name){
+                $warehouse__name = $warehouse_product_->product->name;
+            }
             //  join qilish kere
             $warehouse_products[] = [
                 // 'product_id' => $warehouse_product_->product_id,
                 'id' => $warehouse_product_->id,
-                'name' => $translate_name ?? $warehouse_product_->product->name,
+                'name' => $warehouse__name,
                 'price' => $warehouse_product_->price,
                 'discount' => $warehouse_product_->product_discount ? $warehouse_product_->product_discount->percent : NULL,
                 'price_discount' => $warehouse_product_->product_discount ? $warehouse_product_->price - ($warehouse_product_->price / 100 * $warehouse_product_->product_discount->percent) : NULL,
@@ -191,19 +197,19 @@ class ProductController extends Controller
             if($warehouse_product){
                 $product__category = Category::find($warehouse_product->category_id);
                 if($product__category->step == 0){
-                    $product_category_translate_name=table_translate($product__category,'category', $language);
+                    $product_category_translate_name = table_translate($product__category,'category', $language);
                     $product_category = [
                         'id'=>$product__category->id,
                         'name'=>$product_category_translate_name,
                     ];
                     $product_sub_category = NULL;
                 }else{
-                    $product_sub_category_translate_name=table_translate($product__category,'category', $language);
+                    $product_sub_category_translate_name = table_translate($product__category,'category', $language);
                     $product_sub_category = [
                         'id'=>$product__category->id,
                         'name'=>$product_sub_category_translate_name,
                     ];
-                    $product_category_translate_name=table_translate($product__category->category,'category', $language);
+                    $product_category_translate_name = table_translate($product__category->category,'category', $language);
                     $product_category = [
                         'id'=>$product__category->category->id,
                         'name'=>$product_category_translate_name,
@@ -242,6 +248,7 @@ class ProductController extends Controller
                         // ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
                         ->where('dt1.product_id', $warehouse_product->product_id)
                         ->where('dt1.company_id', $warehouse_product->company_id)
+                        ->where('dt1.type', $warehouse_product->type)
                         ->select('dt1.id as id','dt3.id as size_id', 'dt3.name as size_name')
                         ->distinct('size_id')
                         ->get();
@@ -253,6 +260,7 @@ class ProductController extends Controller
                             ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
                             ->where('dt1.product_id', $warehouse_product->product_id)
                             ->where('dt1.company_id', $warehouse_product->company_id)
+                            ->where('dt1.type', $warehouse_product->type)
                             ->where('dt1.size_id', $size->size_id)
                             ->select('dt1.description','dt4.id as color_id','dt4.code as color_code', 'dt4.name as color_name','dt1.images as images')
                             ->distinct('color_id')
@@ -288,6 +296,7 @@ class ProductController extends Controller
                         // ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
                         ->where('dt1.product_id', $warehouse_product->product_id)
                         ->where('dt1.company_id', $warehouse_product->company_id)
+                        ->where('dt1.type', $warehouse_product->type)
                         ->select('dt1.id as id','dt3.id as color_id','dt3.code as color_code', 'dt3.name as color_name')
                         ->distinct('color_id')
                         ->get();
@@ -300,6 +309,7 @@ class ProductController extends Controller
                             ->join('sizes as dt4', 'dt4.id', '=', 'dt1.size_id')
                             ->where('dt1.product_id', $warehouse_product->product_id)
                             ->where('dt1.company_id', $warehouse_product->company_id)
+                            ->where('dt1.type', $warehouse_product->type)
                             ->where('dt1.color_id', $color->color_id)
                             ->select('dt1.description','dt4.id as size_id','dt4.name as size_name')
                             ->distinct('size_id')

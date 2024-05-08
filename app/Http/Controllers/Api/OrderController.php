@@ -538,7 +538,6 @@ class OrderController extends Controller
         $order_id = $request->order_id;
 
         if ($order_id  && $order = Order::where('id', $order_id)->first()) {
-
             $data=[];
             $order_detail_list=[];
             $coupon = $order->coupon;
@@ -569,7 +568,7 @@ class OrderController extends Controller
                         $images = [];
                         $relation_type='warehouse_product';
                         $relation_id=$order_detail->warehouse_id;
-                        if($warehouse_product->type == 0){
+                        if($warehouse_product->type == Constants::WAREHOUSE_TYPE){
                             $list_product = Products::find($warehouse_product->product_id);
                             $images = count($this->getImages($warehouse_product, 'warehouses')) > 0 ? $this->getImages($warehouse_product, 'warehouses') : $this->getImages($list_product, 'product');
                         }else{

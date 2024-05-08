@@ -69,6 +69,18 @@
                         <td>{{$model->price??''}}</td>
                     </tr>
                     <tr>
+                        <th>{{translate('Manufacturer country')}}</th>
+                        <td>{{$model->manufacturer_country??'' }}</td>
+                    </tr>
+                    <tr>
+                        <th>{{translate('Material composition')}}</th>
+                        <td>{{$model->material_composition??'' }}</td>
+                    </tr>
+                    <tr>
+                        <th>{{translate('Description')}}</th>
+                        <td>{{$model->description??'' }}</td>
+                    </tr>
+                    <tr>
                         <th>{{translate('Updated at')}}</th>
                         <td>{{$model->updated_at??''}}</td>
                     </tr>

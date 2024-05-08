@@ -117,7 +117,7 @@
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Manufacturer country')}}</label>
-                        <input type="text" name="manufacturer_country" class="form-control" value="{{old('manufacturer_country')}}"/>
+                        <input type="text" name="manufacturer_country" class="form-control" value="{{$product->manufacturer_country??''}}"/>
                     </div>
                 </div>
                 <div class="mb-3">
@@ -127,11 +127,7 @@
                 <div class="row">
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Material composition')}}</label>
-                        <input type="text" name="material_composition" class="form-control" value="{{old('material_composition')}}"/>
-                    </div>
-                    <div class="mb-3 col-6">
-                        <label class="form-label">{{translate('Material')}}</label>
-                        <input type="text" name="material" class="form-control" value="{{old('material')}}"/>
+                        <input type="text" name="material_composition" class="form-control" value="{{$product->material_composition??''}}"/>
                     </div>
                 </div>
                 <div>

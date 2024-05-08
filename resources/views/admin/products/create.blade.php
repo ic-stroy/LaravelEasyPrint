@@ -79,10 +79,6 @@
                         <label class="form-label">{{translate('Material composition')}}</label>
                         <input type="text" name="material_composition" class="form-control" value="{{old('material_composition')}}"/>
                     </div>
-                    <div class="mb-3 col-6">
-                        <label class="form-label">{{translate('Material')}}</label>
-                        <input type="text" name="material" class="form-control" value="{{old('material')}}"/>
-                    </div>
                 </div>
                 <div>
                     <button type="submit" class="btn btn-primary waves-effect waves-light">{{translate('Create')}}</button>

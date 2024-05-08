@@ -55,6 +55,8 @@ class ProductsController extends Controller
         $model->status = $request->status;
         $model->price = $request->price;
         $model->description = $request->description;
+        $model->manufacturer_country = $request->manufacturer_country;
+        $model->material_composition = $request->material_composition;
         $images = $request->file('images');
         $model->images = $this->imageSave($model, $images, 'store');
         $model->save();
@@ -175,6 +177,8 @@ class ProductsController extends Controller
         $model->status = $request->status;
         $model->price = $request->price;
         $model->description = $request->description;
+        $model->manufacturer_country = $request->manufacturer_country;
+        $model->material_composition = $request->material_composition;
         $images = $request->file('images');
         $model->images = $this->imageSave($model, $images, 'update');
         $model->save();
