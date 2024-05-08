@@ -22,6 +22,10 @@ body {
 .notify-item{
     height: 58px;
 }
+.img-fluid{
+    height: 444px;
+    width: auto;
+}
 .delete-datas{
     border-radius: 8px;
 }

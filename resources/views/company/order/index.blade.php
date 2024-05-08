@@ -348,6 +348,9 @@
                                                         @elseif($order['order']->payment_method == \App\Constants::BANK_CARD)
                                                             <span class="badge bg-info">{{translate('bank card')}}</span>
                                                         @endif
+                                                        @if($order['order'])
+                                                            <span style="font-size:12px; opacity: 0.34">{{translate('Created at')}} {{$order['order']->updated_at}}</span>
+                                                        @endif
                                                     </h4>
                                                     @if($order['performed_company_product_price'] != 0)
                                                         <hr style="margin:4px">
@@ -367,6 +370,7 @@
                                                                 @endif
                                                             @endif
                                                         </h4>
+                                                        <span style="font-size:12px; opacity: 0.34">{{translate('Updated at')}} {{$order['order']->updated_at}}</span>
                                                     @elseif($order['order']->status == \App\Constants::CANCELLED)
                                                         <hr style="margin:4px">
                                                         <b style="line-height: 2; font-size: 16px; color: red">{{translate('You cancelled all products !')}}</b>
