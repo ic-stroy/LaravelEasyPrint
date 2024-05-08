@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\CategoryTranslations;
+use App\Models\Language;
 use Illuminate\Http\Request;
 
 class SubSubCategoryController extends Controller
@@ -39,6 +41,14 @@ class SubSubCategoryController extends Controller
         $model->parent_id = $request->subcategory_id;
         $model->step = 2;
         $model->save();
+        foreach (Language::all() as $language) {
+            $category_translations = CategoryTranslations::firstOrNew(['lang' => $language->code, 'category_id' => $model->id]);
+            $category_translations->lang = $language->code;
+            $category_translations->name = $model->name;
+            $category_translations->category_id = $model->id;
+            $category_translations->save();
+        }
+
         return redirect()->route('subsubcategory.subsubcategory', $request->subcategory_id)->with('status', translate('Successfully created'));
     }
 
@@ -71,6 +81,15 @@ class SubSubCategoryController extends Controller
     public function update(Request $request, string $id)
     {
         $model = Category::where('step', 2)->find($id);
+        if($request->name != $model->name){
+            foreach (Language::all() as $language) {
+                $category_translations = CategoryTranslations::firstOrNew(['lang' => $language->code, 'category_id' => $model->id]);
+                $category_translations->lang = $language->code;
+                $category_translations->name = $request->name;
+                $category_translations->category_id = $model->id;
+                $category_translations->save();
+            }
+        }
         $model->name = $request->name;
         $model->parent_id = $request->subcategory_id;
         $model->step = 2;

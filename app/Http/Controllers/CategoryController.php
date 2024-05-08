@@ -75,7 +75,7 @@ class CategoryController extends Controller
             foreach (Language::all() as $language) {
                 $category_translations = CategoryTranslations::firstOrNew(['lang' => $language->code, 'category_id' => $model->id]);
                 $category_translations->lang = $language->code;
-                $category_translations->name = $model->name;
+                $category_translations->name = $request->name;
                 $category_translations->category_id = $model->id;
                 $category_translations->save();
             }

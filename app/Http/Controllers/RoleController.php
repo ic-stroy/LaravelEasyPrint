@@ -68,6 +68,15 @@ class RoleController extends Controller
     public function update(Request $request, string $id)
     {
         $model = Role::find($id);
+        if($request->name != $model->name) {
+            foreach (Language::all() as $language) {
+                $role_translations = RoleTranslations::firstOrNew(['lang' => $language->code, 'role_id' => $model->id]);
+                $role_translations->lang = $language->code;
+                $role_translations->name = $request->name;
+                $role_translations->role_id = $model->id;
+                $role_translations->save();
+            }
+        }
         $model->name = $request->name;
         $model->save();
         return redirect()->route('role.index')->with('status', translate('Successfully updated'));

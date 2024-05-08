@@ -97,7 +97,7 @@ class CompanyController extends Controller
             foreach (Language::all() as $language) {
                 $company_translations = CompanyTranslations::firstOrNew(['lang' => $language->code, 'company_id' => $model->id]);
                 $company_translations->lang = $language->code;
-                $company_translations->name = $model->name;
+                $company_translations->name = $request->name;
                 $company_translations->company_id = $model->id;
                 $company_translations->save();
             }

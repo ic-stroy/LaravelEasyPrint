@@ -184,7 +184,7 @@ class ProductsController extends Controller
             foreach (Language::all() as $language) {
                 $product_translations = ProductTranslations::firstOrNew(['lang' => $language->code, 'product_id' => $model->id]);
                 $product_translations->lang = $language->code;
-                $product_translations->name = $model->name;
+                $product_translations->name = $request->name;
                 $product_translations->product_id = $model->id;
                 $product_translations->save();
             }

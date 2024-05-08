@@ -95,7 +95,7 @@ class WarehousePrintController extends Controller
             foreach (Language::all() as $language) {
                 $warehouse_translations = WarehouseTranslations::where(['lang' => $language->code, 'warehouse_id' => $model->id])->firstOrNew();
                 $warehouse_translations->lang = $language->code;
-                $warehouse_translations->name = $model->name;
+                $warehouse_translations->name = $request->name;
                 $warehouse_translations->warehouse_id = $model->id;
                 $warehouse_translations->save();
             }
