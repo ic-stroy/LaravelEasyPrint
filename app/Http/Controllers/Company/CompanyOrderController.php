@@ -98,8 +98,8 @@ class CompanyOrderController extends Controller
                         $images = [];
                         $warehouse__ = $order_detail->warehouse;
                         if($warehouse__->type == Constants::WAREHOUSE_TYPE){
-                            if (count($this->getImages($warehouse__, 'warehouse'))>0) {
-                                $images = $this->getImages($warehouse__, 'warehouse');
+                            if (count($this->getImages($warehouse__, 'warehouses'))>0) {
+                                $images = $this->getImages($warehouse__, 'warehouses');
                             } else {
                                 $parentProduct = Products::find($warehouse__->product_id);
                                 if($parentProduct){
@@ -122,27 +122,6 @@ class CompanyOrderController extends Controller
                                 $images[] = asset("/storage/warehouse/$warehouse__->image_back");
                             }
                         }
-
-
-//                        if ($warehouse__->images && $warehouse__->images != '[]') {
-//                            $images_ = json_decode($warehouse__->images);
-//                            $images = [];
-//                            foreach ($images_ as $key => $image_) {
-//                                $images[] = asset('storage/warehouses/' . $image_);
-//                            }
-//                        } elseif (!empty($warehouse__->product)) {
-//                            if ($warehouse__->product->images) {
-//                                $images_ = json_decode($warehouse__->product->images);
-//                            } else {
-//                                $images_ = [];
-//                            }
-//                            $images = [];
-//                            foreach ($images_ as $key => $image_) {
-//                                $images[] = asset('storage/products/' . $image_);
-//                            }
-//                        } else {
-//                            $images = [];
-//                        }
 
                     }else{
                         $images = [];
