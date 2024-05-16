@@ -415,7 +415,16 @@
                                                             </span>
                                                             @if(!empty($order['order']->address))
                                                                 <span style="font-size:12px; opacity: 0.64">{{translate('Address')}}
-                                                                    <span style="font-size:12px; opacity: 0.44"> {{$order['order']->address->name}}</span>
+                                                                    <span style="font-size:12px; opacity: 0.44">
+                                                                        @if(!empty($order['order']->address->cities))
+                                                                            @if(!empty($order['order']->address->cities->region))
+                                                                                {{$order['order']->address->cities->region->name}}
+                                                                            @endif
+                                                                            {{$order['order']->address->cities->name}}
+                                                                        @endif
+                                                                        {{$order['order']->address->name}}
+                                                                    </span>
+                                                                    <i class="mdi mdi-map-marker-outline"></i>
                                                                 </span>
                                                                 <span style="font-size:12px; opacity: 0.64">{{translate('Postcode')}}
                                                                     <span style="font-size:12px; opacity: 0.44"> {{$order['order']->address->postcode}}</span>
