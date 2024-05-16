@@ -100,7 +100,6 @@ Auth::routes();
             Route::delete('/language/delete/{id}', [LanguageController::class, 'languageDestroy'])->name('language.destroy');
             Route::post('/language/update/value', [LanguageController::class, 'updateValue'])->name('languages.update_value');
         });
-
      });
     Route::group(['middleware'=>'company_auth'], function (){
         Route::group(['prefix' => 'companies'], function () {
@@ -129,6 +128,7 @@ Auth::routes();
             Route::resource('company_coupons', CompanyCouponController::class);
             Route::group(['prefix' => 'company-order'], function () {
                 Route::get('/index', [CompanyOrderController::class, 'index'])->name('company_order.index');
+                Route::get('/finished-all-orders', [CompanyOrderController::class, 'finishedAllOrders'])->name('company_order.finished_all_orders');
                 Route::post('/accepted-by-recipient/{id}', [CompanyOrderController::class, 'acceptedByRecipient'])->name('accepted_by_recipient');
                 Route::post('/cancell-accepted-by-recipient/{id}', [CompanyOrderController::class, 'cancellAcceptedByRecipient'])->name('cancell_accepted_by_recipient');
 //                Route::get('/category', [CompanyOrderController::class, 'category'])->name('company_order.category');

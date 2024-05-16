@@ -21,8 +21,8 @@ class CompanyOrderController extends Controller
         $user = Auth::user();
         $orderedOrders_ = Order::where('status', Constants::ORDERED)->orderBy('updated_at', 'desc')->get();
         $performedOrders_ = Order::where('status', Constants::PERFORMED)->where('company_id', $user->company_id)->orderBy('updated_at', 'desc')->get();
-        $cancelledOrders_ = Order::where('status', Constants::CANCELLED)->where('company_id', $user->company_id)->orderBy('updated_at', 'desc')->get();
-        $acceptedByRecipientOrders_ = Order::where('status', Constants::ACCEPTED_BY_RECIPIENT)->where('company_id', $user->company_id)->orderBy('created_at', 'desc')->get();
+        $cancelledOrders_ = Order::where('status', Constants::CANCELLED)->where('company_id', $user->company_id)->orderBy('updated_at', 'desc')->limit(101)->get();
+        $acceptedByRecipientOrders_ = Order::where('status', Constants::ACCEPTED_BY_RECIPIENT)->where('company_id', $user->company_id)->orderBy('created_at', 'desc')->limit(101)->get();
         $orderedOrders = $this->getOrders($orderedOrders_, $user);
         $performedOrders = $this->getOrders($performedOrders_, $user);
         $cancelledOrders = $this->getOrders($cancelledOrders_, $user);
@@ -39,10 +39,25 @@ class CompanyOrderController extends Controller
         ]);
     }
 
+    public function finishedAllOrders(){
+        $user = Auth::user();
+        $cancelledOrders_ = Order::where('status', Constants::CANCELLED)->where('company_id', $user->company_id)->orderBy('updated_at', 'desc')->get();
+        $acceptedByRecipientOrders_ = Order::where('status', Constants::ACCEPTED_BY_RECIPIENT)->where('company_id', $user->company_id)->orderBy('created_at', 'desc')->get();
+        $acceptedByRecipientOrders = $this->getOrders($acceptedByRecipientOrders_, $user);
+        $cancelledOrders = $this->getOrders($cancelledOrders_, $user);
+        $all_orders = [
+            'cancelledOrders'=>$cancelledOrders,
+            'acceptedByRecipientOrders'=>$acceptedByRecipientOrders,
+        ];
+        return view('company.order.finished_all_orders', [
+            'all_orders'=>$all_orders,
+            'user'=>$user
+        ]);
+    }
+
     public function getOrders($orders, $user){
         $order_data = [];
         foreach($orders as $order){
-//        $not_read_order_quantity = OrderDetail::where('order_id', $id)->where('is_read', 0)->count();
             $user_name = '';
             if(!empty($order->user->personalInfo)){
                 $first_name = isset($order->user->personalInfo->first_name)?$order->user->personalInfo->first_name.' ':'';

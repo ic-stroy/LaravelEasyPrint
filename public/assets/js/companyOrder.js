@@ -8,7 +8,7 @@ let carousel_product_images = document.getElementById('carousel_product_images')
 let carousel_product_upload_images = document.getElementById('carousel_product_upload_images')
 let product_image = document.getElementById('product_image')
 let cancell_order = document.getElementById('cancell_order')
-let perform_order = document.getElementById('perform_order')
+let perform_order = document.getElementById('perform_order_')
 let accepted_by_recipient_order = document.getElementById('accepted_by_recipient_order')
 let cancell_accepted_by_recipient_order = document.getElementById('cancell_accepted_by_recipient_order')
 
@@ -39,10 +39,18 @@ function accepting_order(quantity, remaining_quantity_, color_name, size_name, p
             "<img height='64px' src='"+image_1+"'>"
     }
 
-    perform_order.setAttribute("action", url)
+    if(url){
+        perform_order.setAttribute("action", url)
+    }else{
+        perform_order.setAttribute("action", "")
+    }
 }
 function accepted_by_recipient(url){
-    accepted_by_recipient_order.setAttribute("action", url)
+    if(url){
+        accepted_by_recipient_order.setAttribute("action", url)
+    }else{
+        accepted_by_recipient_order.setAttribute("action", "")
+    }
 }
 function cancell_accepted_by_recipient(url){
     cancell_accepted_by_recipient_order.setAttribute("action", url)
