@@ -93,6 +93,10 @@
         .width_auto{
             width: auto !important;
         }
+        .hr_no_margin{
+            margin: 0px !important;
+        }
+
     </style>
     @if(!empty($all_orders['orderedOrders']) || !empty($all_orders['performedOrders']) || !empty($all_orders['cancelledOrders']) || !empty($all_orders['acceptedByRecipientOrders']))
     <div id="success-alert-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -378,7 +382,7 @@
                                                             <b>{{count($order['order']->orderDetail)}}</b>
                                                             {{translate('items in order.')}}
                                                         </h4>
-                                                        <hr style="margin:4px">
+                                                        <hr>
                                                     @endif
                                                     <h4 style="line-height: 2; font-size: 16px">
                                                         @if($order['user_name']){{$order['user_name']}}@endif
@@ -407,7 +411,7 @@
                                                         @endif
                                                         @if($order['order'])
                                                             <span style="font-size:12px; opacity: 0.64">{{translate('Created at')}}
-                                                                <span style="font-size:12px; opacity: 0.34">{{$order['order']->updated_at}}</span>
+                                                                <span style="font-size:12px; opacity: 0.34">{{$order['order']->created_at}}</span>
                                                             </span>
                                                             @if(!empty($order['order']->address))
                                                                 <span style="font-size:12px; opacity: 0.64">{{translate('Address')}}
@@ -420,7 +424,7 @@
                                                         @endif
                                                     </h4>
                                                     @if($order['performed_company_product_price'] != 0)
-                                                        <hr style="margin:4px">
+                                                        <hr>
                                                         <h4 style="line-height: 2; font-size: 16px">
                                                             <span style="color: #10C469">{{translate('Performed')}}</span>
                                                             @if($order['performed_product_types'] != 0)
@@ -439,7 +443,7 @@
                                                         </h4>
                                                         <span style="font-size:12px; opacity: 0.34">{{translate('Updated at')}} {{$order['order']->updated_at}}</span>
                                                     @elseif($order['order']->status == \App\Constants::CANCELLED)
-                                                        <hr style="margin:4px">
+                                                        <hr>
                                                         <b style="line-height: 2; font-size: 16px; color: red">{{translate('You cancelled all products !')}}</b>
                                                     @endif
                                                 </div>
@@ -488,12 +492,12 @@
                                         </a>
                                     </span>
                                         </div>
-                                        <div id="collapseNine{{$i}}" class="collapse fade"
+                                        <div id="collapseNine{{$i}}" class="collapse fade product_card_"
                                              aria-labelledby="headingFour"
                                              data-bs-parent="#custom-accordion-one">
                                             @foreach($order['products_with_anime'] as $products_with_anime)
-                                                <hr>
-                                                <div class="row">
+                                                <hr class="hr_no_margin">
+                                                <div class="row" style="margin:20px 0px">
                                                     <div class="col-2 order_product_images">
                                                         <img  onclick='getImages("{{implode(" ", $products_with_anime['images'])}}")' data-bs-toggle="modal" data-bs-target="#carousel-modal" src="{{!empty($products_with_anime['images'])?$products_with_anime['images'][0]:asset('icon/no_photo.jpg')}}" alt="" height="144px">
                                                     </div>
@@ -667,8 +671,8 @@
                                                         $product_name = $products[0]->warehouse->product->name??'';
                                                     }
                                                 @endphp
-                                                <hr>
-                                                <div class="row">
+                                                <hr class="hr_no_margin">
+                                                <div class="row" style="margin:20px 0px">
                                                     <div class="col-3 order_product_images">
                                                         <img onclick='getImages("{{implode(" ", $products['images'])}}")' data-bs-toggle="modal" data-bs-target="#carousel-modal" src="{{!empty($products['images'])?$products['images'][0]:asset('icon/no_photo.jpg')}}" alt="" height="144px">
                                                     </div>

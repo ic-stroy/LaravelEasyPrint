@@ -1464,6 +1464,8 @@ class OrderController extends Controller
                     Notification::send($users, new OrderNotification($orderDetail));
                 }
             }
+            $order->created_at = date('Y-m-d h:i:s');
+            $order->save();
         }
 
         $message = translate_api('Success', $language);
