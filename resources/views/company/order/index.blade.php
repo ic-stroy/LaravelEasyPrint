@@ -830,7 +830,6 @@
                                 </div>
                             </td>
                         </tr>
-                        <br>
                     @endforeach
                     </tbody>
                     @switch($key_order)
