@@ -148,7 +148,6 @@ class CompanyOrderController extends Controller
                     $product_types = $product_types + 1;
                     $order_has = true;
                     $uploads=Uploads::where('relation_type', Constants::PRODUCT)->where('relation_id', $order_detail->product_id)->get();
-                    dd($uploads);
                     if($order_detail->status == Constants::ORDER_DETAIL_PERFORMED) {
                         $performed_product_types = $performed_product_types + 1;
                         $performed_company_product_price = $performed_company_product_price + $order_detail->price * $order_detail->quantity - $order_detail->discount_price;
@@ -211,9 +210,11 @@ class CompanyOrderController extends Controller
                         $images = [$order_detail_image_front??'no', $order_detail_image_back??'no'];
                     }
                     $product_discount_withouth_expire = !empty($order_detail->product->discount_whithout_expire)?$order_detail->product->discount_whithout_expire->percent:0;
-
                     $products_with_anime[] = [$order_detail, $order_detail_all_price, $products_with_anime_uploads,
                         'images'=>$images, 'product_discount_withouth_expire'=>$product_discount_withouth_expire];
+
+                    dd($uploads, $products_with_anime);
+
                 }
             }
             if((int)$order->coupon_price>0){
