@@ -89,7 +89,7 @@ class CategoryController extends Controller
             }
 
             $products = Products::select('id', 'name', 'category_id', 'images', 'material_id', 'manufacturer_country', 'material_composition', 'price', 'description')->with('discount')->whereIn('category_id', $categories_id)->get();
-            $productsId = Products::where('category_id', $category->id)->pluck('id')->all();
+            $productsId = Products::whereIn('category_id', $categories_id)->pluck('id')->all();
         } else {
             $subCategory = [];
             $products = [];
