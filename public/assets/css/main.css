@@ -25,6 +25,7 @@ body {
 .img-fluid{
     height: 444px;
     width: auto;
+    object-fit: contain;
 }
 .delete-datas{
     border-radius: 8px;
