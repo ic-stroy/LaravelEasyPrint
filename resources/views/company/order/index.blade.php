@@ -512,7 +512,6 @@
                                                     <div class="col-2 order_product_images">
                                                         <img  onclick='getImages("{{implode(" ", $products_with_anime['images'])}}")' data-bs-toggle="modal" data-bs-target="#carousel-modal" src="{{!empty($products_with_anime['images'])?$products_with_anime['images'][0]:asset('icon/no_photo.jpg')}}" alt="" height="144px">
                                                     </div>
-                                                    @dd($products_with_anime[2])
                                                     @if(!empty($products_with_anime[2]))
                                                         <div class="col-2 order_product_images">
                                                             <img onclick='getUploads("{{implode(" ", $products_with_anime[2])}}")' data-bs-toggle="modal" data-bs-target="#carousel-upload-modal" src="{{!empty($products_with_anime[2])?$products_with_anime[2][0]:asset('icon/no_photo.jpg')}}" alt="" height="144px">
