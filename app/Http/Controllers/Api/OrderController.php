@@ -202,7 +202,7 @@ class OrderController extends Controller
                     $uploads = new Uploads();
                     $uploads->image = $this->saveImage($image_print, 'print');
                     $uploads->relation_type = Constants::PRODUCT;
-                    $uploads->relation_id = $order_detail->product_id;
+                    $uploads->relation_id = $order_detail->id;
                     $uploads->save();
                 }
             }
