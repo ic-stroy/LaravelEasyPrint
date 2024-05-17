@@ -198,11 +198,11 @@ class OrderController extends Controller
             $order_detail->discount_price = $request_order_discount_price;
             $order_detail->save();
             if ($images_print) {
-                foreach ($images_print as $image_print) {
+                foreach ($images_print as $image_print){
                     $uploads = new Uploads();
                     $uploads->image = $this->saveImage($image_print, 'print');
                     $uploads->relation_type = Constants::PRODUCT;
-                    $uploads->relation_id = $request->product_id;
+                    $uploads->relation_id = $order_detail->product_id;
                     $uploads->save();
                 }
             }
