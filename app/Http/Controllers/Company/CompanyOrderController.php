@@ -144,11 +144,11 @@ class CompanyOrderController extends Controller
                     $products[] = [$order_detail, $order_detail_all_price, 'images'=>$images,
                         'discount_withouth_expire'=>$discount_withouth_expire, 'product_discount_withouth_expire'=>$product_discount_withouth_expire
                     ];
-                }elseif($order_detail->product_id){
+                }elseif(!$order_detail->warehouse_id && $order_detail->product_id){
                     $product_types = $product_types + 1;
                     $order_has = true;
                     $uploads=Uploads::where('relation_type', Constants::PRODUCT)->where('relation_id', $order_detail->product_id)->get();
-
+                    dd($uploads);
                     if($order_detail->status == Constants::ORDER_DETAIL_PERFORMED) {
                         $performed_product_types = $performed_product_types + 1;
                         $performed_company_product_price = $performed_company_product_price + $order_detail->price * $order_detail->quantity - $order_detail->discount_price;
