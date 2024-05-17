@@ -125,7 +125,7 @@
                             @csrf
                             @method('POST')
                             <button type="button" class="btn btn-danger my-2" data-bs-dismiss="modal"> {{ translate('No')}}</button>
-                            <button type="submit" class="btn btn-success my-2"> {{ translate('Yes')}} </button>
+                            <button type="submit" class="btn btn-success my-2" id="perform_order_button"> {{ translate('Yes')}} </button>
                         </form>
                     </div>
                 </div>
@@ -883,6 +883,7 @@
         let order_color_text = "{{translate('Order color')}}"
         let order_quantity_text = "{{translate('Order quantity')}}"
         let remaining_in_warehouse_text = "{{translate('Remaining in warehouse')}}"
+        let out_of_stock_text = "{{translate('Out of stock')}}"
 
         let error_status = "{{session('error')}}"
         let performed_status = "{{session('performed')}}"
