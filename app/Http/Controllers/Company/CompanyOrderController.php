@@ -160,6 +160,7 @@ class CompanyOrderController extends Controller
                     $company_discount_price = $company_discount_price + (int)$order_detail->discount_price;
 
                     foreach ($uploads as $upload){
+                        @dd($upload);
                         if (!$upload->image) {
                             $upload->image = 'no';
                         }
