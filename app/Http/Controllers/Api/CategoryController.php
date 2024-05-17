@@ -51,7 +51,8 @@ class CategoryController extends Controller
         $products_data = [];
         $category_ = [];
         $subCategory = [];
-        $productId = [];
+        $categories_id = [];
+        $productsId = [];
         $category_active = null;
         if ($category) {
             $translate_category_name=table_translate($category,'category', $language);
@@ -62,12 +63,14 @@ class CategoryController extends Controller
                     'id' => $category->id,
                     'name' => $translate_category_name,
                 ];
+                $categories_id[] = $category->id;
                 foreach($category->subcategory as $sub_category){
                     $translate_sub_category_name=table_translate($sub_category,'category', $language);
                     $subCategory[] = [
                         'id' => $sub_category->id,
                         'name' => $translate_sub_category_name,
                     ];
+                    $categories_id[] = $sub_category->id;
                 }
             } elseif ($category->step == 1) {
                 $category_active = false;
@@ -76,15 +79,16 @@ class CategoryController extends Controller
                     'id' => $category->category->id,
                     'name' => $translate_category_name,
                 ];
-
+                $categories_id[] = $category->category->id;
                 $translate_sub_category_name=table_translate($category,'category',$language);
                 $subCategory[] = [
                     'id' => $category->id,
                     'name' => $translate_sub_category_name,
                 ];
+                $categories_id[] = $category->id;
             }
 
-            $products = Products::select('id', 'name', 'category_id', 'images', 'material_id', 'manufacturer_country', 'material_composition', 'price', 'description')->with('discount')->where('category_id', $category->id)->get();
+            $products = Products::select('id', 'name', 'category_id', 'images', 'material_id', 'manufacturer_country', 'material_composition', 'price', 'description')->with('discount')->whereIn('category_id', $categories_id)->get();
             $productsId = Products::where('category_id', $category->id)->pluck('id')->all();
         } else {
             $subCategory = [];
