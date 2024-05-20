@@ -83,6 +83,7 @@ function accepting_anime_order(quantity, product_name_, size_name, color_name, i
         product_image.innerHTML = "<img height='64px' src='"+images_0+"'>" +
             "<img height='64px' src='"+images_1+"'>"
     }
+    perform_order_button.disabled = false
 
     perform_order.setAttribute("action", url)
 }
