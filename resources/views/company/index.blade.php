@@ -98,10 +98,10 @@
                             </ul>
                             <ul class="list-inline chart-detail-list mb-0">
                                 <li class="list-inline-item">
-                                    <h5 style="color: #FF0000;"><i class="fa fa-circle me-1"></i>{{translate('Completed orders')}}</h5>
+                                    <h5 style="color: #00ADD7;"><i class="fa fa-circle me-1"></i>{{translate('Completed orders')}}</h5>
                                 </li>
                                 <li class="list-inline-item">
-                                    <h5 style="color: #00ADD7;"><i class="fa fa-circle me-1"></i>{{translate('Cancelled orders')}}</h5>
+                                    <h5 style="color: #FF0000;"><i class="fa fa-circle me-1"></i>{{translate('Cancelled orders')}}</h5>
                                 </li>
                             </ul>
                         </div>
@@ -126,10 +126,10 @@
                             </ul>
                             <ul class="list-inline chart-detail-list mb-0">
                                 <li class="list-inline-item">
-                                    <h5 style="color: #FF0000;"><i class="fa fa-circle me-1"></i>{{translate('Completed orders')}}</h5>
+                                    <h5 style="color: #00ADD7;"><i class="fa fa-circle me-1"></i>{{translate('Completed orders')}}</h5>
                                 </li>
                                 <li class="list-inline-item">
-                                    <h5 style="color: #00ADD7;"><i class="fa fa-circle me-1"></i>{{translate('Cancelled orders')}}</h5>
+                                    <h5 style="color: #FF0000;"><i class="fa fa-circle me-1"></i>{{translate('Cancelled orders')}}</h5>
                                 </li>
                             </ul>
                         </div>
@@ -152,10 +152,10 @@
                             </ul>
                             <ul class="list-inline chart-detail-list mb-0">
                                 <li class="list-inline-item">
-                                    <h5 style="color: #FF0000;"><i class="fa fa-circle me-1"></i>{{translate('Completed orders')}}</h5>
+                                    <h5 style="color: #00ADD7;"><i class="fa fa-circle me-1"></i>{{translate('Completed orders')}}</h5>
                                 </li>
                                 <li class="list-inline-item">
-                                    <h5 style="color: #00ADD7;"><i class="fa fa-circle me-1"></i>{{translate('Cancelled orders')}}</h5>
+                                    <h5 style="color: #FF0000"><i class="fa fa-circle me-1"></i>{{translate('Cancelled orders')}}</h5>
                                 </li>
                             </ul>
                         </div>
