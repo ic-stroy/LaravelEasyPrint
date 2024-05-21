@@ -27,10 +27,10 @@
         .order_content{
             display: flex;
             flex-direction: column;
-            color:rgb(0, 0, 0, 0.7);
+            color:#98A6AD;
         }
         .color_order{
-            color:rgb(0, 0, 0, 0.7);
+            color:#98A6AD;
         }
         .white_text{
             color:white
