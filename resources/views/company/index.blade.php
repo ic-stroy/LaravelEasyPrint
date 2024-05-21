@@ -14,6 +14,15 @@
         .stuffs_menu{
             height: 150px;
         }
+        .col-xl-4 .card{
+            height: 100%;
+        }
+        .card-body .widget-chart{
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
     </style>
     <div class="container-fluid">
         <div class="row" style="margin-bottom: 26px">
