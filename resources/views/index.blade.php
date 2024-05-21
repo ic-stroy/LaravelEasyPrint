@@ -24,10 +24,10 @@
                         <div>
                             <h1>{{$ordered_orders}}</h1>
                         </div>
-                        <div>
-                            <span>{{translate('Active')}}: 14</span> <br>
-                            <span>{{translate('Not active')}}: 24</span>
-                        </div>
+{{--                        <div>--}}
+{{--                            <span>{{translate('Active')}}: 14</span> <br>--}}
+{{--                            <span>{{translate('Not active')}}: 24</span>--}}
+{{--                        </div>--}}
                     </div>
                 </div>
             </div><!-- end col -->
@@ -39,10 +39,10 @@
                         <div>
                             <h1>{{$performed_orders}}</h1>
                         </div>
-                        <div>
-                            <span>{{translate('Active')}}: 14</span> <br>
-                            <span>{{translate('Not active')}}: 24</span>
-                        </div>
+{{--                        <div>--}}
+{{--                            <span>{{translate('Active')}}: 14</span> <br>--}}
+{{--                            <span>{{translate('Not active')}}: 24</span>--}}
+{{--                        </div>--}}
                     </div>
                 </div>
             </div><!-- end col -->
@@ -55,10 +55,10 @@
                         <div>
                             <h1>{{$cancelled_orders}}</h1>
                         </div>
-                        <div>
-                            <span>{{translate('Active')}}: 14</span> <br>
-                            <span>{{translate('Not active')}}: 24</span>
-                        </div>
+{{--                        <div>--}}
+{{--                            <span>{{translate('Active')}}: 14</span> <br>--}}
+{{--                            <span>{{translate('Not active')}}: 24</span>--}}
+{{--                        </div>--}}
                     </div>
                 </div>
             </div><!-- end col -->
@@ -70,10 +70,10 @@
                         <div>
                             <h1>{{$accepted_orders}}</h1>
                         </div>
-                        <div>
-                            <span>{{translate('Active')}}: 14</span> <br>
-                            <span>{{translate('Not active')}}: 24</span>
-                        </div>
+{{--                        <div>--}}
+{{--                            <span>{{translate('Active')}}: 14</span> <br>--}}
+{{--                            <span>{{translate('Not active')}}: 24</span>--}}
+{{--                        </div>--}}
                     </div>
                 </div>
 
@@ -98,10 +98,10 @@
                             </ul>
                             <ul class="list-inline chart-detail-list mb-0">
                                 <li class="list-inline-item">
-                                    <h5 style="color: #00ADD7;"><i class="fa fa-circle me-1"></i>{{translate('Completed orders')}}</h5>
+                                    <h5 style="color: #FF0000;"><i class="fa fa-circle me-1"></i>{{translate('Completed orders')}}</h5>
                                 </li>
                                 <li class="list-inline-item">
-                                    <h5 style="color: #FF0000;"><i class="fa fa-circle me-1"></i>{{translate('Cancelled orders')}}</h5>
+                                    <h5 style="color: #00ADD7;"><i class="fa fa-circle me-1"></i>{{translate('Cancelled orders')}}</h5>
                                 </li>
                             </ul>
                         </div>
@@ -126,10 +126,10 @@
                             </ul>
                             <ul class="list-inline chart-detail-list mb-0">
                                 <li class="list-inline-item">
-                                    <h5 style="color: #00ADD7;"><i class="fa fa-circle me-1"></i>{{translate('Completed orders')}}</h5>
+                                    <h5 style="color: #FF0000;"><i class="fa fa-circle me-1"></i>{{translate('Completed orders')}}</h5>
                                 </li>
                                 <li class="list-inline-item">
-                                    <h5 style="color: #FF0000;"><i class="fa fa-circle me-1"></i>{{translate('Cancelled orders')}}</h5>
+                                    <h5 style="color: #00ADD7;"><i class="fa fa-circle me-1"></i>{{translate('Cancelled orders')}}</h5>
                                 </li>
                             </ul>
                         </div>
@@ -152,10 +152,10 @@
                             </ul>
                             <ul class="list-inline chart-detail-list mb-0">
                                 <li class="list-inline-item">
-                                    <h5 style="color: #00ADD7;"><i class="fa fa-circle me-1"></i>{{translate('Completed orders')}}</h5>
+                                    <h5 style="color: #FF0000;"><i class="fa fa-circle me-1"></i>{{translate('Completed orders')}}</h5>
                                 </li>
                                 <li class="list-inline-item">
-                                    <h5 style="color: #FF0000;"><i class="fa fa-circle me-1"></i>{{translate('Cancelled orders')}}</h5>
+                                    <h5 style="color: #00ADD7;"><i class="fa fa-circle me-1"></i>{{translate('Cancelled orders')}}</h5>
                                 </li>
                             </ul>
                         </div>
