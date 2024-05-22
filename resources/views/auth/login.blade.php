@@ -61,7 +61,8 @@
             border-radius: 20px;
             display: flex;
             justify-content: center;
-            backdrop-filter: blur(7px);
+            backdrop-filter: blur(2px);
+            background-color: #ffffff12;
             padding: 34px 0px;
             border: solid 3px rgb(0, 0, 0, 0.04);
         }
