@@ -10,23 +10,22 @@
         }
         .login_page{
             background-color: #E6F3FFBF;
-            /*height:100vh;*/
+            height:100vh;
         }
         .correct_img img {
-            height: 54px;
+            height: 38px;
             width: 47%;
         }
         .login_page_image{
-            background-image: url("{{asset('/assets/images/logineasyprint.png')}}");
-            background-size: contain;
+            background-image: url("{{asset('/assets/images/login_background.png')}}");
+            background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
-            height: 94vh;
+            height: 100%;
             width: 100%;
         }
         .login_page input{
             border-radius: 8px !important;
-            line-height: 2.4;
             background-color: #F4F4F6;
             border: 0px;
         }
@@ -42,24 +41,62 @@
             border: 0px;
             color: white;
         }
+
+        @media screen and (max-width: 1000px) {
+            .login_modal_background {
+                width: 480px;
+            }
+            .login_modal{
+                width: 420px;
+            }
+        }
+        @media screen and (min-width: 1001px) {
+
+            .login_modal_background {
+                width: 690px;
+            }
+            .login_modal{
+                width: 503px;
+            }
+        }
+        .login_modal_background{
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            backdrop-filter: blur(20px);
+            padding: 34px 0px;
+            border: solid 2px rgb(0, 0, 0, 0.2);
+        }
+        .login_modal{
+            color: white;
+        }
+        .color_white{
+            color: white !important;
+        }
+        .sign_in_button{
+            background-color: #003465;
+            border: 0px;
+            border-radius: 2px;
+            width: 100%;
+            color: white;
+            height: 38px;
+        }
+        .form-check-input:checked{
+            background-color: #71B6F9 !important;
+        }
     </style>
-    <div class="container-fluid login_page">
-        <div class="row">
-            <div class="col-6" style="height: 100vh;">
-                <div class="login_page_image">
-
+    <div class="login_page">
+        <div class="login_page_image d-flex flex-column justify-content-center align-items-center">
+            @if (session('status'))
+                <div class="alert alert-danger">
+                    {{session('status')}}
                 </div>
-            </div>
-            <div class="col-6 d-flex flex-column justify-content-center align-items-center" style="border-radius: 24px 0px 0px 24px; background-color: white; height: 100vh">
-
-                @if (session('status'))
-                    <div class="alert alert-danger">
-                        {{session('status')}}
-                    </div>
-                @endif
-                    <div class="p-4" style="width: 94%">
-                        <div class="text-center mb-4">
-                            <h4 class="text-uppercase mt-0">Войти</h4>
+            @endif
+                <div class="login_modal_background">
+                    <div class="login_modal">
+                        <img src="{{asset('assets/images/easyprint.svg')}}" alt="">
+                        <div class="text-start m-3">
+                            <h3 class="mt-0 color_white">Войти</h3>
                         </div>
 
                         <form action="{{route('login')}}" method="POST">
@@ -70,8 +107,8 @@
                             </div>
                             @error('email')
                             <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
+                            <strong>{{ $message }}</strong>
+                        </span>
                             @enderror
                             <div class="mb-3">
                                 <label for="password" class="form-label">Пароль</label>
@@ -79,8 +116,8 @@
                             </div>
                             @error('password')
                             <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
+                            <strong>{{ $message }}</strong>
+                        </span>
                             @enderror
                             <div class="mb-3">
                                 <div class="form-check d-flex correct_img justify-content-between" style="padding-left:0px;">
@@ -93,34 +130,23 @@
                             </div>
                             @error('captcha')
                             <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
+                            <strong>{{ $message }}</strong>
+                        </span>
                             @enderror
-                            <div class="mb-3">
+                            <div class="mb-3 d-flex justify-content-between">
+                                <a href="{{ route('password.request') }}" class="text-muted ms-1 color_white"><i class="fa fa-lock me-1"></i>Забыли пароль?</a>
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="checkbox-signin" checked>
                                     <label class="form-check-label" for="checkbox-signin">Запомнить меня</label>
                                 </div>
                             </div>
-
-                            <div class="mb-3 d-grid d-flex justify-content-center">
-                                <button class="login_button" type="submit"> Авторизоваться </button>
-                            </div>
+                            <button class="sign_in_button">Sign in</button>
                         </form>
+                    </div>
 
-                    </div> <!-- end card-body -->
-                <!-- end card -->
 
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <p> <a href="{{ route('password.request') }}" class="text-muted ms-1 color_black"><i class="fa fa-lock me-1 color_black"></i>Забыли пароль?</a></p>
-                        {{--                            <p class="text-muted color_black">Don't have an account? <a href="" class="text-dark ms-1"><b>Sign Up</b></a></p>--}}
-                    </div> <!-- end col -->
-                </div>
-                <!-- end row -->
-
-            </div> <!-- end col -->
-        </div>
-        <!-- end row -->
+                </div> <!-- end card-body -->
+            <!-- end card -->
+        </div> <!-- end col -->
     </div>
 @endsection

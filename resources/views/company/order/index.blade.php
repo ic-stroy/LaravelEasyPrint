@@ -526,7 +526,7 @@
                                                     <div class="col-4 order_content">
                                                         <h4>{{translate('Animated order')}}</h4>
                                                         <span>{{!empty($products_with_anime[0]->product)?$products_with_anime[0]->product->name:''}}</span>
-                                                        @if($products_with_anime['product_discount_withouth_expire'] != 0)
+                                                        @if($products_with_anime['product_discount_withouth_expire'] != 0 && (int)$products_with_anime[0]->discount_price > 0 )
                                                             <span>{{translate('Discount')}}: <b style="color:red">{{$products_with_anime['product_discount_withouth_expire']}} %</b></span>
                                                         @endif
                                                         @if($products_with_anime[1])
@@ -705,10 +705,12 @@
                                                         @if($products[1])
                                                             <span>{{translate('Sum')}}: <b>{{$products[1]}}</b></span>
                                                         @endif
-                                                        @if($products['discount_withouth_expire'] != 0)
-                                                            <span>{{translate('Discount')}}: <b style="color: red">{{(int)$products['discount_withouth_expire']}} %</b></span>
-                                                        @elseif($products['product_discount_withouth_expire'] != 0)
-                                                            <span>{{translate('Discount')}}: <b style="color: red">{{(int)$products['product_discount_withouth_expire']}} %</b></span>
+                                                        @if((int)$products[0]->discount_price > 0)
+                                                            @if($products['discount_withouth_expire'] != 0)
+                                                                <span>{{translate('Discount')}}: <b style="color: red">{{(int)$products['discount_withouth_expire']}} %</b></span>
+                                                            @elseif($products['product_discount_withouth_expire'] != 0)
+                                                                <span>{{translate('Discount')}}: <b style="color: red">{{(int)$products['product_discount_withouth_expire']}} %</b></span>
+                                                            @endif
                                                         @endif
                                                         @if(!empty($products[0]->size))
                                                             <span>{{translate('Size')}}: <b>{{$products[0]->size->name}}</b> {{translate('Color')}}: <b>{{$products[0]->color->name}}</b></span>
