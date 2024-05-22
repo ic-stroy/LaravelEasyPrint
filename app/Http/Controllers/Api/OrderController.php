@@ -767,13 +767,13 @@ class OrderController extends Controller
      * bu funksiya  orderga Coupon qo'shishda qollaniladi (Order status Ordered bo'ladi Post zapros) productlarga tegishli faqat bitta coupon active bo'ladi
      */
     public function addCoupon(Request $request){
-        $language=$request->headers('language');
+        $language = $request->header('language');
         if ($language == null) {
             $language=env("DEFAULT_LANGUAGE", 'ru');
         }
         $order_coupon_price = 0;
         if ($coupon = Coupon::where('name', $request->coupon_name)
-            ->where('status',1)
+            ->where('status', 1)
             ->where('start_date', '<=', date('Y-m-d H:i:s'))
             ->where('end_date', '>=', date('Y-m-d H:i:s'))->first()) {
             if ($order=Order::where('id', $request->order_id)->first()) {
