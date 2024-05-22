@@ -9,7 +9,6 @@
             box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
         }
         .login_page{
-            background-color: #E6F3FFBF;
             height:100vh;
         }
         .correct_img img {
@@ -63,9 +62,9 @@
             border-radius: 20px;
             display: flex;
             justify-content: center;
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(7px);
             padding: 34px 0px;
-            border: solid 2px rgb(0, 0, 0, 0.2);
+            border: solid 3px rgb(0, 0, 0, 0.04);
         }
         .login_modal{
             color: white;
