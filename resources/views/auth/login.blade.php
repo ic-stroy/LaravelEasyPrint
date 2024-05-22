@@ -43,19 +43,18 @@
 
         @media screen and (max-width: 1000px) {
             .login_modal_background {
-                width: 480px;
+                width: 394px;
             }
             .login_modal{
-                width: 420px;
+                width: 304px;
             }
         }
         @media screen and (min-width: 1001px) {
-
             .login_modal_background {
-                width: 690px;
+                width: 480px;
             }
             .login_modal{
-                width: 503px;
+                width: 380px;
             }
         }
         .login_modal_background{
