@@ -56,7 +56,7 @@
         }
         .login_modal{
             color: white;
-            padding: 34px 0px;
+            padding: 37px 0px;
         }
         .color_white{
             color: white !important;
