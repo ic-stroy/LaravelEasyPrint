@@ -83,7 +83,7 @@
             <div class="login_modal_background">
                 <div class="login_modal">
                     <img src="{{asset('assets/images/easyprint.svg')}}" alt="" height="40px">
-                    <div class="text-start m-2">
+                    <div class="text-start mt-2 mb-3">
                         <h3 class="mt-0 color_white">Войти</h3>
                     </div>
                     <form action="{{route('login')}}" method="POST">
