@@ -41,33 +41,22 @@
             color: white;
         }
 
-        @media screen and (max-width: 1000px) {
-            .login_modal_background {
-                width: 394px;
-            }
-            .login_modal{
-                width: 304px;
-            }
+        .login_modal_background {
+            width: 503px;
         }
-        @media screen and (min-width: 1001px) {
-            .login_modal_background {
-                width: 480px;
-            }
-            .login_modal{
-                width: 380px;
-            }
+        .login_modal{
+            width: 380px;
         }
         .login_modal_background{
-            border-radius: 20px;
             display: flex;
             justify-content: center;
-            backdrop-filter: blur(2px);
-            background-color: #ffffff12;
-            padding: 34px 0px;
-            border: solid 3px rgb(0, 0, 0, 0.04);
+            background-image: url("{{asset('assets/images/border_back.svg')}}");
+            background-size: contain;
+            background-repeat: no-repeat;
         }
         .login_modal{
             color: white;
+            padding: 34px 0px;
         }
         .color_white{
             color: white !important;
@@ -91,60 +80,58 @@
                     {{session('status')}}
                 </div>
             @endif
-                <div class="login_modal_background">
-                    <div class="login_modal">
-                        <img src="{{asset('assets/images/easyprint.svg')}}" alt="">
-                        <div class="text-start m-3">
-                            <h3 class="mt-0 color_white">Войти</h3>
-                        </div>
-
-                        <form action="{{route('login')}}" method="POST">
-                            @csrf
-                            <div class="mb-3">
-                                <label for="emailaddress" class="form-label">Адрес электронной почты</label>
-                                <input class="form-control @error('email') is-invalid @enderror" type="email" id="emailaddress" name="email" required="" placeholder="Введите адрес электронной почты">
-                            </div>
-                            @error('email')
-                            <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                            @enderror
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Пароль</label>
-                                <input class="form-control @error('password') is-invalid @enderror" type="password" required="" name="password" id="password" placeholder="Введите ваш пароль">
-                            </div>
-                            @error('password')
-                            <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                            @enderror
-                            <div class="mb-3">
-                                <div class="form-check d-flex correct_img justify-content-between" style="padding-left:0px;">
-                                    {{-- captcha_img('flat'); --}}
-                                    {!! captcha_img('flat') !!}
-                                    {{-- {!!  !!} --}}
-                                    <input style="width:47%; margin-left:20px;" class="form-control" type="text" name="captcha" id="captcha" required>
-
-                                </div>
-                            </div>
-                            @error('captcha')
-                            <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                            @enderror
-                            <div class="mb-3 d-flex justify-content-between">
-                                <a href="{{ route('password.request') }}" class="text-muted ms-1 color_white"><i class="fa fa-lock me-1"></i>Забыли пароль?</a>
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="checkbox-signin" checked>
-                                    <label class="form-check-label" for="checkbox-signin">Запомнить меня</label>
-                                </div>
-                            </div>
-                            <button class="sign_in_button">Sign in</button>
-                        </form>
+            <div class="login_modal_background">
+                <div class="login_modal">
+                    <img src="{{asset('assets/images/easyprint.svg')}}" alt="" height="40px">
+                    <div class="text-start m-2">
+                        <h3 class="mt-0 color_white">Войти</h3>
                     </div>
+                    <form action="{{route('login')}}" method="POST">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="emailaddress" class="form-label">Адрес электронной почты</label>
+                            <input class="form-control @error('email') is-invalid @enderror" type="email" id="emailaddress" name="email" required="" placeholder="Введите адрес электронной почты">
+                        </div>
+                        @error('email')
+                        <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                        @enderror
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Пароль</label>
+                            <input class="form-control @error('password') is-invalid @enderror" type="password" required="" name="password" id="password" placeholder="Введите ваш пароль">
+                        </div>
+                        @error('password')
+                        <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                        @enderror
+                        <div class="mb-3">
+                            <div class="form-check d-flex correct_img justify-content-between" style="padding-left:0px;">
+                                {{-- captcha_img('flat'); --}}
+                                {!! captcha_img('flat') !!}
+                                {{-- {!!  !!} --}}
+                                <input style="width:47%; margin-left:20px;" class="form-control" type="text" name="captcha" id="captcha" required>
+                            </div>
+                        </div>
+                        @error('captcha')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                        <div class="mb-3 d-flex justify-content-between">
+                            <a href="{{ route('password.request') }}" class="text-muted ms-1 color_white"><i class="fa fa-lock me-1"></i>Забыли пароль?</a>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="checkbox-signin" checked>
+                                <label class="form-check-label" for="checkbox-signin">Запомнить меня</label>
+                            </div>
+                        </div>
+                        <button class="sign_in_button">Войти</button>
+                    </form>
+                </div>
 
 
-                </div> <!-- end card-body -->
+            </div> <!-- end card-body -->
             <!-- end card -->
         </div> <!-- end col -->
     </div>
