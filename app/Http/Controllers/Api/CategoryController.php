@@ -54,13 +54,12 @@ class CategoryController extends Controller
         $categories_id = [];
         $productsId = [];
         $category_active = null;
+        $productDefault = [];
         if ($category) {
             $translate_category_name=table_translate($category,'category', $language);
-
-
             $product_default = Products::where('category_id', $category->id)->whereIn('name', ['Футболка', 'Свитшот', 'Худи'])->first();
-            $productDefault = [];
             if($product_default){
+                $product_default = true;
                 $productDefault[] = [
                     'id' => $product_default->id,
                     'name' => $product_default->name,
@@ -209,13 +208,13 @@ class CategoryController extends Controller
                 'product_id' => $warehouse_product_->product_id,
             ];
         }
-        $products_data = array_merge($productDefault, $products_data);
         $data[] = [
             'category_active'=>$category_active,
             'category' => $category_,
             'sub_category' => $subCategory,
             'products' => $warehouse_products,
-            'products_data' => $products_data
+            'products_data' => $products_data,
+            'product_default' => $productDefault
         ];
 
         $message = translate_api('Success', $language);
