@@ -1,6 +1,7 @@
 @extends('layout.app')
 
 @section('content')
+    <link href="https://fonts.cdnfonts.com/css/gilroy-bold" rel="stylesheet">
     <style>
         .white_color{
             color: white;
@@ -52,20 +53,18 @@
             background-image: url("{{asset('assets/images/border_back.svg')}}");
             background-size: contain;
             background-repeat: no-repeat;
-            font-family: Inter !important;
+            font-family: Gilroy !important;
         }
         .login_modal{
             color: white;
             padding: 37px 0px;
         }
         .login_modal h3{
-            font-family: Inter !important;
             font-weight: 700;
             font-size: 28px;
             line-height: 46px;
         }
         .login_modal label, .login_modal a{
-            font-family: Inter !important;
             font-weight: 400;
             font-size: 14px;
             line-height: 20px;
