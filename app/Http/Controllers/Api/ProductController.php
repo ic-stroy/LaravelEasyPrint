@@ -127,7 +127,7 @@ class ProductController extends Controller
         }
         $product_ = Products::where('name', 'Футболка')->first();
         $product = [];
-//        foreach ($products_ as $product_) {
+        if($product_){
             $product[] = [
                 'id' => $product_->id,
                 'name' => $product_->name,
@@ -136,7 +136,7 @@ class ProductController extends Controller
                 'price_discount' => $product_->discount ? $product_->price - ($product_->price / 100 * $product_->discount->percent) : NULL,
                 'images' => $this->getImages($product_, 'product')
             ];
-//        }
+        }
 
         $data = [
             'product_list' => $product,

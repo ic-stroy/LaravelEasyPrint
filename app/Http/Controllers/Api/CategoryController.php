@@ -56,6 +56,26 @@ class CategoryController extends Controller
         $category_active = null;
         if ($category) {
             $translate_category_name=table_translate($category,'category', $language);
+
+
+            $product_default = Products::where('category_id', $category->id)->whereIn('name', ['Футболка', 'Свитшот', 'Худи'])->first();
+            $productDefault = [];
+            if($product_default){
+                $productDefault[] = [
+                    'id' => $product_default->id,
+                    'name' => $product_default->name,
+                    'category_id' => $product_default->category_id,
+                    'price' => $product_default->price,
+                    'discount' => $product_default->discount ? $product_default->discount->percent : NULL,
+                    'price_discount' => $product_default->discount ? $product_default->price - ($product_default->price / 100 * $product_default->discount->percent) : NULL,
+                    'images' => $this->getImages($product_default, 'product'),
+                    'material_id' => $product_default->material_id,
+                    'description' => $product_default->description,
+                    'manufacturer_country' => $product_default->manufacturer_country,
+                    'material_composition' => $product_default->material_composition,
+                ];
+            }
+
             if ($category->step == 0) {
                 $category_active = true;
                 // $translate_category_name=table_translate($warehouse_product,'category',$language);
@@ -189,7 +209,7 @@ class CategoryController extends Controller
                 'product_id' => $warehouse_product_->product_id,
             ];
         }
-
+        $warehouse_products = array_merge($warehouse_products, $productDefault);
         $data[] = [
             'category_active'=>$category_active,
             'category' => $category_,
