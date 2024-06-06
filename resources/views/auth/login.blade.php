@@ -53,7 +53,7 @@
             background-image: url("{{asset('assets/images/border_back.svg')}}");
             background-size: contain;
             background-repeat: no-repeat;
-            font-family: Gilroy !important;
+            font-family: Arial, Helvetica, sans-serif !important;
         }
         .login_modal{
             color: white;
