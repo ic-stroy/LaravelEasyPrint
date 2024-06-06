@@ -88,7 +88,7 @@
         }
         .eye_icon{
             padding-right: 14px;
-            color: black;
+            color: #BCBEC0;
             margin-top: -28px;
         }
     </style>
@@ -108,7 +108,7 @@
                     <form action="{{route('login')}}" method="POST">
                         @csrf
                         <div class="mb-3">
-                            <label for="emailaddress" class="form-label">Эмаил</label>
+                            <label for="emailaddress" class="form-label">E-mail</label>
                             <input class="form-control @error('email') is-invalid @enderror" type="email" id="emailaddress" name="email" required="" placeholder="username@gmail.com">
                         </div>
                         @error('email')
