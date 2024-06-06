@@ -59,7 +59,6 @@ class CategoryController extends Controller
             $translate_category_name=table_translate($category,'category', $language);
             $product_default = Products::where('category_id', $category->id)->whereIn('name', ['Футболка', 'Свитшот', 'Худи'])->first();
             if($product_default){
-                $product_default = true;
                 $productDefault[] = [
                     'id' => $product_default->id,
                     'name' => $product_default->name,
