@@ -125,10 +125,10 @@ class ProductController extends Controller
                 'images' => $warehouseProducts
             ];
         }
-        $products_ = Products::where('slide_show', Constants::ACTIVE)->get();
-        $products = [];
-        foreach ($products_ as $product_) {
-            $products[] = [
+        $product_ = Products::where('name', 'Футболка')->first();
+        $product = [];
+//        foreach ($products_ as $product_) {
+            $product[] = [
                 'id' => $product_->id,
                 'name' => $product_->name,
                 'price' => $product_->price,
@@ -136,14 +136,10 @@ class ProductController extends Controller
                 'price_discount' => $product_->discount ? $product_->price - ($product_->price / 100 * $product_->discount->percent) : NULL,
                 'images' => $this->getImages($product_, 'product')
             ];
-        }
-//        $warehouse_products = array_merge($warehouse_products,$warehouse_products,$warehouse_products,
-//$warehouse_products,$warehouse_products,$warehouse_products,$warehouse_products,$warehouse_products,$warehouse_products,
-//$warehouse_products,$warehouse_products,$warehouse_products);
-
+//        }
 
         $data = [
-            'product_list' => $products,
+            'product_list' => $product,
             'warehouse_product_list' => $warehouse_products
         ];
 
