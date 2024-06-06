@@ -209,7 +209,7 @@ class CategoryController extends Controller
                 'product_id' => $warehouse_product_->product_id,
             ];
         }
-        $warehouse_products = array_merge($productDefault, $warehouse_products);
+        $products_data = array_merge($productDefault, $products_data);
         $data[] = [
             'category_active'=>$category_active,
             'category' => $category_,
