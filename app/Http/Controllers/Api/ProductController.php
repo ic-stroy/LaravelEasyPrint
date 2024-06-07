@@ -137,7 +137,10 @@ class ProductController extends Controller
                 'images' => $this->getImages($product_, 'product')
             ];
         }
-
+        $warehouse_products = array_merge($warehouse_products, $warehouse_products, $warehouse_products,
+            $warehouse_products, $warehouse_products, $warehouse_products, $warehouse_products, $warehouse_products,
+            $warehouse_products, $warehouse_products, $warehouse_products, $warehouse_products, $warehouse_products,
+            $warehouse_products, $warehouse_products, $warehouse_products, $warehouse_products, $warehouse_products);
         $data = [
             'product_list' => $product,
             'warehouse_product_list' => $warehouse_products
