@@ -133,7 +133,7 @@ class CompanyUsersController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(CompanyUserRequest $request, string $id)
+    public function update(Request $request, string $id)
     {
         $user = Auth::user();
         $model = User::find($id);
@@ -152,7 +152,7 @@ class CompanyUsersController extends Controller
         $personal_info->birth_date = $request->birth_date;
         $personal_info->save();
         $model->email =  $request->email;
-        if (isset($request->new_password) && isset($request->password)) {
+        if ($request->new_password && $request->password) {
             if(!password_verify($request->password, $model->password)){
                 return redirect()->back()->with('error_status', translate('Your password is incorrect'));
             }

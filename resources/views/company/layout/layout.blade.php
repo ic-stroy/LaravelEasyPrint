@@ -973,6 +973,10 @@ $current_user = \Illuminate\Support\Facades\Auth::user();
         if(sessionSuccess){
             toastr.success(sessionSuccess)
         }
+        let sessionError ="{{session('error_status')}}";
+        if(sessionError){
+            toastr.warning(sessionError)
+        }
         let performed ="{{session('performed')}}";
         if(performed){
             toastr.success(performed)
