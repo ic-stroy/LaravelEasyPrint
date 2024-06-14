@@ -368,16 +368,9 @@
                                         @if(isset($user->role_id)) {{$user->role->name}} @else <div class="no_text"></div> @endif
                                     </a>
                                 </td>
-                                @if(isset($user->company->name))
-                                    <td>
-                                        <a class="show_page" href="{{ route('user.show', $user->id) }}">
-                                            {{ $user->company->name }}
-                                        </a>
-                                    </td>
-                                @endif
                                 <td>
                                     <a class="show_page" href="{{ route('user.show', $user->id) }}">
-                                        @if(isset($user->phone_number)){{ $user->phone_number }}@else <div class="no_text"></div> @endif
+                                        @if(isset($user->email)){{ $user->email }}@else <div class="no_text"></div> @endif
                                     </a>
                                 </td>
                                 <td class="function_column mt-2">

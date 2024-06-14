@@ -417,7 +417,6 @@
                         <li>
                             <a href="{{route('dashboard')}}">
                             <i class="mdi mdi-home-outline"></i>
-                                 <span class="badge bg-success rounded-pill float-end">+9</span>
                                 <span> {{translate('Home')}} </span>
                             </a>
                         </li>
@@ -477,12 +476,12 @@
                                             <span> {{ translate('Discount') }} </span>
                                         </a>
                                     </li>
-                                    <li>
-                                        <a href="{{ route('slide_show.index') }}">
-                                            <i class="mdi mdi-image-outline"></i>
-                                            <span> {{ translate('Slide show') }} </span>
-                                        </a>
-                                    </li>
+{{--                                    <li>--}}
+{{--                                        <a href="{{ route('slide_show.index') }}">--}}
+{{--                                            <i class="mdi mdi-image-outline"></i>--}}
+{{--                                            <span> {{ translate('Slide show') }} </span>--}}
+{{--                                        </a>--}}
+{{--                                    </li>--}}
                                 </ul>
                             </div>
                         </li>
@@ -1090,8 +1089,8 @@
     @if(isset($ordered_orders) && isset($performed_orders) && isset($cancelled_orders) && isset($accepted_orders))
         <script>
             "use strict";
-            let orders_ordered = {name:"{{translate('Ordered orders')}}", count:"{{$ordered_orders}}"}
-            let orders_performed = {name:"{{translate('Orders active')}}", count:"{{$performed_orders}}"}
+            let orders_ordered = {name:"{{translate('Orders active')}}", count:"{{$ordered_orders}}"}
+            let orders_performed = {name:"{{translate('Orders performed')}}", count:"{{$performed_orders}}"}
             let order_cancelled = {name:"{{translate('Cancelled orders')}}", count:"{{$cancelled_orders}}"}
             let orders_accepted = {name:"{{translate('Completed orders')}}", count:"{{$accepted_orders}}"}
             {{--let monthly_orders_count = {!! 74??0 !!}--}}

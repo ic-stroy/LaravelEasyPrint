@@ -31,7 +31,7 @@
                                 </td>
                                 <td class="py-1">
                                     <div class="d-flex justify-content-center align-items-center">
-                                        <a class="form_functions btn btn-info" href="{{route('images.edit', $value->id)}}"><i class="fe-edit-2"></i></a>
+                                        <a class="form_functions btn btn-info btn-sm" href="{{route('images.edit', $value->id)}}"><i class="fe-edit-2"></i></a>
                                         <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-alert-modal" data-url="{{route('images.destroy', $value->id)}}"><i class="fe-trash-2"></i></button>
                                     </div>
                                 </td>
