@@ -1031,6 +1031,10 @@
             if(sessionSuccess){
                 toastr.success(sessionSuccess)
             }
+            let sessionError ="{{session('error_status')}}";
+            if(sessionError){
+                toastr.warning(sessionError)
+            }
             let language = "{{ $locale ?? "ru"}}"
             let uz = `{{ asset('/assets/images/language/region.png') }}`
             let ru = `{{ asset('/assets/images/language/RU.png') }}`

@@ -154,7 +154,7 @@ class UsersController extends Controller
         $personal_info->save();
 
         $model->email =  $request->email;
-        if (isset($request->new_password) && isset($request->password)) {
+        if ($request->new_password && $request->password) {
             if(!password_verify($request->password, $model->password)){
                 return redirect()->back()->with('error_status', translate('Your password is incorrect'));
             }

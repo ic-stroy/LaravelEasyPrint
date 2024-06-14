@@ -8,7 +8,7 @@
         <div class="card-body">
             <h4 class="mt-0 header-title">{{__($product->name??'')}} {{translate(' product lists')}}</h4>
             <div class="dropdown float-end mb-2">
-                <a class="form_functions btn btn-success" href="{{route('warehouse.category.create_warehouse', $product->id)}}">{{translate('Create')}}</a>
+                <a class="form_functions btn btn-success" href="{{route('warehouse.category.create_warehouse', $product->id)}}">{{translate('Add products to warehouse')}}</a>
             </div>
 {{--            <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap">--}}
             <table class="table table-striped table-bordered dt-responsive nowrap">
