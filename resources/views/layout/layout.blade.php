@@ -1031,7 +1031,7 @@
             if(sessionSuccess){
                 toastr.success(sessionSuccess)
             }
-            let sessionError ="{{session('error_status')}}";
+            let sessionError ="{{session('error')}}";
             if(sessionError){
                 toastr.warning(sessionError)
             }

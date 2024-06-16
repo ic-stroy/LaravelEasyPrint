@@ -11,4 +11,9 @@ class Role extends Model
     use HasFactory;
 
     public $table = 'roles';
+
+
+    public function user(){
+        return $this->hasOne(User::class, 'role_id', 'id');
+    }
 }

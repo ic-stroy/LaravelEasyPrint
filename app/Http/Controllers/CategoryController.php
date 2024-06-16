@@ -92,6 +92,14 @@ class CategoryController extends Controller
     public function destroy(string $id)
     {
         $model = Category::where('step', 0)->find($id);
+        if(!empty($model->subcategory)){
+            if(!$model->subcategory->isEmpty()){
+                return redirect()->back()->with('error', translate('You cannot delete this category because it has subcategories'));
+            }
+        }
+        if($model->product){
+            return redirect()->back()->with('error', translate('You cannot delete this category because it has products'));
+        }
         foreach (Language::all() as $language) {
             $categories_translations = CategoryTranslations::where(['lang' => $language->code, 'category_id' => $model->id])->get();
             foreach ($categories_translations as $category_translation){

@@ -115,6 +115,9 @@ class CompanyController extends Controller
     public function destroy(string $id)
     {
         $model = Company::find($id);
+        if($model->warehouse){
+            return redirect()->back()->with('error', translate('You cannot delete this company because here is product associated with this company.'));
+        }
         $address = $model->address;
         foreach (Language::all() as $language) {
             $company_translations = CompanyTranslations::where(['lang' => $language->code, 'company_id' => $model->id])->get();

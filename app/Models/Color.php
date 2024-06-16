@@ -11,4 +11,8 @@ class Color extends Model
     use HasFactory, SoftDeletes;
 
     public $table = 'colors';
+
+    public function warehouse(){
+        return $this->hasOne(Warehouse::class, 'color_id', 'id');
+    }
 }

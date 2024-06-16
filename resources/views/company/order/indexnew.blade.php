@@ -1517,11 +1517,11 @@
         let order_quantity_text = "{{translate('Order quantity')}}"
         let remaining_in_warehouse_text = "{{translate('Remaining in warehouse')}}"
 
-        let error_status = "{{session('error')}}"
+        let error = "{{session('error')}}"
         let performed_status = "{{session('performed')}}"
-        if(error_status != "" && error_status != null && error_status != undefined){
+        if(error != "" && error != null && error != undefined){
             $(document).ready(function(){
-                toastr.warning(error_status)
+                toastr.warning(error)
             });
         }
         if(performed_status != "" && performed_status != null && performed_status != undefined){

@@ -214,6 +214,11 @@ class ProductsController extends Controller
     public function destroy(string $id)
     {
         $model = Products::find($id);
+        if(!empty($model->warehouse)){
+            if(!$model->warehouse->isEmpty()){
+                return redirect()->back()->with('error', translate('You cannot delete this product because here is some products in warehouse'));
+            }
+        }
         if($model->images){
             $images = json_decode($model->images);
             foreach ($images as $image){

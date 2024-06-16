@@ -88,6 +88,9 @@ class RoleController extends Controller
     public function destroy(string $id)
     {
         $model = Role::find($id);
+        if($model->user){
+            return redirect()->back()->with('error', translate('You cannot delete this role because here is user associated with this role.'));
+        }
         foreach (Language::all() as $language) {
             $role_translations = RoleTranslations::where(['lang' => $language->code, 'role_id' => $model->id])->get();
             foreach ($role_translations as $role_translation){

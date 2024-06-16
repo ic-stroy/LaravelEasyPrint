@@ -15,4 +15,7 @@ class Company extends Model
     public function address(){
         return $this->hasOne(Address::class, 'id', 'address_id');
     }
+    public function warehouse(){
+        return $this->hasOne(Warehouse::class, 'company_id', 'id');
+    }
 }

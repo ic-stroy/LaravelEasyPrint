@@ -156,12 +156,12 @@ class UsersController extends Controller
         $model->email =  $request->email;
         if ($request->new_password && $request->password) {
             if(!password_verify($request->password, $model->password)){
-                return redirect()->back()->with('error_status', translate('Your password is incorrect'));
+                return redirect()->back()->with('error', translate('Your password is incorrect'));
             }
             if ($request->new_password == $request->new_password_confirmation) {
                 $model->password = Hash::make($request->new_password);
             }else{
-                return redirect()->back()->with('error_status', translate('Your new password confirmation is incorrect'));
+                return redirect()->back()->with('error', translate('Your new password confirmation is incorrect'));
             }
         }
         $model->role_id = $request->role_id;

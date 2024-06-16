@@ -155,10 +155,10 @@
     <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
     <script>
         let page = true
-        let error_status = "{{session('error_status')}}"
-        if(error_status != "" && error_status != null && error_status != undefined){
+        let error = "{{session('error')}}"
+        if(error != "" && error != null && error != undefined){
             $(document).ready(function(){
-                toastr.warning(error_status)
+                toastr.warning(error)
             });
         }
         @if(isset($user->address) && isset($user->address->cities))

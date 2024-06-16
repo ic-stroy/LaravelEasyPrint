@@ -105,6 +105,9 @@ class ColorController extends Controller
     public function destroy(string $id)
     {
         $model = Color::find($id);
+        if($model->warehouse){
+            return redirect()->back()->with('error', translate('You cannot delete this color because here is product associated with this color.'));
+        }
         foreach (Language::all() as $language) {
             $color_translations = ColorTranslations::where(['lang' => $language->code, 'color_id' => $model->id])->get();
             foreach ($color_translations as $color_translation){
