@@ -71,4 +71,8 @@ class Warehouse extends Model
         $maxValue = Discount::where('type', Constants::DISCOUNT_PRODUCT_TYPE)->max('end_date');
         return $this->hasOne(Discount::class, 'product_id','product_id')->where('type', Constants::DISCOUNT_PRODUCT_TYPE)->where('end_date', $maxValue);
     }
+
+    public function order_detail(){
+        return $this->hasOne(OrderDetail::class, 'warehouse_id', 'id')->where('status', 6);
+    }
 }

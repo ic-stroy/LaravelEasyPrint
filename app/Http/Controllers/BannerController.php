@@ -13,6 +13,17 @@ class BannerController extends Controller
      */
     public function index()
     {
+        translate('Your password is incorrect');
+        translate('Your new password confirmation is incorrect');
+        translate('You cannot delete this category because here is product associated with this size.');
+        translate('You cannot delete this size because here is product associated with this size.');
+        translate('You cannot delete this role because here is user associated with this role.');
+        translate('You cannot delete this product because here is some products in warehouse');
+        translate('You cannot delete this company because here is product associated with this company.');
+        translate('You cannot delete this color because here is product associated with this color.');
+        translate('You cannot delete this category because it has subcategories');
+        translate('You cannot delete this category because it has products');
+        translate('You cannot delete this product because here is product associated with an order.');
         $banners = Banner::orderBy('created_at', 'desc')->get();
         return view('admin.banner.index', [
             'banners' => $banners

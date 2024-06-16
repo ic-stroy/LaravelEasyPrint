@@ -12,8 +12,8 @@ class Role extends Model
 
     public $table = 'roles';
 
-
     public function user(){
         return $this->hasOne(User::class, 'role_id', 'id');
     }
+
 }

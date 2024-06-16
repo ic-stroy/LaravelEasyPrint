@@ -118,6 +118,9 @@ class WarehousePrintController extends Controller
     public function destroy(string $id)
     {
         $model = Warehouse::where('type', Constants::PRINT_TYPE)->find($id);
+        if($model->order_detail){
+            return redirect()->back()->with('error', translate('You cannot delete this product because here is product associated with an order.'));
+        }
         if (!$model->image_front) {
             $model->image_front = 'no';
         }

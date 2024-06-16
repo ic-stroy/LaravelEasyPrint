@@ -211,6 +211,9 @@ class WarehouseController extends Controller
     public function destroy(string $id)
     {
         $model = Warehouse::where('type', Constants::WAREHOUSE_TYPE)->find($id);
+        if($model->order_detail){
+            return redirect()->back()->with('error', translate('You cannot delete this product because here is product associated with an order.'));
+        }
         foreach (Language::all() as $language) {
             $warehouse_translations = WarehouseTranslations::where(['lang' => $language->code, 'warehouse_id' => $model->id])->get();
             foreach ($warehouse_translations as $warehouse_translation){
