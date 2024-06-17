@@ -37,16 +37,18 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
         $model = new Company();
-        $address = new Address();
-        $address->city_id = $request->district;
-        $address->latitude = $request->address_lat;
-        $address->longitude = $request->address_long;
-        $address->name = $request->address_name;
-        $address->postcode = $request->postcode;
-        $address->save();
+        if($request->district || $request->address_name || $request->postcode) {
+            $address = new Address();
+            $address->city_id = $request->district;
+            $address->latitude = $request->address_lat;
+            $address->longitude = $request->address_long;
+            $address->name = $request->address_name;
+            $address->postcode = $request->postcode;
+            $address->save();
+            $model->address_id = $address->id;
+        }
         $model->name = $request->name;
         $model->delivery_price = $request->delivery_price;
-        $model->address_id = $address->id;
         $model->save();
         foreach (Language::all() as $language) {
             $company_translations = CompanyTranslations::firstOrNew(['lang' => $language->code, 'company_id' => $model->id]);
@@ -82,17 +84,20 @@ class CompanyController extends Controller
     public function update(Request $request, string $id)
     {
         $model = Company::find($id);
-        if($model->address){
-            $address = $model->address;
-        }else{
-            $address = new Address();
+        if($request->district || $request->address_name || $request->postcode) {
+            if ($model->address) {
+                $address = $model->address;
+            } else {
+                $address = new Address();
+            }
+            $address->city_id = $request->district;
+            $address->name = $request->address_name;
+            $address->postcode = $request->postcode;
+            $address->latitude = $request->address_lat;
+            $address->longitude = $request->address_long;
+            $address->save();
+            $model->address_id = $address->id;
         }
-        $address->city_id = $request->district;
-        $address->name = $request->address_name;
-        $address->postcode = $request->postcode;
-        $address->latitude = $request->address_lat;
-        $address->longitude = $request->address_long;
-        $address->save();
         if($request->name != $model->name){
             foreach (Language::all() as $language) {
                 $company_translations = CompanyTranslations::firstOrNew(['lang' => $language->code, 'company_id' => $model->id]);
@@ -104,7 +109,6 @@ class CompanyController extends Controller
         }
         $model->name = $request->name;
         $model->delivery_price = $request->delivery_price;
-        $model->address_id = $address->id;
         $model->save();
         return redirect()->route('company.index')->with('status', translate('Successfully updated'));
     }
