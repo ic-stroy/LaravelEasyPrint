@@ -46,7 +46,9 @@
                                 </b>
                             </p>
                             <p>{{translate('Phone').': '}}<b>{{$model->phone_number??''}}</b></p>
-                            <p>{{translate('Age').': '}}<b>{{$year_old??''}}</b></p>
+                            @if($year_old>0)
+                                <p>{{translate('Age').': '}}<b>{{$year_old??''}}</b></p>
+                            @endif
                         </div>
                     </div>
                     <div class="profile_box_content">
@@ -124,10 +126,12 @@
                     @endif
                 </td>
             </tr>
-            <tr>
-                <th>{{translate('Company')}}</th>
-                <td>{{$model->company->name??''}}</td>
-            </tr>
+            @if($model->company)
+                <tr>
+                    <th>{{translate('Company')}}</th>
+                    <td>{{$model->company->name??''}}</td>
+                </tr>
+            @endif
             <tr>
                 <th>{{translate('Full name')}}</th>
                 <td>

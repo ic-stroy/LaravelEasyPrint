@@ -71,14 +71,16 @@ class UsersController extends Controller
         $model->language = 'ru';
         $model->company_id = $request->company_id;
         $model->save();
-        $address = new Address();
-        $address->city_id = $request->district;
-        $address->name = $request->address_name;
-        $address->postcode = $request->postcode;
-        $address->latitude = $request->address_lat;
-        $address->longitude = $request->address_long;
-        $address->user_id = $model->id;
-        $address->save();
+        if($request->district || $request->address_name || $request->postcode) {
+            $address = new Address();
+            $address->city_id = $request->district;
+            $address->name = $request->address_name;
+            $address->postcode = $request->postcode;
+            $address->latitude = $request->address_lat;
+            $address->longitude = $request->address_long;
+            $address->user_id = $model->id;
+            $address->save();
+        }
         return redirect()->route('user.index')->with('status', translate('Successfully created'));
     }
 
@@ -88,7 +90,7 @@ class UsersController extends Controller
     public function show(string $id)
     {
         $model = User::find($id);
-        $year_old = '';
+        $year_old = 0;
         if(isset($model->personalInfo->birth_date)){
             $birth_date_array = explode(' ', $model->personalInfo->birth_date);
             $now_time = strtotime('now');
@@ -170,18 +172,20 @@ class UsersController extends Controller
         $model->language = 'ru';
         $model->company_id = $request->company_id;
         $model->save();
-        if($model->address){
-            $address = $model->address;
-        }else{
-            $address = new Address();
+        if($request->district || $request->address_name || $request->postcode){
+            if($model->address){
+                $address = $model->address;
+            }else{
+                $address = new Address();
+            }
+            $address->city_id = $request->district;
+            $address->name = $request->address_name;
+            $address->postcode = $request->postcode;
+            $address->latitude = $request->address_lat;
+            $address->longitude = $request->address_long;
+            $address->user_id = $model->id;
+            $address->save();
         }
-        $address->city_id = $request->district;
-        $address->name = $request->address_name;
-        $address->postcode = $request->postcode;
-        $address->latitude = $request->address_lat;
-        $address->longitude = $request->address_long;
-        $address->user_id = $model->id;
-        $address->save();
         if($request->user_edit == 1){
             return redirect()->route('getUser')->with('status', translate('Successfully updated'));
         }else{

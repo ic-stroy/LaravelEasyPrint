@@ -67,13 +67,14 @@ class UserRequest extends BaseFormRequest
     public function update()
     {
         return [
-            'first_name' => 'required|string',
+            'first_name' => 'nullable|string',
             'last_name' => 'nullable|string',
             'middle_name' => 'nullable|string',
             'phone_number' => 'nullable|string',
             'gender' => 'nullable|integer',
             'birth_date' => 'nullable|date',
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore(Route::current()->parameters()['user'])],
+//            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore(Route::current()->parameters()['user'])],
+            'email' => ['required', 'string', 'string', 'max:255'],
             'password' => 'nullable|string|min:8',
             'new_password' => 'nullable|string|min:8',
             'new_password_confirmation' => 'nullable|string|min:8',

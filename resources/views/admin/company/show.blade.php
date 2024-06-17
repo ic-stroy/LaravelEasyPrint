@@ -34,22 +34,24 @@
                         <th>{{translate('Delivery price')}}</th>
                         <td>{{$model->delivery_price??''}}</td>
                     </tr>
-                    <tr>
-                        <th>{{translate('Region')}}</th>
-                        <td>{{isset($model->address->cities->region)? $model->address->cities->region->name :''}}</td>
-                    </tr>
-                    <tr>
-                        <th>{{translate('District')}}</th>
-                        <td>{{isset($model->address->cities)?$model->address->cities->name:''}}</td>
-                    </tr>
-                    <tr>
-                        <th>{{translate('Street, house')}}</th>
-                        <td>{{isset($model->address->name)?$model->address->name:''}}</td>
-                    </tr>
-                    <tr>
-                        <th>{{translate('Post code')}}</th>
-                        <td>{{isset($model->address->postcode)?$model->address->postcode:''}}</td>
-                    </tr>
+                    @if($model->address)
+                        <tr>
+                            <th>{{translate('Region')}}</th>
+                            <td>{{isset($model->address->cities->region)? $model->address->cities->region->name :''}}</td>
+                        </tr>
+                        <tr>
+                            <th>{{translate('District')}}</th>
+                            <td>{{isset($model->address->cities)?$model->address->cities->name:''}}</td>
+                        </tr>
+                        <tr>
+                            <th>{{translate('Street, house')}}</th>
+                            <td>{{isset($model->address->name)?$model->address->name:''}}</td>
+                        </tr>
+                        <tr>
+                            <th>{{translate('Post code')}}</th>
+                            <td>{{isset($model->address->postcode)?$model->address->postcode:''}}</td>
+                        </tr>
+                    @endif
                     <tr>
                         <th>{{translate('Map')}}</th>
                         <td>

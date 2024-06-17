@@ -31,7 +31,7 @@
                 <div class="row">
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('First name')}}</label>
-                        <input type="text" class="form-control" name="first_name" required value="{{$user->personalInfo?$user->personalInfo->first_name:''}}"/>
+                        <input type="text" class="form-control" name="first_name" @if($user->role_id != 4) required @endif value="{{$user->personalInfo?$user->personalInfo->first_name:''}}"/>
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Last name')}}</label>
@@ -41,13 +41,13 @@
                 <div class="row">
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Region')}}</label>
-                        <select name="region_id" class="form-control" id="region_id" required>
+                        <select name="region_id" class="form-control" id="region_id">
                             <option disabled selected>{{translate('Select region')}}</option>
                         </select>
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('District')}}</label>
-                        <select name="district_id" class="form-control" id="district_id" required>
+                        <select name="district_id" class="form-control" id="district_id">
                             <option disabled selected>{{translate('Select district')}}</option>
                         </select>
                     </div>
@@ -120,7 +120,11 @@
                 <div class="row">
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Login')}}</label>
-                        <input type="email" class="form-control" name="email" required value="{{$user->email??''}}"/>
+                        @if($user->role_id == 4)
+                            <input type="text" class="form-control" name="email" required value="{{$user->email??''}}"/>
+                        @else
+                            <input type="email" class="form-control" name="email" required value="{{$user->email??''}}"/>
+                        @endif
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Current password')}}</label>
