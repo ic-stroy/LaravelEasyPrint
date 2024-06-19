@@ -30,27 +30,27 @@
                         @endphp
                         <tr>
                             <th scope="row">
-                                <a class="show_page" href="{{route('pick_up.show', $address->id)}}">{{$i}}</a>
+                                <a class="show_page" href="{{route('pick_up.show', $address['id'])}}">{{$i}}</a>
                             </th>
                             <td>
-                                <a class="show_page" href="{{route('pick_up.show', $address->id)}}">
-                                    @if(isset($address->name)){{ $address->name }}@else <div class="no_text"></div> @endif
+                                <a class="show_page" href="{{route('pick_up.show', $address['id'])}}">
+                                    @if(isset($address['name'])){{ $address['name'] }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>
-                                <a class="show_page" href="{{route('pick_up.show', $address->id)}}">
-                                    @if(isset($address->city_id)){{ $address->city_id }}@else <div class="no_text"></div> @endif
+                                <a class="show_page" href="{{route('pick_up.show', $address['id'])}}">
+                                    @if(isset($address['city'])){{ $address['city'] }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>
-                                <a class="show_page" href="{{route('pick_up.show', $address->id)}}">
-                                    @if(isset($address->updated_at)){{ $address->updated_at }}@else <div class="no_text"></div> @endif
+                                <a class="show_page" href="{{route('pick_up.show', $address['id'])}}">
+                                    @if(isset($address['updated_at'])){{ $address['updated_at'] }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td class="function_column">
                                 <div class="d-flex justify-content-center">
-                                    <a class="form_functions btn btn-info" href="{{route('pick_up.edit', $address->id)}}"><i class="fe-edit-2"></i></a>
-                                    <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-alert-modal" data-url="{{route('pick_up.destroy', $address->id)}}"><i class="fe-trash-2"></i></button>
+                                    <a class="form_functions btn btn-info" href="{{route('pick_up.edit', $address['id'])}}"><i class="fe-edit-2"></i></a>
+                                    <button type="button" class="btn btn-danger delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-alert-modal" data-url="{{route('pick_up.destroy', $address['id'])}}"><i class="fe-trash-2"></i></button>
                                 </div>
                             </td>
                         </tr>

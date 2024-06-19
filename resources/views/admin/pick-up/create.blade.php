@@ -40,7 +40,7 @@
                     </div>
                     <div class="col-6">
                         <label class="form-label">{{translate('Postcode')}}</label>
-                        <input type="text" name="postcode" class="form-control" value="{{old('postcode')}}">
+                        <input type="number" name="postcode" class="form-control" value="{{old('postcode')}}">
                     </div>
                     <input type="hidden" name="region" id="region">
                     <input type="hidden" name="district" id="district">

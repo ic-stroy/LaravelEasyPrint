@@ -15,7 +15,36 @@ class PickUpController extends Controller
     public function index()
     {
         $super_admins_id = User::where('role_id', 1)->pluck('id')->all();
-        $addresses = Address::whereIn('user_id', $super_admins_id)->get();
+        $addresses_ = Address::whereIn('user_id', $super_admins_id)->get();
+
+        $addresses = [];
+        foreach ($addresses_ as $model){
+
+            $city = '';
+            $region = '';
+            if($model->cities){
+                if($model->cities->type == 'district'){
+                    $city = $model->cities->name??'';
+                    if($model->cities->region){
+                        $region = $model->cities->region->name??'';
+                    }
+                }else{
+                    $region = $model->cities->name??'';
+                }
+            }
+
+            $address = $region.' '.$city;
+
+            $addresses[] = [
+                'id'=>$model->id,
+                'name'=>$model->name,
+                'city'=>$address,
+                'postcode'=>$model->postcode,
+                'updated_at'=>$model->updated_at
+            ];
+
+        }
+
         return view('admin.pick-up.index', ['addresses'=>$addresses]);
     }
 
