@@ -146,8 +146,8 @@ class CategoryController extends Controller
                 'material_id' => $product->material_id,
                 'description' => $product->description,
                 'price' => $product->price,
-                'discount' => (isset($product->discount)) > 0 ? $product->discount->percent : NULL,
-                'price_discount' => (isset($product->discount)) > 0 ? $product->price - ($product->price / 100 * $product->discount->percent) : NULL,
+                'discount' => ($product->discount) > 0 ? $product->discount->percent : NULL,
+                'price_discount' => ($product->discount) > 0 ? $product->price - ($product->price / 100 * $product->discount->percent) : NULL,
                 'manufacturer_country' => $product->manufacturer_country,
                 'material_composition' => $product->material_composition,
             ];
@@ -184,7 +184,7 @@ class CategoryController extends Controller
                     $warehouseProducts[] = asset("/storage/warehouse/$warehouse_product_->image_back");
                 }
             }
-
+            $price_discount = NULL;
             $translate_name=table_translate($warehouse_product_,'warehouse_category', $language);
             if($warehouse_product_->product_discount){
                 $discount = $warehouse_product_->product_discount->percent;
@@ -193,7 +193,7 @@ class CategoryController extends Controller
                 $discount = $warehouse_product_->discount->percent;
                 $price_discount = $warehouse_product_->price - ($warehouse_product_->price / 100 * $warehouse_product_->discount->percent);
             }
-            if(!empty($warehouse_product_->product)){
+            if($warehouse_product_->product){
                 $translate_product_name=table_translate($warehouse_product_->product,'product', $language);
             }
             //  join qilish kere
@@ -201,11 +201,11 @@ class CategoryController extends Controller
                 'id' => $warehouse_product_->id,
                 'name' => $translate_name ?? $translate_product_name,
                 'price' => $warehouse_product_->price,
-                'category_id' => !empty($warehouse_product_->product)?$warehouse_product_->product->category_id:'',
-                'material_id' => !empty($warehouse_product_->product)?$warehouse_product_->product->material_id:'',
-                'description' => !empty($warehouse_product_->product)?$warehouse_product_->product->description:'',
-                'manufacturer_country' => !empty($warehouse_product_->product)?$warehouse_product_->product->manufacturer_country:'',
-                'material_composition' => !empty($warehouse_product_->product)?$warehouse_product_->product->material_composition:'',
+                'category_id' => $warehouse_product_->product?$warehouse_product_->product->category_id:'',
+                'material_id' => $warehouse_product_->product?$warehouse_product_->product->material_id:'',
+                'description' => $warehouse_product_->product?$warehouse_product_->product->description:'',
+                'manufacturer_country' => $warehouse_product_->product?$warehouse_product_->product->manufacturer_country:'',
+                'material_composition' => $warehouse_product_->product?$warehouse_product_->product->material_composition:'',
                 'discount' => $discount??NULL,
                 'price_discount' => $price_discount??NULL,
                 'images' => $warehouseProducts,
