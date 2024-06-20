@@ -146,8 +146,8 @@ class CategoryController extends Controller
                 'material_id' => $product->material_id,
                 'description' => $product->description,
                 'price' => $product->price,
-                'discount' => ($product->discount) > 0 ? $product->discount->percent : NULL,
-                'price_discount' => ($product->discount) > 0 ? $product->price - ($product->price / 100 * $product->discount->percent) : NULL,
+                'discount' => $product->discount? (int)$product->discount->percent : NULL,
+                'price_discount' => $product->discount? $product->price - ($product->price / 100 * (int)$product->discount->percent) : NULL,
                 'manufacturer_country' => $product->manufacturer_country,
                 'material_composition' => $product->material_composition,
             ];
