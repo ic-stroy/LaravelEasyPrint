@@ -173,17 +173,42 @@ class ProductController extends Controller
             ->join('sizes as dt3', 'dt3.id', '=', 'dt2.size_id')
             ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
             ->join('products as dt5', 'dt5.id', '=', 'dt2.product_id')
-            ->leftJoin('discounts as dt6', function($join) {
-                $join->on('dt6.warehouse_id', '=', 'dt2.id')
-                ->orOn(function ($join_) {
-                    $join_->on([
-                        ['dt6.product_id', '=', 'dt2.product_id'],
-                        ['dt6.warehouse_id', 'is', DB::raw('NULL')]
-                    ]);
+                ->leftJoin('discounts as dt6', function($join){
+                    $join->on(function ($join){
+                        $join->on([
+                            ['dt6.warehouse_id', '=', 'dt2.id'],
+                            ['dt6.company_id', 'is', DB::raw('NULL')]
+                        ])
+                        ->orOn(function ($join){
+                            $join->on([
+                                ['dt6.warehouse_id', '=', 'dt2.id'],
+                                ['dt6.company_id', 'is not', DB::raw('NULL')],
+                                ['dt2.company_id', '=', 'dt6.company_id']
+                            ]);
+                        });
+                    })
+                    ->where('dt6.type', '=', Constants::DISCOUNT_WAREHOUSE_TYPE)
+                    ->where('start_date', '<=', date('Y-m-d H:i:s'))
+                    ->where('end_date', '>=', date('Y-m-d H:i:s'))
+                    ->orOn(function ($join){
+                        $join->on([
+                            ['dt6.product_id', '=', 'dt2.product_id'],
+                            ['dt6.product_id', 'is not', DB::raw('NULL')],
+                            ['dt6.company_id', 'is', DB::raw('NULL')]
+                        ])
+                        ->orOn(function ($join){
+                            $join->on([
+                                ['dt6.product_id', '=', 'dt2.product_id'],
+                                ['dt6.product_id', 'is not', DB::raw('NULL')],
+                                ['dt6.company_id', 'is not', DB::raw('NULL')],
+                                ['dt2.company_id', '=', 'dt6.company_id'],
+                            ]);
+                        });
+                    })
+                    ->where('dt6.type', '=', Constants::DISCOUNT_PRODUCT_TYPE)
+                    ->where('start_date', '<=', date('Y-m-d H:i:s'))
+                    ->where('end_date', '>=', date('Y-m-d H:i:s'));
                 })
-                ->where('dt6.start_date', '<=', date('Y-m-d H:i:s'))
-                ->where('dt6.end_date', '>=', date('Y-m-d H:i:s'));
-            })
             ->leftJoin('materials as dt7', 'dt7.id', '=','dt2.material_id')
             ->join('companies as dt8', 'dt8.id', '=','dt2.company_id')
             // ->leftJoin('coupons as dt5', 'dt5.warehouse_product_id', '=', 'dt2.id')
@@ -261,12 +286,50 @@ class ProductController extends Controller
                     foreach ($sizes as $size) {
                         $colors = DB::table('warehouses as dt1')
                             ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
+                            ->leftJoin('discounts as dt6', function($join){
+                                $join->on(function ($join){
+                                    $join->on([
+                                        ['dt6.warehouse_id', '=', 'dt1.id'],
+                                        ['dt6.company_id', 'is', DB::raw('NULL')]
+                                    ])
+                                    ->orOn(function ($join){
+                                        $join->on([
+                                            ['dt6.warehouse_id', '=', 'dt1.id'],
+                                            ['dt6.company_id', 'is not', DB::raw('NULL')],
+                                            ['dt1.company_id', '=', 'dt6.company_id']
+                                        ]);
+                                    });
+                                })
+                                ->where('dt6.type', '=', Constants::DISCOUNT_WAREHOUSE_TYPE)
+                                ->where('start_date', '<=', date('Y-m-d H:i:s'))
+                                ->where('end_date', '>=', date('Y-m-d H:i:s'))
+                                ->orOn(function ($join){
+                                    $join->on([
+                                        ['dt6.product_id', '=', 'dt1.product_id'],
+                                        ['dt6.product_id', 'is not', DB::raw('NULL')],
+                                        ['dt6.company_id', 'is', DB::raw('NULL')]
+                                    ])
+                                    ->orOn(function ($join){
+                                        $join->on([
+                                            ['dt6.product_id', '=', 'dt1.product_id'],
+                                            ['dt6.product_id', 'is not', DB::raw('NULL')],
+                                            ['dt6.company_id', 'is not', DB::raw('NULL')],
+                                            ['dt1.company_id', '=', 'dt6.company_id'],
+                                        ]);
+                                    });
+                                })
+                                ->where('dt6.type', '=', Constants::DISCOUNT_PRODUCT_TYPE)
+                                ->where('start_date', '<=', date('Y-m-d H:i:s'))
+                                ->where('end_date', '>=', date('Y-m-d H:i:s'));
+                            })
+                            ->join('products as dt5', 'dt5.id', '=', 'dt1.product_id')
                             ->where('dt1.product_id', $warehouse_product->product_id)
                             ->where('dt1.company_id', $warehouse_product->company_id)
                             ->where('dt1.type', $warehouse_product->type)
                             ->where('dt1.size_id', $size->size_id)
                             ->select('dt1.description','dt4.id as color_id','dt4.code as color_code', 'dt4.name as color_name',
-                                'dt1.images as images','dt1.price as price','dt1.name as name','dt1.quantity as quantity')
+                                'dt1.images as images','dt1.price as price','dt1.name as name','dt1.quantity as quantity',
+                                'dt6.percent AS discount', 'dt5.name as product_name', 'dt5.name as product_name', 'dt5.description as product_description')
                             ->distinct('color_id')
                             ->get();
 
@@ -276,12 +339,14 @@ class ProductController extends Controller
                                 'id' => $color->color_id,
                                 'code' => $color->color_code,
                                 'product'=>[
-                                    'name'=> $color->name,
-                                    'price' => $color->price,
+                                    'name'=> $color->name?$color->name:$color->product_name,
                                     'quantity'=>$color->quantity,
+                                    "price" => $color->price,
+                                    'discount' => $color->discount?$color->discount : NULL,
+                                    'price_discount' => $color->discount ? $color->price - ($color->price / 100 * $color->discount) : NULL,
+                                    'description' => $color->description?$color->description:$color->product_description,
                                 ],
                                 'name' => $color->color_name,
-                                'description' => $color->description,
                             ];
                             array_push($color_list,$aa_color);
                         }
