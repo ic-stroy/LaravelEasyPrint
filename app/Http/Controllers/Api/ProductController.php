@@ -265,7 +265,8 @@ class ProductController extends Controller
                             ->where('dt1.company_id', $warehouse_product->company_id)
                             ->where('dt1.type', $warehouse_product->type)
                             ->where('dt1.size_id', $size->size_id)
-                            ->select('dt1.description','dt4.id as color_id','dt4.code as color_code', 'dt4.name as color_name','dt1.images as images','dt1.price as price')
+                            ->select('dt1.description','dt4.id as color_id','dt4.code as color_code', 'dt4.name as color_name',
+                                'dt1.images as images','dt1.price as price','dt1.name as name','dt1.quantity as quantity')
                             ->distinct('color_id')
                             ->get();
 
@@ -274,7 +275,11 @@ class ProductController extends Controller
                             $aa_color = [
                                 'id' => $color->color_id,
                                 'code' => $color->color_code,
-                                'price' => $color->price,
+                                'product'=>[
+                                    'name'=> $color->name,
+                                    'price' => $color->price,
+                                    'quantity'=>$color->quantity,
+                                ],
                                 'name' => $color->color_name,
                                 'description' => $color->description,
                             ];
