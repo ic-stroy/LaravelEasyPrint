@@ -249,8 +249,8 @@ class WarehouseController extends Controller
 
     public function warehouse($id){
         $warehouse = Warehouse::where('type', Constants::WAREHOUSE_TYPE)->where('product_id', $id)->get();
-        $product = Products::select('id', 'name')->find($id);
-        return view('company.warehouse.warehouse', ['warehouse'=>$warehouse, 'product'=>$product]);
+        $product_ = Products::select('id', 'name')->find($id);
+        return view('company.warehouse.warehouse', ['warehouse'=>$warehouse, 'product_'=>$product_]);
     }
 
     public function createWarehouse($id){
