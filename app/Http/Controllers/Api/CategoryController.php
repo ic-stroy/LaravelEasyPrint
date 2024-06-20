@@ -184,6 +184,7 @@ class CategoryController extends Controller
                     $warehouseProducts[] = asset("/storage/warehouse/$warehouse_product_->image_back");
                 }
             }
+            $discount = NULL;
             $price_discount = NULL;
             $translate_name=table_translate($warehouse_product_,'warehouse_category', $language);
             if($warehouse_product_->product_discount){
