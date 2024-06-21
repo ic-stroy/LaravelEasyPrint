@@ -335,34 +335,9 @@ class ProductController extends Controller
                             ->get();
 
                         $color_list=[];
+
                         foreach ($colors as $color) {
-                            $colorWarehouseImages = [];
-                            if($color->type == Constants::WAREHOUSE_TYPE){
-                                if (count($this->getImages($color, 'warehouse'))>0) {
-                                    $colorWarehouseImages = $this->getImages($color, 'warehouse');
-                                } else {
-                                    $colorParentProduct = Products::find($color->product_id);
-                                    if($colorParentProduct){
-                                        $colorWarehouseImages = $this->getImages($colorParentProduct, 'product');
-                                    }
-                                }
-                            }else{
-                                $colorWarehouseImages = [];
-                                if (!$color->image_front) {
-                                    $color->image_front = 'no';
-                                }
-                                $color_model_image_front = storage_path('app/public/warehouse/'.$color->image_front);
-                                if (!$color->image_back) {
-                                    $color->image_back = 'no';
-                                }
-                                $color_model_image_back = storage_path('app/public/warehouse/'.$color->image_back);
-                                if(file_exists($color_model_image_front)){
-                                    $colorWarehouseImages[] = asset("/storage/warehouse/$color->image_front");
-                                }
-                                if(file_exists($color_model_image_back)){
-                                    $colorWarehouseImages[] = asset("/storage/warehouse/$color->image_back");
-                                }
-                            }
+                            $colorWarehouseImages = $this->getWarehouseImages($size);
                             $aa_color = [
                                 'id' => $color->color_id,
                                 'code' => $color->color_code,
@@ -458,33 +433,7 @@ class ProductController extends Controller
 
                         $aaa_size_list = [];
                         foreach ($sizes as $size) {
-                            $sizeWarehouseImages = [];
-                            if($size->type == Constants::WAREHOUSE_TYPE){
-                                if (count($this->getImages($size, 'warehouse'))>0) {
-                                    $sizeWarehouseImages = $this->getImages($size, 'warehouse');
-                                } else {
-                                    $sizeParentProduct = Products::find($size->product_id);
-                                    if($sizeParentProduct){
-                                        $sizeWarehouseImages = $this->getImages($sizeParentProduct, 'product');
-                                    }
-                                }
-                            }else{
-                                $sizeWarehouseImages = [];
-                                if (!$size->image_front) {
-                                    $size->image_front = 'no';
-                                }
-                                $size_model_image_front = storage_path('app/public/warehouse/'.$size->image_front);
-                                if (!$size->image_back) {
-                                    $size->image_back = 'no';
-                                }
-                                $size_model_image_back = storage_path('app/public/warehouse/'.$size->image_back);
-                                if(file_exists($size_model_image_front)){
-                                    $sizeWarehouseImages[] = asset("/storage/warehouse/$size->image_front");
-                                }
-                                if(file_exists($size_model_image_back)){
-                                    $sizeWarehouseImages[] = asset("/storage/warehouse/$size->image_back");
-                                }
-                            }
+                            $sizeWarehouseImages = $this->getWarehouseImages($size);
                             $aas_size = [
                                 'id' => $size->size_id,
                                 'name' => $size->size_name,
@@ -618,6 +567,37 @@ class ProductController extends Controller
                 return $this->error($message, 200);
             }
         }
+    }
+
+    public function getWarehouseImages($model){
+        $modelWarehouseImages = [];
+        if($model->type == Constants::WAREHOUSE_TYPE){
+            if (count($this->getImages($model, 'warehouse'))>0) {
+                $modelWarehouseImages = $this->getImages($model, 'warehouse');
+            } else {
+                $modelParentProduct = Products::find($model->product_id);
+                if($modelParentProduct){
+                    $modelWarehouseImages = $this->getImages($modelParentProduct, 'product');
+                }
+            }
+        }else{
+            $modelWarehouseImages = [];
+            if (!$model->image_front) {
+                $model->image_front = 'no';
+            }
+            $model_model_image_front = storage_path('app/public/warehouse/'.$model->image_front);
+            if (!$model->image_back) {
+                $model->image_back = 'no';
+            }
+            $model_model_image_back = storage_path('app/public/warehouse/'.$model->image_back);
+            if(file_exists($model_model_image_front)){
+                $modelWarehouseImages[] = asset("/storage/warehouse/$model->image_front");
+            }
+            if(file_exists($model_model_image_back)){
+                $modelWarehouseImages[] = asset("/storage/warehouse/$model->image_back");
+            }
+        }
+        return $modelWarehouseImages;
     }
 
     /**
