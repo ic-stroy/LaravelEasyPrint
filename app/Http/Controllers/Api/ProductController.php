@@ -329,7 +329,7 @@ class ProductController extends Controller
                             ->where('dt1.size_id', $size->size_id)
                             ->select('dt1.description','dt4.id as color_id','dt4.code as color_code', 'dt4.name as color_name',
                                 'dt1.images as images','dt1.price as price','dt1.name as name','dt1.quantity as quantity','dt1.type as type',
-                                'dt1.image_front as image_front', 'dt1.image_back as image_back',
+                                'dt1.image_front as image_front', 'dt1.image_back as image_back', 'dt1.product_id as product_id',
                                 'dt6.percent AS discount', 'dt5.name as product_name', 'dt5.name as product_name', 'dt5.description as product_description')
                             ->distinct('color_id')
                             ->get();
