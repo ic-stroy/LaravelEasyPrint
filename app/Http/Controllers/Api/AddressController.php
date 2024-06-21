@@ -239,12 +239,19 @@ class AddressController extends Controller
                 $warehouseProducts = $this->getImages($warehouse_product_->product, 'product');
             }
             $translate_name=table_translate($warehouse_product_,'warehouse_category',$language);
+            if($warehouse_product_->discount){
+                $warehouse_discount = $warehouse_product_->discount;
+            }elseif($warehouse_product_->product_discount){
+                $warehouse_discount = $warehouse_product_->product_discount;
+            }else{
+                $warehouse_discount = '';
+            }
             $warehouse_products[] = [
                 'id' => $warehouse_product_->id,
                 'name' => $translate_name ?? $warehouse_product_->product->name,
                 'price' => $warehouse_product_->price,
-                'discount' => (isset($warehouse_product_->discount)) > 0 ? $warehouse_product_->discount->percent : NULL,
-                'price_discount' => (isset($warehouse_product_->discount)) > 0 ? $warehouse_product_->price - ($warehouse_product_->price / 100 * $warehouse_product_->discount->percent) : NULL,
+                'discount' => $warehouse_discount != '' ? $warehouse_discount : NULL,
+                'price_discount' => $warehouse_discount != '' ? $warehouse_product_->price - ($warehouse_product_->price / 100 * (int)$warehouse_discount) : NULL,
                 'images' => $warehouseProducts
             ];
         }
