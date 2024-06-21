@@ -340,20 +340,26 @@ class ProductController extends Controller
                             if($color->type == Constants::WAREHOUSE_TYPE){
                                 if (count($this->getImages($color, 'warehouse'))>0) {
                                     $colorWarehouseImages = $this->getImages($color, 'warehouse');
+                                } else {
+                                    $colorParentProduct = Products::find($color->product_id);
+                                    if($colorParentProduct){
+                                        $colorWarehouseImages = $this->getImages($colorParentProduct, 'product');
+                                    }
                                 }
                             }else{
+                                $colorWarehouseImages = [];
                                 if (!$color->image_front) {
                                     $color->image_front = 'no';
                                 }
-                                $model_image_front = storage_path('app/public/warehouse/'.$color->image_front);
+                                $color_model_image_front = storage_path('app/public/warehouse/'.$color->image_front);
                                 if (!$color->image_back) {
                                     $color->image_back = 'no';
                                 }
-                                $model_image_back = storage_path('app/public/warehouse/'.$color->image_back);
-                                if(file_exists($model_image_front)){
+                                $color_model_image_back = storage_path('app/public/warehouse/'.$color->image_back);
+                                if(file_exists($color_model_image_front)){
                                     $colorWarehouseImages[] = asset("/storage/warehouse/$color->image_front");
                                 }
-                                if(file_exists($model_image_back)){
+                                if(file_exists($color_model_image_back)){
                                     $colorWarehouseImages[] = asset("/storage/warehouse/$color->image_back");
                                 }
                             }
