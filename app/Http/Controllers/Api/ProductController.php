@@ -330,7 +330,7 @@ class ProductController extends Controller
                             ->select('dt1.description','dt4.id as color_id','dt4.code as color_code', 'dt4.name as color_name',
                                 'dt1.images as images','dt1.price as price','dt1.name as name','dt1.quantity as quantity','dt1.type as type',
                                 'dt1.image_front as image_front', 'dt1.image_back as image_back', 'dt1.product_id as product_id',
-                                'dt6.percent AS discount', 'dt5.name as product_name', 'dt5.name as product_name', 'dt5.description as product_description')
+                                'dt6.percent AS discount', 'dt5.name as product_name', 'dt5.description as product_description')
                             ->distinct('color_id')
                             ->get();
 
@@ -408,19 +408,95 @@ class ProductController extends Controller
                     foreach ($colors as $color) {
                         $sizes = DB::table('warehouses as dt1')
                             ->join('sizes as dt4', 'dt4.id', '=', 'dt1.size_id')
+                            ->leftJoin('discounts as dt6', function($join){
+                                $join->on(function ($join){
+                                    $join->on([
+                                        ['dt6.warehouse_id', '=', 'dt1.id'],
+                                        ['dt6.company_id', 'is', DB::raw('NULL')]
+                                    ])
+                                    ->orOn(function ($join){
+                                        $join->on([
+                                            ['dt6.warehouse_id', '=', 'dt1.id'],
+                                            ['dt6.company_id', 'is not', DB::raw('NULL')],
+                                            ['dt1.company_id', '=', 'dt6.company_id']
+                                        ]);
+                                    });
+                                })
+                                ->where('dt6.type', '=', Constants::DISCOUNT_WAREHOUSE_TYPE)
+                                ->where('start_date', '<=', date('Y-m-d H:i:s'))
+                                ->where('end_date', '>=', date('Y-m-d H:i:s'))
+                                ->orOn(function ($join){
+                                    $join->on([
+                                        ['dt6.product_id', '=', 'dt1.product_id'],
+                                        ['dt6.product_id', 'is not', DB::raw('NULL')],
+                                        ['dt6.company_id', 'is', DB::raw('NULL')]
+                                    ])
+                                    ->orOn(function ($join){
+                                        $join->on([
+                                            ['dt6.product_id', '=', 'dt1.product_id'],
+                                            ['dt6.product_id', 'is not', DB::raw('NULL')],
+                                            ['dt6.company_id', 'is not', DB::raw('NULL')],
+                                            ['dt1.company_id', '=', 'dt6.company_id'],
+                                        ]);
+                                    });
+                                })
+                                ->where('dt6.type', '=', Constants::DISCOUNT_PRODUCT_TYPE)
+                                ->where('start_date', '<=', date('Y-m-d H:i:s'))
+                                ->where('end_date', '>=', date('Y-m-d H:i:s'));
+                            })
+                            ->join('products as dt5', 'dt5.id', '=', 'dt1.product_id')
                             ->where('dt1.product_id', $warehouse_product->product_id)
                             ->where('dt1.company_id', $warehouse_product->company_id)
                             ->where('dt1.type', $warehouse_product->type)
                             ->where('dt1.color_id', $color->color_id)
-                            ->select('dt1.description','dt4.id as size_id','dt4.name as size_name')
+                            ->select('dt1.description','dt4.id as size_id','dt4.name as size_name',
+                                'dt1.images as images','dt1.price as price','dt1.name as name','dt1.quantity as quantity','dt1.type as type',
+                                'dt1.image_front as image_front', 'dt1.image_back as image_back', 'dt1.product_id as product_id',
+                                'dt6.percent AS discount', 'dt5.name as product_name', 'dt5.description as product_description')
                             ->distinct('size_id')
                             ->get();
 
                         $aaa_size_list = [];
                         foreach ($sizes as $size) {
+                            $sizeWarehouseImages = [];
+                            if($size->type == Constants::WAREHOUSE_TYPE){
+                                if (count($this->getImages($size, 'warehouse'))>0) {
+                                    $sizeWarehouseImages = $this->getImages($size, 'warehouse');
+                                } else {
+                                    $sizeParentProduct = Products::find($size->product_id);
+                                    if($sizeParentProduct){
+                                        $sizeWarehouseImages = $this->getImages($sizeParentProduct, 'product');
+                                    }
+                                }
+                            }else{
+                                $sizeWarehouseImages = [];
+                                if (!$size->image_front) {
+                                    $size->image_front = 'no';
+                                }
+                                $size_model_image_front = storage_path('app/public/warehouse/'.$size->image_front);
+                                if (!$size->image_back) {
+                                    $size->image_back = 'no';
+                                }
+                                $size_model_image_back = storage_path('app/public/warehouse/'.$size->image_back);
+                                if(file_exists($size_model_image_front)){
+                                    $sizeWarehouseImages[] = asset("/storage/warehouse/$size->image_front");
+                                }
+                                if(file_exists($size_model_image_back)){
+                                    $sizeWarehouseImages[] = asset("/storage/warehouse/$size->image_back");
+                                }
+                            }
                             $aas_size = [
                                 'id' => $size->size_id,
                                 'name' => $size->size_name,
+                                'product'=>[
+                                    'name'=> $size->name?$size->name:$size->product_name,
+                                    'quantity'=>$size->quantity,
+                                    "price" => $size->price,
+                                    "img"=>$sizeWarehouseImages,
+                                    'discount' => $size->discount?$size->discount : NULL,
+                                    'price_discount' => $size->discount ? $size->price - ($size->price / 100 * $size->discount) : NULL,
+                                    'description' => $size->description?$size->description:$size->product_description,
+                                ],
                                 'description'=>$size->description,
                             ];
                             array_push($aaa_size_list,$aas_size);
