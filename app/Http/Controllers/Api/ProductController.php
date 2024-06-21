@@ -337,7 +337,7 @@ class ProductController extends Controller
                         $color_list=[];
 
                         foreach ($colors as $color) {
-                            $colorWarehouseImages = $this->getWarehouseImages($size);
+                            $colorWarehouseImages = $this->getWarehouseImages($color);
                             $aa_color = [
                                 'id' => $color->color_id,
                                 'code' => $color->color_code,
