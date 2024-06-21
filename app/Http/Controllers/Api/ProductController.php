@@ -219,7 +219,7 @@ class ProductController extends Controller
                 'dt8.name as company_name','dt7.name as material_name', 'dt3.id as size_id',
                 'dt3.name as size_name','dt4.id as color_id','dt4.name as color_name','dt4.code as color_code',
                 'dt5.name as product_name', 'dt5.category_id as category_id', 'dt5.images as product_images', 'dt5.description as product_description', 'dt6.percent AS discount')
-            ->orderBy('id', 'DESC')->first();
+            ->first();
             $warehouse_products = [];
             $images = [];
             if($warehouse_product){
@@ -278,7 +278,6 @@ class ProductController extends Controller
                         ->where('dt1.company_id', $warehouse_product->company_id)
                         ->where('dt1.type', $warehouse_product->type)
                         ->select('dt1.id as id','dt3.id as size_id', 'dt3.name as size_name')
-                        ->distinct('size_id')
                         ->get();
 
                     $size_list=[];
@@ -330,7 +329,7 @@ class ProductController extends Controller
                             ->select('dt1.description','dt4.id as color_id','dt4.code as color_code', 'dt4.name as color_name',
                                 'dt1.images as images','dt1.price as price','dt1.name as name','dt1.quantity as quantity',
                                 'dt6.percent AS discount', 'dt5.name as product_name', 'dt5.name as product_name', 'dt5.description as product_description')
-                            ->distinct('color_id')->orderBy('id', 'DESC')
+                            ->distinct('color_id')
                             ->get();
 
                         $color_list=[];
