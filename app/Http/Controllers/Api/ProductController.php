@@ -278,6 +278,7 @@ class ProductController extends Controller
                         ->where('dt1.company_id', $warehouse_product->company_id)
                         ->where('dt1.type', $warehouse_product->type)
                         ->select('dt1.id as id','dt3.id as size_id', 'dt3.name as size_name')
+                        ->distinct('size_id')
                         ->get();
 
                     $size_list=[];
@@ -343,7 +344,7 @@ class ProductController extends Controller
                                     "price" => $color->price,
                                     'discount' => $color->discount?$color->discount : NULL,
                                     'price_discount' => $color->discount ? $color->price - ($color->price / 100 * $color->discount) : NULL,
-                                    'description' => $color->description ? $color->description:$color->product_description,
+                                    'description' => $color->description?$color->description:$color->product_description,
                                 ],
                                 'name' => $color->color_name,
                             ];
@@ -373,6 +374,7 @@ class ProductController extends Controller
                         ->select('dt1.id as id','dt3.id as color_id','dt3.code as color_code', 'dt3.name as color_name')
                         ->distinct('color_id')
                         ->get();
+                        // dd($colors);
 
                     $aaa_color_list = [];
                     $get_colors = [];
@@ -417,8 +419,8 @@ class ProductController extends Controller
                     $size_list = [];
                 }
 
-//                 $relation_type='warehouse_product';
-//                 $relation_id=$order_detail->warehouse_id;
+                // $relation_type='warehouse_product';
+                // $relation_id=$order_detail->warehouse_id;
 
                 if ($warehouse_product->warehouse_product_id) {
                     if($warehouse_product->color_id) {
@@ -428,9 +430,9 @@ class ProductController extends Controller
                     if($warehouse_product->warehouse_product_id) {
                         $warehouse_translate_name=table_translate($warehouse_product,'warehouse', $language);
                     }
-                    if (!empty($warehouse_product->material_name) ||
-                        !empty($warehouse_product->material_composition) ||
-                        !empty($warehouse_product->manufacturer_country)) {
+                    if ($warehouse_product->material_name ||
+                        $warehouse_product->material_composition ||
+                        $warehouse_product->manufacturer_country) {
 
                         $list = [
                             "id" => $warehouse_product->warehouse_product_id,
