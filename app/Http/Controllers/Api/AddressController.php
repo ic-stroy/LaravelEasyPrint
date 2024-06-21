@@ -240,9 +240,9 @@ class AddressController extends Controller
             }
             $translate_name=table_translate($warehouse_product_,'warehouse_category',$language);
             if($warehouse_product_->discount){
-                $warehouse_discount = $warehouse_product_->discount;
+                $warehouse_discount = $warehouse_product_->discount->percent;
             }elseif($warehouse_product_->product_discount){
-                $warehouse_discount = $warehouse_product_->product_discount;
+                $warehouse_discount = $warehouse_product_->product_discount->percent;
             }else{
                 $warehouse_discount = '';
             }
