@@ -219,7 +219,7 @@ class ProductController extends Controller
                 'dt8.name as company_name','dt7.name as material_name', 'dt3.id as size_id',
                 'dt3.name as size_name','dt4.id as color_id','dt4.name as color_name','dt4.code as color_code',
                 'dt5.name as product_name', 'dt5.category_id as category_id', 'dt5.images as product_images', 'dt5.description as product_description', 'dt6.percent AS discount')
-            ->first();
+            ->orderBy('id', 'asc')->first();
             $warehouse_products = [];
             $images = [];
             if($warehouse_product){
@@ -330,7 +330,7 @@ class ProductController extends Controller
                             ->select('dt1.description','dt4.id as color_id','dt4.code as color_code', 'dt4.name as color_name',
                                 'dt1.images as images','dt1.price as price','dt1.name as name','dt1.quantity as quantity',
                                 'dt6.percent AS discount', 'dt5.name as product_name', 'dt5.name as product_name', 'dt5.description as product_description')
-                            ->distinct('color_id')
+                            ->distinct('color_id')->orderBy('id', 'asc')
                             ->get();
 
                         $color_list=[];
@@ -344,7 +344,7 @@ class ProductController extends Controller
                                     "price" => $color->price,
                                     'discount' => $color->discount?$color->discount : NULL,
                                     'price_discount' => $color->discount ? $color->price - ($color->price / 100 * $color->discount) : NULL,
-                                    'description' => $color->description?$color->description:$color->product_description,
+                                    'description' => $color->description ? $color->description:$color->product_description,
                                 ],
                                 'name' => $color->color_name,
                             ];
@@ -365,57 +365,56 @@ class ProductController extends Controller
                         array_push($get_sizes, $bb_size);
                     }
 
-                    $colors = DB::table('warehouses as dt1')
-                        ->join('colors as dt3', 'dt3.id', '=', 'dt1.color_id')
-                        // ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
-                        ->where('dt1.product_id', $warehouse_product->product_id)
-                        ->where('dt1.company_id', $warehouse_product->company_id)
-                        ->where('dt1.type', $warehouse_product->type)
-                        ->select('dt1.id as id','dt3.id as color_id','dt3.code as color_code', 'dt3.name as color_name')
-                        ->distinct('color_id')
-                        ->get();
-                        // dd($colors);
+//                    $colors = DB::table('warehouses as dt1')
+//                        ->join('colors as dt3', 'dt3.id', '=', 'dt1.color_id')
+//                        // ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
+//                        ->where('dt1.product_id', $warehouse_product->product_id)
+//                        ->where('dt1.company_id', $warehouse_product->company_id)
+//                        ->where('dt1.type', $warehouse_product->type)
+//                        ->select('dt1.id as id','dt3.id as color_id','dt3.code as color_code', 'dt3.name as color_name')
+//                        ->distinct('color_id')
+//                        ->get();
 
-                    $aaa_color_list = [];
-                    $get_colors = [];
-                    foreach ($colors as $color) {
-                        $sizes = DB::table('warehouses as dt1')
-                            ->join('sizes as dt4', 'dt4.id', '=', 'dt1.size_id')
-                            ->where('dt1.product_id', $warehouse_product->product_id)
-                            ->where('dt1.company_id', $warehouse_product->company_id)
-                            ->where('dt1.type', $warehouse_product->type)
-                            ->where('dt1.color_id', $color->color_id)
-                            ->select('dt1.description','dt4.id as size_id','dt4.name as size_name')
-                            ->distinct('size_id')
-                            ->get();
-
-                        $aaa_size_list = [];
-                        foreach ($sizes as $size) {
-                            $aas_size = [
-                                'id' => $size->size_id,
-                                'name' => $size->size_name,
-                                'description'=>$size->description,
-                            ];
-                            array_push($aaa_size_list,$aas_size);
-                        }
-
-                        $aaa_color = [
-                            'id' => $color->color_id,
-                            'code' => $color->color_code,
-                            'name' => $color->color_name,
-                            'sizes' => $aaa_size_list
-                        ];
-                        $bbb_color = [
-                            'id' => $color->color_id,
-                            'code' => $color->color_code,
-                            'name' => $color->color_name
-                        ];
-
-                        array_push($aaa_color_list,$aaa_color);
-                        array_push($get_colors,$bbb_color);
-                    }
+//                    $aaa_color_list = [];
+//                    $get_colors = [];
+//                    foreach ($colors as $color) {
+//                        $sizes = DB::table('warehouses as dt1')
+//                            ->join('sizes as dt4', 'dt4.id', '=', 'dt1.size_id')
+//                            ->where('dt1.product_id', $warehouse_product->product_id)
+//                            ->where('dt1.company_id', $warehouse_product->company_id)
+//                            ->where('dt1.type', $warehouse_product->type)
+//                            ->where('dt1.color_id', $color->color_id)
+//                            ->select('dt1.description','dt4.id as size_id','dt4.name as size_name')
+//                            ->distinct('size_id')
+//                            ->get();
+//
+//                        $aaa_size_list = [];
+//                        foreach ($sizes as $size) {
+//                            $aas_size = [
+//                                'id' => $size->size_id,
+//                                'name' => $size->size_name,
+//                                'description'=>$size->description,
+//                            ];
+//                            array_push($aaa_size_list,$aas_size);
+//                        }
+//
+//                        $aaa_color = [
+//                            'id' => $color->color_id,
+//                            'code' => $color->color_code,
+//                            'name' => $color->color_name,
+//                            'sizes' => $aaa_size_list
+//                        ];
+//                        $bbb_color = [
+//                            'id' => $color->color_id,
+//                            'code' => $color->color_code,
+//                            'name' => $color->color_name
+//                        ];
+//
+//                        array_push($aaa_color_list,$aaa_color);
+//                        array_push($get_colors,$bbb_color);
+//                    }
                 } else {
-                    $aaa_color_list = [];
+//                    $aaa_color_list = [];
                     $size_list = [];
                 }
 
@@ -462,9 +461,9 @@ class ProductController extends Controller
                                 "name" => $warehouse_product->size_name,
                             ],
                             "color_by_size" => $size_list,
-                            "size_by_color" => $aaa_color_list,
+//                            "size_by_color" => $aaa_color_list,
                             "get_sizes"=>$get_sizes,
-                            "get_colors"=>$get_colors,
+//                            "get_colors"=>$get_colors,
                             "product_category"=>$product_category,
                             "product_sub_category"=>$product_sub_category
                         ];
@@ -497,9 +496,9 @@ class ProductController extends Controller
                                 "name" => $warehouse_product->size_name,
                             ],
                             "color_by_size" => $size_list,
-                            "size_by_color" => $aaa_color_list,
+//                            "size_by_color" => $aaa_color_list,
                             "get_sizes"=>$get_sizes,
-                            "get_colors"=>$get_colors,
+//                            "get_colors"=>$get_colors,
                             "product_category"=>$product_category,
                             "product_sub_category"=>$product_sub_category
                         ];
