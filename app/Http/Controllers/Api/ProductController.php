@@ -393,9 +393,57 @@ class ProductController extends Controller
                         array_push($size_list, $aa_size);
                         array_push($get_sizes, $bb_size);
                     }
+                    $colors = DB::table('warehouses as dt1')
+                        ->join('colors as dt3', 'dt3.id', '=', 'dt1.color_id')
+                        // ->join('colors as dt4', 'dt4.id', '=', 'dt2.color_id')
+                        ->where('dt1.product_id', $warehouse_product->product_id)
+                        ->where('dt1.company_id', $warehouse_product->company_id)
+                        ->where('dt1.type', $warehouse_product->type)
+                        ->select('dt1.id as id','dt3.id as color_id','dt3.code as color_code', 'dt3.name as color_name')
+                        ->distinct('color_id')
+                        ->get();
 
+                    $aaa_color_list = [];
+                    $get_colors = [];
+                    foreach ($colors as $color) {
+                        $sizes = DB::table('warehouses as dt1')
+                            ->join('sizes as dt4', 'dt4.id', '=', 'dt1.size_id')
+                            ->where('dt1.product_id', $warehouse_product->product_id)
+                            ->where('dt1.company_id', $warehouse_product->company_id)
+                            ->where('dt1.type', $warehouse_product->type)
+                            ->where('dt1.color_id', $color->color_id)
+                            ->select('dt1.description','dt4.id as size_id','dt4.name as size_name')
+                            ->distinct('size_id')
+                            ->get();
+
+                        $aaa_size_list = [];
+                        foreach ($sizes as $size) {
+                            $aas_size = [
+                                'id' => $size->size_id,
+                                'name' => $size->size_name,
+                                'description'=>$size->description,
+                            ];
+                            array_push($aaa_size_list,$aas_size);
+                        }
+
+                        $aaa_color = [
+                            'id' => $color->color_id,
+                            'code' => $color->color_code,
+                            'name' => $color->color_name,
+                            'sizes' => $aaa_size_list
+                        ];
+                        $bbb_color = [
+                            'id' => $color->color_id,
+                            'code' => $color->color_code,
+                            'name' => $color->color_name
+                        ];
+
+                        array_push($aaa_color_list,$aaa_color);
+                        array_push($get_colors,$bbb_color);
+                    }
 
                 } else {
+                    $aaa_color_list = [];
                     $size_list = [];
                 }
 
@@ -439,6 +487,8 @@ class ProductController extends Controller
                                 "id" => $warehouse_product->size_id,
                                 "name" => $warehouse_product->size_name,
                             ],
+                            "size_by_color" => $aaa_color_list,
+                            "get_colors"=>$get_colors,
                             "color_by_size" => $size_list,
                             "get_sizes"=>$get_sizes,
                             "product_category"=>$product_category,
@@ -472,6 +522,8 @@ class ProductController extends Controller
                                 "id" => $warehouse_product->size_id,
                                 "name" => $warehouse_product->size_name,
                             ],
+                            "size_by_color" => $aaa_color_list,
+                            "get_colors"=>$get_colors,
                             "color_by_size" => $size_list,
                             "get_sizes"=>$get_sizes,
                             "product_category"=>$product_category,
