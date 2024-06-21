@@ -417,8 +417,8 @@ class ProductController extends Controller
                     $size_list = [];
                 }
 
-                 $relation_type='warehouse_product';
-                 $relation_id=$order_detail->warehouse_id;
+//                 $relation_type='warehouse_product';
+//                 $relation_id=$order_detail->warehouse_id;
 
                 if ($warehouse_product->warehouse_product_id) {
                     if($warehouse_product->color_id) {
