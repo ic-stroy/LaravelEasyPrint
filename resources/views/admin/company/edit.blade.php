@@ -59,7 +59,7 @@
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Postcode')}}</label>
-                        <input class="form-control" type="text" name="postcode" value="{{$company->address?$company->address->postcode:''}}">
+                        <input class="form-control" type="number" name="postcode" value="{{$company->address?$company->address->postcode:''}}">
                     </div>
                 </div>
                 <div class="form-group google-map-lat-lng">

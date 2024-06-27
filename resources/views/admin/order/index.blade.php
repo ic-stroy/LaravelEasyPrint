@@ -45,12 +45,12 @@
                             </th>
                             <td>
                                 <a class="show_page" href="{{route('company_order.show', $order->id)}}">
-                                    @if(isset($order->price)){{ $order->price }}@else <div class="no_text"></div> @endif
+                                    @if($order->price){{ $order->price }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('company_order.show', $order->id)}}">
-                                    @if(isset($order->all_price)){{ $order->all_price }}@else <div class="no_text"></div> @endif
+                                    @if($order->all_price){{ $order->all_price }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>
@@ -72,14 +72,18 @@
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('company_order.show', $order->id)}}">
-                                    @if(isset($order->user->personalInfo->id))
-                                        @php
-                                            $first_name = isset($order->user->personalInfo->first_name)?$order->user->personalInfo->first_name.' ':'';
-                                            $last_name = isset($order->user->personalInfo->last_name)?$order->user->personalInfo->last_name.' ':'';
-                                            $middle_name = isset($order->user->personalInfo->middle_name)?$order->user->personalInfo->middle_name:'';
-                                            $user_name = $first_name.''.$last_name.''.$middle_name;
-                                        @endphp
-                                        {{$user_name}}
+                                    @if($order->user)
+                                        @if($order->user->personalInfo)
+                                            @php
+                                                $first_name = $order->user->personalInfo->first_name?$order->user->personalInfo->first_name.' ':'';
+                                                $last_name = $order->user->personalInfo->last_name?$order->user->personalInfo->last_name.' ':'';
+                                                $middle_name = $order->user->personalInfo->middle_name?$order->user->personalInfo->middle_name:'';
+                                                $user_name = $first_name.''.$last_name.''.$middle_name;
+                                            @endphp
+                                            {{$user_name}}
+                                        @else
+                                            <div class="no_text"></div>
+                                        @endif
                                     @else
                                         <div class="no_text"></div>
                                     @endif

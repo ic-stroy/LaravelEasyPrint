@@ -23,7 +23,7 @@
                         <tr>
                             <th>{{translate('Category')}}</th>
                             <td>
-                                @if(!empty($discount_data['category'][0]) || !empty($discount_data['subcategory'][0]))
+                                @if($discount_data['category'][0] || $discount_data['subcategory'][0])
                                     {{implode(', ', [$discount_data['category'][0], $discount_data['subcategory'][0]])}}
                                 @endif
                             </td>
@@ -31,7 +31,7 @@
                         <tr>
                             <th>{{translate('Discount percent')}}</th>
                             <td>
-                                @if($discount_data['discounts'][0]->percent != null)
+                                @if($discount_data['discounts'][0]->percent)
                                     {{$discount_data['discounts'][0]->percent}} {{translate(' %')}}
                                 @endif
                             </td>
@@ -46,12 +46,12 @@
                                 @break
                             @endswitch
                             <td>
-                                @if($discount_data['number'] != null)
+                                @if($discount_data['number'])
                                     {{$discount_data['number']}}
                                 @endif
                             </td>
                         </tr>
-                        @if(!empty($discount_data['discounts'][0]->product))
+                        @if($discount_data['discounts'][0]->product)
                             <tr>
                                 <th>{{translate('Product')}}</th>
                                 <td>

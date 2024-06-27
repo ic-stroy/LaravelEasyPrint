@@ -242,9 +242,9 @@ class WarehouseApiController extends Controller
         foreach ($warehouses_ as $warehouse_) {
             $warehouses[] = [
                 'id' => $warehouse_->id,
-                'name' => isset($warehouse_->name) ? $warehouse_->name : $warehouse_->product->name,
-                'color' => isset($warehouse_->color->name) ? $warehouse_->color->name : '',
-                'size' => isset($warehouse_->size->name) ? $warehouse_->size->name : ''
+                'name' => $warehouse_->name ? $warehouse_->name : $warehouse_->product->name,
+                'color' => $warehouse_->color->name ? $warehouse_->color->name : '',
+                'size' => $warehouse_->size->name ? $warehouse_->size->name : ''
             ];
         }
         return response()->json([
@@ -257,7 +257,7 @@ class WarehouseApiController extends Controller
     public function deleteWarehouseImage(Request $request)
     {
         $warehouse = Warehouse::find($request->id);
-        if (isset($warehouse->images) && !is_array($warehouse->images)) {
+        if ($warehouse->images && !is_array($warehouse->images)) {
             $warehouse_images_base = json_decode($warehouse->images);
         } else {
             $warehouse_images_base = [];

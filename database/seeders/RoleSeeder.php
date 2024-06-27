@@ -18,19 +18,15 @@ class RoleSeeder extends Seeder
         if(!isset($role->id)){
             $datas = [
                 [
-                    'id'=>1,
                     'name'=>'Superadmin',
                 ],
                 [
-                    'id'=>2,
                     'name'=>'Admin',
                 ],
                 [
-                    'id'=>3,
                     'name'=>'Manager',
                 ],
                 [
-                    'id'=>4,
                     'name'=>'User',
                 ],
             ];

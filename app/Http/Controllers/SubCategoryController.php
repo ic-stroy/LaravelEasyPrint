@@ -24,7 +24,7 @@ class SubCategoryController extends Controller
         $all_categories = [];
         foreach($categories as $category){
             $sub_categories = $category->subcategory;
-            if(!empty($sub_categories)){
+            if(!$sub_categories->isEmpty()){
                 $all_categories[$category->id] = $sub_categories;
             }else{
                 $all_categories[$category->id] = [];

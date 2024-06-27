@@ -61,7 +61,7 @@
                                     </th>
                                     <td>
                                         <a class="show_page" href="{{route('size.show', $size->id)}}">
-                                            @if(isset($size->name)){{ $size->name }}@else <div class="no_text"></div> @endif
+                                            @if($size->name){{ $size->name }}@else <div class="no_text"></div> @endif
                                         </a>
                                     </td>
                                     <td>
@@ -75,7 +75,7 @@
                                     </td>
                                     <td>
                                         <a class="show_page" href="{{route('size.show', $size->id)}}">
-                                            @if(isset($size->updated_at)){{ $size->updated_at }}@else <div class="no_text"></div> @endif
+                                            @if($size->updated_at){{ $size->updated_at }}@else <div class="no_text"></div> @endif
                                         </a>
                                     </td>
                                     <td class="function_column">

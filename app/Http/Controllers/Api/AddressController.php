@@ -40,7 +40,7 @@ class AddressController extends Controller
                 'cities'=>$cities_,
             ];
         }
-        if(count($data)>0){
+        if(!empty($data)){
             $message = translate_api('Success', $language);
             return $this->success($message, 200, $data);
         }else{
@@ -132,7 +132,7 @@ class AddressController extends Controller
                 'postcode'=>$address_->postcode??null,
             ];
         }
-        if(count($address)>0){
+        if(!empty($address)){
             $message = translate_api('Success', $language);
             return $this->success($message, 200, $address);
         }else{
@@ -168,14 +168,18 @@ class AddressController extends Controller
 
         $response = [];
 
-        if((isset($company) && $company != NULL) && (isset($user) && $user != NULL)){
+        if(($company) && $user){
             $full_name = ($user->personalInfo) ? $user->personalInfo->last_name . ' ' . $user->personalInfo->first_name : '';
 
             $user_image = null;
-            if(isset($user->personalInfo->avatar)){
-                $sms_avatar = storage_path('app/public/user/' . $user->personalInfo->avatar);
+            if($user->personalInfo) {
+                if ($user->personalInfo->avatar) {
+                    $sms_avatar = storage_path('app/public/user/' . $user->personalInfo->avatar);
+                } else {
+                    $sms_avatar = storage_path('app/public/user/' . 'no');
+                }
             }else{
-                $sms_avatar = storage_path('app/public/user/' . 'no');
+                    $sms_avatar = storage_path('app/public/user/' . 'no');
             }
             if (file_exists($sms_avatar)) {
                 $user_image = asset('storage/user/'.$user->personalInfo->avatar);
@@ -208,7 +212,7 @@ class AddressController extends Controller
     }
 
     public function getImages($model, $text){
-        if(isset($model->images)){
+        if($model->images){
             $images_ = json_decode($model->images);
             $images = [];
             foreach ($images_ as $image_){
@@ -233,7 +237,7 @@ class AddressController extends Controller
         foreach ($warehouse_products_ as $warehouse_product_) {
             $product_ides[] = $warehouse_product_->product_id;
 
-            if (count($this->getImages($warehouse_product_, 'warehouse'))>0) {
+            if (!empty($this->getImages($warehouse_product_, 'warehouse'))) {
                 $warehouseProducts = $this->getImages($warehouse_product_, 'warehouse');
             } else {
                 $warehouseProducts = $this->getImages($warehouse_product_->product, 'product');
@@ -268,8 +272,8 @@ class AddressController extends Controller
                 'id' => $product_->id,
                 'name' => $product_->name,
                 'price' => $product_->price,
-                'discount' => (isset($product_->discount)) > 0 ? $product_->discount->percent : NULL,
-                'price_discount' => (isset($product_->discount)) > 0 ? $product_->price - ($product_->price / 100 * $product_->discount->percent) : NULL,
+                'discount' => ($product_->discount) > 0 ? $product_->discount->percent : NULL,
+                'price_discount' => ($product_->discount) > 0 ? $product_->price - ($product_->price / 100 * $product_->discount->percent) : NULL,
                 'images' => $this->getImages($product_, 'product')
             ];
         }

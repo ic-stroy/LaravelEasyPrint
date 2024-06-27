@@ -24,7 +24,7 @@
                     <tr>
                         <td>
                             <a class="show_page" href="{{route('user.category.user', $role->id)}}">
-                                @if(isset($role->name)){{ $role->name }}@else <div class="no_text"></div> @endif
+                                @if($role->name){{ $role->name }}@else <div class="no_text"></div> @endif
                             </a>
                         </td>
                     </tr>

@@ -188,7 +188,7 @@ class AuthController extends Controller
             'password' => 'required|string|confirmed'
         ]);
         $user->password = bcrypt($fields['password']);
-        if(isset($user->personalInfo)){
+        if($user->personalInfo){
             $personal_info = $user->personalInfo;
             $personal_info->first_name = $fields['name'];
             $personal_info->last_name = $fields['surname'];

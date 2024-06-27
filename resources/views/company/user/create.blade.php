@@ -59,7 +59,7 @@
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Phone number')}}</label>
-                        <input type="text" class="form-control" name="phone_number" value="{{old('phone_number')}}"/>
+                        <input type="number" class="form-control" name="phone_number" value="{{old('phone_number')}}"/>
                     </div>
                 </div>
                 <div class="row">

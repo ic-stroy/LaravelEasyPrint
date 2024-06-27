@@ -20,7 +20,7 @@ class UsersController extends Controller
     public function setPersonalInformation(Request $request){
         $language = $request->header('language');
         $user = Auth::user();
-        if(isset($user->personalInfo)){
+        if($user->personalInfo){
             $personal_info = $user->personalInfo;
         }else{
             $personal_info = new PersonalInfo();
@@ -51,9 +51,9 @@ class UsersController extends Controller
         $user->personal_info_id = $personal_info->id;
         $user->save();
 
-        if(isset($user->personalInfo)){
+        if($user->personalInfo){
             $user_image = null;
-            if(isset($user->personalInfo->avatar)){
+            if($user->personalInfo->avatar){
                 $sms_avatar = storage_path('app/public/user/' . $user->personalInfo->avatar);
             }else{
                 $sms_avatar = storage_path('app/public/user/' . 'no');
@@ -98,9 +98,9 @@ class UsersController extends Controller
     public function getPersonalInformation(Request $request){
         $language = $request->header('language');
         $user = Auth::user();
-        if(isset($user->personalInfo)){
+        if($user->personalInfo){
             $user_image = null;
-            if(isset($user->personalInfo->avatar)){
+            if($user->personalInfo->avatar){
                 $sms_avatar = storage_path('app/public/user/' . $user->personalInfo->avatar);
             }else{
                 $sms_avatar = storage_path('app/public/user/' . 'no');
@@ -147,8 +147,12 @@ class UsersController extends Controller
             $random_array = [$letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)]];
             $random = implode("", $random_array);
             if($text == 'update'){
-                if(isset($personal_info->avatar)){
-                    $sms_avatar = storage_path('app/public/user/' . $personal_info->avatar);
+                if($personal_info){
+                    if($personal_info->avatar){
+                        $sms_avatar = storage_path('app/public/user/' . $personal_info->avatar);
+                    }else{
+                        $sms_avatar = storage_path('app/public/user/' . 'no');
+                    }
                 }else{
                     $sms_avatar = storage_path('app/public/user/' . 'no');
                 }

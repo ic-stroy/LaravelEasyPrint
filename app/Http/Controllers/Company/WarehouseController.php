@@ -88,7 +88,7 @@ class WarehouseController extends Controller
         $model->save();
         $categoryDiscount = Discount::where(['product_id' => $model->product_id, 'type'=>2])->first();
         if($categoryDiscount){
-            if(!empty($model->discount)){
+            if($model->discount){
                 $discount = new Discount();
                 $discount->percent = $model->categoryDiscount->percent;
                 $discount->start_date = $model->categoryDiscount->start_date;
@@ -121,11 +121,11 @@ class WarehouseController extends Controller
         $category_array = [];
         $sub_category_ = '';
         if($product = $model->product){
-            if(!empty($product->category)){
+            if($product->category){
                 $category_ = $product->category->name;
                 $category_array = [$category_];
-            }elseif(!empty($product->subCategory)){
-                $category_ = !empty($product->subCategory->category)?$product->subCategory->category->name:'';
+            }elseif($product->subCategory){
+                $category_ = $product->subCategory->category?$product->subCategory->category->name:'';
                 $sub_category_ = $product->subCategory->name;
                 if($category_ != ''){
                     $category_array = [$category_, $sub_category_];
@@ -144,7 +144,7 @@ class WarehouseController extends Controller
     public function edit(string $id)
     {
         $warehouse = Warehouse::where('type', Constants::WAREHOUSE_TYPE)->find($id);
-        if(isset($warehouse->product)){
+        if($warehouse->product){
             $product = $warehouse->product;
             $current_category = $this->getProductCategory($warehouse->product);
             $sizes = Sizes::select('id', 'name', 'category_id')->where('category_id', $current_category->id)->get();
@@ -189,7 +189,7 @@ class WarehouseController extends Controller
         $model->save();
         $categoryDiscount = Discount::where(['product_id' => $model->product_id, 'type'=>2])->first();
         if($categoryDiscount){
-            if(!empty($model->discount)){
+            if($model->discount){
                 $discount = new Discount();
                 $discount->percent = $model->categoryDiscount->percent;
                 $discount->start_date = $model->categoryDiscount->start_date;
@@ -262,13 +262,13 @@ class WarehouseController extends Controller
     }
 
     public function getProductCategory($product){
-        if(isset($product->subSubCategory->id)){
+        if($product->subSubCategory){
             $category_product = $product->subSubCategory;
             $is_category = 3;
-        }elseif(isset($product->subCategory->id)){
+        }elseif($product->subCategory){
             $category_product = $product->subCategory;
             $is_category = 2;
-        }elseif(isset($product->category->id)){
+        }elseif($product->category){
             $category_product = $product->category;
             $is_category = 1;
         }else{
@@ -280,10 +280,14 @@ class WarehouseController extends Controller
                 $current_category = $category_product;
                 break;
             case 2:
-                $current_category = isset($category_product->category)?$category_product->category:'no';
+                $current_category = $category_product->category?$category_product->category:'no';
                 break;
             case 3:
-                $current_category = isset($category_product->sub_category->category)?$category_product->sub_category->category:'no';
+                if($category_product->sub_category){
+                    $current_category = $category_product->sub_category->category?$category_product->sub_category->category:'no';
+                }else{
+                    $current_category = "no";
+                }
                 break;
             default:
                 $current_category = 'no';
@@ -324,9 +328,9 @@ class WarehouseController extends Controller
         foreach ($warehouses_ as $warehouse_){
             $warehouses[] = [
                 'id'=>$warehouse_->id,
-                'name'=>isset($warehouse_->name)?$warehouse_->name:$warehouse_->product->name,
-                'color'=>isset($warehouse_->color->name)?$warehouse_->color->name:'',
-                'size'=>isset($warehouse_->size->name)?$warehouse_->size->name:''
+                'name'=>$warehouse_->name?$warehouse_->name:$warehouse_->product->name,
+                'color'=>$warehouse_->color->name?$warehouse_->color->name:'',
+                'size'=>$warehouse_->size->name?$warehouse_->size->name:''
             ];
         }
         return response()->json([
@@ -338,13 +342,13 @@ class WarehouseController extends Controller
 
     public function deleteWarehouseImage(Request $request){
         $warehouse = Warehouse::where('type', Constants::WAREHOUSE_TYPE)->find($request->id);
-        if(isset($warehouse->images) && !is_array($warehouse->images)){
+        if($warehouse->images && !is_array($warehouse->images)){
             $warehouse_images_base = json_decode($warehouse->images);
         }else{
             $warehouse_images_base = [];
         }
         if(is_array($warehouse_images_base)){
-            if(isset($request->warehouse_name)){
+            if($request->warehouse_name){
                 $selected_warehouse_key = array_search($request->warehouse_name, $warehouse_images_base);
                 $warehouse_main = storage_path('app/public/warehouses/'.$request->warehouse_name);
                 if(file_exists($warehouse_main)){

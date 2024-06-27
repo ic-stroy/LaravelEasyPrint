@@ -18,7 +18,7 @@ class AuthMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         $user = Auth::user();
-        if (isset($user) && isset($user->role_id)) {
+        if ($user && $user->role_id) {
             if (in_array($user->role_id, [2, 3])) {
                 return redirect()->route('company_dashboard');
             }elseif ($user->role_id == 1) {

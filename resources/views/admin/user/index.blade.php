@@ -86,9 +86,9 @@
                                 </th>
                                 <td class="text-center">
                                     <a class="show_page_color" href="{{ route('user.show', $superadmin->id) }}">
-                                        @if(isset($superadmin->id))
+                                        @if($superadmin->personalInfo)
                                             @php
-                                                if(isset($superadmin->personalInfo)){
+                                                if($superadmin->personalInfo->avatar){
                                                     $sms_avatar = storage_path('app/public/user/'.$superadmin->personalInfo->avatar);
                                                 }else{
                                                     $sms_avatar = 'no';
@@ -104,29 +104,45 @@
                                 </td>
                                 <td>
                                     <a class="show_page" href="{{ route('user.show', $superadmin->id) }}">
-                                        @if(isset($superadmin->personalInfo->first_name)){{ $superadmin->personalInfo->first_name }}@else <div class="no_text"></div> @endif
+                                        @if($superadmin->personalInfo)
+                                            @if($superadmin->personalInfo->first_name)
+                                                {{ $superadmin->personalInfo->first_name }}
+                                            @else <div class="no_text"></div> @endif
+                                        @else <div class="no_text"></div> @endif
                                     </a>
                                 </td>
                                 <td>
                                     <a class="show_page" href="{{ route('user.show', $superadmin->id) }}">
-                                        @if(isset($superadmin->personalInfo->last_name)){{ $superadmin->personalInfo->last_name }}@else <div class="no_text"></div> @endif
+                                        @if($superadmin->personalInfo)
+                                            @if($superadmin->personalInfo->last_name)
+                                                {{ $superadmin->personalInfo->last_name }}
+                                            @else <div class="no_text"></div> @endif
+                                        @else <div class="no_text"></div> @endif
                                     </a>
                                 </td>
                                 <td>
                                     <a class="show_page" href="{{ route('user.show', $superadmin->id) }}">
-                                        @if(isset($superadmin->role_id)) {{$superadmin->role->name}} @else <div class="no_text"></div> @endif
+                                        @if($superadmin->role)
+                                            @if($superadmin->role->name)
+                                                {{$superadmin->role->name}}
+                                            @else <div class="no_text"></div> @endif
+                                        @else <div class="no_text"></div> @endif
                                     </a>
                                 </td>
-                                @if(isset($superadmin->company->name))
-                                    <td>
-                                        <a class="show_page" href="{{ route('user.show', $superadmin->id) }}">
-                                            {{ $superadmin->company->name }}
-                                        </a>
-                                    </td>
+                                @if($superadmin->company)
+                                    @if($superadmin->company->name)
+                                        <td>
+                                            <a class="show_page" href="{{ route('user.show', $superadmin->id) }}">
+                                                {{ $superadmin->company->name }}
+                                            </a>
+                                        </td>
+                                    @endif
                                 @endif
                                 <td>
                                     <a class="show_page" href="{{ route('user.show', $superadmin->id) }}">
-                                        @if($superadmin->phone_number){{ $superadmin->phone_number }}@else <div class="no_text"></div> @endif
+                                        @if($superadmin->phone_number)
+                                            {{ $superadmin->phone_number }}
+                                        @else <div class="no_text"></div> @endif
                                     </a>
                                 </td>
                                 <td class="function_column mt-2">
@@ -170,9 +186,9 @@
                                 </th>
                                 <td class="text-center">
                                     <a class="show_page_color" href="{{ route('user.show', $admin->id) }}">
-                                        @if(isset($admin->id))
+                                        @if($admin->personalInfo)
                                             @php
-                                                if(isset($admin->personalInfo)){
+                                                if($admin->personalInfo->avatar){
                                                     $sms_avatar = storage_path('app/public/user/'.$admin->personalInfo->avatar);
                                                 }else{
                                                     $sms_avatar = 'no';
@@ -188,29 +204,45 @@
                                 </td>
                                 <td>
                                     <a class="show_page" href="{{ route('user.show', $admin->id) }}">
-                                        @if(isset($admin->personalInfo->first_name)){{ $admin->personalInfo->first_name }}@else <div class="no_text"></div> @endif
+                                        @if($admin->personalInfo)
+                                            @if($admin->personalInfo->first_name)
+                                                {{ $admin->personalInfo->first_name }}
+                                            @else <div class="no_text"></div> @endif
+                                        @else <div class="no_text"></div> @endif
                                     </a>
                                 </td>
                                 <td>
                                     <a class="show_page" href="{{ route('user.show', $admin->id) }}">
-                                        @if(isset($admin->personalInfo->last_name)){{ $admin->personalInfo->last_name }}@else <div class="no_text"></div> @endif
+                                        @if($admin->personalInfo)
+                                            @if($admin->personalInfo->last_name)
+                                                {{ $admin->personalInfo->last_name }}
+                                            @else <div class="no_text"></div> @endif
+                                        @else <div class="no_text"></div> @endif
                                     </a>
                                 </td>
                                 <td>
                                     <a class="show_page" href="{{ route('user.show', $admin->id) }}">
-                                        @if(isset($admin->role_id)) {{$admin->role->name}} @else <div class="no_text"></div> @endif
+                                        @if($admin->role)
+                                            @if($admin->role->name)
+                                                {{$admin->role->name}}
+                                            @else <div class="no_text"></div> @endif
+                                        @else <div class="no_text"></div> @endif
                                     </a>
                                 </td>
-                                @if(isset($admin->company->name))
-                                    <td>
-                                        <a class="show_page" href="{{ route('user.show', $admin->id) }}">
-                                            {{ $admin->company->name }}
-                                        </a>
-                                    </td>
+                                @if($admin->company)
+                                    @if($admin->company->name)
+                                        <td>
+                                            <a class="show_page" href="{{ route('user.show', $admin->id) }}">
+                                                {{ $admin->company->name }}
+                                            </a>
+                                        </td>
+                                    @endif
                                 @endif
                                 <td>
                                     <a class="show_page" href="{{ route('user.show', $admin->id) }}">
-                                        @if(isset($admin->phone_number)){{ $admin->phone_number }}@else <div class="no_text"></div> @endif
+                                        @if($admin->phone_number)
+                                            {{ $admin->phone_number }}
+                                        @else <div class="no_text"></div> @endif
                                     </a>
                                 </td>
                                 <td class="function_column mt-2">
@@ -254,9 +286,9 @@
                                 </th>
                                 <td class="text-center">
                                     <a class="show_page_color" href="{{ route('user.show', $manager->id) }}">
-                                        @if(isset($manager->id))
+                                        @if($manager->personalInfo)
                                             @php
-                                                if(isset($manager->personalInfo)){
+                                                if($manager->personalInfo->avatar){
                                                     $sms_avatar = storage_path('app/public/user/'.$manager->personalInfo->avatar);
                                                 }else{
                                                     $sms_avatar = 'no';
@@ -272,29 +304,45 @@
                                 </td>
                                 <td>
                                     <a class="show_page" href="{{ route('user.show', $manager->id) }}">
-                                        @if(isset($manager->personalInfo->first_name)){{ $manager->personalInfo->first_name }}@else <div class="no_text"></div> @endif
+                                        @if($manager->personalInfo)
+                                            @if($manager->personalInfo->first_name)
+                                                {{ $manager->personalInfo->first_name }}
+                                            @else <div class="no_text"></div> @endif
+                                        @else <div class="no_text"></div> @endif
                                     </a>
                                 </td>
                                 <td>
                                     <a class="show_page" href="{{ route('user.show', $manager->id) }}">
-                                        @if(isset($manager->personalInfo->last_name)){{ $manager->personalInfo->last_name }}@else <div class="no_text"></div> @endif
+                                        @if($manager->personalInfo)
+                                            @if($manager->personalInfo->last_name)
+                                                {{ $manager->personalInfo->last_name }}
+                                            @else <div class="no_text"></div> @endif
+                                        @else <div class="no_text"></div> @endif
                                     </a>
                                 </td>
                                 <td>
                                     <a class="show_page" href="{{ route('user.show', $manager->id) }}">
-                                        @if(isset($manager->role_id)) {{$manager->role->name}} @else <div class="no_text"></div> @endif
+                                        @if($manager->role)
+                                            @if($manager->role->name)
+                                                {{$manager->role->name}}
+                                            @else <div class="no_text"></div> @endif
+                                        @else <div class="no_text"></div> @endif
                                     </a>
                                 </td>
-                                @if(isset($manager->company->name))
-                                    <td>
-                                        <a class="show_page" href="{{ route('user.show', $manager->id) }}">
-                                            {{ $manager->company->name }}
-                                        </a>
-                                    </td>
+                                @if($manager->company)
+                                    @if($manager->company->name)
+                                        <td>
+                                            <a class="show_page" href="{{ route('user.show', $manager->id) }}">
+                                                {{ $manager->company->name }}
+                                            </a>
+                                        </td>
+                                    @endif
                                 @endif
                                 <td>
                                     <a class="show_page" href="{{ route('user.show', $manager->id) }}">
-                                        @if(isset($manager->phone_number)){{ $manager->phone_number }}@else <div class="no_text"></div> @endif
+                                        @if($manager->phone_number)
+                                            {{ $manager->phone_number }}
+                                        @else <div class="no_text"></div> @endif
                                     </a>
                                 </td>
                                 <td class="function_column mt-2">
@@ -337,9 +385,9 @@
                                 </th>
                                 <td class="text-center">
                                     <a class="show_page_color" href="{{ route('user.show', $user->id) }}">
-                                        @if(isset($user->id))
+                                        @if($user->personalInfo)
                                             @php
-                                                if(isset($user->personalInfo)){
+                                                if($user->personalInfo->avatar){
                                                     $sms_avatar = storage_path('app/public/user/'.$user->personalInfo->avatar);
                                                 }else{
                                                     $sms_avatar = 'no';
@@ -355,22 +403,36 @@
                                 </td>
                                 <td>
                                     <a class="show_page" href="{{ route('user.show', $user->id) }}">
-                                        @if(isset($user->personalInfo->first_name)){{ $user->personalInfo->first_name }}@else <div class="no_text"></div> @endif
+                                        @if($user->personalInfo)
+                                            @if($user->personalInfo->first_name)
+                                                {{ $user->personalInfo->first_name }}
+                                            @else <div class="no_text"></div> @endif
+                                        @else <div class="no_text"></div> @endif
                                     </a>
                                 </td>
                                 <td>
                                     <a class="show_page" href="{{ route('user.show', $user->id) }}">
-                                        @if(isset($user->personalInfo->last_name)){{ $user->personalInfo->last_name }}@else <div class="no_text"></div> @endif
+                                        @if($user->personalInfo)
+                                            @if($user->personalInfo->last_name)
+                                                {{ $user->personalInfo->last_name }}
+                                            @else <div class="no_text"></div> @endif
+                                        @else <div class="no_text"></div> @endif
                                     </a>
                                 </td>
                                 <td>
                                     <a class="show_page" href="{{ route('user.show', $user->id) }}">
-                                        @if(isset($user->role_id)) {{$user->role->name}} @else <div class="no_text"></div> @endif
+                                        @if($user->role)
+                                            @if($user->role->name)
+                                                {{$user->role->name}}
+                                            @else <div class="no_text"></div> @endif
+                                        @else <div class="no_text"></div> @endif
                                     </a>
                                 </td>
                                 <td>
                                     <a class="show_page" href="{{ route('user.show', $user->id) }}">
-                                        @if(isset($user->email)){{ $user->email }}@else <div class="no_text"></div> @endif
+                                        @if($user->email)
+                                            {{ $user->email }}
+                                        @else <div class="no_text"></div> @endif
                                     </a>
                                 </td>
                                 <td class="function_column mt-2">

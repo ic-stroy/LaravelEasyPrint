@@ -17,7 +17,7 @@ class CompanyAdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         $user = Auth::user();
-        if (!isset($user->id)) {
+        if (!$user) {
             return redirect()->route('login');
         }
         switch ($user->role_id) {

@@ -59,16 +59,22 @@
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Phone number')}}</label>
-                        <input type="text" class="form-control" name="phone_number" value="{{$user->phone_number??''}}"/>
+                        <input type="number" class="form-control" name="phone_number" value="{{$user->phone_number??''}}"/>
                     </div>
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">
                         <div style="text-align: center">
-                            @if(isset($user->personalInfo->avatar))
-                                @php
-                                    $avatar = storage_path('app/public/user/'.$user->personalInfo->avatar)
-                                @endphp
+                            @if($user->personalInfo)
+                                @if($user->personalInfo->avatar)
+                                    @php
+                                        $avatar = storage_path('app/public/user/'.$user->personalInfo->avatar)
+                                    @endphp
+                                @else
+                                    @php
+                                        $avatar = 'no'
+                                    @endphp
+                                @endif
                             @else
                                 @php
                                     $avatar = 'no'
@@ -85,8 +91,8 @@
                         <label for="gender" class="form-label">{{translate('Gender')}}</label>
                         <select id="gender" class="form-select" name="gender">
                             <option value="">{{translate('Choose..')}}</option>
-                            <option value="1" @if(isset($user->personalInfo)){{$user->personalInfo->gender==1?'selected':''}}@endif>{{translate('Man')}}</option>
-                            <option value="2" @if(isset($user->personalInfo)){{$user->personalInfo->gender==2?'selected':''}}@endif>{{translate('Woman')}}</option>
+                            <option value="1" @if($user->personalInfo){{$user->personalInfo->gender==1?'selected':''}}@endif>{{translate('Man')}}</option>
+                            <option value="2" @if($user->personalInfo){{$user->personalInfo->gender==2?'selected':''}}@endif>{{translate('Woman')}}</option>
                         </select>
                     </div>
                 </div>
@@ -112,7 +118,7 @@
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Birth date')}}</label>
                         @php
-                            $birth_date = explode(' ', $user->personalInfo->birth_date??'');
+                            $birth_date = explode(' ', $user->personalInfo?$user->personalInfo->birth_date:'');
                         @endphp
                         <input type="date" class="form-control" name="birth_date" value="{{$birth_date[0]}}"/>
                     </div>
@@ -163,10 +169,18 @@
                 <div class="form-group">
                     <div id="map" class="google_maps"></div>
                 </div>
-                <input type="hidden" name="region" id="region" value="{{$user->address->region??''}}">
-                <input type="hidden" name="district" id="district" value="{{$user->address->district??''}}">
-                <input type="hidden" name="address_lat" id="address_lat" value="{{$user->address->latitude??''}}">
-                <input type="hidden" name="address_long" id="address_long" value="{{$user->address->longitude??''}}">
+
+                @if($user->address)
+                    <input type="hidden" name="region" id="region" value="{{$user->address->region??''}}">
+                    <input type="hidden" name="district" id="district" value="{{$user->address->district??''}}">
+                    <input type="hidden" name="address_lat" id="address_lat" value="{{$user->address->latitude??''}}">
+                    <input type="hidden" name="address_long" id="address_long" value="{{$user->address->longitude??''}}">
+                @else
+                    <input type="hidden" name="region" id="region" value="">
+                    <input type="hidden" name="district" id="district" value="">
+                    <input type="hidden" name="address_lat" id="address_lat" value="">
+                    <input type="hidden" name="address_long" id="address_long" value="">
+                @endif
                 <div class="mt-2">
                     <button type="submit" class="btn btn-primary waves-effect waves-light">{{translate('Update')}}</button>
                     <button type="reset" class="btn btn-secondary waves-effect">{{translate('Cancel')}}</button>
@@ -206,15 +220,20 @@
                 }
             }
         })
-        @if($user->address && isset($user->address->cities))
-            let current_region = "{{$user->address->cities->region->id??''}}"
-            let current_district = "{{$user->address->cities->id??''}}"
+        @if($user->address)
+            @if($user->address->cities)
+                let current_region = "{{$user->address->cities->region?$user->address->cities->region->id:''}}"
+                let current_district = "{{$user->address->cities->id??''}}"
+            @else
+                let current_region = ''
+                let current_district = ''
+            @endif
+            let current_latitude = "{{$user->address->latitude??''}}"
+            let current_longitude = "{{$user->address->longitude??''}}"
         @else
-            let current_region = ''
-            let current_district = ''
+            let current_latitude = ''
+            let current_longitude = ''
         @endif
-        let current_latitude = "{{$user->address->latitude??''}}"
-        let current_longitude = "{{$user->address->longitude??''}}"
     </script>
     <script src="{{asset('assets/js/company.js')}}"></script>
 

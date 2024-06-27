@@ -90,6 +90,9 @@ class DiscountController extends Controller
             $discount_number = 1;
         }
         $products = $this->getProducts($request);
+        if($products->isEmpty()){
+            return redirect()->back()->with('error', translate('There is no product in this category'));
+        }
         if(isset($request->company_id) && $request->company_id){
             foreach ($products as $product){
                 $warehouses_id = Warehouse::where('company_id', $request->company_id)->where('product_id', $product->id)->pluck('id');
@@ -297,6 +300,9 @@ class DiscountController extends Controller
             $discount_number = 1;
         }
         $products = $this->getProducts($request);
+        if($products->isEmpty()){
+            return redirect()->back()->with('error', translate('There is no product in this category'));
+        }
         $current_discount = Discount::find($id);
         $current_discount_group = Discount::where('discount_number', $current_discount->discount_number)->get();
         foreach ($current_discount_group as $currentDiscount){

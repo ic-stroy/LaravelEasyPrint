@@ -57,13 +57,17 @@ class CompanyOrderController extends Controller
 
     public function getOrders($orders, $user){
         $order_data = [];
-        foreach($orders as $order){
+        foreach($orders as $order) {
             $user_name = '';
-            if(!empty($order->user->personalInfo)){
-                $first_name = isset($order->user->personalInfo->first_name)?$order->user->personalInfo->first_name.' ':'';
-                $last_name = isset($order->user->personalInfo->last_name)?$order->user->personalInfo->last_name.' ':'';
-                $middle_name = isset($order->user->personalInfo->middle_name)?$order->user->personalInfo->middle_name:'';
-                $user_name = $first_name.''.$last_name.''.$middle_name;
+            if ($orders){
+                if ($orders->user){
+                    if ($order->user->personalInfo) {
+                        $first_name = $order->user->personalInfo->first_name ? $order->user->personalInfo->first_name . ' ' : '';
+                        $last_name = $order->user->personalInfo->last_name ? $order->user->personalInfo->last_name . ' ' : '';
+                        $middle_name = $order->user->personalInfo->middle_name ? $order->user->personalInfo->middle_name : '';
+                        $user_name = $first_name . '' . $last_name . '' . $middle_name;
+                    }
+                }
             }
             $products_with_anime = [];
             $products = [];
@@ -88,7 +92,7 @@ class CompanyOrderController extends Controller
                 $images = [];
 
                 if($order_detail->warehouse_id && $order_detail->product_id == NULL &&
-                    !empty($order_detail->warehouse) && $order_detail->warehouse->company_id == $user->company_id){
+                    $order_detail->warehouse && $order_detail->warehouse->company_id == $user->company_id){
                     $order_has = true;
                     $product_types = $product_types + 1;
 
@@ -102,14 +106,14 @@ class CompanyOrderController extends Controller
                     $order_detail_all_price = (int)$order_detail->price * (int)$order_detail->quantity - (int)$order_detail->discount_price;
                     $company_discount_price = $company_discount_price + (int)$order_detail->discount_price;
 
-                    if(!empty($order_detail->warehouse)){
-                        $discount_withouth_expire = !empty($order_detail->warehouse->discount_withouth_expire)?$order_detail->warehouse->discount_withouth_expire->percent:0;
-                        $product_discount_withouth_expire = !empty($order_detail->warehouse->product_discount_withouth_expire)?$order_detail->warehouse->product_discount_withouth_expire->percent:0;
+                    if($order_detail->warehouse){
+                        $discount_withouth_expire = $order_detail->warehouse->discount_withouth_expire?$order_detail->warehouse->discount_withouth_expire->percent:0;
+                        $product_discount_withouth_expire = $order_detail->warehouse->product_discount_withouth_expire?$order_detail->warehouse->product_discount_withouth_expire->percent:0;
                     }else{
                         $discount_withouth_expire = 0;
                         $product_discount_withouth_expire = 0;
                     }
-                    if(!empty($order_detail->warehouse)) {
+                    if($order_detail->warehouse) {
                         $images = [];
                         $warehouse__ = $order_detail->warehouse;
                         if($warehouse__->type == Constants::WAREHOUSE_TYPE){
@@ -191,7 +195,7 @@ class CompanyOrderController extends Controller
                         $order_detail_image_back = null;
                     }
                     if(!$order_detail_image_front && !$order_detail_image_back){
-                        if(!empty($order_detail->product)){
+                        if($order_detail->product){
                             if($order_detail->product->images){
                                 $images_ = json_decode($order_detail->product->images);
                                 $images = [];
@@ -209,7 +213,9 @@ class CompanyOrderController extends Controller
                     }else{
                         $images = [$order_detail_image_front??'no', $order_detail_image_back??'no'];
                     }
-                    $product_discount_withouth_expire = !empty($order_detail->product->discount_whithout_expire)?$order_detail->product->discount_whithout_expire->percent:0;
+                    if($order_detail->product){
+                        $product_discount_withouth_expire = $order_detail->product->discount_whithout_expire?$order_detail->product->discount_whithout_expire->percent:0;
+                    }
                     $products_with_anime[] = [$order_detail, $order_detail_all_price, $products_with_anime_uploads,
                         'images'=>$images, 'product_discount_withouth_expire'=>$product_discount_withouth_expire];
                 }

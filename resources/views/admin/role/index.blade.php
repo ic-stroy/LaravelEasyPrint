@@ -34,12 +34,12 @@
                             </th>
                             <td>
                                 <a class="show_page" href="{{route('role.show', $role->id)}}">
-                                    @if(isset($role->name)){{ $role->name }}@else <div class="no_text"></div> @endif
+                                    @if($role->name){{ $role->name }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('role.show', $role->id)}}">
-                                    @if(isset($role->updated_at)){{ $role->updated_at }}@else <div class="no_text"></div> @endif
+                                    @if($role->updated_at){{ $role->updated_at }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td class="function_column">

@@ -352,7 +352,7 @@
 
                 <!-- User box -->
                 <div class="user-box text-center">
-                    @if(isset($current_user->personalInfo) && !empty($current_user->personalInfo))
+                    @if($current_user->personalInfo)
                         @php
                             if(!$current_user->personalInfo->avatar){
                                 $current_user->personalInfo->avatar = 'no';
@@ -368,7 +368,7 @@
                     <div class="dropdown">
                         <a href="#" class="user-name dropdown-toggle h5 mt-2 mb-1 d-block"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            @if(!empty($current_user) && !empty($current_user->personalInfo))
+                            @if($current_user->personalInfo)
                                 {{$current_user->personalInfo->first_name??''}} {{$current_user->personalInfo->last_name??''}}
                             @endif
                         </a>

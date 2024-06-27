@@ -17,7 +17,7 @@ class CompanyMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         $user = Auth::user();
-        if(isset($user->id) && isset($user->company_id)){
+        if($user && $user->company_id){
             return $next($request);
         }else{
             return redirect()->route('login');

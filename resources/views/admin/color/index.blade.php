@@ -39,7 +39,7 @@
                             </th>
                             <td>
                                 <a class="show_page" href="{{route('color.show', $color->id)}}">
-                                    @if(isset($color->name)){{ $color->name }}@else <div class="no_text"></div> @endif
+                                    @if($color->name){{ $color->name }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>
@@ -49,7 +49,7 @@
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('color.show', $color->id)}}">
-                                    @if(isset($color->updated_at)){{ $color->updated_at }}@else <div class="no_text"></div> @endif
+                                    @if($color->updated_at){{ $color->updated_at }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td class="function_column">
