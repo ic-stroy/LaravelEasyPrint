@@ -269,7 +269,7 @@ class OrderController extends Controller
         $order = $user->orderBasket;
         $order_detail_list = [];
         if ($user->orderBasket) {
-            if ($user->orderBasket->orderDetail->isEmpty()) {
+            if (!$user->orderBasket->orderDetail->isEmpty()) {
                 $order_price = 0;
                 $order_discount_price = 0;
                 foreach ($user->orderBasket->orderDetail as $order_detail) {
