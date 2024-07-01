@@ -260,8 +260,7 @@ class AddressController extends Controller
             ];
         }
 
-        $products_ = DB::table('products')
-            ->select('id','name', 'price', 'images')
+        $products_ = Products::select('id','name', 'price', 'images')
             ->where('slide_show', Constants::ACTIVE)
             ->whereIn('id', $product_ides)
             ->get();
