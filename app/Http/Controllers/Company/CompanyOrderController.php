@@ -59,8 +59,8 @@ class CompanyOrderController extends Controller
         $order_data = [];
         foreach($orders as $order) {
             $user_name = '';
-            if ($orders){
-                if ($orders->user){
+            if ($order){
+                if ($order->user){
                     if ($order->user->personalInfo) {
                         $first_name = $order->user->personalInfo->first_name ? $order->user->personalInfo->first_name . ' ' : '';
                         $last_name = $order->user->personalInfo->last_name ? $order->user->personalInfo->last_name . ' ' : '';

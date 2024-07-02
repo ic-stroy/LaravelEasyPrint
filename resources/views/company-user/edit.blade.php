@@ -170,12 +170,12 @@
     <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
     <script>
         let page = true
-        let error = "{{session('error')}}"
-        if(error != "" && error != null && error != undefined){
-            $(document).ready(function(){
-                toastr.warning(error)
-            });
-        }
+        {{--let error = "{{session('error')}}"--}}
+        {{--if(error != "" && error != null && error != undefined){--}}
+        {{--    $(document).ready(function(){--}}
+        {{--        toastr.warning(error)--}}
+        {{--    });--}}
+        {{--}--}}
         @if($user->address)
             @if($user->address->cities)
                 let current_region = "{{$user->address->cities->region->id??''}}"

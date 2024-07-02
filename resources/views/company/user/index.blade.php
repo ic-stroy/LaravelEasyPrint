@@ -72,7 +72,6 @@
                             <a class="show_page" href="{{ route('company_user.show', $user->id) }}">
                                 @if($user->personalInfo)
                                     {{ $user->personalInfo->last_name }}
-                                    @else <div class="no_text"></div> @endif
                                 @else <div class="no_text"></div> @endif
                             </a>
                         </td>
