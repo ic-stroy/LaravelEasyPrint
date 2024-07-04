@@ -349,8 +349,8 @@ class OrderController extends Controller
                             }
 
                             $translate_name = table_translate($warehouse_product, 'warehouse', $language);
-                            $warehouse__ = Warehouse::find($warehouse_product->warehouse_product_id);
-                            return response()->json([$warehouse_product, $translate_name, $warehouse_product->warehouse_product_name, $warehouse__]);
+                            $warehouse__[] = Warehouse::find($warehouse_product->warehouse_product_id);
+                            $warehouse_product__[]=$warehouse_product;
                             if (!$translate_name) {
                                 $product_ = Products::find($warehouse_product->product_id);
                                 $translate_name = table_translate($product_, 'product', $language);
@@ -523,6 +523,8 @@ class OrderController extends Controller
                     'grant_total' => $order->all_price,
                     'list' => $order_detail_list
                 ];
+                return response()->json([$warehouse_product, $translate_name, $warehouse_product->warehouse_product_name, $warehouse__]);
+
                 $message = translate_api('success', $language);
                 return $this->success($message, 200, $data);
             } else {
