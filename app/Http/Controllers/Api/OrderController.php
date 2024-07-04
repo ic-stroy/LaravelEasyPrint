@@ -348,8 +348,9 @@ class OrderController extends Controller
                                 }
                             }
                             $warehouse___ = Warehouse::find($order_detail->warehouse_id);
+                            $warehouse____[]=$warehouse___;
+                            $warehouse_product____[]=$warehouse_product;
                             $translate_name = table_translate($warehouse_product, 'warehouse', $language);
-                            return response()->json([$warehouse___, $warehouse_product]);
                             if (!$translate_name) {
                                 $product_ = Products::find($warehouse_product->product_id);
                                 $translate_name = table_translate($product_, 'product', $language);
@@ -513,6 +514,8 @@ class OrderController extends Controller
                     $order->all_price = $order->price - (int)$order->discount_price;
                 }
                 $order->save();
+
+                return response()->json([$warehouse____, $warehouse_product____]);
                 $data = [
                     'id' => $order->id,
                     'coupon_id' => $order->coupon_id,
