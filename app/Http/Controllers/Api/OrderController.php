@@ -347,11 +347,11 @@ class OrderController extends Controller
                                     $list_images[] = asset("/storage/warehouse/$warehouse_product->image_back");
                                 }
                             }
-//                            $warehouse___ = Warehouse::find($order_detail->warehouse_id);
+                            $warehouse___ = Warehouse::find($order_detail->warehouse_id);
 //                            $warehouse____[]=$warehouse___;
 //                            $warehouse_product____[]=$warehouse_product;
                             $translate_name = table_translate($warehouse_product, 'warehouse', $language);
-//                            return response()->json([$warehouse____, $warehouse_product____]);
+                            return response()->json([$warehouse___, $warehouse_product]);
                             if (!$translate_name) {
                                 $product_ = Products::find($warehouse_product->product_id);
                                 $translate_name = table_translate($product_, 'product', $language);
