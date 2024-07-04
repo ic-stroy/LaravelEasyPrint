@@ -327,7 +327,7 @@ class ProductController extends Controller
                             ->where('dt1.company_id', $warehouse_product->company_id)
                             ->where('dt1.type', $warehouse_product->type)
                             ->where('dt1.size_id', $size->size_id)
-                            ->select('dt1.description','dt4.id as color_id','dt4.code as color_code', 'dt4.name as color_name',
+                            ->select('dt1.description', 'dt1.id', 'dt4.id as color_id','dt4.code as color_code', 'dt4.name as color_name',
                                 'dt1.images as images','dt1.price as price','dt1.name as name','dt1.quantity as quantity','dt1.type as type',
                                 'dt1.image_front as image_front', 'dt1.image_back as image_back', 'dt1.product_id as product_id',
                                 'dt6.percent AS discount', 'dt5.name as product_name', 'dt5.description as product_description')
@@ -342,6 +342,7 @@ class ProductController extends Controller
                                 'id' => $color->color_id,
                                 'code' => $color->color_code,
                                 'product'=>[
+                                    'id'=>$color->id,
                                     'name'=> $color->name?$color->name:$color->product_name,
                                     'quantity'=>$color->quantity,
                                     "price" => $color->price,
@@ -424,7 +425,7 @@ class ProductController extends Controller
                             ->where('dt1.company_id', $warehouse_product->company_id)
                             ->where('dt1.type', $warehouse_product->type)
                             ->where('dt1.color_id', $color->color_id)
-                            ->select('dt1.description','dt4.id as size_id','dt4.name as size_name',
+                            ->select('dt1.description', 'dt1.id', 'dt4.id as size_id','dt4.name as size_name',
                                 'dt1.images as images','dt1.price as price','dt1.name as name','dt1.quantity as quantity','dt1.type as type',
                                 'dt1.image_front as image_front', 'dt1.image_back as image_back', 'dt1.product_id as product_id',
                                 'dt6.percent AS discount', 'dt5.name as product_name', 'dt5.description as product_description')
@@ -438,6 +439,7 @@ class ProductController extends Controller
                                 'id' => $size->size_id,
                                 'name' => $size->size_name,
                                 'product'=>[
+                                    'id'=>$size->id,
                                     'name'=> $size->name?$size->name:$size->product_name,
                                     'quantity'=>$size->quantity,
                                     "price" => $size->price,
