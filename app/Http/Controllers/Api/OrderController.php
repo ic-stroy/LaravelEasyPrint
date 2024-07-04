@@ -349,7 +349,7 @@ class OrderController extends Controller
                             }
 //                            $warehouse___ = Warehouse::find($order_detail->warehouse_id);
                             $translate_name = table_translate($warehouse_product, 'warehouse', $language);
-//                            return response()->json([$warehouse___, $warehouse_product]);
+                            return response()->json([$warehouse_product, $order_detail->warehouse]);
                             if (!$translate_name) {
                                 $product_ = Products::find($warehouse_product->product_id);
                                 $translate_name = table_translate($product_, 'product', $language);
