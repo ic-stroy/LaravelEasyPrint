@@ -86,7 +86,6 @@ class OrderController extends Controller
             $order = new Order();
             $order->user_id = $user->id;
             $order->status = Constants::BASKED;
-
             $order->price = (int)$request_order_price;
             $order->discount_price = (int)$request_order_discount_price;
             $order->all_price = (int)$request_order_price - $request_order_discount_price;
@@ -350,7 +349,10 @@ class OrderController extends Controller
                             }
 
                             $translate_name = table_translate($warehouse_product, 'warehouse', $language);
-
+                            if (!$translate_name) {
+                                $product_ = Products::find($warehouse_product->product_id);
+                                $translate_name = table_translate($product_, 'product', $language);
+                            }
                             if ($warehouse_product->discount_percent) {
                                 $order_detail->discount = $warehouse_product->discount_percent;
                             } else {
