@@ -330,7 +330,7 @@ class OrderController extends Controller
                         if ($warehouse_product) {
                             if ($warehouse_product->type == Constants::WAREHOUSE_TYPE) {
                                 $list_product = Products::find($warehouse_product->product_id);
-                                $list_images = count($this->getImages($warehouse_product, 'warehouses')) > 0 ? $this->getImages($warehouse_product, 'warehouses') : $this->getImages($list_product, 'product');
+                                $list_images = !empty($this->getImages($warehouse_product, 'warehouses')) ? $this->getImages($warehouse_product, 'warehouses') : $this->getImages($list_product, 'product');
                             } else {
                                 if (!$warehouse_product->image_front) {
                                     $warehouse_product->image_front = 'no';
