@@ -53,7 +53,7 @@ class AuthController extends Controller
                 return $this->error("Fail message not sent. You must wait 1 minute to resend sms", 400);
             }
         }
-        if(!$eskiz_token->expire_date && strtotime('now') > (int)$eskiz_token->expire_date){
+        if(!$eskiz_token->expire_date || strtotime('now') > (int)$eskiz_token->expire_date){
             $guzzle_request = new GuzzleRequest('POST', 'https://notify.eskiz.uz/api/auth/login');
             $res = $client->sendAsync($guzzle_request, $token_options)->wait();
             $res_array = json_decode($res->getBody());
