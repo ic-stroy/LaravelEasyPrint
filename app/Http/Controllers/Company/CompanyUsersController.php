@@ -48,6 +48,10 @@ class CompanyUsersController extends Controller
     public function store(CompanyUserRequest $request)
     {
         $user = Auth::user();
+
+        if($request->password != $request->password_confirmation){
+            return redirect()->back()->with('error', translate('Your new password confirmation is incorrect'));
+        }
         $personal_info = new PersonalInfo();
         $personal_info->first_name = $request->first_name;
         $personal_info->last_name = $request->last_name;
@@ -139,7 +143,17 @@ class CompanyUsersController extends Controller
     {
         $user = Auth::user();
         $model = User::find($id);
-        if(isset($model->personalInfo)){
+        if ($request->new_password && $request->password) {
+            if(!Hash::check($request->password, $model->password)){
+                return redirect()->back()->with('error', translate('Your password is incorrect'));
+            }
+            if ($request->new_password == $request->new_password_confirmation??'no') {
+                $model->password = Hash::make($request->new_password);
+            }else{
+                return redirect()->back()->with('error', translate('Your new password confirmation is incorrect'));
+            }
+        }
+        if($model->personalInfo){
             $personal_info = $model->personalInfo;
         }else{
             $personal_info = new PersonalInfo();
@@ -154,16 +168,6 @@ class CompanyUsersController extends Controller
         $personal_info->birth_date = $request->birth_date;
         $personal_info->save();
         $model->email =  $request->email;
-        if ($request->new_password && $request->password) {
-            if(!password_verify($request->password, $model->password)){
-                return redirect()->back()->with('error', translate('Your password is incorrect'));
-            }
-            if ($request->new_password == $request->new_password_confirmation) {
-                $model->password = Hash::make($request->new_password);
-            }else{
-                return redirect()->back()->with('error', translate('Your new password confirmation is incorrect'));
-            }
-        }
         if(!$request->user_edit == 1){
             $model->role_id = 3;
         }
@@ -287,5 +291,63 @@ class CompanyUsersController extends Controller
             'roles' => $roles,
             'companies'=>$companies
         ]);
+    }
+
+    public function updateUser(Request $request, string $id){
+        $user = Auth::user();
+        $model = User::find($id);
+        if ($request->new_password && $request->password) {
+            if(!Hash::check($request->password, $model->password)){
+                return redirect()->back()->with('error', translate('Your password is incorrect'));
+            }
+            if ($request->new_password == $request->new_password_confirmation??'no') {
+                $model->password = Hash::make($request->new_password);
+            }else{
+                return redirect()->back()->with('error', translate('Your new password confirmation is incorrect'));
+            }
+        }
+        if($model->personalInfo){
+            $personal_info = $model->personalInfo;
+        }else{
+            $personal_info = new PersonalInfo();
+        }
+        $personal_info->first_name = $request->first_name;
+        $personal_info->last_name = $request->last_name;
+        $personal_info->middle_name = $request->middle_name;
+        $personal_info->phone_number = $request->phone_number;
+        $file = $request->file('avatar');
+        $this->imageSave($file, $personal_info, 'update');
+        $personal_info->gender = $request->gender;
+        $personal_info->birth_date = $request->birth_date;
+        $personal_info->save();
+        $model->email =  $request->email;
+        if(!$request->user_edit == 1){
+            $model->role_id = 3;
+        }
+        $model->personal_info_id = $personal_info->id;
+        $model->phone_number = $request->phone_number;
+        $model->language = 'ru';
+        $model->company_id = $user->company_id;
+        $model->save();
+        if($request->district || $request->address_name || $request->postcode){
+            if($model->address){
+                $address = $model->address;
+            }else{
+                $address = new Address();
+            }
+            $address->city_id = $request->district;
+            $address->name = $request->address_name;
+            $address->postcode = $request->postcode;
+            $address->latitude = $request->address_lat;
+            $address->longitude = $request->address_long;
+            $address->user_id = $model->id;
+            $address->save();
+        }
+
+        if($request->user_edit == 1){
+            return redirect()->route('getCompanyUser')->with('status', translate('Successfully updated'));
+        }else {
+            return redirect()->route('company_user.index')->with('status', translate('Successfully updated'));
+        }
     }
 }

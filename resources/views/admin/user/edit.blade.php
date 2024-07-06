@@ -233,6 +233,8 @@
         @else
             let current_latitude = ''
             let current_longitude = ''
+            let current_region = ''
+            let current_district = ''
         @endif
     </script>
     <script src="{{asset('assets/js/company.js')}}"></script>

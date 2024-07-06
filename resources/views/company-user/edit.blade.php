@@ -25,7 +25,7 @@
                     </ul>
                 </div>
             @endif
-            <form action="{{route('company_user.update', $user->id)}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
+            <form action="{{route('updateCompanyUser', $user->id)}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="row">

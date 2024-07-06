@@ -52,10 +52,7 @@ class UsersController extends Controller
     public function store(UserRequest $request)
     {
         $personal_info = new PersonalInfo();
-        if($request->password != $request->password_confirmation){
-            return redirect()->back()->with('error', translate('Your new password confirmation is incorrect'));
-        }
-        if($request->role_id != $request->role_id){
+        if($request->password && $request->password != $request->password_confirmation){
             return redirect()->back()->with('error', translate('Your new password confirmation is incorrect'));
         }
         $personal_info->first_name = $request->first_name;
@@ -148,11 +145,11 @@ class UsersController extends Controller
     public function update(UserRequest $request, string $id)
     {
         $model = User::find($id);
-        if ($request->new_password && $request->password && $request->new_password_confirmation) {
+        if ($request->new_password && $request->password) {
             if(!Hash::check($request->password, $model->password)){
                 return redirect()->back()->with('error', translate('Your password is incorrect'));
             }
-            if ($request->new_password == $request->new_password_confirmation) {
+            if ($request->new_password == $request->new_password_confirmation??'no') {
                 $model->password = Hash::make($request->new_password);
             }else{
                 return redirect()->back()->with('error', translate('Your new password confirmation is incorrect'));
