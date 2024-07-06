@@ -307,14 +307,14 @@
                                                             <span class="badge bg-info">{{translate('bank card')}}</span>
                                                         @endif
                                                         @if($order['order'])
-                                                            <span style="font-size:12px; opacity: 0.64">{{translate('Created at')}}
+                                                            <span style="font-size:12px; opacity: 0.64; color: grey">{{translate('Created at')}}
                                                                 <span style="font-size:12px; opacity: 0.34">{{$order['order']->updated_at}}</span>
                                                             </span>
                                                             @if(!empty($order['order']->address))
-                                                                <span style="font-size:12px; opacity: 0.64">{{translate('Address')}}
+                                                                <span style="font-size:12px; opacity: 0.64; color: grey">{{translate('Address')}}
                                                                     <span style="font-size:12px; opacity: 0.44"> {{$order['order']->address->name}}</span>
                                                                 </span>
-                                                                <span style="font-size:12px; opacity: 0.64">{{translate('Postcode')}}
+                                                                <span style="font-size:12px; opacity: 0.64; color: grey">{{translate('Postcode')}}
                                                                     <span style="font-size:12px; opacity: 0.44"> {{$order['order']->address->postcode}}</span>
                                                                 </span>
                                                             @endif

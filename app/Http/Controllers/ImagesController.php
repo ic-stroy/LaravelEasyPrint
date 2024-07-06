@@ -25,7 +25,7 @@ class ImagesController extends Controller
     {
         $model = new Images();
         $image = $request->file('image');
-        if (!empty($image)) {
+        if ($image) {
             $random = $this->setRandom();
             $product_image_name = $random.''.date('Y-m-dh-i-s').'.'.$image->extension();
             $image->storeAs('public/images/', $product_image_name);
@@ -52,7 +52,7 @@ class ImagesController extends Controller
     {
         $model = Images::find($id);
         $image = $request->file('image');
-        if (!empty($image)) {
+        if ($image) {
             if($model->name) {
                 if($model->name){
                     $model->name = $model->name;
