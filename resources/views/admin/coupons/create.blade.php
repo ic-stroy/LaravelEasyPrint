@@ -72,7 +72,7 @@
                     </div>
                     <div class="mb-3 col-3">
                         <label class="form-label" id="quantity_orders">{{translate('Quantity of orders')}}</label>
-                        <label class="form-label display-none" id="number_order">{{translate('The number of order')}}</label>
+                        <label class="form-label display-none" id="number_order">{{translate('Warrant number')}}</label>
                         <input type="number" name="order_count" class="form-control" required/>
                     </div>
                     <div class="mb-3 col-2">
