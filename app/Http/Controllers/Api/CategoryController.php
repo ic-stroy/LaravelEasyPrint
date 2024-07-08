@@ -269,7 +269,6 @@ class CategoryController extends Controller
                 'Authorization' => "Bearer $token"
             ]
         ];
-        dd($token);
         if(isset($token) && $token){
             $client = new \GuzzleHttp\Client();
             $url = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https://' : 'http://'.$_SERVER['HTTP_HOST'];
@@ -277,6 +276,7 @@ class CategoryController extends Controller
             try{
                 $res = $client->sendAsync($guzzle_request, $options)->wait();
                 $result = $res->getBody();
+                dd($result);
                 $result = json_decode($result);
                 $basket_quantity = $result->basket_quantity??0;
                 $profile = [
