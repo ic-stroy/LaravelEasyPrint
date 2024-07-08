@@ -649,7 +649,7 @@ class OrderController extends Controller
                             }else{
                                 $images = [$order_detail_image_front, $order_detail_image_back];
                             }
-
+                            $
                             $list=[
                                 "id"=>$order_detail->id,
                                 "relation_type"=>$relation_type,
@@ -657,7 +657,7 @@ class OrderController extends Controller
                                 'name'=>$product->product_name,
                                 "price"=>$order_detail->price,
                                 "discount"=>$order_detail->discount,
-                                "all_price"=>(int)$order_detail->price - (int)$order_detail->discount_price,
+                                "all_price"=>(int)$order_detail->discount_price>0?(int)$order_detail->price - (int)$order_detail->discount_price:null,
                                 "quantity"=>$order_detail->quantity,
                                 "description"=>$product->description,
                                 "images"=>$images,
