@@ -264,12 +264,18 @@ class CategoryController extends Controller
         $token = $request->header('token');
         $languages = Language::select('id', 'name', 'code')->get();
         $options = [
-            'Authorization' => "Bearer $token"
+            'headers'=>[
+                'Accept'        => 'application/json',
+                'Authorization' => "Bearer $token"
+            ]
         ];
         if(isset($token) && $token){
             $client = new \GuzzleHttp\Client();
             $url = 'https://'.$_SERVER['HTTP_HOST'];
             $guzzle_request = new GuzzleRequest('GET', $url.'/api/user-info');
+            $res = $client->sendAsync($guzzle_request, $options)->wait();
+            dd($url, $res);
+            $result = $res->getBody();
             try{
                 $res = $client->sendAsync($guzzle_request, $options)->wait();
                 $result = $res->getBody();
