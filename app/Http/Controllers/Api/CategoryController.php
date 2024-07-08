@@ -271,6 +271,7 @@ class CategoryController extends Controller
         ];
         if(isset($token) && $token){
             $client = new \GuzzleHttp\Client();
+            dd($_SERVER['HTTPS'], isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
             $url = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https://'.$_SERVER['HTTP_HOST'] : 'http://'.$_SERVER['HTTP_HOST'];
             $guzzle_request = new GuzzleRequest('GET', $url.'/api/user-info');
 
