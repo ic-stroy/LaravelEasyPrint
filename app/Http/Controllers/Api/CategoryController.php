@@ -271,12 +271,11 @@ class CategoryController extends Controller
         ];
         if(isset($token) && $token){
             $client = new \GuzzleHttp\Client();
-            $url = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https://' : 'http://'.$_SERVER['HTTP_HOST'];
+            $url = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https://'.$_SERVER['HTTP_HOST'] : 'http://'.$_SERVER['HTTP_HOST'];
             $guzzle_request = new GuzzleRequest('GET', $url.'/api/user-info');
 
             $res = $client->sendAsync($guzzle_request, $options)->wait();
             $result = $res->getBody();
-            dd($result);
             try{
                 $res = $client->sendAsync($guzzle_request, $options)->wait();
                 $result = $res->getBody();
