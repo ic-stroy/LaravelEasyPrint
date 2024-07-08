@@ -272,8 +272,8 @@ class CategoryController extends Controller
         if(isset($token) && $token){
             $client = new \GuzzleHttp\Client();
             $url ='https://'.$_SERVER['HTTP_HOST'];
-            dd($url);
             $guzzle_request = new GuzzleRequest('GET', $url.'/api/user-info');
+            dd($guzzle_request);
             try{
                 $res = $client->sendAsync($guzzle_request, $options)->wait();
                 $result = $res->getBody();
