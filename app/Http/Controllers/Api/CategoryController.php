@@ -273,10 +273,13 @@ class CategoryController extends Controller
             $client = new \GuzzleHttp\Client();
             $url = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https://' : 'http://'.$_SERVER['HTTP_HOST'];
             $guzzle_request = new GuzzleRequest('GET', $url.'/api/user-info');
+
+            $res = $client->sendAsync($guzzle_request, $options)->wait();
+            $result = $res->getBody();
+            dd($result);
             try{
                 $res = $client->sendAsync($guzzle_request, $options)->wait();
                 $result = $res->getBody();
-                dd($result);
                 $result = json_decode($result);
                 $basket_quantity = $result->basket_quantity??0;
                 $profile = [
