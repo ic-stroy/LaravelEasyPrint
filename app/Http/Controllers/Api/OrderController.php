@@ -1342,7 +1342,7 @@ class OrderController extends Controller
                     "image_price"=>$order_detail->image_price,
                     "total_price"=>$order_detail->total_price,
                     "discount"=>$order_detail->discount,
-                    "discount_price"=>$order_detail->discount_price,
+                    "all_price"=>(int)$order_detail->discount_price>0?(int)$order_detail->price - (int)$order_detail->discount_price:null,
                     "warehouse"=>count($warehouse)>0?$warehouse:null,
                     "product"=>count($product)>0?$product:null,
                 ];
