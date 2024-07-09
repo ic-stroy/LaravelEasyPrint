@@ -35,19 +35,19 @@ class Order extends Model
     ];
 
     public function orderDetail(){
-        return $this->hasMany(OrderDetail::class, 'order_id', 'id');
+        return $this->hasMany(OrderDetail::class, 'order_id', 'id')->withTrashed();
     }
 
     public function user(){
-        return $this->hasOne(User::class, 'id', 'user_id');
+        return $this->hasOne(User::class, 'id', 'user_id')->withTrashed();
     }
 
     public function warehouse(){
-        return $this->hasOne(Warehouse::class, 'id', 'warehouse_id');
+        return $this->hasOne(Warehouse::class, 'id', 'warehouse_id')->withTrashed();
     }
 
     public function product(){
-        return $this->hasOne(Warehouse::class, 'id', 'product_id');
+        return $this->hasOne(Warehouse::class, 'id', 'product_id')->withTrashed();
     }
 
     public function coupon(){
@@ -55,6 +55,6 @@ class Order extends Model
     }
 
     public function address(){
-        return $this->hasOne(Address::class, 'id', 'address_id');
+        return $this->hasOne(Address::class, 'id', 'address_id')->withTrashed();
     }
 }

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OrderDetail extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'order_details';
 
@@ -33,19 +33,19 @@ class OrderDetail extends Model
     ];
 
     public function order(){
-        return $this->hasOne(Order::class, 'id', 'order_id');
+        return $this->hasOne(Order::class, 'id', 'order_id')->withTrashed();
     }
     public function warehouse(){
-        return $this->hasOne(Warehouse::class, 'id', 'warehouse_id');
+        return $this->hasOne(Warehouse::class, 'id', 'warehouse_id')->withTrashed();
     }
     public function product(){
-        return $this->hasOne(Products::class, 'id', 'product_id');
+        return $this->hasOne(Products::class, 'id', 'product_id')->withTrashed();
     }
     public function size(){
-        return $this->hasOne(Sizes::class, 'id', 'size_id');
+        return $this->hasOne(Sizes::class, 'id', 'size_id')->withTrashed();
     }
     public function color(){
-        return $this->hasOne(Color::class, 'id', 'color_id');
+        return $this->hasOne(Color::class, 'id', 'color_id')->withTrashed();
     }
 
 }
