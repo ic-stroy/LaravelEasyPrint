@@ -243,32 +243,34 @@ class ProductController extends Controller
                         'name'=>$product_category_translate_name,
                     ];
                 }
-                if($warehouse_product->type == Constants::WAREHOUSE_TYPE){
-                    if (count($this->getImages($warehouse_product, 'warehouse'))>0) {
-                        $warehouseProducts = $this->getImages($warehouse_product, 'warehouse');
-                    } else {
-                        $parentProduct = Products::find($warehouse_product->product_id);
-                        if($parentProduct){
-                            $warehouseProducts = $this->getImages($parentProduct, 'product');
-                        }
-                    }
-                }else{
-                    $warehouseProducts = [];
-                    if (!$warehouse_product->image_front) {
-                        $warehouse_product->image_front = 'no';
-                    }
-                    $model_image_front = storage_path('app/public/warehouse/'.$warehouse_product->image_front);
-                    if (!$warehouse_product->image_back) {
-                        $warehouse_product->image_back = 'no';
-                    }
-                    $model_image_back = storage_path('app/public/warehouse/'.$warehouse_product->image_back);
-                    if(file_exists($model_image_front)){
-                        $warehouseProducts[] = asset("/storage/warehouse/$warehouse_product->image_front");
-                    }
-                    if(file_exists($model_image_back)){
-                        $warehouseProducts[] = asset("/storage/warehouse/$warehouse_product->image_back");
-                    }
-                }
+
+                $warehouseProducts = $this->getWarehouseImages($warehouse_product);
+//                if($warehouse_product->type == Constants::WAREHOUSE_TYPE){
+//                    if (count($this->getImages($warehouse_product, 'warehouse'))>0) {
+//                        $warehouseProducts = $this->getImages($warehouse_product, 'warehouse');
+//                    } else {
+//                        $parentProduct = Products::find($warehouse_product->product_id);
+//                        if($parentProduct){
+//                            $warehouseProducts = $this->getImages($parentProduct, 'product');
+//                        }
+//                    }
+//                }else{
+//                    $warehouseProducts = [];
+//                    if (!$warehouse_product->image_front) {
+//                        $warehouse_product->image_front = 'no';
+//                    }
+//                    $model_image_front = storage_path('app/public/warehouse/'.$warehouse_product->image_front);
+//                    if (!$warehouse_product->image_back) {
+//                        $warehouse_product->image_back = 'no';
+//                    }
+//                    $model_image_back = storage_path('app/public/warehouse/'.$warehouse_product->image_back);
+//                    if(file_exists($model_image_front)){
+//                        $warehouseProducts[] = asset("/storage/warehouse/$warehouse_product->image_front");
+//                    }
+//                    if(file_exists($model_image_back)){
+//                        $warehouseProducts[] = asset("/storage/warehouse/$warehouse_product->image_back");
+//                    }
+//                }
 
                 if ($warehouse_product->product_id) {
                     $sizes = DB::table('warehouses as dt1')
@@ -521,8 +523,7 @@ class ProductController extends Controller
                             "product_category"=>$product_category,
                             "product_sub_category"=>$product_sub_category
                         ];
-                    }
-                    else{
+                    }else{
                         $list = [
                             "id" => $warehouse_product->warehouse_product_id,
                             "name" => $warehouse_translate_name ?? $warehouse_product->product_name,
