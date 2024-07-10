@@ -708,8 +708,8 @@
                                                         @if((int)$products[0]->discount_price > 0)
                                                             {{(int)$products['discount_withouth_expire']}}
                                                             {{(int)$products['product_discount_withouth_expire']}}
-                                                            {{(int)$products[0]->warehouse->discount_withouth_expire}}
-                                                            {{(int)$products[0]->warehouse->product_discount_withouth_expire}}
+                                                            {{$products[0]->warehouse->discount_withouth_expire}}
+                                                            {{$products[0]->warehouse->product_discount_withouth_expire}}
                                                             @if($products['discount_withouth_expire'] > 0)
                                                                 <span>{{translate('Discount')}}: <b style="color: red">{{(int)$products['discount_withouth_expire']}} %</b></span>
                                                             @elseif($products['product_discount_withouth_expire'] > 0)
