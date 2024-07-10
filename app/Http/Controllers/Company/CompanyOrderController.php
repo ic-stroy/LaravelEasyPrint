@@ -296,6 +296,12 @@ class CompanyOrderController extends Controller
         $cancelled_has = false;
         if($orderDetail){
             $orderDetail->status = Constants::ORDER_DETAIL_CANCELLED;
+
+            $warehouse_product___ = Warehouse::find($orderDetail->warehouse_id);
+            if($warehouse_product___) {
+                $warehouse_product___->quantity = $warehouse_product___->quantity + $orderDetail->quantity;
+            }
+
             $users = User::where('company_id', $user->company_id)->get();
             foreach($users as $user) {
                 foreach ($user->unreadnotifications as $notification) {
@@ -373,6 +379,12 @@ class CompanyOrderController extends Controller
         $order_details_discount_price = 0;
         $order_detail_price = 0;
         if($orderDetail){
+            if($orderDetail->status ==  Constants::ORDER_DETAIL_CANCELLED){
+                $warehouse_product___ = Warehouse::find($orderDetail->warehouse_id);
+                if($warehouse_product___) {
+                    $warehouse_product___->quantity = $warehouse_product___->quantity - $orderDetail->quantity;
+                }
+            }
             $orderDetail->status = Constants::ORDER_DETAIL_PERFORMED;
             $users = User::where('company_id', $user->company_id)->get();
             foreach($users as $user){
