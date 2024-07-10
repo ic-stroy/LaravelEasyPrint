@@ -892,15 +892,9 @@
         let out_of_stock_text = "{{translate('Out of stock')}}"
 
         let error = "{{session('error')}}"
-        let performed_status = "{{session('performed')}}"
         if(error != "" && error != null && error != undefined){
             $(document).ready(function(){
                 toastr.warning(error)
-            });
-        }
-        if(performed_status != "" && performed_status != null && performed_status != undefined){
-            $(document).ready(function(){
-                toastr.success(performed_status)
             });
         }
     </script>
