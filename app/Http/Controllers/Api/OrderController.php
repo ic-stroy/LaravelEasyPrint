@@ -107,7 +107,7 @@ class OrderController extends Controller
 
             $warehouse_product___ = Warehouse::find($request->warehouse_product_id);
             if($warehouse_product___){
-                if($warehouse_product___->quantity < $request->quantity){
+                if((int)$warehouse_product___->quantity < (int)$request->quantity){
                     return $this->error(translate_api("There are only left $warehouse_product___->quantity quantity", $language), 400);
                 }
             }
