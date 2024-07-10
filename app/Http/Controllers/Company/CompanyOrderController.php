@@ -299,7 +299,8 @@ class CompanyOrderController extends Controller
 
             $warehouse_product___ = Warehouse::find($orderDetail->warehouse_id);
             if($warehouse_product___) {
-                $warehouse_product___->quantity = $warehouse_product___->quantity + $orderDetail->quantity;
+                $warehouse_product___->quantity = (int)$warehouse_product___->quantity + (int)$orderDetail->quantity;
+                $warehouse_product___->save();
             }
 
             $users = User::where('company_id', $user->company_id)->get();
@@ -382,7 +383,8 @@ class CompanyOrderController extends Controller
             if($orderDetail->status ==  Constants::ORDER_DETAIL_CANCELLED){
                 $warehouse_product___ = Warehouse::find($orderDetail->warehouse_id);
                 if($warehouse_product___) {
-                    $warehouse_product___->quantity = $warehouse_product___->quantity - $orderDetail->quantity;
+                    $warehouse_product___->quantity = (int)$warehouse_product___->quantity - (int)$orderDetail->quantity;
+                    $warehouse_product___->save();
                 }
             }
             $orderDetail->status = Constants::ORDER_DETAIL_PERFORMED;
