@@ -68,11 +68,13 @@ class ProductController extends Controller
             ->groupBy('company_id', 'product_id')
             ->whereNull('deleted_at')
             ->where('type', Constants::WAREHOUSE_TYPE)
+            ->where('quantity', '>', 0)
             ->pluck(DB::raw('MIN(id) as id'))
             ->all();
         $warehouse_anime_products_id = DB::table('warehouses')
             ->whereNull('deleted_at')
             ->where('type', Constants::PRINT_TYPE)
+            ->where('quantity', '>', 0)
             ->pluck('id')
             ->all();
         $warehouse_products = [];
