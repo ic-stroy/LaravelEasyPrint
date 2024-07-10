@@ -284,8 +284,9 @@ class OrderController extends Controller
                     if ($order_detail->warehouse_id) {
                         $list = [];
                         $warehouse_product___ = Warehouse::find($order_detail->warehouse_id);
+                        return response([(int)$warehouse_product___->quantity, (int)$order_detail->quantity, $warehouse_product___]);
                         if($warehouse_product___){
-                            if($warehouse_product___->quantity < $order_detail->quantity){
+                            if((int)$warehouse_product___->quantity < (int)$order_detail->quantity){
                                 $order_detail->delete();
                             }else{
                                 $warehouse_product = DB::table('order_details as dt1')
