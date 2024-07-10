@@ -755,7 +755,7 @@
                                                                     <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#success-alert-modal" data-url=""
                                                                             onclick='accepting_order(
                                                                                 "{{(int)$products[0]->quantity}}",
-                                                                                "{{(int)$products[0]->warehouse->quantity - (int)$products[0]->quantity }}",
+                                                                                "{{(int)$products[0]->warehouse->quantity }}",
                                                                                 "{{!empty($products[0]->color)?$products[0]->color->name:''}}",
                                                                                 "{{!empty($products[0]->size)?$products[0]->size->name:''}}",
                                                                                 "{{$product_name}}",
