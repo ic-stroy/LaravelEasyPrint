@@ -37,6 +37,24 @@ class OrderController extends Controller
     public function setWarehouse(Request $request){
         $language = $request->header('language');
         $user = Auth::user();
+        if($request->warehouse_product_id){
+            if(!DB::table('warehouses')->where('id', $request->warehouse_product_id)->exists()){
+                return $this->error(translate_api('warehouse not found', $language), 400);
+            }
+            $warehouse_product___ = Warehouse::find($request->warehouse_product_id);
+            if($warehouse_product___){
+                if($warehouse_product___->color_id && $warehouse_product___->color_id != $request->color_id){
+                    return $this->error("this warehouse's color is ".$warehouse_product___->color->name." and color id is $warehouse_product___->color_id", 400);
+                }
+                if($warehouse_product___->size_id && $warehouse_product___->size_id != $request->size_id){
+                    return $this->error("this warehouse's size is ".$warehouse_product___->size->name." and size id is $warehouse_product___->size_id", 400);
+                }
+                if((int)$warehouse_product___->quantity < (int)$request->quantity){
+                    return $this->error(translate_api("There are only left $warehouse_product___->quantity quantity", $language), 400);
+                }
+            }
+            return $this->error(translate_api('Color not found', $language), 400);
+        }
         if(!Color::where('id', $request->color_id)->exists()){
             return $this->error(translate_api('Color not found', $language), 400);
         }
@@ -1491,7 +1509,7 @@ class OrderController extends Controller
                 if($orderDetail->warehouse) {
                     if(!empty($companies_id)){
                         $users = User::whereIn('company_id', $companies_id)->get();
-                        if(count($users)>0){
+                        if($users->isEmpty()){
                             Notification::send($users, new OrderNotification($orderDetail));
                         }
                     }
