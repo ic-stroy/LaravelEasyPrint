@@ -1161,9 +1161,11 @@ class OrderController extends Controller
      * bu funksiya Orderning ichidagi orderDetail ni o'chirishda qo'llaniladi  (Order status ORDERED gacha ishlaydi Post zapros)
      */
     public function deleteOrderDetail(Request $request){
+
         $language = $request->header('language');
         $order_detail_id=$request->order_detail_id;
-
+        $order_detail=OrderDetail::where('id', $order_detail_id)->whereIn('status', [Constants::ORDER_DETAIL_BASKET, Constants::ORDER_DETAIL_ORDERED])->first();
+        return response()->json([$order_detail, $order_detail_id]);
         if ($order_detail=OrderDetail::where('id', $order_detail_id)->whereIn('status', [Constants::ORDER_DETAIL_BASKET, Constants::ORDER_DETAIL_ORDERED])->first()) {
             $order = $order_detail->order;
             $order->price = (int)$order->price - ((int)$order_detail->price * (int)$order_detail->quantity);
