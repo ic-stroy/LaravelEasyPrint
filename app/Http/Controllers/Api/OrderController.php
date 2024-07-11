@@ -993,8 +993,7 @@ class OrderController extends Controller
             foreach($order->orderDetail as $orderDetail){
                 if($orderDetail->status == Constants::ORDER_DETAIL_ORDERED){
                     if($orderDetail->warehouse) {
-                        return response()->json([$orderDetail->warehouse, $orderDetail->warehouse->quantity, (int)$orderDetail->quantity]);
-                        
+
                         if((int)$orderDetail->warehouse->quantity < (int)$orderDetail->quantity){
                             return $this->error(translate_api("There are only left $orderDetail->warehouse->quantity quantity", $language), 400);
                         }else{
