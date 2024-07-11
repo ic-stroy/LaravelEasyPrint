@@ -37,6 +37,17 @@ class OrderController extends Controller
     public function setWarehouse(Request $request){
         $language = $request->header('language');
         $user = Auth::user();
+        if(!Color::where('id', $request->color_id)->exists()){
+            return $this->error(translate_api('Color not found', $language), 400);
+        }
+        if(!Sizes::where('id', $request->size_id)->exists()){
+            return $this->error(translate_api('Size not found', $language), 400);
+        }
+        if(isset($request->product_id)){
+            if(!Products::where('id', $request->product_id)->exists()){
+                return $this->error(translate_api('Product not found', $language), 400);
+            }
+        }
         if($request->warehouse_product_id){
             if(!DB::table('warehouses')->where('id', $request->warehouse_product_id)->exists()){
                 return $this->error(translate_api('warehouse not found', $language), 400);
@@ -53,19 +64,8 @@ class OrderController extends Controller
                     return $this->error(translate_api("There are only left $warehouse_product___->quantity quantity", $language), 400);
                 }
             }
-            return $this->error(translate_api('Color not found', $language), 400);
         }
-        if(!Color::where('id', $request->color_id)->exists()){
-            return $this->error(translate_api('Color not found', $language), 400);
-        }
-        if(!Sizes::where('id', $request->size_id)->exists()){
-            return $this->error(translate_api('Size not found', $language), 400);
-        }
-        if(isset($request->product_id)){
-            if(!Products::where('id', $request->product_id)->exists()){
-                return $this->error(translate_api('Product not found', $language), 400);
-            }
-        }
+
 //        $request_price = $request->price + (int)$request->image_price;
         $request_price = $request->price;
         $request_discount = $request->discount??0;
