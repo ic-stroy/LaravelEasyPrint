@@ -1164,7 +1164,7 @@ class OrderController extends Controller
 
         $language = $request->header('language');
         $order_detail_id=$request->order_detail_id;
-        $order_detail=OrderDetail::where('id', $order_detail_id)->whereIn('status', [Constants::ORDER_DETAIL_BASKET, Constants::ORDER_DETAIL_ORDERED])->first();
+        $order_detail=OrderDetail::where('id', $order_detail_id)->first();
         return response()->json([$order_detail, $order_detail_id]);
         if ($order_detail=OrderDetail::where('id', $order_detail_id)->whereIn('status', [Constants::ORDER_DETAIL_BASKET, Constants::ORDER_DETAIL_ORDERED])->first()) {
             $order = $order_detail->order;
