@@ -215,6 +215,7 @@ class ProductController extends Controller
             ->join('companies as dt8', 'dt8.id', '=','dt2.company_id')
             // ->leftJoin('coupons as dt5', 'dt5.warehouse_product_id', '=', 'dt2.id')
             ->where('dt2.id' , $warehouse_product_id)
+            ->where('dt2.quantity' , '>', 0)
             ->select('dt2.id as warehouse_product_id','dt2.name as warehouse_product_name','dt2.quantity as quantity', 'dt2.images as images', 'dt2.description as description',
                 'dt2.product_id as product_id', 'dt2.company_id as company_id', 'dt2.price as price','dt2.material_composition','dt2.manufacturer_country',
                 'dt2.type as type', 'dt2.image_front as image_front', 'dt2.image_back as image_back', 'dt2.type as type',
@@ -331,6 +332,7 @@ class ProductController extends Controller
                             ->where('dt1.company_id', $warehouse_product->company_id)
                             ->where('dt1.type', $warehouse_product->type)
                             ->where('dt1.size_id', $size->size_id)
+                            ->where('dt1.quantity' , '>', 0)
                             ->select('dt1.description', 'dt1.id', 'dt4.id as color_id','dt4.code as color_code', 'dt4.name as color_name',
                                 'dt1.images as images','dt1.price as price','dt1.name as name','dt1.quantity as quantity','dt1.type as type',
                                 'dt1.image_front as image_front', 'dt1.image_back as image_back', 'dt1.product_id as product_id',
@@ -429,6 +431,7 @@ class ProductController extends Controller
                             ->where('dt1.company_id', $warehouse_product->company_id)
                             ->where('dt1.type', $warehouse_product->type)
                             ->where('dt1.color_id', $color->color_id)
+                            ->where('dt1.quantity' , '>', 0)
                             ->select('dt1.description', 'dt1.id', 'dt4.id as size_id','dt4.name as size_name',
                                 'dt1.images as images','dt1.price as price','dt1.name as name','dt1.quantity as quantity','dt1.type as type',
                                 'dt1.image_front as image_front', 'dt1.image_back as image_back', 'dt1.product_id as product_id',
