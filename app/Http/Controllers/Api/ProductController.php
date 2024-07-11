@@ -282,6 +282,7 @@ class ProductController extends Controller
                         ->where('dt1.product_id', $warehouse_product->product_id)
                         ->where('dt1.company_id', $warehouse_product->company_id)
                         ->where('dt1.type', $warehouse_product->type)
+                        ->where('dt1.quantity' , '>', 0)
                         ->select('dt1.id as id','dt3.id as size_id', 'dt3.name as size_name')
                         ->distinct('size_id')
                         ->get();
@@ -381,6 +382,7 @@ class ProductController extends Controller
                         ->where('dt1.product_id', $warehouse_product->product_id)
                         ->where('dt1.company_id', $warehouse_product->company_id)
                         ->where('dt1.type', $warehouse_product->type)
+                        ->where('dt1.quantity' , '>', 0)
                         ->select('dt1.id as id','dt3.id as color_id','dt3.code as color_code', 'dt3.name as color_name')
                         ->distinct('color_id')
                         ->get();
