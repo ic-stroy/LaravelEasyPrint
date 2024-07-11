@@ -35,18 +35,34 @@ class Order extends Model
     ];
 
     public function orderDetail(){
+        return $this->hasMany(OrderDetail::class, 'order_id', 'id');
+    }
+
+    public function orderDetailWithTrashed(){
         return $this->hasMany(OrderDetail::class, 'order_id', 'id')->withTrashed();
     }
 
     public function user(){
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    public function userWithTrashed(){
         return $this->hasOne(User::class, 'id', 'user_id')->withTrashed();
     }
 
     public function warehouse(){
+        return $this->hasOne(Warehouse::class, 'id', 'warehouse_id');
+    }
+
+    public function warehouseWithTrashed(){
         return $this->hasOne(Warehouse::class, 'id', 'warehouse_id')->withTrashed();
     }
 
     public function product(){
+        return $this->hasOne(Warehouse::class, 'id', 'product_id');
+    }
+
+    public function productWithTrashed(){
         return $this->hasOne(Warehouse::class, 'id', 'product_id')->withTrashed();
     }
 
@@ -55,6 +71,10 @@ class Order extends Model
     }
 
     public function address(){
+        return $this->hasOne(Address::class, 'id', 'address_id');
+    }
+
+    public function addressWithTrashed(){
         return $this->hasOne(Address::class, 'id', 'address_id')->withTrashed();
     }
 }
