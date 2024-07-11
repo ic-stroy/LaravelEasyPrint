@@ -286,143 +286,139 @@ class OrderController extends Controller
                         $warehouse_product___ = Warehouse::find($order_detail->warehouse_id);
                         if($warehouse_product___){
                             if((int)$warehouse_product___->quantity < (int)$order_detail->quantity){
-                                $order_detail->delete();
-                                if($order_detail->order){
-                                    $order_detail->order->delete();
-                                }
-                            }else{
-                                $warehouse_product = DB::table('order_details as dt1')
-                                    ->join('warehouses as dt2', 'dt2.id', '=', 'dt1.warehouse_id')
-                                    ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
-                                    ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
-                                    ->leftJoin('discounts as dt6', function ($join) {
-                                        $join->on(function ($join) {
+                                $order_detail->quantity = (int)$warehouse_product___->quantity;
+                                $order_detail->save();
+                            }
+                            $warehouse_product = DB::table('order_details as dt1')
+                                ->join('warehouses as dt2', 'dt2.id', '=', 'dt1.warehouse_id')
+                                ->join('sizes as dt3', 'dt3.id', '=', 'dt1.size_id')
+                                ->join('colors as dt4', 'dt4.id', '=', 'dt1.color_id')
+                                ->leftJoin('discounts as dt6', function ($join) {
+                                    $join->on(function ($join) {
+                                        $join->on([
+                                            ['dt6.warehouse_id', '=', 'dt2.id'],
+                                            ['dt6.company_id', 'is', DB::raw('NULL')]
+                                        ])
+                                            ->orOn(function ($join) {
+                                                $join->on([
+                                                    ['dt6.warehouse_id', '=', 'dt2.id'],
+                                                    ['dt6.company_id', 'is not', DB::raw('NULL')],
+                                                    ['dt2.company_id', '=', 'dt6.company_id']
+                                                ]);
+                                            });
+                                    })
+                                        ->where('dt6.type', '=', Constants::DISCOUNT_WAREHOUSE_TYPE)
+                                        ->where('start_date', '<=', date('Y-m-d H:i:s'))
+                                        ->where('end_date', '>=', date('Y-m-d H:i:s'))
+                                        ->orOn(function ($join) {
                                             $join->on([
-                                                ['dt6.warehouse_id', '=', 'dt2.id'],
+                                                ['dt6.product_id', '=', 'dt2.product_id'],
+                                                ['dt6.product_id', 'is not', DB::raw('NULL')],
                                                 ['dt6.company_id', 'is', DB::raw('NULL')]
                                             ])
                                                 ->orOn(function ($join) {
                                                     $join->on([
-                                                        ['dt6.warehouse_id', '=', 'dt2.id'],
+                                                        ['dt6.product_id', '=', 'dt2.product_id'],
+                                                        ['dt6.product_id', 'is not', DB::raw('NULL')],
                                                         ['dt6.company_id', 'is not', DB::raw('NULL')],
-                                                        ['dt2.company_id', '=', 'dt6.company_id']
+                                                        ['dt2.company_id', '=', 'dt6.company_id'],
                                                     ]);
                                                 });
                                         })
-                                            ->where('dt6.type', '=', Constants::DISCOUNT_WAREHOUSE_TYPE)
-                                            ->where('start_date', '<=', date('Y-m-d H:i:s'))
-                                            ->where('end_date', '>=', date('Y-m-d H:i:s'))
-                                            ->orOn(function ($join) {
-                                                $join->on([
-                                                    ['dt6.product_id', '=', 'dt2.product_id'],
-                                                    ['dt6.product_id', 'is not', DB::raw('NULL')],
-                                                    ['dt6.company_id', 'is', DB::raw('NULL')]
-                                                ])
-                                                    ->orOn(function ($join) {
-                                                        $join->on([
-                                                            ['dt6.product_id', '=', 'dt2.product_id'],
-                                                            ['dt6.product_id', 'is not', DB::raw('NULL')],
-                                                            ['dt6.company_id', 'is not', DB::raw('NULL')],
-                                                            ['dt2.company_id', '=', 'dt6.company_id'],
-                                                        ]);
-                                                    });
-                                            })
-                                            ->where('dt6.type', '=', Constants::DISCOUNT_PRODUCT_TYPE)
-                                            ->where('start_date', '<=', date('Y-m-d H:i:s'))
-                                            ->where('end_date', '>=', date('Y-m-d H:i:s'));
-                                    })
-                                    ->where('dt1.id', $order_detail->id)
-                                    ->join('companies as dt5', 'dt5.id', '=', 'dt2.company_id')
-                                    ->select('dt1.image_front as image_front', 'dt1.image_back as image_back', 'dt2.id as warehouse_product_id',
-                                         'dt1.quantity as order_detail_quantity', 'dt1.id as order_detail_id', 'dt2.name as warehouse_product_name',
-                                        'dt2.quantity as max_quantity',
-                                        'dt2.images as images', 'dt2.description as description', 'dt2.product_id as product_id',
-                                        'dt2.company_id as company_id', 'dt2.price as warehouse_price', 'dt2.type as type',
-                                        'dt2.image_front', 'dt2.image_back', 'dt3.id as size_id', 'dt3.name as size_name',
-                                        'dt4.id as color_id', 'dt4.name as color_name', 'dt4.code as color_code', 'dt5.name as company_name',
-                                        'dt6.percent as discount_percent')
-                                    ->first();
-                                $relation_type = 'warehouse_product';
-                                $relation_id = $order_detail->warehouse_id;
-                                if ($warehouse_product) {
+                                        ->where('dt6.type', '=', Constants::DISCOUNT_PRODUCT_TYPE)
+                                        ->where('start_date', '<=', date('Y-m-d H:i:s'))
+                                        ->where('end_date', '>=', date('Y-m-d H:i:s'));
+                                })
+                                ->where('dt1.id', $order_detail->id)
+                                ->join('companies as dt5', 'dt5.id', '=', 'dt2.company_id')
+                                ->select('dt1.image_front as image_front', 'dt1.image_back as image_back', 'dt2.id as warehouse_product_id',
+                                     'dt1.quantity as order_detail_quantity', 'dt1.id as order_detail_id', 'dt2.name as warehouse_product_name',
+                                    'dt2.quantity as max_quantity',
+                                    'dt2.images as images', 'dt2.description as description', 'dt2.product_id as product_id',
+                                    'dt2.company_id as company_id', 'dt2.price as warehouse_price', 'dt2.type as type',
+                                    'dt2.image_front', 'dt2.image_back', 'dt3.id as size_id', 'dt3.name as size_name',
+                                    'dt4.id as color_id', 'dt4.name as color_name', 'dt4.code as color_code', 'dt5.name as company_name',
+                                    'dt6.percent as discount_percent')
+                                ->first();
+                            $relation_type = 'warehouse_product';
+                            $relation_id = $order_detail->warehouse_id;
+                            if ($warehouse_product) {
 
-                                    if ($warehouse_product->type == Constants::WAREHOUSE_TYPE) {
-                                        $list_product = Products::find($warehouse_product->product_id);
-                                        $list_images = !empty($this->getImages($warehouse_product, 'warehouses')) ? $this->getImages($warehouse_product, 'warehouses') : $this->getImages($list_product, 'product');
-                                    } else {
-                                        if (!$warehouse_product->image_front) {
-                                            $warehouse_product->image_front = 'no';
-                                        }
-                                        $model_image_front = storage_path('app/public/warehouse/' . $warehouse_product->image_front);
-                                        if (!$warehouse_product->image_back) {
-                                            $warehouse_product->image_back = 'no';
-                                        }
-                                        $model_image_back = storage_path('app/public/warehouse/' . $warehouse_product->image_back);
-                                        if (file_exists($model_image_front)) {
-                                            $list_images[] = asset("/storage/warehouse/$warehouse_product->image_front");
-                                        }
-                                        if (file_exists($model_image_back)) {
-                                            $list_images[] = asset("/storage/warehouse/$warehouse_product->image_back");
-                                        }
+                                if ($warehouse_product->type == Constants::WAREHOUSE_TYPE) {
+                                    $list_product = Products::find($warehouse_product->product_id);
+                                    $list_images = !empty($this->getImages($warehouse_product, 'warehouses')) ? $this->getImages($warehouse_product, 'warehouses') : $this->getImages($list_product, 'product');
+                                } else {
+                                    if (!$warehouse_product->image_front) {
+                                        $warehouse_product->image_front = 'no';
                                     }
-                                    $translate_name = table_translate($warehouse_product, 'warehouse', $language);
-                                    if (!$translate_name) {
-                                        $product_ = Products::find($warehouse_product->product_id);
-                                        $translate_name = table_translate($product_, 'product', $language);
+                                    $model_image_front = storage_path('app/public/warehouse/' . $warehouse_product->image_front);
+                                    if (!$warehouse_product->image_back) {
+                                        $warehouse_product->image_back = 'no';
                                     }
-                                    if ($warehouse_product->discount_percent) {
-                                        $order_detail->discount = $warehouse_product->discount_percent;
-                                    } else {
-                                        $order_detail->discount = 0;
+                                    $model_image_back = storage_path('app/public/warehouse/' . $warehouse_product->image_back);
+                                    if (file_exists($model_image_front)) {
+                                        $list_images[] = asset("/storage/warehouse/$warehouse_product->image_front");
                                     }
-                                    if ($order_detail->price != $warehouse_product->warehouse_price) {
-                                        $order_detail->price = $warehouse_product->warehouse_price;
-                                        $order_price = $order_price + $order_detail->price * $order_detail->quantity;
-                                        if ($order_detail->discount && $order_detail->discount != 0) {
-                                            $order_detail->discount_price = ($order_detail->price * $order_detail->discount) / 100 * $order_detail->quantity;
-                                            $order_discount_price = $order_discount_price + $order_detail->discount_price;
-                                        } else {
-                                            $order_detail->discount_price = 0;
-                                        }
-                                    } else {
-                                        $order_price = $order_price + $order_detail->price * $order_detail->quantity;
-                                        if ($order_detail->discount && $order_detail->discount != 0) {
-                                            $order_detail->discount_price = ($order_detail->price * $order_detail->discount) / 100 * $order_detail->quantity;
-                                            $order_discount_price = $order_discount_price + $order_detail->discount_price;
-                                        } else {
-                                            $order_detail->discount_price = 0;
-                                        }
+                                    if (file_exists($model_image_back)) {
+                                        $list_images[] = asset("/storage/warehouse/$warehouse_product->image_back");
                                     }
-                                    $order_detail->status = Constants::ORDER_DETAIL_BASKET;
-                                    $order_detail->save();
-                                    $total_price = $order_detail->price * $order_detail->quantity - (int)$order_detail->discount_price;
-
-                                    $list = [
-                                        "id" => $order_detail->id,
-                                        "relation_type" => $relation_type,
-                                        "relation_id" => $relation_id,
-                                        'name' => $translate_name,
-                                        "price" => $order_detail->price,
-                                        "quantity" => $order_detail->quantity,
-                                        "max_quantity" => $warehouse_product->max_quantity,
-                                        "description" => $warehouse_product->description,
-                                        "discount" => $order_detail->discount,
-                                        "discount_price" => $order_detail->discount_price,
-                                        "total_price" => $total_price,
-                                        "company_name" => $warehouse_product->company_name,
-                                        "images" => $list_images,
-                                        "color" => [
-                                            "id" => $warehouse_product->color_id,
-                                            "code" => $warehouse_product->color_code,
-                                            "name" => $warehouse_product->color_name,
-                                        ],
-                                        "size" => [
-                                            "id" => $warehouse_product->size_id,
-                                            "name" => $warehouse_product->size_name,
-                                        ]
-                                    ];
                                 }
+                                $translate_name = table_translate($warehouse_product, 'warehouse', $language);
+                                if (!$translate_name) {
+                                    $product_ = Products::find($warehouse_product->product_id);
+                                    $translate_name = table_translate($product_, 'product', $language);
+                                }
+                                if ($warehouse_product->discount_percent) {
+                                    $order_detail->discount = $warehouse_product->discount_percent;
+                                } else {
+                                    $order_detail->discount = 0;
+                                }
+                                if ($order_detail->price != $warehouse_product->warehouse_price) {
+                                    $order_detail->price = $warehouse_product->warehouse_price;
+                                    $order_price = $order_price + $order_detail->price * $order_detail->quantity;
+                                    if ($order_detail->discount && $order_detail->discount != 0) {
+                                        $order_detail->discount_price = ($order_detail->price * $order_detail->discount) / 100 * $order_detail->quantity;
+                                        $order_discount_price = $order_discount_price + $order_detail->discount_price;
+                                    } else {
+                                        $order_detail->discount_price = 0;
+                                    }
+                                } else {
+                                    $order_price = $order_price + $order_detail->price * $order_detail->quantity;
+                                    if ($order_detail->discount && $order_detail->discount != 0) {
+                                        $order_detail->discount_price = ($order_detail->price * $order_detail->discount) / 100 * $order_detail->quantity;
+                                        $order_discount_price = $order_discount_price + $order_detail->discount_price;
+                                    } else {
+                                        $order_detail->discount_price = 0;
+                                    }
+                                }
+                                $order_detail->status = Constants::ORDER_DETAIL_BASKET;
+                                $order_detail->save();
+                                $total_price = $order_detail->price * $order_detail->quantity - (int)$order_detail->discount_price;
 
+                                $list = [
+                                    "id" => $order_detail->id,
+                                    "relation_type" => $relation_type,
+                                    "relation_id" => $relation_id,
+                                    'name' => $translate_name,
+                                    "price" => $order_detail->price,
+                                    "quantity" => $order_detail->quantity,
+                                    "max_quantity" => $warehouse_product->max_quantity,
+                                    "description" => $warehouse_product->description,
+                                    "discount" => $order_detail->discount,
+                                    "discount_price" => $order_detail->discount_price,
+                                    "total_price" => $total_price,
+                                    "company_name" => $warehouse_product->company_name,
+                                    "images" => $list_images,
+                                    "color" => [
+                                        "id" => $warehouse_product->color_id,
+                                        "code" => $warehouse_product->color_code,
+                                        "name" => $warehouse_product->color_name,
+                                    ],
+                                    "size" => [
+                                        "id" => $warehouse_product->size_id,
+                                        "name" => $warehouse_product->size_name,
+                                    ]
+                                ];
                             }
                         }
                     } else {
@@ -1165,7 +1161,6 @@ class OrderController extends Controller
         $language = $request->header('language');
         $order_detail_id=$request->order_detail_id;
         $order_detail=OrderDetail::where('id', $order_detail_id)->whereIn('status', [Constants::ORDER_DETAIL_BASKET, Constants::ORDER_DETAIL_ORDERED])->first();
-        return response()->json([$order_detail, $order_detail_id]);
         if ($order_detail=OrderDetail::where('id', $order_detail_id)->whereIn('status', [Constants::ORDER_DETAIL_BASKET, Constants::ORDER_DETAIL_ORDERED])->first()) {
             $order = $order_detail->order;
             $order->price = (int)$order->price - ((int)$order_detail->price * (int)$order_detail->quantity);
