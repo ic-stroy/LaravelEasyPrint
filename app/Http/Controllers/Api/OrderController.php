@@ -284,11 +284,18 @@ class OrderController extends Controller
                     if ($order_detail->warehouse_id) {
                         $list = [];
                         $warehouse_product___ = Warehouse::find($order_detail->warehouse_id);
-                        return response()->json([$warehouse_product___, (int)$warehouse_product___->quantity, (int)$order_detail->quantity]);
                         if($warehouse_product___){
                             if((int)$warehouse_product___->quantity < (int)$order_detail->quantity){
-                                $order_detail->quantity = (int)$warehouse_product___->quantity;
-                                $order_detail->save();
+                                if((int)$warehouse_product___->quantity>0){
+                                    $order_detail->quantity = (int)$warehouse_product___->quantity;
+                                    $order_detail->save();
+                                }else{
+                                    $order_to_delete = $order_detail->order;
+                                    $order_detail->delete();
+                                    if($order_to_delete){
+                                        $order_to_delete->delete();
+                                    }
+                                }
                             }
                             $warehouse_product = DB::table('order_details as dt1')
                                 ->join('warehouses as dt2', 'dt2.id', '=', 'dt1.warehouse_id')
