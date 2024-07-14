@@ -157,61 +157,62 @@ class CategoryController extends Controller
         $warehouse_products = [];
 
         foreach ($warehouse_products_ as $warehouse_product_) {
-
-            if($warehouse_product_->type == 0){
-                if (count($this->getImages($warehouse_product_, 'warehouse'))>0) {
-                    $warehouseProducts = $this->getImages($warehouse_product_, 'warehouse');
-                } else {
-                    $parentProduct = Products::find($warehouse_product_->product_id);
-                    if($parentProduct){
-                        $warehouseProducts = $this->getImages($parentProduct, 'product');
+            if((int)$warehouse_product_->quantity>0){
+                if($warehouse_product_->type == 0){
+                    if (count($this->getImages($warehouse_product_, 'warehouse'))>0) {
+                        $warehouseProducts = $this->getImages($warehouse_product_, 'warehouse');
+                    } else {
+                        $parentProduct = Products::find($warehouse_product_->product_id);
+                        if($parentProduct){
+                            $warehouseProducts = $this->getImages($parentProduct, 'product');
+                        }
+                    }
+                }else{
+                    $warehouseProducts = [];
+                    if (!$warehouse_product_->image_front) {
+                        $warehouse_product_->image_front = 'no';
+                    }
+                    $model_image_front = storage_path('app/public/warehouse/'.$warehouse_product_->image_front);
+                    if (!$warehouse_product_->image_back) {
+                        $warehouse_product_->image_back = 'no';
+                    }
+                    $model_image_back = storage_path('app/public/warehouse/'.$warehouse_product_->image_back);
+                    if(file_exists($model_image_front)){
+                        $warehouseProducts[] = asset("/storage/warehouse/$warehouse_product_->image_front");
+                    }
+                    if(file_exists($model_image_back)){
+                        $warehouseProducts[] = asset("/storage/warehouse/$warehouse_product_->image_back");
                     }
                 }
-            }else{
-                $warehouseProducts = [];
-                if (!$warehouse_product_->image_front) {
-                    $warehouse_product_->image_front = 'no';
+                $discount = NULL;
+                $price_discount = NULL;
+                $translate_name=table_translate($warehouse_product_,'warehouse_category', $language);
+                if($warehouse_product_->product_discount){
+                    $discount = $warehouse_product_->product_discount->percent;
+                    $price_discount = $warehouse_product_->price - ($warehouse_product_->price / 100 * $warehouse_product_->product_discount->percent);
+                }elseif($warehouse_product_->discount){
+                    $discount = $warehouse_product_->discount->percent;
+                    $price_discount = $warehouse_product_->price - ($warehouse_product_->price / 100 * $warehouse_product_->discount->percent);
                 }
-                $model_image_front = storage_path('app/public/warehouse/'.$warehouse_product_->image_front);
-                if (!$warehouse_product_->image_back) {
-                    $warehouse_product_->image_back = 'no';
+                if($warehouse_product_->product){
+                    $translate_product_name=table_translate($warehouse_product_->product,'product', $language);
                 }
-                $model_image_back = storage_path('app/public/warehouse/'.$warehouse_product_->image_back);
-                if(file_exists($model_image_front)){
-                    $warehouseProducts[] = asset("/storage/warehouse/$warehouse_product_->image_front");
-                }
-                if(file_exists($model_image_back)){
-                    $warehouseProducts[] = asset("/storage/warehouse/$warehouse_product_->image_back");
-                }
+                //  join qilish kere
+                $warehouse_products[] = [
+                    'id' => $warehouse_product_->id,
+                    'name' => $translate_name ?? $translate_product_name,
+                    'price' => $warehouse_product_->price,
+                    'category_id' => $warehouse_product_->product?$warehouse_product_->product->category_id:'',
+                    'material_id' => $warehouse_product_->product?$warehouse_product_->product->material_id:'',
+                    'description' => $warehouse_product_->product?$warehouse_product_->product->description:'',
+                    'manufacturer_country' => $warehouse_product_->product?$warehouse_product_->product->manufacturer_country:'',
+                    'material_composition' => $warehouse_product_->product?$warehouse_product_->product->material_composition:'',
+                    'discount' => $discount??NULL,
+                    'price_discount' => $price_discount??NULL,
+                    'images' => $warehouseProducts,
+                    'product_id' => $warehouse_product_->product_id,
+                ];
             }
-            $discount = NULL;
-            $price_discount = NULL;
-            $translate_name=table_translate($warehouse_product_,'warehouse_category', $language);
-            if($warehouse_product_->product_discount){
-                $discount = $warehouse_product_->product_discount->percent;
-                $price_discount = $warehouse_product_->price - ($warehouse_product_->price / 100 * $warehouse_product_->product_discount->percent);
-            }elseif($warehouse_product_->discount){
-                $discount = $warehouse_product_->discount->percent;
-                $price_discount = $warehouse_product_->price - ($warehouse_product_->price / 100 * $warehouse_product_->discount->percent);
-            }
-            if($warehouse_product_->product){
-                $translate_product_name=table_translate($warehouse_product_->product,'product', $language);
-            }
-            //  join qilish kere
-            $warehouse_products[] = [
-                'id' => $warehouse_product_->id,
-                'name' => $translate_name ?? $translate_product_name,
-                'price' => $warehouse_product_->price,
-                'category_id' => $warehouse_product_->product?$warehouse_product_->product->category_id:'',
-                'material_id' => $warehouse_product_->product?$warehouse_product_->product->material_id:'',
-                'description' => $warehouse_product_->product?$warehouse_product_->product->description:'',
-                'manufacturer_country' => $warehouse_product_->product?$warehouse_product_->product->manufacturer_country:'',
-                'material_composition' => $warehouse_product_->product?$warehouse_product_->product->material_composition:'',
-                'discount' => $discount??NULL,
-                'price_discount' => $price_discount??NULL,
-                'images' => $warehouseProducts,
-                'product_id' => $warehouse_product_->product_id,
-            ];
         }
         $data[] = [
             'category_active'=>$category_active,
