@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\CardController;
 use App\Http\Controllers\Api\HeaderController;
 use App\Http\Controllers\Api\WarehouseApiController;
+use App\Http\Controllers\Api\PaymeController;
 use \App\Http\Controllers\Company\WarehouseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -91,3 +92,4 @@ Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
 Route::post('delete-carousel', [BannerController::class, 'deleteCarousel']);
 Route::post('delete-product', [ProductController::class, 'deleteProductImage']);
 Route::post('delete-warehouse', [WarehouseController::class, 'deleteWarehouseImage']);
+Route::post('transaction', [PaymeController::class, 'transaction']);
