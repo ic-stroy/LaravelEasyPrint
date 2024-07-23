@@ -500,7 +500,7 @@ class ProductController extends Controller
                             "id" => $warehouse_product->warehouse_product_id,
                             "name" => $warehouse_translate_name ?? $warehouse_product->product_name,
                             // "relation_id" => $relation_id,
-                            "price" => $warehouse_product->price,
+                            "price" => (int)$warehouse_product->price,
                             'discount' => $warehouse_product->discount?$warehouse_product->discount : NULL,
                             'price_discount' => $warehouse_product->discount ? $warehouse_product->price - ($warehouse_product->price / 100 * $warehouse_product->discount) : NULL,
                             // "discounts" => $warehouse_product->price,
