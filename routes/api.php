@@ -92,4 +92,4 @@ Route::group(['middleware' => ['auth:sanctum', 'is_auth']], function () {
 Route::post('delete-carousel', [BannerController::class, 'deleteCarousel']);
 Route::post('delete-product', [ProductController::class, 'deleteProductImage']);
 Route::post('delete-warehouse', [WarehouseController::class, 'deleteWarehouseImage']);
-Route::post('transaction', [PaymeController::class, 'transaction']);
+Route::post('transaction', [PaymeController::class, 'transaction'])->middleware('payme');
