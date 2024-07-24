@@ -86,7 +86,7 @@ class PaymeController extends Controller
             }
         }
 
-        $order_details = OrderDetail::where('order_id', $order_id)->get();
+        $order_details = OrderDetail::where('order_id', $order->id)->get();
         $arr = [];
 
         if (count($order_details) > 0) {
