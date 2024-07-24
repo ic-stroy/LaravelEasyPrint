@@ -71,7 +71,7 @@ class Constants {
     const PAYME_TEST_KEY = 'PgReyvydrqsG32uhC3i5FKgg%G3DIFn8?V47';
     const PAYME_MERCHANT_ID = '669dfd2e36c2c8c75790d702';
 
-    const TAX_PERCENT = '15';
+    const TAX_PERCENT = '12';
     const MEN_CODE = '06109001001000000';
     const MEN_PACKAGE_CODE = '1124331';
     const WOMEN_CODE = '06109002001000000';
