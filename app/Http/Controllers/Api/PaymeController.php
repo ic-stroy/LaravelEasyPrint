@@ -189,16 +189,6 @@ class PaymeController extends Controller
 
     private function checkTransaction($request)
     {
-        if (empty($request->params['account'])) {
-            $response = [
-                'id' => $request->id,
-                'error' => [
-                    'code' => -32504,
-                    'message' => 'Недостаточно привилегий для выполнения метода.'
-                ]
-            ];
-            return json_encode($response);
-        }
         $transaction = Transactions::where('paycom_transaction_id', $request->params['id'])->first();
         $response = [];
         if (empty($transaction)) {
@@ -252,16 +242,6 @@ class PaymeController extends Controller
 
     private function performTransaction($request)
     {
-        if (empty($request->params['account'])) {
-            $response = [
-                'id' => $request->id,
-                'error' => [
-                    'code' => -32504,
-                    'message' => 'Недостаточно привилегий для выполнения метода.'
-                ]
-            ];
-            return json_encode($response);
-        }
         $transaction = Transactions::where('paycom_transaction_id', $request->params['id'])->first();
         if (empty($transaction)) {
             $response = [
@@ -308,16 +288,6 @@ class PaymeController extends Controller
 
     private function cancelTransaction($request)
     {
-        if (empty($request->params['account'])) {
-            $response = [
-                'id' => $request->id,
-                'error' => [
-                    'code' => -32504,
-                    'message' => 'Недостаточно привилегий для выполнения метода.'
-                ]
-            ];
-            return json_encode($response);
-        }
         $transaction = Transactions::where('paycom_transaction_id', $request->params['id'])->first();
         $response = [];
         $currentMills = intval(microtime(true) * 1000);
@@ -385,16 +355,6 @@ class PaymeController extends Controller
 
     private function getStatement($request)
     {
-        if (empty($request->params['account'])) {
-            $response = [
-                'id' => $request->id,
-                'error' => [
-                    'code' => -32504,
-                    'message' => 'Недостаточно привилегий для выполнения метода.'
-                ]
-            ];
-            return json_encode($response);
-        }
         $from = $request->params['from'];
         $to = $request->params['to'];
 
