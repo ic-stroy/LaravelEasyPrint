@@ -35,7 +35,7 @@ use \App\Http\Controllers\PickUpController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
+Route::get('/get-payme/{order_id}', [HomeController::class, 'getPayme']);
 Auth::routes();
 
      Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcategory'])->name('get_subcategory');

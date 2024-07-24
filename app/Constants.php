@@ -66,4 +66,8 @@ class Constants {
     const READY = 4;
     const DELIVERING = 5;
     const DELIVERED = 6;
+
+    const PAYME_KEY = 'BO6RapYmKOPaibsdPizHAE3CC3TkNN?o2swV';
+    const PAYME_TEST_KEY = 'PgReyvydrqsG32uhC3i5FKgg%G3DIFn8?V47';
+    const PAYME_MERCHANT_ID = '669dfd2e36c2c8c75790d702';
 }

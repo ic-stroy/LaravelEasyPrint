@@ -71,4 +71,14 @@ class HomeController extends Controller
         }
 
     }
+
+    public function getPayme($order_id)
+    {
+        $order = Order::where(['id' => (int)$order_id, 'status' => Constants::ORDERED])->first();
+        if (empty($order))
+            return redirect('https://easyprint.uz');
+
+        $price = $order->all_price * 100;
+        return redirect('https://checkout.paycom.uz/base64(m='.Constants::PAYME_MERCHANT_ID.';ac.order_id='.$order_id.';a='.$price.')');
+    }
 }
