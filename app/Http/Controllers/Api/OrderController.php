@@ -951,18 +951,18 @@ class OrderController extends Controller
                 $message=translate_api('Address not found', $language);
                 return $this->error($message, 400);
             }
-            if($data['payment_method'] == Constants::BANK_CARD){
-                if(!isset($data['user_card_id'])){
-                    $message=translate_api('you must enter user card_id', $language);
-                    return $this->error($message, 400);
-                }
-                $user_card = UserCard::where('user_id', $order->user_id)->find($data['user_card_id']);
-                if(!$user_card){
-                    $order->user_card_id = $data['user_card_id'];
-                    $message=translate_api('your card not found', $language);
-                    return $this->error($message, 400);
-                }
-            }
+            // if($data['payment_method'] == Constants::BANK_CARD){
+            //     if(!isset($data['user_card_id'])){
+            //         $message=translate_api('you must enter user card_id', $language);
+            //         return $this->error($message, 400);
+            //     }
+            //     $user_card = UserCard::where('user_id', $order->user_id)->find($data['user_card_id']);
+            //     if(!$user_card){
+            //         $order->user_card_id = $data['user_card_id'];
+            //         $message=translate_api('your card not found', $language);
+            //         return $this->error($message, 400);
+            //     }
+            // }
 
             $order->address_id = $data['address_id'];
             $order->receiver_name = $data['receiver_name'];
