@@ -93,7 +93,7 @@ class PaymeController extends Controller
             foreach ($order_details as $value) {
                 $arr[] = [
                     'discount' => $value->discount_price,
-                    'title' => $value->product->name,
+                    'title' => (($value->product_id != null) ? $value->product->name : $value->warehouse->product->name),
                     'price' => $value->price,
                     'count' => $value->quantity,
                     'code' => (string)Constants::MEN_CODE,
