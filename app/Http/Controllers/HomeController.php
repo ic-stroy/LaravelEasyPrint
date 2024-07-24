@@ -79,6 +79,11 @@ class HomeController extends Controller
             return redirect('https://easyprint.uz');
 
         $price = $order->all_price * 100;
-        return redirect('https://checkout.paycom.uz/base64(m='.Constants::PAYME_MERCHANT_ID.';ac.order_id='.$order_id.';a='.$price.')');
+        return view('get-payme', [
+            'order_id' => $order_id,
+            'price' => $price,
+            'merchant_id' => Constants::PAYME_MERCHANT_ID
+        ]);
+        // return redirect('https://checkout.paycom.uz/base64(m='.Constants::PAYME_MERCHANT_ID.';ac.order_id='.$order_id.';a='.$price.')');
     }
 }

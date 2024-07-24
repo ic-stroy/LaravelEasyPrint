@@ -1,12 +1,13 @@
-@php
-     use App\Constants;
-@endphp
-<form method="POST" action="https://test.paycom.uz">
+<form id="theForm" method="POST" action="https://checkout.paycom.uz">
     <!-- Идентификатор WEB Кассы -->
-    <input type="text" name="merchant" value="{{ Constants::PAYME_MERCHANT_ID }}"/>
+    <input type="hidden" name="merchant" value="{{ $merchant_id }}"/>
     <!-- Сумма платежа в тийинах -->
-    <input type="text" name="amount" value="{{ $amount*100 }}"/>
+    <input type="hidden" name="amount" value="{{ $price }}"/>
     <!-- Поля Объекта Account -->
-    <input type="text" name="account[order_id]" value="{{ $order_id }}"/>
-    <button type="submit">Оплатить с помощью <b>Payme</b></button>
+    <input type="hidden" name="account[order_id]" value="{{ $order_id }}"/>
+    <input type="hidden" name="callback" value="https://easyprint.uz"/>
+    <input type="hidden" name="callback_timeout" value="5000"/>
 </form>
+<script>
+     document.getElementById('theForm').submit();
+</script>
