@@ -92,9 +92,9 @@ class PaymeController extends Controller
         if (count($order_details) > 0) {
             foreach ($order_details as $value) {
                 $arr[] = [
-                    'discount' => (int)$value->discount_price,
+                    'discount' => (int)$value->discount_price * 100,
                     'title' => (($value->product_id != null) ? $value->product->name : $value->warehouse->product->name),
-                    'price' => (int)$value->price,
+                    'price' => (int)$value->price * 100,
                     'count' => (int)$value->quantity,
                     'code' => (string)Constants::MEN_CODE,
                     'vat_percent' => (int)Constants::TAX_PERCENT,
