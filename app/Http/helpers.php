@@ -148,4 +148,9 @@ if (!function_exists('table_translate')) {
     }
 }
 
-
+function pre($data){
+    echo "<pre>";
+    print_r($data);
+    echo "</pre>";
+    die();
+}

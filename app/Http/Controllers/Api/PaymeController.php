@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Transactions;
 use App\Models\Order;
+use App\Models\OrderDetail;
 use App\Constants;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -85,9 +86,30 @@ class PaymeController extends Controller
             }
         }
 
+        $order_details = OrderDetail::where('order_id', $order_id)->get();
+        $arr = [];
+
+        if (count($order_details) > 0) {
+            foreach ($order_details as $value) {
+                $arr[] = [
+                    'discount' => $value->discount_price,
+                    'title' => $value->product->name,
+                    'price' => $value->price,
+                    'count' => $value->quantity,
+                    'code' => (string)Constants::MEN_CODE,
+                    'vat_percent' => (int)Constants::TAX_PERCENT,
+                    'package_code' => Constants::MEN_PACKAGE_CODE
+                ];
+            }
+        }
+
         $response = [
             'result' => [
                 'allow' => true,
+                'detail' => [
+                    'receipt_type' => 0,
+                    'items' => $arr
+                ]
             ]
         ];
         return json_encode($response);
