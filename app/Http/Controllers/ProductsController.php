@@ -12,6 +12,8 @@ use App\Models\Category;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\ProductStoreRequest;
+
 
 class ProductsController extends Controller
 {
@@ -43,8 +45,9 @@ class ProductsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ProductStoreRequest $request)
     {
+        $request = $request->validated();
         $model = new Products();
         $model->name = $request->name;
         if($request->subcategory_id){

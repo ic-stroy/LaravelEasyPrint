@@ -13,7 +13,7 @@
         <div class="card-body">
             @if ($errors->any())
                 <div class="alert alert-danger">
-                    <ul>
+                    <ul class="m-0">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -29,11 +29,11 @@
                 <div class="row">
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Name')}}</label>
-                        <input type="text" name="name" class="form-control" required value="{{old('name')}}"/>
+                        <input type="text" name="name" class="form-control" value="{{old('name')}}"/>
                     </div>
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Category')}}</label>
-                        <select name="category_id" class="form-control" id="category_id" required>
+                        <select name="category_id" class="form-control" id="category_id">
                             <option value="" selected disabled>{{translate('Select category')}}</option>
                             @foreach($categories as $category)
                                 <option value="{{$category->id}}">{{$category->name}} {{$category->category?$category->category->name:''}}</option>
