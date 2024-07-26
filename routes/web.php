@@ -103,6 +103,7 @@ Auth::routes();
      });
     Route::group(['middleware'=>'company_auth'], function (){
         Route::group(['prefix' => 'companies'], function () {
+            Route::post('/language/change/', [LanguageController::class, 'changeLanguage'])->name('company_language.change');
             Route::get('get-user', [CompanyUsersController::class, 'getUser'])->name('getCompanyUser');
             Route::get('edit-user', [CompanyUsersController::class, 'editUser'])->name('editCompanyUser');
             Route::put('update-user/{id}', [CompanyUsersController::class, 'updateUser'])->name('updateCompanyUser');
