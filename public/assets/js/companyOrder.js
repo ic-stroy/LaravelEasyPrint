@@ -5,6 +5,7 @@ let remaining_quantity = document.getElementById('remaining_quantity')
 let order_quantity = document.getElementById('order_quantity')
 let products_images = document.getElementById('products_images')
 let carousel_product_images = document.getElementById('carousel_product_images')
+let product_image_content = document.getElementById('product_image_content')
 let carousel_product_upload_images = document.getElementById('carousel_product_upload_images')
 let product_image = document.getElementById('product_image')
 let cancell_order = document.getElementById('cancell_order')
@@ -12,6 +13,8 @@ let perform_order = document.getElementById('perform_order_')
 let accepted_by_recipient_order = document.getElementById('accepted_by_recipient_order')
 let cancell_accepted_by_recipient_order = document.getElementById('cancell_accepted_by_recipient_order')
 let perform_order_button = document.getElementById('perform_order_button')
+let accordion_arrow = document.getElementsByClassName('accordion_arrow')
+let custom_accordion_title = document.getElementsByClassName('custom-accordion-title')
 
 function accepting_order(quantity, remaining_quantity_, color_name, size_name, product_name_, image, image_1, url){
     product_name.innerHTML = ""
@@ -108,6 +111,13 @@ function getImages(images) {
     }
     carousel_product_images.innerHTML = images_content
 }
+function showImage(image) {
+    let images_content =
+                `<div class="carousel-item active">
+                        <img class="d-block img-fluid" src="${image}" alt="no image">
+                    </div>`
+    product_image_content.innerHTML = images_content
+}
 function getUploads(images) {
     let all_uploads = images.split(' ')
     console.log(all_uploads)
@@ -130,4 +140,27 @@ function getUploads(images) {
     if(uploads_content != ''){
         carousel_product_upload_images.innerHTML = uploads_content
     }
+}
+
+for(let i = 0; i< custom_accordion_title.length; i++){
+    custom_accordion_title[i].addEventListener("click", function() {
+        accordionArrow(i);
+    });
+}
+
+
+function accordionArrow(index) {
+    for(let j = 0; j< accordion_arrow.length; j++){
+        let custom_accordion_title_href = custom_accordion_title[j].getAttribute('href')
+        if(custom_accordion_title_href == '#collapseNine'+(index+1)){
+            if(accordion_arrow[j].classList.contains('mdi-chevron-down')){
+                accordion_arrow[j].classList.remove('mdi-chevron-down')
+                accordion_arrow[j].classList.add('mdi-chevron-up')
+            }else if(accordion_arrow[j].classList.contains('mdi-chevron-up')){
+                accordion_arrow[j].classList.remove('mdi-chevron-up')
+                accordion_arrow[j].classList.add('mdi-chevron-down')
+            }
+        }
+    }
+
 }

@@ -19,6 +19,28 @@ class CompanyOrderController extends Controller
 {
     public function index(){
         $user = Auth::user();
+        $orderedOrders_ = Order::where('status', Constants::ORDERED)->orderBy('updated_at', 'asc')->get();
+        $performedOrders_ = Order::where('status', Constants::PERFORMED)->where('company_id', $user->company_id)->orderBy('updated_at', 'asc')->get();
+        $cancelledOrders_ = Order::where('status', Constants::CANCELLED)->where('company_id', $user->company_id)->orderBy('updated_at', 'asc')->limit(101)->get();
+        $acceptedByRecipientOrders_ = Order::where('status', Constants::ACCEPTED_BY_RECIPIENT)->where('company_id', $user->company_id)->orderBy('created_at', 'asc')->limit(101)->get();
+        $orderedOrders = $this->getOrders($orderedOrders_, $user);
+        $performedOrders = $this->getOrders($performedOrders_, $user);
+        $cancelledOrders = $this->getOrders($cancelledOrders_, $user);
+        $acceptedByRecipientOrders = $this->getOrders($acceptedByRecipientOrders_, $user);
+        $all_orders = [
+            'orderedOrders'=>$orderedOrders,
+            'performedOrders'=>$performedOrders,
+            'cancelledOrders'=>$cancelledOrders,
+            'acceptedByRecipientOrders'=>$acceptedByRecipientOrders,
+        ];
+        return view('company.order.index', [
+            'all_orders'=>$all_orders,
+            'user'=>$user
+        ]);
+    }
+
+    public function index_old(){
+        $user = Auth::user();
         $orderedOrders_ = Order::where('status', Constants::ORDERED)->orderBy('updated_at', 'desc')->get();
         $performedOrders_ = Order::where('status', Constants::PERFORMED)->where('company_id', $user->company_id)->orderBy('updated_at', 'desc')->get();
         $cancelledOrders_ = Order::where('status', Constants::CANCELLED)->where('company_id', $user->company_id)->orderBy('updated_at', 'desc')->limit(101)->get();
@@ -33,7 +55,7 @@ class CompanyOrderController extends Controller
             'cancelledOrders'=>$cancelledOrders,
             'acceptedByRecipientOrders'=>$acceptedByRecipientOrders,
         ];
-        return view('company.order.index', [
+        return view('company.order.indexold', [
             'all_orders'=>$all_orders,
             'user'=>$user
         ]);
@@ -64,14 +86,15 @@ class CompanyOrderController extends Controller
                     if ($order->user->personalInfo) {
                         $first_name = $order->user->personalInfo->first_name ? $order->user->personalInfo->first_name . ' ' : '';
                         $last_name = $order->user->personalInfo->last_name ? $order->user->personalInfo->last_name . ' ' : '';
-                        $middle_name = $order->user->personalInfo->middle_name ? $order->user->personalInfo->middle_name : '';
-                        $user_name = $first_name . '' . $last_name . '' . $middle_name;
+//                        $middle_name = $order->user->personalInfo->middle_name ? $order->user->personalInfo->middle_name : '';
+                        $user_name = $first_name . '' . $last_name;
                     }
                 }
             }
             $products_with_anime = [];
             $products = [];
             $product_types = 0;
+            $products_quantity = 0;
             $performed_product_types = 0;
             $product_quantity = 0;
             $company_product_price = 0;
@@ -95,7 +118,7 @@ class CompanyOrderController extends Controller
                     $order_detail->warehouse && $order_detail->warehouse->company_id == $user->company_id){
                     $order_has = true;
                     $product_types = $product_types + 1;
-
+                    $products_quantity = $products_quantity + $order_detail->quantity;
                     if($order_detail->status == Constants::ORDER_DETAIL_PERFORMED) {
                         $performed_product_types = $performed_product_types + 1;
                         $performed_company_product_price = $performed_company_product_price + $order_detail->price * $order_detail->quantity - (int)$order_detail->discount_price;
@@ -150,6 +173,7 @@ class CompanyOrderController extends Controller
                     ];
                 }elseif(!$order_detail->warehouse_id && $order_detail->product_id){
                     $product_types = $product_types + 1;
+                    $products_quantity = $products_quantity + $order_detail->quantity;
                     $order_has = true;
                     $uploads=Uploads::where('relation_type', Constants::PRODUCT)->where('relation_id', $order_detail->id)->get();
                     if($order_detail->status == Constants::ORDER_DETAIL_PERFORMED) {
@@ -238,6 +262,7 @@ class CompanyOrderController extends Controller
                     'user_name'=>$user_name,
                     'order_detail_is_ordered'=>$order_detail_is_ordered,
                     'product_types'=>$product_types,
+                    'products_quantity'=>$products_quantity,
                     'performed_product_types'=>$performed_product_types,
                     'product_quantity'=>$product_quantity,
                     'products'=>$products,
@@ -495,13 +520,23 @@ class CompanyOrderController extends Controller
             foreach ($images_ as $image_){
                 switch($text){
                     case 'warehouse':
+                        $exists_image = storage_path('app/public/warehouse/'.$image_);
+                        if(file_exists($exists_image)){
+                            $images[] = asset('storage/warehouse/'.$image_);
+                        }
                         $images[] = asset('storage/warehouse/'.$image_);
                         break;
                     case 'product':
-                        $images[] = asset('storage/products/'.$image_);
+                        $exists_image = storage_path('app/public/products/'.$image_);
+                        if(file_exists($exists_image)){
+                            $images[] = asset('storage/products/'.$image_);
+                        }
                         break;
                     case 'warehouses':
-                        $images[] = asset('storage/warehouses/'.$image_);
+                        $exists_image = storage_path('app/public/warehouses/'.$image_);
+                        if(file_exists($exists_image)){
+                            $images[] = asset('storage/warehouses/'.$image_);
+                        }
                         break;
                     default:
                 }
