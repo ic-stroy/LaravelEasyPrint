@@ -22,15 +22,18 @@ class CompanyOrderController extends Controller
         $orderedOrders_ = Order::where('status', Constants::ORDERED)->orderBy('updated_at', 'asc')->get();
         $performedOrders_ = Order::where('status', Constants::PERFORMED)->where('company_id', $user->company_id)->orderBy('updated_at', 'asc')->get();
         $cancelledOrders_ = Order::where('status', Constants::CANCELLED)->where('company_id', $user->company_id)->orderBy('updated_at', 'asc')->limit(101)->get();
+        $deliveredOrders_ = Order::where('status', Constants::ORDER_DELIVERED)->where('company_id', $user->company_id)->orderBy('updated_at', 'asc')->limit(101)->get();
         $acceptedByRecipientOrders_ = Order::where('status', Constants::ACCEPTED_BY_RECIPIENT)->where('company_id', $user->company_id)->orderBy('created_at', 'asc')->limit(101)->get();
         $orderedOrders = $this->getOrders($orderedOrders_, $user);
         $performedOrders = $this->getOrders($performedOrders_, $user);
         $cancelledOrders = $this->getOrders($cancelledOrders_, $user);
+        $deliveredOrders = $this->getOrders($deliveredOrders_, $user);
         $acceptedByRecipientOrders = $this->getOrders($acceptedByRecipientOrders_, $user);
         $all_orders = [
             'orderedOrders'=>$orderedOrders,
             'performedOrders'=>$performedOrders,
             'cancelledOrders'=>$cancelledOrders,
+            'deliveredOrders'=>$deliveredOrders,
             'acceptedByRecipientOrders'=>$acceptedByRecipientOrders,
         ];
         return view('company.order.index', [
@@ -44,15 +47,18 @@ class CompanyOrderController extends Controller
         $orderedOrders_ = Order::where('status', Constants::ORDERED)->orderBy('updated_at', 'desc')->get();
         $performedOrders_ = Order::where('status', Constants::PERFORMED)->where('company_id', $user->company_id)->orderBy('updated_at', 'desc')->get();
         $cancelledOrders_ = Order::where('status', Constants::CANCELLED)->where('company_id', $user->company_id)->orderBy('updated_at', 'desc')->limit(101)->get();
+        $deliveredOrders_ = Order::where('status', Constants::ORDER_DELIVERED)->where('company_id', $user->company_id)->orderBy('updated_at', 'asc')->limit(101)->get();
         $acceptedByRecipientOrders_ = Order::where('status', Constants::ACCEPTED_BY_RECIPIENT)->where('company_id', $user->company_id)->orderBy('created_at', 'desc')->limit(101)->get();
         $orderedOrders = $this->getOrders($orderedOrders_, $user);
         $performedOrders = $this->getOrders($performedOrders_, $user);
         $cancelledOrders = $this->getOrders($cancelledOrders_, $user);
+        $deliveredOrders = $this->getOrders($deliveredOrders_, $user);
         $acceptedByRecipientOrders = $this->getOrders($acceptedByRecipientOrders_, $user);
         $all_orders = [
             'orderedOrders'=>$orderedOrders,
             'performedOrders'=>$performedOrders,
             'cancelledOrders'=>$cancelledOrders,
+            'deliveredOrders'=>$deliveredOrders,
             'acceptedByRecipientOrders'=>$acceptedByRecipientOrders,
         ];
         return view('company.order.indexold', [
@@ -498,18 +504,43 @@ class CompanyOrderController extends Controller
         return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
     }
 
+    public function orderDelivered($id){
+        $order = Order::where('status', Constants::PERFORMED)->find($id);
+        if(!$order){
+            return redirect()->route('company_order.index')->with('error', 'Order not found');
+        }
+        $order->status = Constants::ORDER_DELIVERED;
+        $order->save();
+//        $order_details = OrderDetail::where(['order_id'=>$order->id, 'status'=>3])->get();
+//        foreach($order_details as $order_detail){
+//            $order_detail->status = Constants::ORDER_DETAIL_ACCEPTED_BY_RECIPIENT;
+//            $order_detail->save();
+//        }
+        return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
+    }
+
     public function cancellAcceptedByRecipient($id){
         $order = Order::where('status', Constants::ACCEPTED_BY_RECIPIENT)->find($id);
         if(!$order){
             return redirect()->route('company_order.index')->with('error', 'Order not found');
         }
-        $order->status = Constants::PERFORMED;
+        $order->status = Constants::ORDER_DELIVERED;
         $order->save();
 //        $order_details = OrderDetail::where(['order_id'=>$order->id, 'status'=>6])->get();
 //        foreach($order_details as $order_detail){
 //            $order_detail->status = Constants::ORDER_DETAIL_PERFORMED;
 //            $order_detail->save();
 //        }
+        return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
+    }
+
+    public function cancellOrderDelivered($id){
+        $order = Order::where('status', Constants::ORDER_DELIVERED)->find($id);
+        if(!$order){
+            return redirect()->route('company_order.index')->with('error', 'Order not found');
+        }
+        $order->status = Constants::PERFORMED;
+        $order->save();
         return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
     }
 

@@ -11,7 +11,9 @@ let product_image = document.getElementById('product_image')
 let cancell_order = document.getElementById('cancell_order')
 let perform_order = document.getElementById('perform_order_')
 let accepted_by_recipient_order = document.getElementById('accepted_by_recipient_order')
+let order_delivered = document.getElementById('order_delivered')
 let cancell_accepted_by_recipient_order = document.getElementById('cancell_accepted_by_recipient_order')
+let cancell_order_delivered = document.getElementById('cancell_order_delivered')
 let perform_order_button = document.getElementById('perform_order_button')
 let accordion_arrow = document.getElementsByClassName('accordion_arrow')
 let custom_accordion_title = document.getElementsByClassName('custom-accordion-title')
@@ -60,7 +62,17 @@ function accepted_by_recipient(url){
         accepted_by_recipient_order.setAttribute("action", "")
     }
 }
+function order_delivered(url){
+    if(url){
+        order_delivered.setAttribute("action", url)
+    }else{
+        order_delivered.setAttribute("action", "")
+    }
+}
 function cancell_accepted_by_recipient(url){
+    cancell_accepted_by_recipient_order.setAttribute("action", url)
+}
+function cancell_order_delivered(url){
     cancell_accepted_by_recipient_order.setAttribute("action", url)
 }
 function accepting_anime_order(quantity, product_name_, size_name, color_name, images_0, images_1, url){
