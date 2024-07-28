@@ -112,6 +112,7 @@ function getImages(images) {
     carousel_product_images.innerHTML = images_content
 }
 function showImage(image) {
+    console.log(image)
     let images_content =
                 `<div class="carousel-item active">
                         <img class="d-block img-fluid" src="${image}" alt="no image">
