@@ -378,8 +378,8 @@
         {{--        </div><!-- /.modal -->--}}
         <!-- /.modal -->
         <div id="images-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog product-image-modal d-flex align-items-center">
-                <div class="modal-content" style="background-color: transparent">
+            <div class="modal-dialog d-flex align-items-center">
+                <div class="modal-content product-image-modal" style="background-color: transparent">
                     <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
                         <div class="carousel-inner" id="product_image_content">
 
