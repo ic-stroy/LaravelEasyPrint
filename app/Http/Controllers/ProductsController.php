@@ -45,9 +45,8 @@ class ProductsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ProductStoreRequest $request)
+    public function store(Request $request)
     {
-        $request = $request->validated();
         $model = new Products();
         $model->name = $request->name;
         if($request->subcategory_id){

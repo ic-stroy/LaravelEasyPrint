@@ -15,4 +15,7 @@ class Address extends Model
     public function cities(){
         return $this->hasOne(Cities::class, 'id', 'city_id');
     }
+    public function user(){
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
 }

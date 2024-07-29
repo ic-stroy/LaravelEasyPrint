@@ -20,7 +20,7 @@
                     @endphp
                     <li class="nav-item">
                         <a href="#category_{{$category->id}}" data-bs-toggle="tab" aria-expanded="{{$i == 1?'true':'false'}}" class="nav-link {{$i == 1?'active':''}}">
-                            {{$category->name??''}}
+                            {{$category->name?translate($category->name):''}}
                             @if(count($all_categories[$category->id]) > 0)
                                 <span class="badge bg-danger">{{count($all_categories[$category->id])}}</span>
                             @endif
@@ -60,7 +60,7 @@
                                         </th>
                                         <td>
                                             <a class="show_page" href="{{route('subcategory.show', $subcategory->id)}}">
-                                                @if(isset($subcategory->name)){{ $subcategory->name }}@else <div class="no_text"></div> @endif
+                                                @if(isset($subcategory->name)){{ $subcategory->name?translate($subcategory->name):'' }}@else <div class="no_text"></div> @endif
                                             </a>
                                         </td>
                                         <td>

@@ -22,7 +22,7 @@
                     @endphp
                     <li class="nav-item">
                         <a href="#category_{{$category->id}}" data-bs-toggle="tab" aria-expanded="{{$i == 1?'true':'false'}}" class="nav-link {{$i == 1?'active':''}}">
-                            {{$category->name??''}}
+                            {{$category->name?translate($category->name):''}}
                             @if(count($all_products[$category->id]) > 0)
                                 <span class="badge bg-danger">{{count($all_products[$category->id])}}</span>
                             @endif

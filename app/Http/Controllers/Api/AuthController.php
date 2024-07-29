@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Constants;
 use App\Http\Controllers\Controller;
 use App\Models\EskizToken;
 use App\Models\PersonalInfo;
@@ -298,5 +299,14 @@ class AuthController extends Controller
         $language = $request->header('language');
         $message = translate_api('success', $language);
         return $this->success($message, 200, [$model]);
+    }
+
+    public function getUser(){
+        $user = Auth::user();
+        return response()->json([
+            'status'=>true,
+            'message'=>'Success',
+            'data'=>[$user]
+        ], 200);
     }
 }

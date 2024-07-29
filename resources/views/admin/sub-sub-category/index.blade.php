@@ -35,12 +35,12 @@
                             </th>
                             <td>
                                 <a class="show_page" href="{{route('subsubcategory.show', $subsubcategory->id)}}">
-                                    @if(isset($subsubcategory->name)){{ $subsubcategory->name }}@else <div class="no_text"></div> @endif
+                                    @if(isset($subsubcategory->name)){{ $subsubcategory->name?translate($subsubcategory->name):'' }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>
                                 <a class="show_page" href="{{route('subsubcategory.show', $subsubcategory->id)}}">
-                                    @if(isset($subsubcategory->sub_category->name)){{ $subsubcategory->sub_category->name }}@else <div class="no_text"></div> @endif
+                                    @if(isset($subsubcategory->sub_category->name)){{ $subsubcategory->sub_category->name?translate($subsubcategory->sub_category->name):'' }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>
