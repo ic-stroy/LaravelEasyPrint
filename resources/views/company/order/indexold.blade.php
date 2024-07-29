@@ -350,29 +350,29 @@
 
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-        <div id="carousel-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content" style="background-color: #989CA2">
-                    <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
-                        <div class="carousel-inner" id="carousel_product_images">
+{{--        <div id="carousel-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">--}}
+{{--            <div class="modal-dialog">--}}
+{{--                <div class="modal-content" style="background-color: #989CA2">--}}
+{{--                    <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">--}}
+{{--                        <div class="carousel-inner" id="carousel_product_images">--}}
 
-                        </div>
-                        <a class="carousel-control-prev" href="#carouselExampleFade" role="button" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#carouselExampleFade" role="button" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </a>
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
+{{--                        </div>--}}
+{{--                        <a class="carousel-control-prev" href="#carouselExampleFade" role="button" data-bs-slide="prev">--}}
+{{--                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>--}}
+{{--                            <span class="visually-hidden">Previous</span>--}}
+{{--                        </a>--}}
+{{--                        <a class="carousel-control-next" href="#carouselExampleFade" role="button" data-bs-slide="next">--}}
+{{--                            <span class="carousel-control-next-icon" aria-hidden="true"></span>--}}
+{{--                            <span class="visually-hidden">Next</span>--}}
+{{--                        </a>--}}
+{{--                    </div>--}}
+{{--                </div><!-- /.modal-content -->--}}
+{{--            </div><!-- /.modal-dialog -->--}}
+{{--        </div><!-- /.modal -->--}}
         <!-- /.modal -->
         <div id="images-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content" style="background-color: #989CA2">
+            <div class="modal-dialog d-flex align-items-center" style="height: 100vh;">
+                <div class="modal-content">
                     <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
                         <div class="carousel-inner" id="product_image_content">
 
