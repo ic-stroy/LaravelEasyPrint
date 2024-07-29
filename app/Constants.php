@@ -11,6 +11,7 @@ class Constants {
    // Order    type_ids
    const BASKED = 1;
    const ORDERED = 2;
+//   const PAID = 8;
    const PERFORMED = 3;
    const CANCELLED = 4;
    const ORDER_DELIVERED = 5;
