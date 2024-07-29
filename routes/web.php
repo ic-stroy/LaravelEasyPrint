@@ -103,6 +103,7 @@ Auth::routes();
      });
     Route::group(['middleware'=>'company_auth'], function (){
         Route::group(['prefix' => 'companies'], function () {
+            Route::post('/language/change/', [LanguageController::class, 'changeLanguage'])->name('company_language.change');
             Route::get('get-user', [CompanyUsersController::class, 'getUser'])->name('getCompanyUser');
             Route::get('edit-user', [CompanyUsersController::class, 'editUser'])->name('editCompanyUser');
             Route::put('update-user/{id}', [CompanyUsersController::class, 'updateUser'])->name('updateCompanyUser');
@@ -129,9 +130,12 @@ Auth::routes();
             Route::resource('company_coupons', CompanyCouponController::class);
             Route::group(['prefix' => 'company-order'], function () {
                 Route::get('/index', [CompanyOrderController::class, 'index'])->name('company_order.index');
+                Route::get('/index-old', [CompanyOrderController::class, 'index_old'])->name('company_order.index.old');
                 Route::get('/finished-all-orders', [CompanyOrderController::class, 'finishedAllOrders'])->name('company_order.finished_all_orders');
                 Route::post('/accepted-by-recipient/{id}', [CompanyOrderController::class, 'acceptedByRecipient'])->name('accepted_by_recipient');
+                Route::post('/order-delivered/{id}', [CompanyOrderController::class, 'orderDelivered'])->name('order_delivered');
                 Route::post('/cancell-accepted-by-recipient/{id}', [CompanyOrderController::class, 'cancellAcceptedByRecipient'])->name('cancell_accepted_by_recipient');
+                Route::post('/cancell-order-delivered/{id}', [CompanyOrderController::class, 'cancellOrderDelivered'])->name('cancell_order_delivered');
 //                Route::get('/category', [CompanyOrderController::class, 'category'])->name('company_order.category');
                 Route::get('/show/{id}', [CompanyOrderController::class, 'show'])->name('company_order.show');
                 Route::post('/make-all-notifications-as-read', [CompanyOrderController::class, 'makeAllNotificationsAsRead'])->name('company_order.make_all_notifications_as_read');

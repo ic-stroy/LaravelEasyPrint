@@ -26,6 +26,11 @@ class LanguageSeeder extends Seeder
                     'name'=>'ru',
                     'code'=>'ru',
                 ],
+                [
+                    'id'=>3,
+                    'name'=>'en',
+                    'code'=>'en',
+                ],
             ];
             foreach ($datas as $data){
                 Language::create($data);

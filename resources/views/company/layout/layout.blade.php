@@ -1007,7 +1007,7 @@ $current_user = \Illuminate\Support\Facades\Auth::user();
                             $('#selected_language').attr('src', ru)
                             break;
                     }
-                    $.post('{{ route('language.change') }}', {
+                    $.post('{{ route('company_language.change') }}', {
                         _token: '{{ csrf_token() }}',
                         locale: locale
                     }, function(data) {
