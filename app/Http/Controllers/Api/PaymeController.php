@@ -283,9 +283,9 @@ class PaymeController extends Controller
             $transaction->update();
 
             // order statusi o'zgarishi kerak
-            // $order = Order::where('id', $transaction->order_id)->first();
-            // $order->status = 0
-            // $order->update();
+            $order = Order::where('id', $transaction->order_id)->first();
+            $order->status = Constants::PERFORMED;
+            $order->update();
 
             $response = [
                 'result' => [
