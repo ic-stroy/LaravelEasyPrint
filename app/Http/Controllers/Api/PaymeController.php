@@ -55,7 +55,7 @@ class PaymeController extends Controller
         }
         else{
             $account = $request->params['account'];
-            $order = Order::where(['id' => $account['order_id'], 'status' => Constants::ORDERED])->first();
+            $order = Order::where(['id' => $account['order_id'], 'status' => Constants::BASKED])->first();
             if (empty($order)) {
                 $response = [
                     'id' => $request->id,
@@ -129,7 +129,7 @@ class PaymeController extends Controller
         }
         else{
             $account = $request->params['account'];
-            $order = Order::where(['id' => $account['order_id'], 'status' => Constants::ORDERED])->first();
+            $order = Order::where(['id' => $account['order_id'], 'status' => Constants::BASKED])->first();
 
             $transaction = Transactions::where(['order_id' => $account['order_id'], 'state' => 1])->get();
             if (empty($order)) {
@@ -284,7 +284,7 @@ class PaymeController extends Controller
 
             // order statusi o'zgarishi kerak
             $order = Order::where('id', $transaction->order_id)->first();
-            $order->status = Constants::PERFORMED;
+            $order->status = Constants::ORDERED;
             $order->update();
 
             $response = [

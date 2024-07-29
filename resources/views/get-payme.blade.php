@@ -5,7 +5,7 @@
     <input type="hidden" name="amount" value="{{ $price }}"/>
     <!-- Поля Объекта Account -->
     <input type="hidden" name="account[order_id]" value="{{ $order_id }}"/>
-    <input type="hidden" name="callback" value="https://easyprint.uz"/>
+    <input type="hidden" name="callback" value="https://easyprint.uz/#/checkout/accept/true"/>
     <input type="hidden" name="callback_timeout" value="5000"/>
 </form>
 <script>
