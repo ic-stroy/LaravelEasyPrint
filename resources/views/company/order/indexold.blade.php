@@ -246,6 +246,7 @@
             background-color: transparent !important;
             flex-direction: row !important;
             justify-content: center !important;
+            align-items: center;
         }
     </style>
     @if(!empty($all_orders['orderedOrders']) || !empty($all_orders['performedOrders']) || !empty($all_orders['cancelledOrders']) || !empty($all_orders['deliveredOrders']) || !empty($all_orders['acceptedByRecipientOrders']))
