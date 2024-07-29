@@ -22,18 +22,21 @@ class CompanyOrderController extends Controller
         $orderedOrders_ = Order::where('status', Constants::ORDERED)->orderBy('updated_at', 'asc')->get();
         $performedOrders_ = Order::where('status', Constants::PERFORMED)->where('company_id', $user->company_id)->orderBy('updated_at', 'asc')->get();
         $cancelledOrders_ = Order::where('status', Constants::CANCELLED)->where('company_id', $user->company_id)->orderBy('updated_at', 'asc')->limit(101)->get();
-        $deliveredOrders_ = Order::where('status', Constants::ORDER_DELIVERED)->where('company_id', $user->company_id)->orderBy('updated_at', 'asc')->limit(101)->get();
+        $deliveredOrders_ = Order::where('status', Constants::ORDER_DELIVERED)->where('company_id', $user->company_id)->orderBy('updated_at', 'asc')->get();
+        $readyForPickup_ = Order::where('status', Constants::READY_FOR_PICKUP)->where('company_id', $user->company_id)->orderBy('updated_at', 'asc')->get();
         $acceptedByRecipientOrders_ = Order::where('status', Constants::ACCEPTED_BY_RECIPIENT)->where('company_id', $user->company_id)->orderBy('created_at', 'asc')->limit(101)->get();
         $orderedOrders = $this->getOrders($orderedOrders_, $user);
         $performedOrders = $this->getOrders($performedOrders_, $user);
         $cancelledOrders = $this->getOrders($cancelledOrders_, $user);
         $deliveredOrders = $this->getOrders($deliveredOrders_, $user);
+        $readyForPickup = $this->getOrders($readyForPickup_, $user);
         $acceptedByRecipientOrders = $this->getOrders($acceptedByRecipientOrders_, $user);
         $all_orders = [
             'orderedOrders'=>$orderedOrders,
             'performedOrders'=>$performedOrders,
             'cancelledOrders'=>$cancelledOrders,
             'deliveredOrders'=>$deliveredOrders,
+            'readyForPickup'=>$readyForPickup,
             'acceptedByRecipientOrders'=>$acceptedByRecipientOrders,
         ];
         return view('company.order.index', [
@@ -48,17 +51,20 @@ class CompanyOrderController extends Controller
         $performedOrders_ = Order::where('status', Constants::PERFORMED)->where('company_id', $user->company_id)->orderBy('updated_at', 'desc')->get();
         $cancelledOrders_ = Order::where('status', Constants::CANCELLED)->where('company_id', $user->company_id)->orderBy('updated_at', 'desc')->limit(101)->get();
         $deliveredOrders_ = Order::where('status', Constants::ORDER_DELIVERED)->where('company_id', $user->company_id)->orderBy('updated_at', 'asc')->limit(101)->get();
+        $readyForPickup_ = Order::where('status', Constants::READY_FOR_PICKUP)->where('company_id', $user->company_id)->orderBy('updated_at', 'asc')->get();
         $acceptedByRecipientOrders_ = Order::where('status', Constants::ACCEPTED_BY_RECIPIENT)->where('company_id', $user->company_id)->orderBy('created_at', 'desc')->limit(101)->get();
         $orderedOrders = $this->getOrders($orderedOrders_, $user);
         $performedOrders = $this->getOrders($performedOrders_, $user);
         $cancelledOrders = $this->getOrders($cancelledOrders_, $user);
         $deliveredOrders = $this->getOrders($deliveredOrders_, $user);
+        $readyForPickup = $this->getOrders($readyForPickup_, $user);
         $acceptedByRecipientOrders = $this->getOrders($acceptedByRecipientOrders_, $user);
         $all_orders = [
             'orderedOrders'=>$orderedOrders,
             'performedOrders'=>$performedOrders,
             'cancelledOrders'=>$cancelledOrders,
             'deliveredOrders'=>$deliveredOrders,
+            'readyForPickup'=>$readyForPickup,
             'acceptedByRecipientOrders'=>$acceptedByRecipientOrders,
         ];
         return view('company.order.indexold', [
@@ -87,6 +93,7 @@ class CompanyOrderController extends Controller
         $order_data = [];
         foreach($orders as $order) {
             $user_name = '';
+            $address = [];
             if ($order){
                 if ($order->user){
                     if ($order->user->personalInfo) {
@@ -96,7 +103,30 @@ class CompanyOrderController extends Controller
                         $user_name = $first_name . '' . $last_name;
                     }
                 }
+                if($order->address) {
+                    $address_type = '';
+                    if($order->address->user){
+                        if($order->address->user->role_id && $order->address->user->role_id != 4){
+                            $address_type = 'pick_up';
+                        }else{
+                            $address_type = 'deliver';
+                        }
+                    }
+                    if ($order->address->cities) {
+                        if ($order->address->cities->region) {
+                            $region_name = $order->address->cities->region->name ?? "";
+                        }
+                        $city_name = $order->address->cities->name ?? "";
+                    }
+                    $address_name = $order->address->name ?? '';
+                    $address_postcode = $order->address->postcode ?? '';
+                    $address = [
+                        'name'=>$region_name.' '.$city_name.' '.$address_name. ' '.$address_postcode,
+                        'status'=>$address_type
+                    ];
+                }
             }
+
             $products_with_anime = [];
             $products = [];
             $product_types = 0;
@@ -264,6 +294,7 @@ class CompanyOrderController extends Controller
             }
             if($order_has == true){
                 $order_data[] = [
+                    'address'=>$address,
                     'order'=>$order,
                     'user_name'=>$user_name,
                     'order_detail_is_ordered'=>$order_detail_is_ordered,
@@ -387,20 +418,6 @@ class CompanyOrderController extends Controller
                     return redirect()->route('company_order.index')->with('cancelled', 'Product is cancelled');
                 }
             }
-//        $user = User::where('role_id', 1)->first();
-//        $orderDetail->status = Constants::ORDER_DETAIL_PERFORMED;
-//        $list_images = !empty($this->getImages($orderDetail->warehouse, 'warehouses')) ? $this->getImages($orderDetail->warehouse, 'warehouses')[0] : $this->getImages($orderDetail->warehouse->product, 'product')[0];
-//        $data = [
-//            'order_id'=>$order->id,
-//            'order_detail_id'=>$orderDetail->id,
-//            'order_all_price'=>$orderDetail->price*$orderDetail->quantity-(int)$orderDetail->discount_price - $coupon_price,
-//            'product'=>[
-//                'name'=>$orderDetail->warehouse->name,
-//                'images'=>$list_images
-//            ],
-//            'receiver_name'=>$order->receiver_name,
-//        ];
-//        Notification::send($user, new OrderNotification($data));
         }
         return redirect()->route('company_order.index')->with('cancelled', 'Order is cancelled');
     }
@@ -496,11 +513,6 @@ class CompanyOrderController extends Controller
         }
         $order->status = Constants::ACCEPTED_BY_RECIPIENT;
         $order->save();
-//        $order_details = OrderDetail::where(['order_id'=>$order->id, 'status'=>3])->get();
-//        foreach($order_details as $order_detail){
-//            $order_detail->status = Constants::ORDER_DETAIL_ACCEPTED_BY_RECIPIENT;
-//            $order_detail->save();
-//        }
         return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
     }
 
@@ -511,11 +523,6 @@ class CompanyOrderController extends Controller
         }
         $order->status = Constants::ORDER_DELIVERED;
         $order->save();
-//        $order_details = OrderDetail::where(['order_id'=>$order->id, 'status'=>3])->get();
-//        foreach($order_details as $order_detail){
-//            $order_detail->status = Constants::ORDER_DETAIL_ACCEPTED_BY_RECIPIENT;
-//            $order_detail->save();
-//        }
         return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
     }
 
@@ -526,11 +533,6 @@ class CompanyOrderController extends Controller
         }
         $order->status = Constants::READY_FOR_PICKUP;
         $order->save();
-//        $order_details = OrderDetail::where(['order_id'=>$order->id, 'status'=>3])->get();
-//        foreach($order_details as $order_detail){
-//            $order_detail->status = Constants::ORDER_DETAIL_ACCEPTED_BY_RECIPIENT;
-//            $order_detail->save();
-//        }
         return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
     }
 
@@ -551,6 +553,16 @@ class CompanyOrderController extends Controller
 
     public function cancellOrderDelivered($id){
         $order = Order::where('status', Constants::ORDER_DELIVERED)->find($id);
+        if(!$order){
+            return redirect()->route('company_order.index')->with('error', 'Order not found');
+        }
+        $order->status = Constants::PERFORMED;
+        $order->save();
+        return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
+    }
+
+    public function cancellReadyForPickup($id){
+        $order = Order::where('status', Constants::READY_FOR_PICKUP)->find($id);
         if(!$order){
             return redirect()->route('company_order.index')->with('error', 'Order not found');
         }

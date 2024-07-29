@@ -240,16 +240,13 @@
             border-color: #3A4250 !important;
             outline: 1px #3A4250 !important;
         }
-
-        .product-image-modal{
-            height: 100vh;
-            background-color: transparent !important;
-            flex-direction: row !important;
-            justify-content: center !important;
-            align-items: center !important;
+        .modal-content{
+            width: auto !important;
+            margin-top: 20%;
         }
     </style>
-    @if(!empty($all_orders['orderedOrders']) || !empty($all_orders['performedOrders']) || !empty($all_orders['cancelledOrders']) || !empty($all_orders['deliveredOrders']) || !empty($all_orders['acceptedByRecipientOrders']))
+    @if(!empty($all_orders['orderedOrders']) || !empty($all_orders['performedOrders']) || !empty($all_orders['cancelledOrders'])
+        || !empty($all_orders['deliveredOrders']) || !empty($all_orders['readyForPickup']) || !empty($all_orders['acceptedByRecipientOrders']))
         <div id="success-alert-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-sm">
                 <div class="modal-content">
@@ -307,7 +304,26 @@
                     <div class="modal-body">
                         <div class="text-center">
                             <i class="dripicons-warning h1 text-success"></i>
-                            <h4 class="mt-2">{{ translate('This order accepted by user ?')}}</h4>
+                            <h4 class="mt-2">{{ translate('Is this order ready to deliver ?')}}</h4>
+                        </div>
+                        <form class="d-flex justify-content-center" action="" method="POST" id="order_delivered">
+                            @csrf
+                            @method('POST')
+                            <button type="button" class="btn btn-danger my-2" data-bs-dismiss="modal" style="margin-right:4px"> {{ translate('No')}}</button>
+                            <button type="submit" class="btn btn-success my-2"> {{ translate('Yes')}} </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <div id="ready-for-pickup-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <i class="dripicons-warning h1 text-success"></i>
+                            <h4 class="mt-2">{{ translate('Is this order ready to pick up ?')}}</h4>
                         </div>
                         <form class="d-flex justify-content-center" action="" method="POST" id="order_delivered">
                             @csrf
@@ -358,6 +374,25 @@
 
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
+        <div id="cancell-ready-for-pickup-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <i class="dripicons-warning h1 text-success"></i>
+                            <h4 class="mt-2">{{ translate('Are you going to cancell to pick up order?')}}</h4>
+                        </div>
+                        <form class="d-flex justify-content-center" action="" method="POST" id="cancell_order_delivered">
+                            @csrf
+                            @method('POST')
+                            <button type="button" class="btn btn-danger my-2" data-bs-dismiss="modal" style="margin-right:4px"> {{ translate('No')}}</button>
+                            <button type="submit" class="btn btn-success my-2"> {{ translate('Yes')}} </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
 {{--        <div id="carousel-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">--}}
 {{--            <div class="modal-dialog">--}}
 {{--                <div class="modal-content" style="background-color: #989CA2">--}}
@@ -380,7 +415,7 @@
         <!-- /.modal -->
         <div id="images-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog d-flex align-items-center">
-                <div class="modal-content product-image-modal" style="background-color: transparent">
+                <div class="modal-content" style="background-color: transparent">
                     <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
                         <div class="carousel-inner" id="product_image_content">
 
@@ -491,6 +526,14 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a href="#ready_for_pick" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                            {{translate('Ready for pickup')}}
+                            @if(count($all_orders['readyForPickup']) > 0)
+                                <span class="badge bg-danger"> {{count($all_orders['readyForPickup'])}}</span>
+                            @endif
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="#accepted_by_recepient" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                             {{translate('Accepted by recepient')}}
                             @if(count($all_orders['acceptedByRecipientOrders']) > 0)
@@ -548,6 +591,17 @@
                                     <tr>
                                         <th class="d-flex justify-content-between width_auto">
                                             <h4 class="mt-0 header-title">{{translate('Delivered orders list')}}</h4>
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    @break
+                            @case("readyForPickup")
+                            <div class="tab-pane" id="ready_for_pick">
+                                <table class="table table-striped table-bordered dt-responsive">
+                                    <thead>
+                                    <tr>
+                                        <th class="d-flex justify-content-between width_auto">
+                                            <h4 class="mt-0 header-title">{{translate('Pickup orders list')}}</h4>
                                         </th>
                                     </tr>
                                     </thead>
@@ -631,16 +685,11 @@
                                                                     <div class="col-3">
                                                                         <div class="d-flex flex-column">
                                                                             <span class="order_content_header">{{translate('Address of the recipient:')}}</span>
-                                                                            @if(!empty($order['order']->address))
+                                                                            @if(!empty($order['address']))
                                                                                 <span class="order_content_item">
-                                                                                    @if(!empty($order['order']->address->cities))
-                                                                                        @if(!empty($order['order']->address->cities->region))
-                                                                                            {{$order['order']->address->cities->region->name??""}}
-                                                                                        @endif
-                                                                                        {{$order['order']->address->cities->name??""}}
+                                                                                    @if($order['address']['name'])
+                                                                                        {{$order['address']['name']}}
                                                                                     @endif
-                                                                                    {{$order['order']->address->name??''}}
-                                                                                    {{$order['order']->address->postcode??''}}
                                                                                 </span>
                                                                             @endif
                                                                         </div>
@@ -806,8 +855,14 @@
                                                                                         @case("performedOrders")
                                                                                             @switch($products[0]->status)
                                                                                                 @case(\App\Constants::ORDER_DETAIL_PERFORMED)
-                                                                                                <button type="button" class="btn btn-info btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#order-delivered-modal" onclick='order_delivered("{{route('order_delivered', $order['order']->id)}}")' data-url="">{{translate('Delivered')}}</button>
-                                                                                                <button type="button" class="btn btn-default delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products[0]->id)}}")' data-url="">{{translate('Cancell')}}</button>
+                                                                                                    @if(!empty($order['address']))
+                                                                                                        @if($order['address']['status'] == 'deliver')
+                                                                                                            <button type="button" class="btn btn-info btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#order-delivered-modal" onclick='order_delivered("{{route('order_delivered', $order['order']->id)}}")' data-url="">{{translate('Delivered')}}</button>
+                                                                                                        @elseif($order['address']['status'] == 'pick_up')
+                                                                                                            <button type="button" class="btn btn-info btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#ready-for-pickup-modal" onclick='ready_for_pick_up("{{route('ready_for_pickup', $order['order']->id)}}")' data-url="">{{translate('Ready for pickup')}}</button>
+                                                                                                        @endif
+                                                                                                    @endif
+                                                                                                    <button type="button" class="btn btn-default delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products[0]->id)}}")' data-url="">{{translate('Cancell')}}</button>
                                                                                                 @break
                                                                                                 @case(\App\Constants::ORDER_DETAIL_CANCELLED)
                                                                                                 <div class="text-end">
@@ -848,8 +903,30 @@
                                                                                             </button>
                                                                                         @break
                                                                                         @case("deliveredOrders")
-                                                                                            <button type="button" class="btn btn-info btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#order-delivered-modal" onclick='order_delivered("{{route('order_delivered', $order['order']->id)}}")' data-url="">{{translate('Delivered')}}</button>
-                                                                                            <button type="button" class="btn btn-default delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#cancell-order-delivered-modal" onclick='cancell_order_delivered("{{route('cancell_order_delivered', $products[0]->id)}}")' data-url="">{{translate('Cancell')}}</button>
+                                                                                            @switch($products[0]->status)
+                                                                                                @case(\App\Constants::ORDER_DETAIL_PERFORMED)
+                                                                                                    <button type="button" class="btn btn-info btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#accepted-by-recipient-modal" onclick='accepted_by_recipient("{{route('accepted_by_recipient', $order['order']->id)}}")' data-url=""><i class="fa fa-check"></i></button>
+                                                                                                    <button type="button" class="btn btn-default delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#cancell-order-delivered-modal" onclick='cancell_order_delivered("{{route('cancell_order_delivered', $order['order']->id)}}")' data-url="">{{translate('Cancell')}}</button>
+                                                                                                @break
+                                                                                                @case(\App\Constants::ORDER_DETAIL_CANCELLED)
+                                                                                                    <div class="text-end">
+                                                                                                       <span class="badge bg_danger">{{translate('Cancelled')}}</span>
+                                                                                                    </div>
+                                                                                                @break
+                                                                                            @endswitch
+                                                                                        @break
+                                                                                        @case("readyForPickup")
+                                                                                        @switch($products[0]->status)
+                                                                                            @case(\App\Constants::ORDER_DETAIL_PERFORMED)
+                                                                                                <button type="button" class="btn btn-info btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#accepted-by-recipient-modal" onclick='accepted_by_recipient("{{route('accepted_by_recipient', $order['order']->id)}}")' data-url=""><i class="fa fa-check"></i></button>
+                                                                                                <button type="button" class="btn btn-default delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#cancell-order-delivered-modal" onclick='cancell_ready_for_pick_up("{{route('cancell_ready_for_pick_up', $order['order']->id)}}")' data-url="">{{translate('Cancell')}}</button>
+                                                                                            @break
+                                                                                            @case(\App\Constants::ORDER_DETAIL_CANCELLED)
+                                                                                                <div class="text-end">
+                                                                                                   <span class="badge bg_danger">{{translate('Cancelled')}}</span>
+                                                                                                </div>
+                                                                                            @break
+                                                                                        @endswitch
                                                                                         @break
                                                                                         @case("acceptedByRecipientOrders")
                                                                                         <div class="d-flex justify-content-around">
@@ -924,21 +1001,21 @@
                                                                                                     <button type="button" class="btn btn-default delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products_with_anime[0]->id)}}")' data-url="">{{translate('Cancell')}}</button>
                                                                                                     @break
                                                                                                 @case(\App\Constants::ORDER_DETAIL_CANCELLED)
-                                                                                                <div class="text-end">
-                                                                                                    <span class="badge bg_danger">{{translate('Cancelled')}}</span>
-                                                                                                </div>
-                                                                                                <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#success-alert-modal"
-                                                                                                    onclick='accepting_anime_order(
-                                                                                                        "{{$products_with_anime[0]->quantity??''}}",
-                                                                                                        "{{!empty($products_with_anime[0]->product)?$products_with_anime[0]->product->name:''}}",
-                                                                                                        "{{!empty($products_with_anime[0]->size)?$products_with_anime[0]->size->name:''}}",
-                                                                                                        "{{!empty($products_with_anime[0]->color)?$products_with_anime[0]->color->name:''}}",
-                                                                                                        "{{isset($products_with_anime['images'][0])?$products_with_anime['images'][0]:''}}",
-                                                                                                        "{{isset($products_with_anime['images'][1])?$products_with_anime['images'][1]:''}}",
-                                                                                                        "{{route('perform_order_detail', $products_with_anime[0]->id)}}"
-                                                                                                        )' data-url="">
-                                                                                                    {{translate('Accept')}}
-                                                                                                </button>
+                                                                                                    <div class="text-end">
+                                                                                                        <span class="badge bg_danger">{{translate('Cancelled')}}</span>
+                                                                                                    </div>
+                                                                                                    <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#success-alert-modal"
+                                                                                                        onclick='accepting_anime_order(
+                                                                                                            "{{$products_with_anime[0]->quantity??''}}",
+                                                                                                            "{{!empty($products_with_anime[0]->product)?$products_with_anime[0]->product->name:''}}",
+                                                                                                            "{{!empty($products_with_anime[0]->size)?$products_with_anime[0]->size->name:''}}",
+                                                                                                            "{{!empty($products_with_anime[0]->color)?$products_with_anime[0]->color->name:''}}",
+                                                                                                            "{{isset($products_with_anime['images'][0])?$products_with_anime['images'][0]:''}}",
+                                                                                                            "{{isset($products_with_anime['images'][1])?$products_with_anime['images'][1]:''}}",
+                                                                                                            "{{route('perform_order_detail', $products_with_anime[0]->id)}}"
+                                                                                                            )' data-url="">
+                                                                                                        {{translate('Accept')}}
+                                                                                                    </button>
                                                                                                 @break
 {{--                                                                                                @case(\App\Constants::ORDER_DELIVERED)--}}
 {{--                                                                                                <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#accepted-success-modal" title="{{translate('Performed by admin')}}"><i class="fa fa-ellipsis-h"></i></button>--}}
@@ -956,58 +1033,70 @@
                                                                                             <span class="badge bg_danger">{{translate('Cancelled')}}</span>
                                                                                         </div>
                                                                                         <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#success-alert-modal" data-url=""
-                                                                                                onclick='accepting_anime_order(
-                                                                                                    "{{$products_with_anime[0]->quantity??''}}",
-                                                                                                    "{{!empty($products_with_anime[0]->product)?$products_with_anime[0]->product->name:''}}",
-                                                                                                    "{{!empty($products_with_anime[0]->size)?$products_with_anime[0]->size->name:''}}",
-                                                                                                    "{{!empty($products_with_anime[0]->color)?$products_with_anime[0]->color->name:''}}",
-                                                                                                    "{{isset($products_with_anime['images'][0])?$products_with_anime['images'][0]:''}}",
-                                                                                                    "{{isset($products_with_anime['images'][1])?$products_with_anime['images'][1]:''}}",
-                                                                                                    "{{route('perform_order_detail', $products_with_anime[0]->id)}}")' >
+                                                                                            onclick='accepting_anime_order(
+                                                                                                "{{$products_with_anime[0]->quantity??''}}",
+                                                                                                "{{!empty($products_with_anime[0]->product)?$products_with_anime[0]->product->name:''}}",
+                                                                                                "{{!empty($products_with_anime[0]->size)?$products_with_anime[0]->size->name:''}}",
+                                                                                                "{{!empty($products_with_anime[0]->color)?$products_with_anime[0]->color->name:''}}",
+                                                                                                "{{isset($products_with_anime['images'][0])?$products_with_anime['images'][0]:''}}",
+                                                                                                "{{isset($products_with_anime['images'][1])?$products_with_anime['images'][1]:''}}",
+                                                                                                "{{route('perform_order_detail', $products_with_anime[0]->id)}}")' >
                                                                                             {{translate('Accept')}}
                                                                                         </button>
                                                                                     @break
                                                                                     @case("performedOrders")
                                                                                         @switch($products_with_anime[0]->status)
                                                                                             @case(\App\Constants::ORDER_DETAIL_PERFORMED)
-                                                                                            <button type="button" class="btn btn-info btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#order-delivered-modal" onclick='order_delivered("{{route('order_delivered', $order['order']->id)}}")' data-url="">{{translate('Delivered')}}</button>
-                                                                                            <button type="button" class="btn btn-default delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products_with_anime[0]->id)}}")' data-url="">{{translate('Cancell')}}</button>
+                                                                                                @if(!empty($order['address']))
+                                                                                                    @if($order['address']['status'] == 'deliver')
+                                                                                                        <button type="button" class="btn btn-info btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#order-delivered-modal" onclick='order_delivered("{{route('order_delivered', $order['order']->id)}}")' data-url="">{{translate('Delivered')}}</button>
+                                                                                                    @elseif($order['address']['status'] == 'pick_up')
+                                                                                                        <button type="button" class="btn btn-info btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#ready-for-pickup-modal" onclick='ready_for_pick_up("{{route('ready_for_pickup', $order['order']->id)}}")' data-url="">{{translate('Ready for pickup')}}</button>
+                                                                                                    @endif
+                                                                                                @endif
+                                                                                                <button type="button" class="btn btn-default delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products_with_anime[0]->id)}}")' data-url="">{{translate('Cancell')}}</button>
                                                                                             @break
                                                                                             @case(\App\Constants::ORDER_DETAIL_CANCELLED)
-                                                                                            <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#success-alert-modal" data-url=""
-                                                                                                onclick='accepting_anime_order(
-                                                                                                    "{{$products_with_anime[0]->quantity??''}}",
-                                                                                                    "{{!empty($products_with_anime[0]->product)?$products_with_anime[0]->product->name:''}}",
-                                                                                                    "{{!empty($products_with_anime[0]->size)?$products_with_anime[0]->size->name:''}}",
-                                                                                                    "{{!empty($products_with_anime[0]->color)?$products_with_anime[0]->color->name:''}}",
-                                                                                                    "{{isset($products_with_anime['images'][0])?$products_with_anime['images'][0]:''}}",
-                                                                                                    "{{isset($products_with_anime['images'][1])?$products_with_anime['images'][1]:''}}",
-                                                                                                    "{{route('perform_order_detail', $products_with_anime[0]->id)}}")'>
-                                                                                                {{translate('Accept')}}
-                                                                                            </button>
+                                                                                                <div class="text-end">
+                                                                                                    <span class="badge bg_danger">{{translate('Cancelled')}}</span>
+                                                                                                </div>
+                                                                                                <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#success-alert-modal" data-url=""
+                                                                                                    onclick='accepting_anime_order(
+                                                                                                        "{{$products_with_anime[0]->quantity??''}}",
+                                                                                                        "{{!empty($products_with_anime[0]->product)?$products_with_anime[0]->product->name:''}}",
+                                                                                                        "{{!empty($products_with_anime[0]->size)?$products_with_anime[0]->size->name:''}}",
+                                                                                                        "{{!empty($products_with_anime[0]->color)?$products_with_anime[0]->color->name:''}}",
+                                                                                                        "{{isset($products_with_anime['images'][0])?$products_with_anime['images'][0]:''}}",
+                                                                                                        "{{isset($products_with_anime['images'][1])?$products_with_anime['images'][1]:''}}",
+                                                                                                        "{{route('perform_order_detail', $products_with_anime[0]->id)}}")'>
+                                                                                                    {{translate('Accept')}}
+                                                                                                </button>
                                                                                             @break
                                                                                         @endswitch
                                                                                     @break
                                                                                     @case("deliveredOrders")
                                                                                         @switch($products_with_anime[0]->status)
                                                                                             @case(\App\Constants::ORDER_DETAIL_PERFORMED)
-                                                                                            <button type="button" class="btn btn-info btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#accepted-by-recipient-modal" onclick='accepted_by_recipient("{{route('accepted_by_recipient', $order['order']->id)}}")' data-url=""><i class="fa fa-arrow-left"></i></button>
-                                                                                            <button type="button" class="btn btn-default delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#warning-order-alert-modal" onclick='cancelling_order("{{route('cancell_order_detail', $products_with_anime[0]->id)}}")' data-url="">{{translate('Cancell')}}</button>
+                                                                                                <button type="button" class="btn btn-info btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#accepted-by-recipient-modal" onclick='accepted_by_recipient("{{route('accepted_by_recipient', $order['order']->id)}}")' data-url=""><i class="fa fa-check"></i></button>
+                                                                                                <button type="button" class="btn btn-default delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#cancell-order-delivered-modal" onclick='cancell_order_delivered("{{route('cancell_order_delivered', $order['order']->id)}}")' data-url="">{{translate('Cancell')}}</button>
                                                                                             @break
                                                                                             @case(\App\Constants::ORDER_DETAIL_CANCELLED)
-                                                                                            <button type="button" class="btn btn-success delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#success-alert-modal" data-url=""
-                                                                                                    onclick='accepting_order(
-                                                                                                        "{{(int)$products_with_anime[0]->quantity}}",
-                                                                                                        "{{(int)$products_with_anime[0]->warehouse->quantity}}",
-                                                                                                        "{{!empty($products_with_anime[0]->color)?$products_with_anime[0]->color->name:''}}",
-                                                                                                        "{{!empty($products_with_anime[0]->size)?$products_with_anime[0]->size->name:''}}",
-                                                                                                        "{{$product_name}}",
-                                                                                                        "{{isset($products_with_anime['images'][0])?$products_with_anime['images'][0]:''}}",
-                                                                                                        "{{isset($products_with_anime['images'][1])?$products_with_anime['images'][1]:''}}",
-                                                                                                        "{{route('perform_order_detail', $products_with_anime[0]->id)}}"
-                                                                                                        )'>
-                                                                                                {{translate('Accept')}}
-                                                                                            </button>
+                                                                                                <div class="text-end">
+                                                                                                   <span class="badge bg_danger">{{translate('Cancelled')}}</span>
+                                                                                                </div>
+                                                                                            @break
+                                                                                        @endswitch
+                                                                                    @break
+                                                                                    @case("readyForPickup")
+                                                                                        @switch($products_with_anime[0]->status)
+                                                                                            @case(\App\Constants::ORDER_DETAIL_PERFORMED)
+                                                                                                <button type="button" class="btn btn-info btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#accepted-by-recipient-modal" onclick='accepted_by_recipient("{{route('accepted_by_recipient', $order['order']->id)}}")' data-url=""><i class="fa fa-check"></i></button>
+                                                                                                <button type="button" class="btn btn-default delete-datas btn-sm waves-effect" data-bs-toggle="modal" data-bs-target="#cancell-order-delivered-modal" onclick='cancell_ready_for_pick_up("{{route('cancell_ready_for_pick_up', $order['order']->id)}}")' data-url="">{{translate('Cancell')}}</button>
+                                                                                            @break
+                                                                                            @case(\App\Constants::ORDER_DETAIL_CANCELLED)
+                                                                                                <div class="text-end">
+                                                                                                   <span class="badge bg_danger">{{translate('Cancelled')}}</span>
+                                                                                                </div>
                                                                                             @break
                                                                                         @endswitch
                                                                                     @break

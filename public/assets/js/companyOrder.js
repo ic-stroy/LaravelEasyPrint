@@ -12,8 +12,10 @@ let cancell_order = document.getElementById('cancell_order')
 let perform_order = document.getElementById('perform_order_')
 let accepted_by_recipient_order = document.getElementById('accepted_by_recipient_order')
 let order_delivered_ = document.getElementById('order_delivered')
+let ready_for_pick_up_ = document.getElementById('ready_for_pick_up_')
 let cancell_accepted_by_recipient_order = document.getElementById('cancell_accepted_by_recipient_order')
 let cancell_order_delivered_ = document.getElementById('cancell_order_delivered')
+let cancell_ready_for_pick_up_ = document.getElementById('cancell_ready_for_pick_up_')
 let perform_order_button = document.getElementById('perform_order_button')
 let accordion_arrow = document.getElementsByClassName('accordion_arrow')
 let custom_accordion_title = document.getElementsByClassName('custom-accordion-title')
@@ -69,8 +71,18 @@ function order_delivered(url){
         order_delivered_.setAttribute("action", "")
     }
 }
+function ready_for_pick_up(url){
+    if(url){
+        ready_for_pick_up_.setAttribute("action", url)
+    }else{
+        ready_for_pick_up_.setAttribute("action", "")
+    }
+}
 function cancell_accepted_by_recipient(url){
     cancell_accepted_by_recipient_order.setAttribute("action", url)
+}
+function cancell_ready_for_pick_up(url){
+    cancell_ready_for_pick_up_.setAttribute("action", url)
 }
 function cancell_order_delivered(url){
     cancell_order_delivered_.setAttribute("action", url)
