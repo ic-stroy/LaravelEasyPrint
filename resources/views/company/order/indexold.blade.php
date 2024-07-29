@@ -240,6 +240,13 @@
             border-color: #3A4250 !important;
             outline: 1px #3A4250 !important;
         }
+
+        .product-image-modal{
+            height: 100vh;
+            background-color: transparent !important;
+            flex-direction: row !important;
+            justify-content: center !important;
+        }
     </style>
     @if(!empty($all_orders['orderedOrders']) || !empty($all_orders['performedOrders']) || !empty($all_orders['cancelledOrders']) || !empty($all_orders['deliveredOrders']) || !empty($all_orders['acceptedByRecipientOrders']))
         <div id="success-alert-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -371,7 +378,7 @@
 {{--        </div><!-- /.modal -->--}}
         <!-- /.modal -->
         <div id="images-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog d-flex align-items-center" style="height: 100vh; background-color: transparent; flex-direction: row !important; justify-content: center !important">
+            <div class="modal-dialog product-image-modal d-flex align-items-center">
                 <div class="modal-content" style="background-color: transparent">
                     <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
                         <div class="carousel-inner" id="product_image_content">
