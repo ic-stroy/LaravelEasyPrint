@@ -34,7 +34,7 @@
                             </th>
                             <td>
                                 <a class="show_page" href="{{route('category.show', $category->id)}}">
-                                    @if(isset($category->name)){{ $category->name }}@else <div class="no_text"></div> @endif
+                                    @if(isset($category->name)){{ $category->name?translate($category->name):'' }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
                             <td>

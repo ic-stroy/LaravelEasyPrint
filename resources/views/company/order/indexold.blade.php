@@ -36,21 +36,21 @@
         .white_text{
             color:white
         }
-        .carousel-control-prev, .carousel-control-next{
-            top:50%;
-            background-color: transparent;
-        }
-        .carousel-control-prev{
-            margin-left: -30px;
-        }
-        .carousel-control-next{
-            margin-right: -30px;
-        }
-        .carousel-control-prev-icon, .carousel-control-next-icon{
-            color:#6C8BC0 !important;
-            width: 34px;
-            height: 34px;
-        }
+        /*.carousel-control-prev, .carousel-control-next{*/
+        /*    top:50%;*/
+        /*    background-color: transparent;*/
+        /*}*/
+        /*.carousel-control-prev{*/
+        /*    margin-left: -30px;*/
+        /*}*/
+        /*.carousel-control-next{*/
+        /*    margin-right: -30px;*/
+        /*}*/
+        /*.carousel-control-prev-icon, .carousel-control-next-icon{*/
+        /*    color:#6C8BC0 !important;*/
+        /*    width: 34px;*/
+        /*    height: 34px;*/
+        /*}*/
         .carousel-inner{
             padding:0px;
         }
@@ -154,7 +154,7 @@
             font-family: Manrope;
             opacity: 0.7;
             font-weight: 500;
-            font-size:11px;
+            font-size:13px;
             line-height: 16px;
             text-align: start;
             margin-bottom: 6px;
@@ -163,22 +163,22 @@
             font-family: Manrope;
             opacity: 0.7;
             font-weight: 500;
-            font-size:9px;
+            font-size:10px;
             line-height: 16px;
             text-align: start;
             margin-bottom: 6px;
         }
         .order_content_item{
             font-family: Manrope;
-            font-weight: 600;
-            font-size:12px;
+            font-weight: 800;
+            font-size:14px;
             line-height: 18px;
             text-align: start;
         }
         .order_product_quantity{
             font-family: Inter;
             font-weight: 400;
-            font-size:13px;
+            font-size:14px;
             line-height: 19px;
         }
         .custom-accordion{
@@ -225,7 +225,7 @@
             color: black !important;
             /*padding:8px 8px;*/
             border-radius: 6px;
-            font-size: 12px;
+            font-size: 13px;
             width: min-content;
         }
         .bg_danger{
@@ -233,7 +233,7 @@
             color: black !important;
             /*padding:8px 8px;*/
             border-radius: 6px;
-            font-size: 12px;
+            font-size: 13px;
             width: min-content;
         }
         .table_body tr td{

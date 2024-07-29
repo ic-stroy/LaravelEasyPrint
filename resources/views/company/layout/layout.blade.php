@@ -464,9 +464,9 @@ $current_user = \Illuminate\Support\Facades\Auth::user();
                                 <li>
                                     <a href="{{route('warehouse.index')}}">{{ translate('Products') }}</a>
                                 </li>
-                                <li>
-                                    <a href="{{route('print.index')}}">{{ translate('Print products') }}</a>
-                                </li>
+{{--                                <li>--}}
+{{--                                    <a href="{{route('print.index')}}">{{ translate('Print products') }}</a>--}}
+{{--                                </li>--}}
                             </ul>
                         </div>
                     </li>

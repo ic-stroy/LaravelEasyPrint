@@ -519,6 +519,21 @@ class CompanyOrderController extends Controller
         return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
     }
 
+    public function readyForPickup($id){
+        $order = Order::where('status', Constants::PERFORMED)->find($id);
+        if(!$order){
+            return redirect()->route('company_order.index')->with('error', 'Order not found');
+        }
+        $order->status = Constants::READY_FOR_PICKUP;
+        $order->save();
+//        $order_details = OrderDetail::where(['order_id'=>$order->id, 'status'=>3])->get();
+//        foreach($order_details as $order_detail){
+//            $order_detail->status = Constants::ORDER_DETAIL_ACCEPTED_BY_RECIPIENT;
+//            $order_detail->save();
+//        }
+        return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
+    }
+
     public function cancellAcceptedByRecipient($id){
         $order = Order::where('status', Constants::ACCEPTED_BY_RECIPIENT)->find($id);
         if(!$order){

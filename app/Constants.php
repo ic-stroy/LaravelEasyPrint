@@ -14,7 +14,8 @@ class Constants {
    const PERFORMED = 3;
    const CANCELLED = 4;
    const ORDER_DELIVERED = 5;
-   const ACCEPTED_BY_RECIPIENT = 6;
+   const READY_FOR_PICKUP = 6;
+   const ACCEPTED_BY_RECIPIENT = 7;
    // 1 basked 2 ordered 3 performed 4 cancelled 5 accepted by recipient
 
     //Order detail companiyalar ga notifikatsiya borganda ular qabul qilishi yoki kechiktrishi
