@@ -74,7 +74,7 @@ class HomeController extends Controller
 
     public function getPayme($order_id)
     {
-        $order = Order::where(['id' => (int)$order_id, 'status' => Constants::ORDERED])->first();
+        $order = Order::where(['id' => (int)$order_id, 'status' => Constants::BASKED])->first();
         if (empty($order))
             return redirect('https://easyprint.uz');
 
