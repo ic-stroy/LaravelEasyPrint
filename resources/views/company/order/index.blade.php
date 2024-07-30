@@ -36,21 +36,6 @@
         .white_text{
             color:white
         }
-        /*.carousel-control-prev, .carousel-control-next{*/
-        /*    top:50%;*/
-        /*    background-color: transparent;*/
-        /*}*/
-        /*.carousel-control-prev{*/
-        /*    margin-left: -30px;*/
-        /*}*/
-        /*.carousel-control-next{*/
-        /*    margin-right: -30px;*/
-        /*}*/
-        /*.carousel-control-prev-icon, .carousel-control-next-icon{*/
-        /*    color:#6C8BC0 !important;*/
-        /*    width: 34px;*/
-        /*    height: 34px;*/
-        /*}*/
         .carousel-inner{
             padding:0px;
         }
@@ -105,26 +90,29 @@
         }
         .order_number{
             font-family: Inter;
-            font-weight: 500;
-            font-size:14px;
+            font-weight: 700;
+            font-size:13px;
             line-height:20px;
+            color: black !important;
         }
         .order_created{
-            font-family: Manrope;
+            font-family: Inter;
             font-weight: 500;
             font-size:13px;
             line-height: 18px;
+            color: black !important;
             opacity: 0.8;
         }
         .order_created_date{
-            font-family: Manrope;
+            font-family: Inter;
             font-weight: 500;
             font-size:12px;
             line-height: 18px;
+            color: black !important;
             opacity: 0.6;
         }
         .order_payment{
-            font-family: Manrope;
+            font-family: Inter;
             font-weight: 700;
             font-size:11px;
             line-height: 18px;
@@ -132,62 +120,70 @@
             padding: 4px 8px;
         }
         .status{
-            font-family: Manrope;
+            font-family: Inter;
             font-weight: 500;
             font-size:13px;
             line-height: 18px;
+            color: black !important;
             margin-right: 8px;
         }
         .order_status{
-            font-family: Manrope;
+            font-family: Inter;
             font-weight: 700;
             font-size:11px !important;
             line-height: 18px;
+            color: black !important;
         }
         .order_hr_05{
-            color: #808080;
+            color: #CDCDCF;
             height: 0.5px !important;
-            opacity: 0.2;
+            opacity: 0.4;
             margin: 10px 0px;
         }
         .order_content_header{
-            font-family: Manrope;
+            font-family: Inter;
             opacity: 0.7;
             font-weight: 500;
             font-size:13px;
             line-height: 16px;
             text-align: start;
             margin-bottom: 6px;
+            color: black !important;
         }
         .order_cost{
-            font-family: Manrope;
+            font-family: Inter;
             opacity: 0.7;
             font-weight: 500;
             font-size:10px;
             line-height: 16px;
             text-align: start;
             margin-bottom: 6px;
+            color: black !important;
         }
         .order_content_item{
-            font-family: Manrope;
+            font-family: Inter;
             font-weight: 800;
-            font-size:14px;
+            font-size:13px;
             line-height: 18px;
             text-align: start;
+            color: black !important;
         }
         .order_product_quantity{
             font-family: Inter;
-            font-weight: 400;
-            font-size:14px;
+            font-weight: 500;
+            font-size:13px;
             line-height: 19px;
+            color: black !important;
         }
         .custom-accordion{
-            border-bottom: solid;
-            color: #808080;
+            border-bottom: solid 1px;
+            color: #CDCDCF;
         }
         .bg_light{
             background-color: white !important;
-            color: #808096 !important;
+            color: black !important;
+            font-weight: 700;
+            font-size: 11px;
         }
         .products-content{
             width: auto;
@@ -196,6 +192,7 @@
             background-color: white;
             padding: 14px 0px;
             border-radius: 8px;
+            color: black !important;
         }
         .btn-success{
             background-color: #0EC568 !important;
@@ -237,12 +234,17 @@
             width: min-content;
         }
         .table_body tr td{
-            border-color: #3A4250 !important;
             outline: 1px #3A4250 !important;
         }
         .modal-content{
             width: auto !important;
             margin-top: 20%;
+        }
+        .bg-warning{
+            background-color: #DDB732 !important;
+        }
+        .card-header {
+            padding: 1.005rem 1.5rem 0rem 1.5rem
         }
     </style>
     @if(!empty($all_orders['orderedOrders']) || !empty($all_orders['performedOrders']) || !empty($all_orders['cancelledOrders'])
@@ -444,28 +446,28 @@
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
         <!-- /.modal -->
-        <div id="carousel-upload-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content" style="background-color: #989CA2;">
-                    <div id="carouselExample_Fade" class="carousel slide carousel-fade" data-bs-ride="carousel">
-                        <div class="carousel-inner" id="carousel_product_upload_images"></div>
-                        <a class="carousel-control-prev" href="#carouselExample_Fade" role="button" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#carouselExample_Fade" role="button" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </a>
-                    </div>
-                    <div class="d-none" id="carousel-upload-modal-order">
-                    <span class="badge bg-warning">
-                        <h2>{{translate('No orders')}}</h2>
-                    </span>
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
+        {{--        <div id="carousel-upload-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">--}}
+        {{--            <div class="modal-dialog">--}}
+        {{--                <div class="modal-content" style="background-color: #989CA2;">--}}
+        {{--                    <div id="carouselExample_Fade" class="carousel slide carousel-fade" data-bs-ride="carousel">--}}
+        {{--                        <div class="carousel-inner" id="carousel_product_upload_images"></div>--}}
+        {{--                        <a class="carousel-control-prev" href="#carouselExample_Fade" role="button" data-bs-slide="prev">--}}
+        {{--                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>--}}
+        {{--                            <span class="visually-hidden">Previous</span>--}}
+        {{--                        </a>--}}
+        {{--                        <a class="carousel-control-next" href="#carouselExample_Fade" role="button" data-bs-slide="next">--}}
+        {{--                            <span class="carousel-control-next-icon" aria-hidden="true"></span>--}}
+        {{--                            <span class="visually-hidden">Next</span>--}}
+        {{--                        </a>--}}
+        {{--                    </div>--}}
+        {{--                    <div class="d-none" id="carousel-upload-modal-order">--}}
+        {{--                    <span class="badge bg-warning">--}}
+        {{--                        <h2>{{translate('No orders')}}</h2>--}}
+        {{--                    </span>--}}
+        {{--                    </div>--}}
+        {{--                </div><!-- /.modal-content -->--}}
+        {{--            </div><!-- /.modal-dialog -->--}}
+        {{--        </div><!-- /.modal -->--}}
         <div id="warning-order-alert-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-sm">
                 <div class="modal-content">
@@ -504,6 +506,28 @@
                         <div class="text-center">
                             <i class="dripicons-warning h1 text-success"></i>
                             <h4 class="mt-2">{{translate('Accepted by recepient')}}</h4>
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <div id="user_info-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="text-center">
+                                    <i class="dripicons-warning h1 text-success"></i>
+                                    <h4 class="mt-2">{{ translate('Are you sure you want to accept this order')}}</h4>
+                                </div>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+
+                            </div>
+                            {{--                            <div class="card-footer d-flex justify-content-between">--}}
+                            {{--                                <button type="button" class="btn btn-success my-2" data-bs-dismiss="modal"> {{ translate('Ok')}}</button>--}}
+                            {{--                            </div>--}}
                         </div>
                     </div>
                 </div><!-- /.modal-content -->
@@ -661,16 +685,18 @@
                                                                         <span class="order_created">{{translate('The order was created in: ')}} <span class="order_created_date">{{$order['order']->updated_at}}</span></span>
                                                                     </div>
                                                                     <div class="col-2">
-                                                                        <span class="badge bg-info order_payment">
                                                                             @switch($order['order']->payment_method)
-                                                                                @case(\App\Constants::CASH_ON_DELIVERY)
-                                                                                {{translate('Payment upon receipt')}}
-                                                                                @break
-                                                                                @case(\App\Constants::BANK_CARD)
-                                                                                {{translate('Online payment')}}
-                                                                                @break
-                                                                            @endswitch
-                                                                        </span>
+                                                                            @case(\App\Constants::CASH_ON_DELIVERY)
+                                                                            <span class="badge bg-warning order_payment">
+                                                                                        {{translate('Payment upon receipt')}}
+                                                                                    </span>
+                                                                            @break
+                                                                            @case(\App\Constants::BANK_CARD)
+                                                                            <span class="badge bg-info order_payment">
+                                                                                        {{translate('Online payment')}}
+                                                                                    </span>
+                                                                            @break
+                                                                        @endswitch
                                                                     </div>
                                                                     <div class="col-2 text-end">
                                                                         <span class="status">{{translate('Status:')}}</span>
@@ -1154,8 +1180,8 @@
                                                                     @endforeach
                                                                 </div>
                                                                 <div class="row text-start">
-                                                                    <a class="d-flex justify-content-between
-                                                                    custom-accordion-title text-reset d-block"
+                                                                    <a class="d-flex justify-content-between align-items-center
+                                                                    custom-accordion-title text-reset d-block pb-2"
                                                                        data-bs-toggle="collapse" href="#collapseNine{{$i}}"
                                                                        aria-expanded="true" aria-controls="collapseNine">
                                                                         <span class="order_product_quantity">{{$order['products_quantity']}} {{translate('products')}}</span>
