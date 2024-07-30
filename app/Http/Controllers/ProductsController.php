@@ -10,6 +10,7 @@ use App\Models\ProductTranslations;
 use App\Models\Sizes;
 use App\Models\Category;
 use App\Models\Warehouse;
+use App\Models\PaymentStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ProductStoreRequest;
@@ -299,27 +300,27 @@ class ProductsController extends Controller
         return redirect()->route('product.index')->with('status', translate('Successfully deleted'));
     }
 
-    public function SlideShow(){
-        $products = Products::all();
-        return view('admin.slide-show.index', ['products'=>$products]);
+    public function payment(){
+        $payment = PaymentStatus::first();
+        return view('admin.payment.index', ['payment'=>$payment]);
     }
 
-    public function SlideShowShow($id){
-        $products = Products::where('slide_show')->get();
-        return view('admin.slide-show.show');
+    public function paymentShow($id){
+        $payment = PaymentStatus::where('slide_show')->first();
+        return view('admin.payment.show', ['payment'=>$payment]);
     }
 
-    public function SlideShowStatus(Request $request){
-        $product = Products::find($request->id);
-        if($product){
+    public function paymentStatus(Request $request){
+        $payment = PaymentStatus::find($request->id);
+        if($payment){
             if($request->checked == 'true'){
-                $product->slide_show = Constants::ACTIVE;
+                $payment->status = Constants::ACTIVE;
                 $message = translate('Added to slide show');
             }elseif($request->checked == 'false'){
-                $product->slide_show = Constants::NOT_ACTIVE;
+                $payment->status = Constants::NOT_ACTIVE;
                 $message = translate('Deleted from slide show');
             }
-            $product->save();
+            $payment->save();
         }
         return $this->success($message, 200);
     }

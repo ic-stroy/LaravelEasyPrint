@@ -70,9 +70,9 @@ Auth::routes();
         Route::resource('role', RoleController::class);
         Route::resource('coupons', CouponController::class);
         Route::resource('discount', DiscountController::class);
-        Route::get('slide-show', [ProductsController::class, 'SlideShow'])->name('slide_show.index');
-        Route::get('slide-show/show/{id}', [ProductsController::class, 'SlideShowShow'])->name('slide_show.show');
-        Route::get('/slide-show/status/', [ProductsController::class, 'SlideShowStatus'])->name('slide_show.status');
+        Route::get('payment', [ProductsController::class, 'payment'])->name('payment.index');
+        Route::get('payment/show/{id}', [ProductsController::class, 'paymentShow'])->name('payment.show');
+        Route::get('/payment/status/', [ProductsController::class, 'paymentStatus'])->name('payment.status');
         Route::group(['prefix' => 'order'], function () {
              Route::get('/index/{id}', [OrderController::class, 'index'])->name('order.index');
              Route::get('/category', [OrderController::class, 'category'])->name('order.category');

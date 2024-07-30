@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             CategoryTranslationSeeder::class,
             CompanyTranslationSeeder::class,
             ProductSeeder::class,
+            PaymentStatusSeeder::class,
             ProductTranslationSeeder::class,
             RoleTranslationSeeder::class,
             WarehouseTranslationSeeder::class

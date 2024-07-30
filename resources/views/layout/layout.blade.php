@@ -498,12 +498,6 @@
                                             <span> {{ translate('Discount') }} </span>
                                         </a>
                                     </li>
-{{--                                    <li>--}}
-{{--                                        <a href="{{ route('slide_show.index') }}">--}}
-{{--                                            <i class="mdi mdi-image-outline"></i>--}}
-{{--                                            <span> {{ translate('Slide show') }} </span>--}}
-{{--                                        </a>--}}
-{{--                                    </li>--}}
                                 </ul>
                             </div>
                         </li>
@@ -564,6 +558,9 @@
                                     </li>
                                     <li>
                                         <a href="{{route('role.index')}}">{{translate('Role')}}</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{route('payment.index')}}">{{translate('Payment status')}}</a>
                                     </li>
                                 </ul>
                             </div>
