@@ -724,7 +724,7 @@
                                                                     <div class="col-3">
                                                                         <div class="d-flex flex-column">
                                                                             <span class="order_content_header">{{translate('Customer')}}</span>
-                                                                            <span class="order_content_item">{{$order['user_name']}}</span>
+                                                                            <span class="order_content_item"  data-bs-toggle="modal" data-bs-target="#user_info_modal" data-url="">{{$order['user_name']}}</span>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-3">

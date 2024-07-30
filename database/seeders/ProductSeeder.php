@@ -17,7 +17,7 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-    $is_exist_product = Products::withTrashed()->first();
+    $is_exist_product = Products::whereIn('name', ['Футболка', 'Свитшот', 'Худи'])->withTrashed()->first();
         $categories = Category::where('step', 0)->whereIn('name', ['T-shirts', 'Sweatshirts', 'Hoodies'])->get();
             if(!empty($categories)) {
                 foreach ($categories as $category){
@@ -44,7 +44,7 @@ class ProductSeeder extends Seeder
                 }
 
             }
-        if($is_exist_product){
+        if(!$is_exist_product){
             foreach ($products as $product){
                 Products::create($product);
             }
