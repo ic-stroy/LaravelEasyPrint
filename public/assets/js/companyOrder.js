@@ -15,6 +15,7 @@ let order_delivered_ = document.getElementById('order_delivered')
 let ready_for_pick_up_ = document.getElementById('ready_for_pick_up_')
 let cancell_accepted_by_recipient_order = document.getElementById('cancell_accepted_by_recipient_order')
 let cancell_order_delivered_ = document.getElementById('cancell_order_delivered')
+let delete_order_detail_ = document.getElementById('delete_order_detail')
 let cancell_ready_for_pick_up_ = document.getElementById('cancell_ready_for_pick_up_')
 let perform_order_button = document.getElementById('perform_order_button')
 let accordion_arrow = document.getElementsByClassName('accordion_arrow')
@@ -86,6 +87,9 @@ function cancell_ready_for_pick_up(url){
 }
 function cancell_order_delivered(url){
     cancell_order_delivered_.setAttribute("action", url)
+}
+function delete_order_detail(url){
+    delete_order_detail_.setAttribute("action", url)
 }
 function accepting_anime_order(quantity, product_name_, size_name, color_name, images_0, images_1, url){
     product_name.innerHTML = ""

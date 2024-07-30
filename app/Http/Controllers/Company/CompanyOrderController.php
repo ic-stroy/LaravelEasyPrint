@@ -571,6 +571,16 @@ class CompanyOrderController extends Controller
         return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
     }
 
+    public function deleteOrderDetail($id){
+        $order_detail = OrderDetail::find($id);
+        if($order_detail){
+            $order_detail->delete();
+            return redirect()->back()->with('performed', 'Order detail deleted from order');
+        }else{
+            return redirect()->back()->with('cancelled', 'Order detail not found');
+        }
+    }
+
     public function getImages($model, $text){
         if($model->images){
             $images_ = json_decode($model->images);
