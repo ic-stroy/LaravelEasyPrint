@@ -315,10 +315,10 @@ class ProductsController extends Controller
         if($payment){
             if($request->checked == 'true'){
                 $payment->status = Constants::ACTIVE;
-                $message = translate('Added to slide show');
+                $message = translate('Payment activated');
             }elseif($request->checked == 'false'){
                 $payment->status = Constants::NOT_ACTIVE;
-                $message = translate('Deleted from slide show');
+                $message = translate('Payment disactivated');
             }
             $payment->save();
         }
