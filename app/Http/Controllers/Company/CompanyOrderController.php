@@ -413,20 +413,23 @@ class CompanyOrderController extends Controller
                         }
                     }
                     if($order_detail_price <= 0 && $cancelled_has == true){
-                        $order->status = Constants::CANCELLED;
-                        $users = User::where('company_id', $user->company_id)->get();
-                        foreach($users as $user) {
-                            foreach ($user->unreadnotifications as $notification) {
-                                if ($notification->type == "App\Notifications\OrderNotification") {
-                                    if (!empty($notification->data)) {
-                                        if ($notification->data['order_id'] == $order->id) {
-                                            $notification->read_at = date('Y-m-d H:i:s');
-                                            $notification->save();
+                        if($order->status = Constants::ORDERED){
+                            $users = User::where('company_id', $user->company_id)->get();
+                            foreach($users as $user) {
+                                foreach ($user->unreadnotifications as $notification) {
+                                    if ($notification->type == "App\Notifications\OrderNotification") {
+                                        if (!empty($notification->data)) {
+                                            if ($notification->data['order_id'] == $order->id) {
+                                                $notification->read_at = date('Y-m-d H:i:s');
+                                                $notification->save();
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
+                        $order->status = Constants::CANCELLED;
+
                     }else{
                         $order->price = $order_detail_price;
                         $order->discount_price = $order_details_discount_price;
@@ -500,16 +503,17 @@ class CompanyOrderController extends Controller
                             $coupon_price = 0;
                         }
                         $order->all_price = $order->all_price - $coupon_price;
-
-                        $users = User::where('company_id', $user->company_id)->get();
-                        foreach($users as $user){
-                            foreach($user->unreadnotifications as $notification){
-                                if($notification->type == "App\Notifications\OrderNotification"){
-                                    if(!empty($notification->data)){
-                                        if($notification->data['order_id'] == $order->id){
-                                            $notification->read_at = date('Y-m-d H:i:s');
-                                            $notification->save();
-                                        };
+                        if($order->status = Constants::ORDERED){
+                            $users = User::where('company_id', $user->company_id)->get();
+                            foreach($users as $user){
+                                foreach($user->unreadnotifications as $notification){
+                                    if($notification->type == "App\Notifications\OrderNotification"){
+                                        if(!empty($notification->data)){
+                                            if($notification->data['order_id'] == $order->id){
+                                                $notification->read_at = date('Y-m-d H:i:s');
+                                                $notification->save();
+                                            };
+                                        }
                                     }
                                 }
                             }
