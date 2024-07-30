@@ -19,12 +19,16 @@ class CompanyHomeController extends Controller
         $ordered_orders = Order::where('status', Constants::ORDERED)->count();
         $performed_orders = Order::where('status', Constants::PERFORMED)->where('company_id', $user->company_id)->count();
         $cancelled_orders = Order::where('status', Constants::CANCELLED)->where('company_id', $user->company_id)->count();
+        $delivered_orders = Order::where('status', Constants::ORDER_DELIVERED)->where('company_id', $user->company_id)->count();
+        $ready_for_pickup_orders = Order::where('status', Constants::READY_FOR_PICKUP)->where('company_id', $user->company_id)->count();
         $accepted_orders = Order::where('status', Constants::ACCEPTED_BY_RECIPIENT)->where('company_id', $user->company_id)->count();
         return view('company.index', [
             'ordered_orders'=>$ordered_orders,
             'performed_orders'=>$performed_orders,
             'cancelled_orders'=>$cancelled_orders,
-            'accepted_orders'=>$accepted_orders
+            'accepted_orders'=>$accepted_orders,
+            'delivered_orders'=>$delivered_orders,
+            'ready_for_pickup_orders'=>$ready_for_pickup_orders
         ]);
     }
 

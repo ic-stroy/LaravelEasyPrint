@@ -13,7 +13,7 @@ class SizeSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public $all_sizes = ['S', 'M', 'L', 'X', 'XL', 'XXL', 'XXXL', 'XXXXL', '6-7 years', '8-10 years', '11-13 years'];
+    public $all_sizes = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL', 'XXXXL', '6-7 years', '8-10 years', '11-13 years'];
 
 
     public function run(): void
