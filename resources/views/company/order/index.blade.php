@@ -680,7 +680,7 @@
                                                                                                 <div class="card-header" id="headingNine">
                                                                                                     @if($order['order'])
                                                                                                         <span class="m-0 position-relative" style="width: 100%">
-                                                            <div class="custom-accordion-title text-reset d-block">
+                                                            <div class="text-reset d-block">
                                                                 <div class="row text-start d-flex align-items-center">
                                                                     <div class="col-3">
                                                                         <span class="order_number">{{translate('Order number')}} {{$order['order']->code}}</span>
@@ -689,16 +689,16 @@
                                                                         <span class="order_created">{{translate('The order was created in: ')}} <span class="order_created_date">{{$order['order']->updated_at}}</span></span>
                                                                     </div>
                                                                     <div class="col-2">
-                                                                            @switch($order['order']->payment_method)
+                                                                        @switch($order['order']->payment_method)
                                                                             @case(\App\Constants::CASH_ON_DELIVERY)
                                                                             <span class="badge bg-warning order_payment">
-                                                                                        {{translate('Payment upon receipt')}}
-                                                                                    </span>
+                                                                                    {{translate('Payment upon receipt')}}
+                                                                                </span>
                                                                             @break
                                                                             @case(\App\Constants::BANK_CARD)
                                                                             <span class="badge bg-info order_payment">
-                                                                                        {{translate('Online payment')}}
-                                                                                    </span>
+                                                                                    {{translate('Online payment')}}
+                                                                                </span>
                                                                             @break
                                                                         @endswitch
                                                                     </div>

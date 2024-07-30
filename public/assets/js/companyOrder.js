@@ -207,26 +207,25 @@ function getUploads(images) {
         carousel_product_upload_images.innerHTML = uploads_content
     }
 }
-
+console.log(custom_accordion_title)
 for(let i = 0; i< custom_accordion_title.length; i++){
     custom_accordion_title[i].addEventListener("click", function() {
         accordionArrow(i);
     });
 }
 
-
 function accordionArrow(index) {
-    for(let j = 0; j< accordion_arrow.length; j++){
-        let custom_accordion_title_href = custom_accordion_title[j].getAttribute('href')
+    // for(let j = 0; j< accordion_arrow.length; j++){
+        console.log([index, custom_accordion_title[index].getAttribute('href'), '#collapseNine'+(index+1)])
+        let custom_accordion_title_href = custom_accordion_title[index].getAttribute('href')
         if(custom_accordion_title_href == '#collapseNine'+(index+1)){
-            if(accordion_arrow[j].classList.contains('mdi-chevron-down')){
-                accordion_arrow[j].classList.remove('mdi-chevron-down')
-                accordion_arrow[j].classList.add('mdi-chevron-up')
-            }else if(accordion_arrow[j].classList.contains('mdi-chevron-up')){
-                accordion_arrow[j].classList.remove('mdi-chevron-up')
-                accordion_arrow[j].classList.add('mdi-chevron-down')
+            if(accordion_arrow[index].classList.contains('mdi-chevron-down')){
+                accordion_arrow[index].classList.remove('mdi-chevron-down')
+                accordion_arrow[index].classList.add('mdi-chevron-up')
+            }else if(accordion_arrow[index].classList.contains('mdi-chevron-up')){
+                accordion_arrow[index].classList.remove('mdi-chevron-up')
+                accordion_arrow[index].classList.add('mdi-chevron-down')
             }
         }
-    }
-
+    // }
 }
