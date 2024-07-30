@@ -39,6 +39,7 @@ Route::get('/get-payme/{order_id}', [HomeController::class, 'getPayme']);
 Auth::routes();
 
      Route::get('/api/subcategory/{id}', [SubCategoryController::class, 'getSubcategory'])->name('get_subcategory');
+     Route::get('api/payment/get/status/', [ProductsController::class, 'paymentGetStatus'])->name('payment.get.status');
      Route::group(['middleware'=>'authed'], function(){
         Route::get('/', [HomeController::class, 'index'])->name('dashboard');
         Route::get('/set-cities', [HomeController::class, 'setCities']);
@@ -71,7 +72,6 @@ Auth::routes();
         Route::resource('coupons', CouponController::class);
         Route::resource('discount', DiscountController::class);
         Route::get('payment', [ProductsController::class, 'payment'])->name('payment.index');
-        Route::get('payment/show/{id}', [ProductsController::class, 'paymentShow'])->name('payment.show');
         Route::get('/payment/status/', [ProductsController::class, 'paymentStatus'])->name('payment.status');
         Route::group(['prefix' => 'order'], function () {
              Route::get('/index/{id}', [OrderController::class, 'index'])->name('order.index');

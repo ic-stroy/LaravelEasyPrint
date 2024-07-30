@@ -305,9 +305,17 @@ class ProductsController extends Controller
         return view('admin.payment.index', ['payment'=>$payment]);
     }
 
-    public function paymentShow($id){
-        $payment = PaymentStatus::where('slide_show')->first();
-        return view('admin.payment.show', ['payment'=>$payment]);
+    public function paymentGetStatus(){
+        $payment = PaymentStatus::first();
+        $status = '';
+        if($payment){
+            if($payment->status == 0){
+                $status = 'Not active';
+            }elseif($payment->status == 1){
+                $status = 'Active';
+            }
+        }
+        return $this->success('Success', 200, [$status]);
     }
 
     public function paymentStatus(Request $request){
