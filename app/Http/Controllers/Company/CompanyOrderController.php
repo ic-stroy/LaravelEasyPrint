@@ -397,19 +397,6 @@ class CompanyOrderController extends Controller
                 $warehouse_product___->save();
             }
 
-            $users = User::where('company_id', $user->company_id)->get();
-            foreach($users as $user) {
-                foreach ($user->unreadnotifications as $notification) {
-                    if ($notification->type == "App\Notifications\OrderNotification") {
-                        if (!empty($notification->data)) {
-                            if ($notification->data['order_detail_id'] == $orderDetail->id) {
-                                $notification->read_at = date('Y-m-d H:i:s');
-                                $notification->save();
-                            }
-                        }
-                    }
-                }
-            }
             $orderDetail->save();
             $order = Order::whereIn('status', [Constants::ORDERED, Constants::PERFORMED, Constants::CANCELLED])->find($orderDetail->order_id);
             if($order){
@@ -427,6 +414,19 @@ class CompanyOrderController extends Controller
                     }
                     if($order_detail_price <= 0 && $cancelled_has == true){
                         $order->status = Constants::CANCELLED;
+                        $users = User::where('company_id', $user->company_id)->get();
+                        foreach($users as $user) {
+                            foreach ($user->unreadnotifications as $notification) {
+                                if ($notification->type == "App\Notifications\OrderNotification") {
+                                    if (!empty($notification->data)) {
+                                        if ($notification->data['order_'] == $order->id) {
+                                            $notification->read_at = date('Y-m-d H:i:s');
+                                            $notification->save();
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }else{
                         $order->price = $order_detail_price;
                         $order->discount_price = $order_details_discount_price;
@@ -468,19 +468,6 @@ class CompanyOrderController extends Controller
                 }
             }
             $orderDetail->status = Constants::ORDER_DETAIL_PERFORMED;
-            $users = User::where('company_id', $user->company_id)->get();
-            foreach($users as $user){
-                foreach($user->unreadnotifications as $notification){
-                    if($notification->type == "App\Notifications\OrderNotification"){
-                        if(!empty($notification->data)){
-                            if($notification->data['order_detail_id'] == $orderDetail->id){
-                                $notification->read_at = date('Y-m-d H:i:s');
-                                $notification->save();
-                            };
-                        }
-                    }
-                }
-            }
 
             $orderDetail->save();
             $order = Order::whereIn('status', [Constants::ORDERED, Constants::PERFORMED, Constants::CANCELLED])->find($orderDetail->order_id);
@@ -513,6 +500,20 @@ class CompanyOrderController extends Controller
                             $coupon_price = 0;
                         }
                         $order->all_price = $order->all_price - $coupon_price;
+
+                        $users = User::where('company_id', $user->company_id)->get();
+                        foreach($users as $user){
+                            foreach($user->unreadnotifications as $notification){
+                                if($notification->type == "App\Notifications\OrderNotification"){
+                                    if(!empty($notification->data)){
+                                        if($notification->data['order_id'] == $order->id){
+                                            $notification->read_at = date('Y-m-d H:i:s');
+                                            $notification->save();
+                                        };
+                                    }
+                                }
+                            }
+                        }
                         $order->status = Constants::PERFORMED;
                         $order->company_id = $user->company_id;
                         $order->save();
