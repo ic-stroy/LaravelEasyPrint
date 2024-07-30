@@ -544,7 +544,7 @@ class CompanyOrderController extends Controller
     }
 
     public function acceptedByRecipient($id){
-        $order = Order::where('status', Constants::PERFORMED)->find($id);
+        $order = Order::whereIn('status', [Constants::ORDER_DELIVERED, Constants::READY_FOR_PICKUP])->find($id);
         if(!$order){
             return redirect()->route('company_order.index')->with('error', 'Order not found');
         }
@@ -575,16 +575,24 @@ class CompanyOrderController extends Controller
 
     public function cancellAcceptedByRecipient($id){
         $order = Order::where('status', Constants::ACCEPTED_BY_RECIPIENT)->find($id);
-        if(!$order){
+        if($order){
+            if($order->address) {
+                if ($order->address->user) {
+                    if ($order->address->user->role_id && $order->address->user->role_id != 4) {
+                        $order->status = Constants::READY_FOR_PICKUP;
+                        $order->save();
+                        return redirect()->route('company_order.index')->with('performed', 'Order is ready for pickup');
+                    } else {
+                        $order->status = Constants::ORDER_DELIVERED;
+                        $order->save();
+                        return redirect()->route('company_order.index')->with('performed', 'Order is delivered');
+                    }
+                }
+            }
+        }else{
             return redirect()->route('company_order.index')->with('error', 'Order not found');
         }
-        $order->status = Constants::ORDER_DELIVERED;
-        $order->save();
-//        $order_details = OrderDetail::where(['order_id'=>$order->id, 'status'=>6])->get();
-//        foreach($order_details as $order_detail){
-//            $order_detail->status = Constants::ORDER_DETAIL_PERFORMED;
-//            $order_detail->save();
-//        }
+
         return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
     }
 
