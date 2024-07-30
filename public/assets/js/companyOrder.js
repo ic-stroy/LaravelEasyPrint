@@ -18,6 +18,13 @@ let cancell_order_delivered_ = document.getElementById('cancell_order_delivered'
 let delete_order_detail_ = document.getElementById('delete_order_detail')
 let cancell_ready_for_pick_up_ = document.getElementById('cancell_ready_for_pick_up_')
 let perform_order_button = document.getElementById('perform_order_button')
+let user_order_number = document.getElementById('user_order_number')
+let user_full_name = document.getElementById('user_full_name')
+let user_birth_date = document.getElementById('user_birth_date')
+let user_gender = document.getElementById('user_gender')
+let user_phone_number = document.getElementById('user_phone_number')
+let user_email = document.getElementById('user_email')
+let user_address = document.getElementById('user_address')
 let accordion_arrow = document.getElementsByClassName('accordion_arrow')
 let custom_accordion_title = document.getElementsByClassName('custom-accordion-title')
 
@@ -117,6 +124,36 @@ function accepting_anime_order(quantity, product_name_, size_name, color_name, i
     perform_order_button.disabled = false
 
     perform_order.setAttribute("action", url)
+}
+function getOrderData(user_order_number_, user_full_name_, user_birth_date_, user_gender_, user_phone_number_, user_email_, user_address_){
+    user_order_number.innerHTML = ""
+    user_full_name.innerHTML = ""
+    user_birth_date.innerHTML = ""
+    user_gender.innerHTML = ""
+    user_phone_number.innerHTML = ""
+    user_email.innerHTML = ""
+    user_address.innerHTML = ""
+    if(user_order_number_ != ""){
+        user_order_number.innerHTML = user_order_number_
+    }
+    if(user_full_name_ != ""){
+        user_full_name.innerHTML = user_full_name_
+    }
+    if(user_birth_date_ != ""){
+        user_birth_date.innerHTML = user_birth_date_
+    }
+    if(user_gender_ != ""){
+        user_gender.innerHTML = user_gender_
+    }
+    if(user_phone_number_ != ""){
+        user_phone_number.innerHTML = user_phone_number_
+    }
+    if(user_email_ != ""){
+        user_email.innerHTML = user_email_
+    }
+    if(user_address_ != ""){
+        user_address.innerHTML = user_address_
+    }
 }
 function cancelling_order(order_detail_id){
     cancell_order.setAttribute("action", order_detail_id)

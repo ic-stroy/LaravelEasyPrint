@@ -48,6 +48,9 @@ class ProductsController extends Controller
     public function store(Request $request)
     {
         $model = new Products();
+        if(in_array($request->name, ['Футболка', 'Свитшот', 'Худи'])){
+            return redirect()->back()->with('error', translate('You cannot use this name for product. Because they are already used'));
+        }
         $model->name = $request->name;
         if($request->subcategory_id){
             $model->category_id = $request->subcategory_id;
@@ -120,6 +123,9 @@ class ProductsController extends Controller
     public function edit(string $id)
     {
         $product = Products::find($id);
+        if(in_array($product->name, ['Футболка', 'Свитшот', 'Худи'])){
+            return redirect()->back()->with('error', translate('You cannot change these products. They are anime products'));
+        }
        if($product->subCategory){
             $category_product = $product->subCategory;
             $is_category = 2;

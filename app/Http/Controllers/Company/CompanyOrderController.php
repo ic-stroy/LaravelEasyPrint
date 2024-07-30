@@ -93,15 +93,46 @@ class CompanyOrderController extends Controller
         $order_data = [];
         foreach($orders as $order) {
             $user_name = '';
-            $address = [];
+            $user_full_name = '';
+            $user_gender = '';
+            $user_birth_date = '';
+            $user_info = [
+                'user_name'=>'',
+                'role'=>'',
+                'birth_date'=>'',
+                'gender'=>'',
+                'phone_number'=>'',
+                'email'=>'',
+            ];
+            $user_email = '';
+            $address = ['name'=>'', 'status'=>''];
             if ($order){
                 if ($order->user){
+                    $role = '';
                     if ($order->user->personalInfo) {
                         $first_name = $order->user->personalInfo->first_name ? $order->user->personalInfo->first_name . ' ' : '';
                         $last_name = $order->user->personalInfo->last_name ? $order->user->personalInfo->last_name . ' ' : '';
-//                        $middle_name = $order->user->personalInfo->middle_name ? $order->user->personalInfo->middle_name : '';
+                        $middle_name = $order->user->personalInfo->middle_name ? $order->user->personalInfo->middle_name : '';
                         $user_name = $first_name . '' . $last_name;
+                        $user_full_name = $first_name . '' . $last_name.''.$middle_name;
+                        if($order->user->personalInfo->gender == Constants::MALE){
+                            $user_gender = translate('Male');
+                        }elseif($order->user->personalInfo->gender == Constants::FEMALE){
+                            $user_gender = translate('Female');
+                        }
+                        $user_email = $order->user->personalInfo->email??'';
                     }
+                    if($order->user->role){
+                        $role = $order->user->role->name??'';
+                    }
+                    $user_info = [
+                        'user_name'=>$user_full_name,
+                        'role'=>$role,
+                        'birth_date'=>$user_birth_date,
+                        'gender'=>$user_gender,
+                        'phone_number'=>$order->user->email,
+                        'email'=>$user_email,
+                    ];
                 }
                 if($order->address) {
                     $address_type = '';
@@ -294,6 +325,7 @@ class CompanyOrderController extends Controller
             }
             if($order_has == true){
                 $order_data[] = [
+                    'user_info'=>$user_info,
                     'address'=>$address,
                     'order'=>$order,
                     'user_name'=>$user_name,

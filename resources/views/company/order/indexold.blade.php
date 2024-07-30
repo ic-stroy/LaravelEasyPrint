@@ -246,6 +246,32 @@
         .card-header {
             padding: 1.005rem 1.5rem 0rem 1.5rem
         }
+        .user-info-button{
+            text-decoration-line: underline;
+            text-decoration-style: solid;
+        }
+        .client_data{
+            border-radius: 20px;
+        }
+        .client-title{
+            font-family: Inter;
+            font-weight: 500;
+            font-size:13px;
+            line-height: 20px;
+            color: black !important;
+            opacity: 0.6;
+            margin-right: 7px;
+        }
+        .client-info{
+            padding: 8px 16px;
+        }
+        .client-data{
+            font-family: Inter;
+            font-weight: 500;
+            font-size:16px;
+            line-height: 20px;
+            color: black !important;
+        }
     </style>
     @if(!empty($all_orders['orderedOrders']) || !empty($all_orders['performedOrders']) || !empty($all_orders['cancelledOrders'])
         || !empty($all_orders['deliveredOrders']) || !empty($all_orders['readyForPickup']) || !empty($all_orders['acceptedByRecipientOrders']))
@@ -414,26 +440,6 @@
 
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-{{--        <div id="carousel-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">--}}
-{{--            <div class="modal-dialog">--}}
-{{--                <div class="modal-content" style="background-color: #989CA2">--}}
-{{--                    <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">--}}
-{{--                        <div class="carousel-inner" id="carousel_product_images">--}}
-
-{{--                        </div>--}}
-{{--                        <a class="carousel-control-prev" href="#carouselExampleFade" role="button" data-bs-slide="prev">--}}
-{{--                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>--}}
-{{--                            <span class="visually-hidden">Previous</span>--}}
-{{--                        </a>--}}
-{{--                        <a class="carousel-control-next" href="#carouselExampleFade" role="button" data-bs-slide="next">--}}
-{{--                            <span class="carousel-control-next-icon" aria-hidden="true"></span>--}}
-{{--                            <span class="visually-hidden">Next</span>--}}
-{{--                        </a>--}}
-{{--                    </div>--}}
-{{--                </div><!-- /.modal-content -->--}}
-{{--            </div><!-- /.modal-dialog -->--}}
-{{--        </div><!-- /.modal -->--}}
-        <!-- /.modal -->
         <div id="images-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog d-flex align-items-center">
                 <div class="modal-content" style="background-color: transparent">
@@ -446,28 +452,6 @@
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
         <!-- /.modal -->
-{{--        <div id="carousel-upload-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">--}}
-{{--            <div class="modal-dialog">--}}
-{{--                <div class="modal-content" style="background-color: #989CA2;">--}}
-{{--                    <div id="carouselExample_Fade" class="carousel slide carousel-fade" data-bs-ride="carousel">--}}
-{{--                        <div class="carousel-inner" id="carousel_product_upload_images"></div>--}}
-{{--                        <a class="carousel-control-prev" href="#carouselExample_Fade" role="button" data-bs-slide="prev">--}}
-{{--                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>--}}
-{{--                            <span class="visually-hidden">Previous</span>--}}
-{{--                        </a>--}}
-{{--                        <a class="carousel-control-next" href="#carouselExample_Fade" role="button" data-bs-slide="next">--}}
-{{--                            <span class="carousel-control-next-icon" aria-hidden="true"></span>--}}
-{{--                            <span class="visually-hidden">Next</span>--}}
-{{--                        </a>--}}
-{{--                    </div>--}}
-{{--                    <div class="d-none" id="carousel-upload-modal-order">--}}
-{{--                    <span class="badge bg-warning">--}}
-{{--                        <h2>{{translate('No orders')}}</h2>--}}
-{{--                    </span>--}}
-{{--                    </div>--}}
-{{--                </div><!-- /.modal-content -->--}}
-{{--            </div><!-- /.modal-dialog -->--}}
-{{--        </div><!-- /.modal -->--}}
         <div id="warning-order-alert-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-sm">
                 <div class="modal-content">
@@ -511,23 +495,43 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div>
-        <div id="user_info-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-sm">
-                <div class="modal-content">
+        <div id="user_info_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content client_data">
                     <div class="modal-body">
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="text-center">
-                                    <i class="dripicons-warning h1 text-success"></i>
-                                    <h4 class="mt-2">{{ translate('Are you sure you want to accept this order')}}</h4>
-                                </div>
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h4 class="mt-2">{{ translate('Client data')}}</h4>
+                            <span class="mdi mdi-close" data-bs-dismiss="modal" style="font-size: 18px"></span>
+                        </div>
+                        <div class="d-flex flex-column">
+                            <div class="d-flex client-info">
+                                <span class="client-title">{{translate('Order number')}}:</span>
+                                <span class="client-data" id="user_order_number"></span>
                             </div>
-                            <div class="card-body d-flex flex-column">
-
+                            <div class="d-flex client-info">
+                                <span class="client-title">{{translate('Full name')}}:</span>
+                                <span class="client-data" id="user_full_name"></span>
                             </div>
-{{--                            <div class="card-footer d-flex justify-content-between">--}}
-{{--                                <button type="button" class="btn btn-success my-2" data-bs-dismiss="modal"> {{ translate('Ok')}}</button>--}}
-{{--                            </div>--}}
+                            <div class="d-flex client-info">
+                                <span class="client-title">{{translate('Date of Birth')}}:</span>
+                                <span class="client-data" id="user_birth_date"></span>
+                            </div>
+                            <div class="d-flex client-info">
+                                <span class="client-title">{{translate('Sex')}}:</span>
+                                <span class="client-data" id="user_gender"></span>
+                            </div>
+                            <div class="d-flex client-info">
+                                <span class="client-title">{{translate('Order number')}}:</span>
+                                <span class="client-data" id="user_phone_number"></span>
+                            </div>
+                            <div class="d-flex client-info">
+                                <span class="client-title">{{translate('Email')}}:</span>
+                                <span class="client-data" id="user_email"></span>
+                            </div>
+                            <div class="d-flex client-info">
+                                <span class="client-title">{{translate('Address')}}:</span>
+                                <span class="client-data" id="user_address"></span>
+                            </div>
                         </div>
                     </div>
                 </div><!-- /.modal-content -->
@@ -724,7 +728,15 @@
                                                                     <div class="col-3">
                                                                         <div class="d-flex flex-column">
                                                                             <span class="order_content_header">{{translate('Customer')}}</span>
-                                                                            <span class="order_content_item"  data-bs-toggle="modal" data-bs-target="#user_info_modal" data-url="">{{$order['user_name']}}</span>
+                                                                            <a type="button" class="order_content_item user-info-button" data-bs-toggle="modal" data-bs-target="#user_info_modal" data-url="" onclick='getOrderData(
+                                                                                "{{$order['order']->code??''}}",
+                                                                                "{{$order['user_info']['user_name']}}",
+                                                                                "{{$order['user_info']['birth_date']??''}}",
+                                                                                "{{$order['user_info']['gender']??''}}",
+                                                                                "{{$order['user_info']['phone_number']}}",
+                                                                                "{{$order['user_info']['email']}}",
+                                                                                "{{$order['address']['name']??''}}",
+                                                                            )'>{{$order['user_name']}}</a>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-3">
