@@ -28,7 +28,9 @@ $current_user = \Illuminate\Support\Facades\Auth::user();
     <link href="{{ asset('assets/css/main.css') }}" rel="stylesheet" type="text/css" id="app-style" />
     <link href="{{ asset('assets/libs/dropzone/min/dropzone.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/libs/dropify/css/dropify.min.css') }}" rel="stylesheet" type="text/css" />
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <!-- icons -->
     <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
 </head>
@@ -246,10 +248,10 @@ $current_user = \Illuminate\Support\Facades\Auth::user();
                             @if($notification->type == "App\Notifications\OrderNotification")
                                 @if(!empty($notification->data))
                                     <a href="{{route('company_order.index')}}" class="dropdown-item notify-item">
-                                        <div class="notify-icon" style="background-image: url({{isset($notification->data['product_images'])?$notification->data['product_images']:''}})"></div>
+                                        <div class="notify-icon" style="background-image: url('{{asset('/icon/order_icon.png')}}')"></div>
                                         <p class="notify-details">
-                                            @if(isset($notification->data['product_name']))
-                                                {{strlen($notification->data['product_name'])>24?substr($notification->data['product_name'], 0, 24):$notification->data['product_name']}}...  <b>{{$notification->data['order_all_price']}}</b>
+                                            @if(isset($notification->data['order_code']))
+                                                {{$notification->data['order_code']??''}}  <b>{{$notification->data['order_all_price']}} {{translate("sum")}}</b>
                                             @endif
                                         </p>
                                         <p class="text-muted mb-0 user-msg">
@@ -448,7 +450,6 @@ $current_user = \Illuminate\Support\Facades\Auth::user();
                     <li>
                         <a href="{{route('dashboard')}}">
                             <i class="mdi mdi-home-outline"></i>
-                            <span class="badge bg-success rounded-pill float-end">9+</span>
                             <span> {{translate('Home')}} </span>
                         </a>
                     </li>
