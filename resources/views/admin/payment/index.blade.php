@@ -21,15 +21,15 @@
                     @if($payment)
                         <tr>
                             <th scope="row">
-                                <a class="show_page" href="{{route('payment.show', $payment->id)}}">{{$payment->id}}</a>
+                                <a class="show_page">{{$payment->id}}</a>
                             </th>
                             <td>
-                                <a class="show_page" href="{{route('payment.show', $payment->id)}}">
+                                <a class="show_page">
                                     {{$payment->status == 1?translate('Active'):translate('No active') }}
                                 </a>
                             </td>
                             <td>
-                                <a class="show_page" href="{{route('product.show', $payment->id)}}">
+                                <a class="show_page">
                                     @if(isset($payment->updated_at)){{ $payment->updated_at }}@else <div class="no_text"></div> @endif
                                 </a>
                             </td>
