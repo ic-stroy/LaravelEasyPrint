@@ -136,7 +136,7 @@ Auth::routes();
                 Route::post('/order-delivered/{id}', [CompanyOrderController::class, 'orderDelivered'])->name('order_delivered');
                 Route::post('/ready-for-pickup/{id}', [CompanyOrderController::class, 'readyForPickup'])->name('ready_for_pickup');
                 Route::post('/cancell-accepted-by-recipient/{id}', [CompanyOrderController::class, 'cancellAcceptedByRecipient'])->name('cancell_accepted_by_recipient');
-                Route::post('/cancell-order-delivered/{id}', [CompanyOrderController::class, 'cancellOrderDelivered'])->name('cancell_ready_for_pickup');
+                Route::post('/cancell-order-delivered/{id}', [CompanyOrderController::class, 'cancellOrderDelivered'])->name('cancell_ready_for_pick_up');
                 Route::post('/cancell-ready-for-pickup/{id}', [CompanyOrderController::class, 'cancellReadyForPickup'])->name('cancell_order_delivered');
                 Route::post('/delete-order-detail/{id}', [CompanyOrderController::class, 'deleteOrderDetail'])->name('delete_order_detail');
 //                Route::get('/category', [CompanyOrderController::class, 'category'])->name('company_order.category');
