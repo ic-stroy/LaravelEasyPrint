@@ -163,7 +163,7 @@ class AddressController extends Controller
 
         $id = (int)$request->id;
 
-        $company = Company::where('id',$id)->first();
+        $company = Company::where('id', $id)->first();
         $user = User::where(['role_id' => 2, 'company_id' => $id])->first();
 
         $response = [];
@@ -185,7 +185,7 @@ class AddressController extends Controller
                 $user_image = asset('storage/user/'.$user->personalInfo->avatar);
             }
 
-            $total_prints = Warehouse::where('company_id',$id)->count();
+            $total_prints = Warehouse::distinct('product_id')->where('company_id', $id)->count();
             $total_solds = OrderDetail::sum('quantity');
             $data = $this->getProducts($id, $language);
 
