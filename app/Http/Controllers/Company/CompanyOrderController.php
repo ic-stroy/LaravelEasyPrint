@@ -419,7 +419,7 @@ class CompanyOrderController extends Controller
                             foreach ($user->unreadnotifications as $notification) {
                                 if ($notification->type == "App\Notifications\OrderNotification") {
                                     if (!empty($notification->data)) {
-                                        if ($notification->data['order_'] == $order->id) {
+                                        if ($notification->data['order_id'] == $order->id) {
                                             $notification->read_at = date('Y-m-d H:i:s');
                                             $notification->save();
                                         }
