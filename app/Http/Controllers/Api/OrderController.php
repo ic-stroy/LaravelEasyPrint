@@ -1055,10 +1055,10 @@ class OrderController extends Controller
     }
 
     public function getPickUpInfo($order, $language){
-        if((int)date('H') < 17){
+        if((int)date('H') < 12){
             $deliver_date = strtotime('+2 days');
             $delivering_time = translate_api('The day after tomorrow', $language);
-        }elseif((int)date('H') == 17 && (int)date('i') == 0){
+        }elseif((int)date('H') == 12 && (int)date('i') == 0){
             $deliver_date = strtotime('+2 days');
             $delivering_time = translate_api('The day after tomorrow', $language);
         }else{
@@ -1070,11 +1070,8 @@ class OrderController extends Controller
             if($order->address->cities){
                 $city = $order->address->cities->name;
                 if($order->address->cities->region){
-                    if($order->address->cities->region->name == 'Toshkent shahri'){
-                        if((int)date('H') < 17){
-                            $deliver_date = strtotime('+1 day');
-                            $delivering_time = translate_api('Tomorrow', $language);
-                        }elseif((int)date('H') == 17 && (int)date('i') == 0){
+                    if($order->address->cities->region->name == 'Toshkent shahri' || $order->address->cities->region->name == 'Toshkent viloyati'){
+                        if((int)date('H') < 12){
                             $deliver_date = strtotime('+1 day');
                             $delivering_time = translate_api('Tomorrow', $language);
                         }else{
@@ -1104,7 +1101,6 @@ class OrderController extends Controller
      * bu funksiya Orderning ichidagi orderDetail ni o'chirishda qo'llaniladi  (Order status ORDERED gacha ishlaydi Post zapros)
      */
     public function deleteOrderDetail(Request $request){
-
         $language = $request->header('language');
         $order_detail_id=$request->order_detail_id;
         $order_detail=OrderDetail::where('id', $order_detail_id)->whereIn('status', [Constants::ORDER_DETAIL_BASKET, Constants::ORDER_DETAIL_ORDERED])->first();

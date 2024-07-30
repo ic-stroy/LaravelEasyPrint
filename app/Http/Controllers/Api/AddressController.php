@@ -20,7 +20,7 @@ class AddressController extends Controller
 {
     public function getCities(Request $request){
         $language = $request->header('language');
-        $cities = Cities::where('parent_id', 0)->orderBy('id', 'ASC')->get();
+        $cities = Cities::where('parent_id', 0)->whereIn('name', ['Toshkent viloyati', 'Toshkent shahri'])->orderBy('id', 'ASC')->get();
         $data = [];
         foreach ($cities as $city){
             $cities_ = [];
