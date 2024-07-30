@@ -353,7 +353,7 @@
                             <i class="dripicons-warning h1 text-success"></i>
                             <h4 class="mt-2">{{ translate('Is this order ready to pick up ?')}}</h4>
                         </div>
-                        <form class="d-flex justify-content-center" action="" method="POST" id="order_delivered">
+                        <form class="d-flex justify-content-center" action="" method="POST" id="ready_for_pick_up">
                             @csrf
                             @method('POST')
                             <button type="button" class="btn btn-danger my-2" data-bs-dismiss="modal" style="margin-right:4px"> {{ translate('No')}}</button>
@@ -429,7 +429,7 @@
                             <i class="dripicons-warning h1 text-success"></i>
                             <h4 class="mt-2">{{ translate('Are you going to cancell to pick up order?')}}</h4>
                         </div>
-                        <form class="d-flex justify-content-center" action="" method="POST" id="cancell_order_delivered">
+                        <form class="d-flex justify-content-center" action="" method="POST" id="cancell_ready_for_pick_up">
                             @csrf
                             @method('POST')
                             <button type="button" class="btn btn-danger my-2" data-bs-dismiss="modal" style="margin-right:4px"> {{ translate('No')}}</button>
