@@ -733,7 +733,11 @@
                                                                             @if(!empty($order['address']))
                                                                                 <span class="order_content_item">
                                                                                     @if($order['address']['name'])
-                                                                                        {{$order['address']['name']}}
+                                                                                        @if(strlen($order['address']['name'])>54)
+                                                                                            {{substr($order['address']['name'], 0, 54)}} ...
+                                                                                        @else
+                                                                                            {{$order['address']['name']}}
+                                                                                        @endif
                                                                                     @endif
                                                                                 </span>
                                                                             @endif
