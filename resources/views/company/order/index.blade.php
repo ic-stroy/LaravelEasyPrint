@@ -557,14 +557,6 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#cancelled" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
-                            {{translate('Cancelled')}}
-                            @if(count($all_orders['cancelledOrders']) > 0)
-                                <span class="badge bg-danger"> {{count($all_orders['cancelledOrders'])<101?count($all_orders['cancelledOrders']):'+101'}}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a href="#order__delivered" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                             {{translate('Delivered')}}
                             @if(count($all_orders['deliveredOrders']) > 0)
@@ -585,6 +577,14 @@
                             {{translate('Accepted by recepient')}}
                             @if(count($all_orders['acceptedByRecipientOrders']) > 0)
                                 <span class="badge bg-danger"> {{count($all_orders['acceptedByRecipientOrders'])<101?count($all_orders['acceptedByRecipientOrders']):'+101'}}</span>
+                            @endif
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#cancelled" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                            {{translate('Cancelled')}}
+                            @if(count($all_orders['cancelledOrders']) > 0)
+                                <span class="badge bg-danger"> {{count($all_orders['cancelledOrders'])<101?count($all_orders['cancelledOrders']):'+101'}}</span>
                             @endif
                         </a>
                     </li>
