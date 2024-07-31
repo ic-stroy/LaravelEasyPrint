@@ -27,7 +27,7 @@ class AddressController extends Controller
             foreach ($city->getDistricts as $district){
                 $cities_[] = [
                     'id'=>$district->id,
-                    'name'=>translation_api($district->name, $language),
+                    'name'=>translate_api($district->name, $language),
                     'lat'=>$district->lat,
                     'long'=>$district->lng
                 ];
