@@ -19,10 +19,10 @@ class CategoryController extends Controller
         $language = $request->header('language');
         $categories = Category::where('step', 0)->get();
         foreach ($categories as $category){
-            $translate_category_name = table_translate($category,'category',$language);
+            $translate_category_name = table_translate($category, 'category', $language);
             $subcategory = [];
             foreach ($category->subcategory as $subcategory_){
-                $translate_subcategory_name=table_translate($subcategory_,'category',$language);
+                $translate_subcategory_name=table_translate($subcategory_, 'category', $language);
                 $subcategory[] = [
                     'id'=>$subcategory_->id,
                     'name'=>$translate_subcategory_name,

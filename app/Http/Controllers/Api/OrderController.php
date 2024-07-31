@@ -1185,7 +1185,7 @@ class OrderController extends Controller
             $order_date_day = date('d', strtotime($data->updated_at));
             $order_date_hour = date('H', strtotime($data->updated_at));
             $order_date_minute = date('i', strtotime($data->updated_at));
-            $order_date = "$order_date_week, $order_date_day $order_date_month $order_date_year ".translate('Y').'.'.translate('at').' '."$order_date_hour:$order_date_minute";
+            $order_date = translate($order_date_week).", ".$order_date_day." ".translate($order_date_month)." ". $order_date_year." ".translate('Year').' '.translate('at').' '."$order_date_hour:$order_date_minute";
 
             $order_status_date_year = date('Y', strtotime($data->updated_at));
             $order_status_date_month = date('F', strtotime($data->updated_at));
@@ -1193,7 +1193,7 @@ class OrderController extends Controller
             $order_status_date_day = date('d', strtotime($data->updated_at));
             $order_status_date_hour = date('H', strtotime($data->updated_at));
             $order_status_date_minute = date('i', strtotime($data->updated_at));
-            $order_status_date = "$order_status_date_week, $order_status_date_day $order_status_date_month $order_status_date_year ".translate('Y').'.'.translate('at').' '."$order_status_date_hour:$order_status_date_minute";
+            $order_status_date = translate($order_status_date_week).", ".$order_status_date_day." ".translate($order_status_date_month)." ". $order_status_date_year." ".translate('Year').' '.translate('at').' '."$order_status_date_hour:$order_status_date_minute";
             $address_id = null;
             $region = null;
             $city = null;
