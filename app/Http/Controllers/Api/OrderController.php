@@ -1224,7 +1224,7 @@ class OrderController extends Controller
             $order_delivery_date_day = date('d', strtotime($data->delivery_date));
 //            $order_delivery_date_hour = date('H', strtotime($data->delivery_date));
 //            $order_delivery_date_minute = date('i', strtotime($data->delivery_date));
-            $order_delivery_date = translate($order_delivery_date_week).", ".$order_delivery_date_day." ".translate($order_delivery_date_month);
+            $order_delivery_date = translate_api($order_delivery_date_week).", ".$order_delivery_date_day." ".translate_api($order_delivery_date_month);
 
 //            $order_date_year = date('Y', strtotime($data->updated_at));
             $order_date_month = date('F', strtotime($data->updated_at));
@@ -1232,7 +1232,7 @@ class OrderController extends Controller
             $order_date_day = date('d', strtotime($data->updated_at));
 //            $order_date_hour = date('H', strtotime($data->updated_at));
 //            $order_date_minute = date('i', strtotime($data->updated_at));
-            $order_date = translate($order_date_week).", ".$order_date_day." ".translate($order_date_month);
+            $order_date = translate_api($order_date_week).", ".$order_date_day." ".translate_api($order_date_month);
             $address_id = null;
             $region = null;
             $city = null;
@@ -1295,25 +1295,25 @@ class OrderController extends Controller
     public function getOrderStatus($id){
         switch ($id){
             case Constants::BASKED:
-                $status = translate('Basked');
+                $status = translate_api('Basked');
                 break;
             case Constants::ORDERED:
-                $status = translate('Ordered');
+                $status = translate_api('Ordered');
                 break;
             case Constants::PERFORMED:
-                $status = translate('Performed');
+                $status = translate_api('Performed');
                 break;
             case Constants::CANCELLED:
-                $status = translate('Cancelled');
+                $status = translate_api('Cancelled');
                 break;
             case Constants::ORDER_DELIVERED:
-                $status = translate('Delivered');
+                $status = translate_api('Delivered');
                 break;
             case Constants::READY_FOR_PICKUP:
-                $status = translate('Ready for pickup');
+                $status = translate_api('Ready for pickup');
                 break;
             case Constants::ACCEPTED_BY_RECIPIENT:
-                $status = translate('Accepted by recipient');
+                $status = translate_api('Accepted by recipient');
                 break;
             default:
                 $status = null;
