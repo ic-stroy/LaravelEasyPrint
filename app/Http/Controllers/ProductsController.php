@@ -124,9 +124,6 @@ class ProductsController extends Controller
     public function edit(string $id)
     {
         $product = Products::find($id);
-        if(in_array($product->name, ['Футболка', 'Свитшот', 'Худи'])){
-            return redirect()->back()->with('error', translate('You cannot change these products. They are anime products'));
-        }
        if($product->subCategory){
             $category_product = $product->subCategory;
             $is_category = 2;
@@ -198,7 +195,7 @@ class ProductsController extends Controller
                 $product_translations->save();
             }
         }
-        $model->name = $request->name;
+//        $model->name = $request->name;
         $model->save();
         if(!empty($model->categoryDiscount)){
             if(empty($model->discount)){

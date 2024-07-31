@@ -5,7 +5,7 @@ $current_user = \Illuminate\Support\Facades\Auth::user();
 @endphp
 <head>
     <meta charset="utf-8" />
-    <title>{{ $title ?? 'Easy Print' }}</title>
+    <title>{{ $title ?? 'Admin Panel EP' }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
     <meta content="Coderthemes" name="author" />
@@ -429,12 +429,12 @@ $current_user = \Illuminate\Support\Facades\Auth::user();
                             <span> {{ translate('Orders') }} </span>
                         </a>
                     </li>
-{{--                    <li>--}}
-{{--                        <a href="{{ route('company_order.index') }}">--}}
-{{--                            <i class="mdi mdi-account-check-outline"></i>--}}
-{{--                            <span> {{ translate('Orders') }} </span>--}}
-{{--                        </a>--}}
-{{--                    </li>--}}
+                    <li>
+                        <a href="{{ route('company_order.order.history') }}">
+                            <i class="mdi mdi-history"></i>
+                            <span> {{ translate('Orders history') }} </span>
+                        </a>
+                    </li>
                 </ul>
             </div>
             <!-- End Sidebar -->

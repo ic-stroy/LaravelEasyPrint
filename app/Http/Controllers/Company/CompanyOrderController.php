@@ -4,13 +4,18 @@ namespace App\Http\Controllers\Company;
 
 use App\Constants;
 use App\Http\Controllers\Controller;
+use App\Models\EskizToken;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Products;
 use App\Models\Uploads;
 use App\Models\User;
+use App\Models\UserVerify;
 use App\Models\Warehouse;
 use App\Notifications\OrderNotification;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request as GuzzleRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
@@ -624,6 +629,112 @@ class CompanyOrderController extends Controller
             return redirect()->back()->with('performed', 'Order detail deleted from order');
         }else{
             return redirect()->back()->with('cancelled', 'Order detail not found');
+        }
+    }
+
+    public function orderHistory(){
+        $orders = Order::all();
+        foreach($orders as $order){
+            $user_full_name = '';
+            switch ($order->status){
+                case Constants::BASKED:
+                    $status = translate('Basked');
+                    break;
+                case Constants::ORDERED:
+                    $status = translate('Ordered');
+                    break;
+                case Constants::PERFORMED:
+                    $status = translate('Performed');
+                    break;
+                case Constants::CANCELLED:
+                    $status = translate('Cancelled');
+                    break;
+                case Constants::ORDER_DELIVERED:
+                    $status = translate('Delivered');
+                    break;
+                case Constants::READY_FOR_PICKUP:
+                    $status = translate('Ready for pickup');
+                    break;
+                case Constants::ACCEPTED_BY_RECIPIENT:
+                    $status = translate('Accepted by recipient');
+                    break;
+                default:
+                    $status = null;
+            }
+            if ($order->user) {
+                if ($order->user->personalInfo) {
+                    $first_name = $order->user->personalInfo->first_name ? $order->user->personalInfo->first_name . ' ' : '';
+                    $last_name = $order->user->personalInfo->last_name ? $order->user->personalInfo->last_name . ' ' : '';
+                    $middle_name = $order->user->personalInfo->middle_name ? $order->user->personalInfo->middle_name : '';
+                    $user_full_name = $first_name . '' . $last_name . '' . $middle_name;
+                }
+            }
+            $order_data[] = [
+                'code'=>$order->code,
+                'status'=>$status,
+                'updated_at'=>$order->updated_at,
+                'user_name'=>$user_full_name
+            ];
+        }
+        return view('company.order.order_history', ['order_data'=>$order_data]);
+    }
+
+    public function sendMessage($user, $message){
+        date_default_timezone_set("Asia/Tashkent");
+        $client = new Client();
+        $eskiz_token = EskizToken::firstOrNew();
+        $token_options = [
+            'multipart' => [
+                [
+                    'name' => 'email',
+                    'contents' => 'easysolutiongroupuz@gmail.com'
+                ],
+                [
+                    'name' => 'password',
+                    'contents' => '4TYvyjOof4CmOUk5CisHHUzzQ5Mcn1mirx0VBuQV'
+                ]
+            ]
+        ];
+        if(!$eskiz_token->expire_date || strtotime('now') > (int)$eskiz_token->expire_date){
+            $guzzle_request = new GuzzleRequest('POST', 'https://notify.eskiz.uz/api/auth/login');
+            $res = $client->sendAsync($guzzle_request, $token_options)->wait();
+            $res_array = json_decode($res->getBody());
+            $eskizToken = EskizToken::firstOrNew();
+            $eskizToken->token = $res_array->data->token;
+            $eskizToken->expire_date = strtotime('+28 days');
+            $eskizToken->save();
+        }
+        $eskiz_token = EskizToken::first();
+        $options = [
+            'headers' => [
+                'Accept'        => 'application/json',
+                'Authorization' => "Bearer $eskiz_token->token",
+            ],
+            'multipart' => [
+                [
+                    'name' => 'mobile_phone',
+                    'contents' => $user->phone
+                ],
+                [
+                    'name' => 'message',
+                    'contents' => translate('Easy Print - Sizni bir martalik tasdiqlash kodingiz').': '.$user
+                ],
+                [
+                    'name' => 'from',
+                    'contents' => '4546'
+                ],
+            ]
+        ];
+        $guzzle_request = new GuzzleRequest('POST', 'https://notify.eskiz.uz/api/message/sms/send');
+        $res = $client->sendAsync($guzzle_request, $options)->wait();
+        $result = $res->getBody();
+        $result = json_decode($result);
+        if($result){
+//            $user_verify->verify_code = $random;
+//            $user_verify->save();
+            return $this->success("Success", 200);
+        }else{
+            return $this->error(translate_api("Fail message not sent. Try again", $language), 400);
         }
     }
 

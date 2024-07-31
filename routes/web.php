@@ -131,6 +131,7 @@ Auth::routes();
             Route::group(['prefix' => 'company-order'], function () {
                 Route::get('/index', [CompanyOrderController::class, 'index'])->name('company_order.index');
                 Route::get('/index-old', [CompanyOrderController::class, 'index_old'])->name('company_order.index.old');
+                Route::get('/order-history', [CompanyOrderController::class, 'orderHistory'])->name('company_order.order.history');
                 Route::get('/finished-all-orders', [CompanyOrderController::class, 'finishedAllOrders'])->name('company_order.finished_all_orders');
                 Route::post('/accepted-by-recipient/{id}', [CompanyOrderController::class, 'acceptedByRecipient'])->name('accepted_by_recipient');
                 Route::post('/order-delivered/{id}', [CompanyOrderController::class, 'orderDelivered'])->name('order_delivered');
