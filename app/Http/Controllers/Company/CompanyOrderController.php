@@ -634,6 +634,7 @@ class CompanyOrderController extends Controller
 
     public function orderHistory(){
         $orders = Order::all();
+        $order_data = [];
         foreach($orders as $order){
             $user_full_name = '';
             switch ($order->status){

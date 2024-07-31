@@ -267,7 +267,7 @@
                                     {{translate('Update at')}}
                                 </th>
                                 <th>
-                                    {{translate('Client')}}
+                                    {{translate('User')}}
                                 </th>
                             </tr>
                         </thead>
