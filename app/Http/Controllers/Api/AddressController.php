@@ -172,7 +172,7 @@ class AddressController extends Controller
 //            $full_name = ($user->personalInfo) ? $user->personalInfo->last_name . ' ' . $user->personalInfo->first_name : '';
             $company_name = $company->name??'';
             $company_image = null;
-            if($company_image->image) {
+            if($company->image) {
                  $sms_avatar = storage_path('app/public/company/' . $company->image);
             }else{
                  $sms_avatar = storage_path('app/public/company/' . 'no');
