@@ -1294,20 +1294,26 @@ class OrderController extends Controller
 
     public function getOrderStatus($id){
         switch ($id){
-            case 1:
-                $status = 'Basked';
+            case Constants::BASKED:
+                $status = translate('Basked');
                 break;
-            case 2:
-                $status = 'Ordered';
+            case Constants::ORDERED:
+                $status = translate('Ordered');
                 break;
-            case 3:
-                $status = 'Performed';
+            case Constants::PERFORMED:
+                $status = translate('Performed');
                 break;
-            case 4:
-                $status = 'Cancelled';
+            case Constants::CANCELLED:
+                $status = translate('Cancelled');
                 break;
-            case 5:
-                $status = 'Accepted by recipient';
+            case Constants::ORDER_DELIVERED:
+                $status = translate('Delivered');
+                break;
+            case Constants::READY_FOR_PICKUP:
+                $status = translate('Ready for pickup');
+                break;
+            case Constants::ACCEPTED_BY_RECIPIENT:
+                $status = translate('Accepted by recipient');
                 break;
             default:
                 $status = null;
