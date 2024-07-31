@@ -133,6 +133,13 @@ if (!function_exists('table_translate')) {
                     return $key->name;
                 }
                 break;
+            case 'city':
+                if ($city_translations=DB::table('city_translations')->where('city_id',$key->id)->where('lang',$lang)->first()) {
+                    return $city_translations->name;
+                }else {
+                    return $key->name;
+                }
+                break;
             case 'color':
                 if ($color_translations=DB::table('color_translations')->where('color_id',$key->id)->where('lang',$lang)->first()) {
                     return $color_translations->name;

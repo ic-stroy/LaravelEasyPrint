@@ -27,14 +27,14 @@ class AddressController extends Controller
             foreach ($city->getDistricts as $district){
                 $cities_[] = [
                     'id'=>$district->id,
-                    'name'=>translate_api($district->name, $language),
+                    'name'=>table_translate($district,'city',$language),
                     'lat'=>$district->lat,
                     'long'=>$district->lng
                 ];
             }
             $data[] = [
                 'id'=>$city->id,
-                'region'=>translate_api($city->name, $language),
+                'region'=>table_translate($city,'city',$language),
                 'lat'=>$city->lat,
                 'long'=>$city->lng,
                 'cities'=>$cities_,
