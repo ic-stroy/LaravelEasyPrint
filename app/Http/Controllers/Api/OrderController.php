@@ -1169,26 +1169,26 @@ class OrderController extends Controller
     }
 
     public function getMyOrders(Request $request){
-//        translate('January');
-//        translate('February');
-//        translate('March');
-//        translate('April');
-//        translate('May');
-//        translate('June');
-//        translate('July');
-//        translate('August');
-//        translate('September');
-//        translate('October');
-//        translate('November');
-//        translate('December');
-//
-//        translate('Monday');
-//        translate('Tuesday');
-//        translate('Wednesday');
-//        translate('Thursday');
-//        translate('Friday');
-//        translate('Saturday');
-//        translate('Sunday');
+        $date = translate('January');
+        $date = translate('February');
+        $date = translate('March');
+        $date = translate('April');
+        $date = translate('May');
+        $date = translate('June');
+        $date = translate('July');
+        $date = translate('August');
+        $date = translate('September');
+        $date = translate('October');
+        $date = translate('November');
+        $date = translate('December');
+
+        $date = translate('Monday');
+        $date = translate('Tuesday');
+        $date = translate('Wednesday');
+        $date = translate('Thursday');
+        $date = translate('Friday');
+        $date = translate('Saturday');
+        $date = translate('Sunday');
         $language = $request->header('language');
         $user = Auth::user();
         $allOrders = $this->orderToArray($user->allOrders);
