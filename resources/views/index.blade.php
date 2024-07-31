@@ -23,66 +23,65 @@
             flex-direction: column;
             justify-content: space-around;
         }
+        .col_20{
+            width: 20%;
+        }
     </style>
     <div class="container-fluid">
-        <div class="row" style="margin-bottom: 26px">
-            <div class="col-xl-3 col-md-6">
+        <div class="d-flex" style="margin-bottom: 26px">
+            <div class="col_20">
                 <div class="card common_statistics">
                     <div class="card-body">
                         <h4 class="header-title mt-0 mb-4">{{translate('Orders status ordered')}}</h4>
                         <div>
                             <h1>{{$ordered_orders}}</h1>
                         </div>
-{{--                        <div>--}}
-{{--                            <span>{{translate('Active')}}: 14</span> <br>--}}
-{{--                            <span>{{translate('Not active')}}: 24</span>--}}
-{{--                        </div>--}}
                     </div>
                 </div>
             </div><!-- end col -->
 
-            <div class="col-xl-3 col-md-6">
+            <div class="col_20">
                 <div class="card common_statistics">
                     <div class="card-body">
                         <h4 class="header-title mt-0 mb-4">{{translate('Orders status performed')}}</h4>
                         <div>
                             <h1>{{$performed_orders}}</h1>
                         </div>
-{{--                        <div>--}}
-{{--                            <span>{{translate('Active')}}: 14</span> <br>--}}
-{{--                            <span>{{translate('Not active')}}: 24</span>--}}
-{{--                        </div>--}}
                     </div>
                 </div>
             </div><!-- end col -->
 
-
-            <div class="col-xl-3 col-md-6">
+            <div class="col_20">
                 <div class="card common_statistics">
                     <div class="card-body">
-                        <h4 class="header-title mt-0 mb-4">{{translate('Orders status cancelled')}}</h4>
-                        <div>
-                            <h1>{{$cancelled_orders}}</h1>
-                        </div>
-{{--                        <div>--}}
-{{--                            <span>{{translate('Active')}}: 14</span> <br>--}}
-{{--                            <span>{{translate('Not active')}}: 24</span>--}}
-{{--                        </div>--}}
-                    </div>
-                </div>
-            </div><!-- end col -->
-
-            <div class="col-xl-3 col-md-6">
-                <div class="card common_statistics">
-                    <div class="card-body">
-                        <h4 class="header-title mt-0 mb-4">{{translate('Orders status accepted')}}</h4>
+                        <h4 class="header-title mt-0 mb-4">{{translate('Orders status accepted by recepient')}}</h4>
                         <div>
                             <h1>{{$accepted_orders}}</h1>
                         </div>
-{{--                        <div>--}}
-{{--                            <span>{{translate('Active')}}: 14</span> <br>--}}
-{{--                            <span>{{translate('Not active')}}: 24</span>--}}
-{{--                        </div>--}}
+                    </div>
+                </div>
+
+            </div><!-- end col -->
+
+            <div class="col_20">
+                <div class="card common_statistics">
+                    <div class="card-body">
+                        <h4 class="header-title mt-0 mb-4">{{translate('Orders status Delivered')}}</h4>
+                        <div>
+                            <h1>{{$delivered_orders}}</h1>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- end col -->
+
+            <div class="col_20">
+                <div class="card common_statistics">
+                    <div class="card-body">
+                        <h4 class="header-title mt-0 mb-4">{{translate('Orders status ready for pickup')}}</h4>
+                        <div>
+                            <h1>{{$ready_for_pickup_orders}}</h1>
+                        </div>
                     </div>
                 </div>
 

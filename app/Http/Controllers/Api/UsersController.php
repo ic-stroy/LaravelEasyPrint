@@ -45,7 +45,7 @@ class UsersController extends Controller
         $this->imageSave($file, $personal_info, 'update');
 
         if($request->birth_date){
-            $personal_info->birth_date = $request->birth_date;
+            $personal_info->birth_date = date('Y-m-d', strtotime($request->birth_date));
         }
         $personal_info->save();
         $user->personal_info_id = $personal_info->id;

@@ -241,105 +241,42 @@
                             </div>
 
                             <div class="noti-scroll" data-simplebar>
-                                @forelse($current_user->unreadnotifications as $notification)
-                                    @if($notification->type == "App\Notifications\OrderNotification")
-                                        @if(!empty($notification->data))
-                                            <a href="{{route('company_order.index', 2)}}" class="dropdown-item notify-item">
-                                                <div class="notify-icon" style="background-image: url({{isset($notification->data['product_images'])?$notification->data['product_images']:''}})"></div>
-                                                <p class="notify-details">
-                                                    @if(isset($notification->data['product_name']))
-                                                        {{strlen($notification->data['product_name'])>24?substr($notification->data['product_name'], 0, 24):$notification->data['product_name']}}...  <b>{{$notification->data['order_all_price']}}</b>
-                                                    @endif
-                                                </p>
-                                                <p class="text-muted mb-0 user-msg">
-                                                    @if(isset($notification->data['user']))
-                                                        <small>{{$notification->data['user']?$notification->data['user']:''}}</small>
-                                                    @endif
-                                                </p>
-                                            </a>
-                                            <hr style="margin: 0px">
-                                        @endif
-                                    @endif
-                                @empty
-                                    <a href="javascript:void(0);"
-                                       class="dropdown-item text-center text-primary notify-item notify-all">
-                                        {{ translate('No notifications')}}
-                                        <i class="fe-arrow-right"></i>
-                                    </a>
-                                @endforelse
-                                <!-- item-->
-{{--                                <a href="javascript:void(0);" class="dropdown-item notify-item active">--}}
-{{--                                    <div class="notify-icon">--}}
-{{--                                        <img src="{{ asset('assets/images/user/user-1.jpg') }}" class="img-fluid rounded-circle"--}}
-{{--                                             alt="" />--}}
-{{--                                    </div>--}}
-{{--                                    <p class="notify-details">Cristina Pride</p>--}}
-{{--                                    <p class="text-muted mb-0 user-msg">--}}
-{{--                                        <small>{{translate('Hi, How are you? What about our next meeting')}}</small>--}}
-{{--                                    </p>--}}
-{{--                                </a>--}}
-
-{{--                                <!-- item-->--}}
-{{--                                <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
-{{--                                    <div class="notify-icon bg-primary">--}}
-{{--                                        <i class="mdi mdi-comment-account-outline"></i>--}}
-{{--                                    </div>--}}
-{{--                                    <p class="notify-details">{{translate('Caleb Flakelar commented on Admin')}}--}}
-{{--                                        <small class="text-muted">{{translate('1 min ago')}}</small>--}}
-{{--                                    </p>--}}
-{{--                                </a>--}}
-
-{{--                                <!-- item-->--}}
-{{--                                <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
-{{--                                    <div class="notify-icon">--}}
-{{--                                        <img src="{{ asset('assets/images/user/user-4.jpg') }}" class="img-fluid rounded-circle"--}}
-{{--                                             alt="" />--}}
-{{--                                    </div>--}}
-{{--                                    <p class="notify-details">Karen Robinson</p>--}}
-{{--                                    <p class="text-muted mb-0 user-msg">--}}
-{{--                                        <small>{{ translate('Wow ! this admin looks good and awesome design')}}</small>--}}
-{{--                                    </p>--}}
-{{--                                </a>--}}
-
-{{--                                <!-- item-->--}}
-{{--                                <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
-{{--                                    <div class="notify-icon bg-warning">--}}
-{{--                                        <i class="mdi mdi-account-plus"></i>--}}
-{{--                                    </div>--}}
-{{--                                    <p class="notify-details">{{ translate('New user registered.')}}--}}
-{{--                                        <small class="text-muted">{{ translate('5 hours ago')}}</small>--}}
-{{--                                    </p>--}}
-{{--                                </a>--}}
-
-{{--                                <!-- item-->--}}
-{{--                                <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
-{{--                                    <div class="notify-icon bg-info">--}}
-{{--                                        <i class="mdi mdi-comment-account-outline"></i>--}}
-{{--                                    </div>--}}
-{{--                                    <p class="notify-details">{{ translate('Caleb Flakelar commented on Admin')}}--}}
-{{--                                        <small class="text-muted">{{ translate('4 days ago')}}</small>--}}
-{{--                                    </p>--}}
-{{--                                </a>--}}
-
-{{--                                <!-- item-->--}}
-{{--                                <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
-{{--                                    <div class="notify-icon bg-secondary">--}}
-{{--                                        <i class="mdi mdi-heart"></i>--}}
-{{--                                    </div>--}}
-{{--                                    <p class="notify-details">Carlos Crouch {{ translate('liked')}}--}}
-{{--                                        <b>Admin</b>--}}
-{{--                                        <small class="text-muted">{{ translate('13 days ago')}}</small>--}}
-{{--                                    </p>--}}
-{{--                                </a>--}}
+{{--                                @forelse($current_user->unreadnotifications as $notification)--}}
+{{--                                    @if($notification->type == "App\Notifications\OrderNotification")--}}
+{{--                                        @if(!empty($notification->data))--}}
+{{--                                            <a href="{{route('company_order.index')}}" class="dropdown-item notify-item">--}}
+{{--                                                <div class="notify-icon" style="background-image: url('{{asset('/icon/order_icon.png')}}')"></div>--}}
+{{--                                                <p class="notify-details">--}}
+{{--                                                    @if(isset($notification->data['order_code']))--}}
+{{--                                                        {{$notification->data['order_code']??''}}  <b>{{$notification->data['order_all_price']}} {{translate("sum")}}</b>--}}
+{{--                                                    @endif--}}
+{{--                                                </p>--}}
+{{--                                                <p class="text-muted mb-0 user-msg">--}}
+{{--                                                    @if(isset($notification->data['user']))--}}
+{{--                                                        <small>{{$notification->data['user']?$notification->data['user']:''}}</small>--}}
+{{--                                                    @endif--}}
+{{--                                                </p>--}}
+{{--                                            </a>--}}
+{{--                                            <hr style="margin: 0px">--}}
+{{--                                        @endif--}}
+{{--                                    @else--}}
+{{--                                        <!-- All-->--}}
+{{--                                        <a href="javascript:void(0);"--}}
+{{--                                           class="dropdown-item text-center text-primary notify-item notify-all">--}}
+{{--                                            {{ translate('View all')}}--}}
+{{--                                        </a>--}}
+{{--                                    @endif--}}
+{{--                                @empty--}}
+{{--                                    <a href="javascript:void(0);"--}}
+{{--                                       class="dropdown-item text-center text-primary notify-item notify-all">--}}
+{{--                                        {{ translate('No notifications')}}--}}
+{{--                                    </a>--}}
+{{--                                @endforelse--}}
+                                <a href="javascript:void(0);"
+                                   class="dropdown-item text-center text-primary notify-item notify-all">
+                                    {{ translate('No notifications')}}
+                                </a>
                             </div>
-
-                            <!-- All-->
-                            <a href="javascript:void(0);"
-                               class="dropdown-item text-center text-primary notify-item notify-all">
-                                {{ translate('View all')}}
-                                <i class="fe-arrow-right"></i>
-                            </a>
-
                         </div>
                     </li>
 

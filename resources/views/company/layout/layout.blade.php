@@ -251,7 +251,7 @@ $current_user = \Illuminate\Support\Facades\Auth::user();
                                         <div class="notify-icon" style="background-image: url('{{asset('/icon/order_icon.png')}}')"></div>
                                         <p class="notify-details">
                                             @if(isset($notification->data['order_code']))
-                                                {{$notification->data['order_code']??''}}  <b>{{$notification->data['order_all_price']}} {{translate("sum")}}</b>
+                                                {{$notification->data['order_code']??''}} | <b>{{$notification->data['order_all_price']}} {{translate("sum")}}</b>
                                             @endif
                                         </p>
                                         <p class="text-muted mb-0 user-msg">
@@ -262,76 +262,20 @@ $current_user = \Illuminate\Support\Facades\Auth::user();
                                     </a>
                                     <hr style="margin: 0px">
                                 @endif
+                            @else
+                                <!-- All-->
+                                <a href="javascript:void(0);"
+                                   class="dropdown-item text-center text-primary notify-item notify-all">
+                                    {{ translate('View all')}}
+                                </a>
                             @endif
                         @empty
                             <a href="javascript:void(0);"
                                class="dropdown-item text-center text-primary notify-item notify-all">
                                 {{ translate('No notifications')}}
-                                <i class="fe-arrow-right"></i>
                             </a>
                         @endforelse
-
-                        <!-- item-->
-{{--                        <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
-{{--                            <div class="notify-icon bg-primary">--}}
-{{--                                <i class="mdi mdi-comment-account-outline"></i>--}}
-{{--                            </div>--}}
-{{--                            <p class="notify-details">{{translate('Caleb Flakelar commented on Admin')}}--}}
-{{--                                <small class="text-muted">{{translate('1 min ago')}}</small>--}}
-{{--                            </p>--}}
-{{--                        </a>--}}
-
-{{--                        <!-- item-->--}}
-{{--                        <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
-{{--                            <div class="notify-icon">--}}
-{{--                                <img src="{{ asset('assets/images/user/user-4.jpg') }}" class="img-fluid rounded-circle"--}}
-{{--                                     alt="" />--}}
-{{--                            </div>--}}
-{{--                            <p class="notify-details">Karen Robinson</p>--}}
-{{--                            <p class="text-muted mb-0 user-msg">--}}
-{{--                                <small>{{ translate('Wow ! this admin looks good and awesome design')}}</small>--}}
-{{--                            </p>--}}
-{{--                        </a>--}}
-
-{{--                        <!-- item-->--}}
-{{--                        <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
-{{--                            <div class="notify-icon bg-warning">--}}
-{{--                                <i class="mdi mdi-account-plus"></i>--}}
-{{--                            </div>--}}
-{{--                            <p class="notify-details">{{ translate('New user registered.')}}--}}
-{{--                                <small class="text-muted">{{ translate('5 hours ago')}}</small>--}}
-{{--                            </p>--}}
-{{--                        </a>--}}
-
-{{--                        <!-- item-->--}}
-{{--                        <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
-{{--                            <div class="notify-icon bg-info">--}}
-{{--                                <i class="mdi mdi-comment-account-outline"></i>--}}
-{{--                            </div>--}}
-{{--                            <p class="notify-details">{{ translate('Caleb Flakelar commented on Admin')}}--}}
-{{--                                <small class="text-muted">{{ translate('4 days ago')}}</small>--}}
-{{--                            </p>--}}
-{{--                        </a>--}}
-
-{{--                        <!-- item-->--}}
-{{--                        <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
-{{--                            <div class="notify-icon bg-secondary">--}}
-{{--                                <i class="mdi mdi-heart"></i>--}}
-{{--                            </div>--}}
-{{--                            <p class="notify-details">Carlos Crouch {{ translate('liked')}}--}}
-{{--                                <b>Admin</b>--}}
-{{--                                <small class="text-muted">{{ translate('13 days ago')}}</small>--}}
-{{--                            </p>--}}
-{{--                        </a>--}}
                     </div>
-
-                    <!-- All-->
-                    <a href="javascript:void(0);"
-                       class="dropdown-item text-center text-primary notify-item notify-all">
-                        {{ translate('View all')}}
-                        <i class="fe-arrow-right"></i>
-                    </a>
-
                 </div>
             </li>
 

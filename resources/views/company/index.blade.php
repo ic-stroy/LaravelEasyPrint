@@ -17,6 +17,9 @@
         .col-xl-4 .card{
             height: 100%;
         }
+        .col_20{
+            width: 20%;
+        }
         .card-body .widget-chart{
             height: 100%;
             display: flex;
@@ -26,7 +29,7 @@
     </style>
     <div class="container-fluid">
         <div class="d-flex" style="margin-bottom: 26px">
-            <div class="">
+            <div class="col_20">
                 <div class="card common_statistics">
                     <div class="card-body">
                         <h4 class="header-title mt-0 mb-4">{{translate('Orders status ordered')}}</h4>
@@ -37,7 +40,7 @@
                 </div>
             </div><!-- end col -->
 
-            <div class="">
+            <div class="col_20">
                 <div class="card common_statistics">
                     <div class="card-body">
                         <h4 class="header-title mt-0 mb-4">{{translate('Orders status performed')}}</h4>
@@ -48,19 +51,7 @@
                 </div>
             </div><!-- end col -->
 
-
-{{--            <div class="col-xl-2 col-md-4">--}}
-{{--                <div class="card common_statistics">--}}
-{{--                    <div class="card-body">--}}
-{{--                        <h4 class="header-title mt-0 mb-4">{{translate('Orders status cancelled')}}</h4>--}}
-{{--                        <div>--}}
-{{--                            <h1>{{$cancelled_orders}}</h1>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </div><!-- end col -->--}}
-
-            <div class="">
+            <div class="col_20">
                 <div class="card common_statistics">
                     <div class="card-body">
                         <h4 class="header-title mt-0 mb-4">{{translate('Orders status accepted by recepient')}}</h4>
@@ -72,7 +63,7 @@
 
             </div><!-- end col -->
 
-            <div class="">
+            <div class="col_20">
                 <div class="card common_statistics">
                     <div class="card-body">
                         <h4 class="header-title mt-0 mb-4">{{translate('Orders status Delivered')}}</h4>
@@ -84,7 +75,7 @@
 
             </div><!-- end col -->
 
-            <div class="">
+            <div class="col_20">
                 <div class="card common_statistics">
                     <div class="card-body">
                         <h4 class="header-title mt-0 mb-4">{{translate('Orders status ready for pickup')}}</h4>
