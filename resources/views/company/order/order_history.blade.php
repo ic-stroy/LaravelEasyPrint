@@ -276,7 +276,7 @@
                             @php
                                 $i=0;
                             @endphp
-                            @forelse($order_data as $order)
+                            @foreach($order_data as $order)
                                 @php($i++)
                                 <tr>
                                     <td>{{$i}}</td>
@@ -285,11 +285,7 @@
                                     <td>{{$order['updated_at']}}</td>
                                     <td>{{$order['user_name']}}</td>
                                 </tr>
-                            @empty
-                                <span class="badge bg-warning">
-                                    <h2>{{translate('No orders')}}</h2>
-                                </span>
-                            @endforelse
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
