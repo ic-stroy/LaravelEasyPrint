@@ -430,9 +430,9 @@ $current_user = \Illuminate\Support\Facades\Auth::user();
                         </a>
                     </li>
 {{--                    <li>--}}
-{{--                        <a href="{{ route('company_coupons.index') }}">--}}
-{{--                            <i class="mdi mdi-cart-minus"></i>--}}
-{{--                            <span> {{ translate('Coupon') }} </span>--}}
+{{--                        <a href="{{ route('company_order.index') }}">--}}
+{{--                            <i class="mdi mdi-account-check-outline"></i>--}}
+{{--                            <span> {{ translate('Orders') }} </span>--}}
 {{--                        </a>--}}
 {{--                    </li>--}}
                 </ul>

@@ -116,9 +116,6 @@ class CompanyProductController extends Controller
             'quantity'=>$request->quantity,
         ]);
         return redirect()->route('company_product.index')->with('status', translate('Successfully updated'));
-
-
-
     }
 
 

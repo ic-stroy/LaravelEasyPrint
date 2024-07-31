@@ -575,7 +575,7 @@
                         <a href="#accepted_by_recepient" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                             {{translate('Accepted by recepient')}}
                             @if(count($all_orders['acceptedByRecipientOrders']) > 0)
-                                <span class="badge bg-danger"> {{count($all_orders['acceptedByRecipientOrders'])<101?count($all_orders['acceptedByRecipientOrders']):'+101'}}</span>
+                                <span class="badge bg-danger"> {{count($all_orders['acceptedByRecipientOrders'])<26?count($all_orders['acceptedByRecipientOrders']):'+26'}}</span>
                             @endif
                         </a>
                     </li>
@@ -583,7 +583,7 @@
                         <a href="#cancelled" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                             {{translate('Cancelled')}}
                             @if(count($all_orders['cancelledOrders']) > 0)
-                                <span class="badge bg-danger"> {{count($all_orders['cancelledOrders'])<101?count($all_orders['cancelledOrders']):'+101'}}</span>
+                                <span class="badge bg-danger"> {{count($all_orders['cancelledOrders'])<26?count($all_orders['cancelledOrders']):'+26'}}</span>
                             @endif
                         </a>
                     </li>
@@ -623,7 +623,7 @@
                                         <tr>
                                             <th class="d-flex justify-content-between width_auto">
                                                 <h4 class="mt-0 header-title">{{translate('Cancelled orders list')}}</h4>
-                                                @if(count($all_orders['cancelledOrders'])>100)
+                                                @if(count($all_orders['cancelledOrders'])>25)
                                                     <a href="{{route('company_order.finished_all_orders')}}">{{translate('All cancelled orders')}}</a>
                                                 @endif
                                             </th>
@@ -659,7 +659,7 @@
                                             <tr>
                                                 <th class="d-flex justify-content-between width_auto">
                                                     <h4 class="mt-0 header-title">{{translate('Accepted recepient orders list')}}</h4>
-                                                    @if(count($all_orders['acceptedByRecipientOrders'])>100)
+                                                    @if(count($all_orders['acceptedByRecipientOrders'])>25)
                                                         <a href="{{route('company_order.finished_all_orders')}}">{{translate('All cancelled orders')}}</a>
                                                     @endif
                                                 </th>
