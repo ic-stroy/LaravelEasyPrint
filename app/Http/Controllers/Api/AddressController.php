@@ -170,7 +170,7 @@ class AddressController extends Controller
 
         if(($company) && $user){
             $full_name = ($user->personalInfo) ? $user->personalInfo->last_name . ' ' . $user->personalInfo->first_name : '';
-
+            $company_name = $company->name??'';
             $user_image = null;
             if($user->personalInfo) {
                 if ($user->personalInfo->avatar) {
@@ -192,7 +192,7 @@ class AddressController extends Controller
             $response[] = [
                 'id' =>$company->id,
                 'user_id' => $user->id,
-                'full_name' => $full_name,
+                'full_name' => $company_name,
                 'country' => translate_api('Uzbekistan',$language),
                 'avatar' => $user_image,
                 'total_prints' => $total_prints,
