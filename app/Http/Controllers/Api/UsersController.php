@@ -269,7 +269,7 @@ class UsersController extends Controller
             if($model->verify_code == $fields['verify_code']){
                 $user = User::withTrashed()->find($model->user_id);
                 if(!$user){
-                    $message = translate_api('this phone is not registered');
+                    $message = translate_api('this phone is not registered', $language);
                     return $this->error($message, 201);
                 }else{
                     if($user->deleted_at){

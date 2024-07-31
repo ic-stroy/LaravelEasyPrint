@@ -1210,12 +1210,12 @@ class OrderController extends Controller
 //        sleep(1);
         $language = $request->header('language');
         $user = Auth::user();
-        $allOrders = $this->orderToArray($user->allOrders);
+        $allOrders = $this->orderToArray($user->allOrders, $language);
         $message = translate_api('Success', $language);
         return $this->success($message, 200, $allOrders);
     }
 
-    public function orderToArray($modal){
+    public function orderToArray($modal, $language){
         $response = [];
         foreach ($modal as $data){
 //            $order_delivery_date_year = date('Y', strtotime($data->delivery_date));
@@ -1224,7 +1224,7 @@ class OrderController extends Controller
             $order_delivery_date_day = date('d', strtotime($data->delivery_date));
 //            $order_delivery_date_hour = date('H', strtotime($data->delivery_date));
 //            $order_delivery_date_minute = date('i', strtotime($data->delivery_date));
-            $order_delivery_date = translate_api($order_delivery_date_week).", ".$order_delivery_date_day." ".translate_api($order_delivery_date_month);
+            $order_delivery_date = translate_api($order_delivery_date_week, $language).", ".$order_delivery_date_day." ".translate_api($order_delivery_date_month, $language);
 
 //            $order_date_year = date('Y', strtotime($data->updated_at));
             $order_date_month = date('F', strtotime($data->updated_at));
@@ -1232,7 +1232,7 @@ class OrderController extends Controller
             $order_date_day = date('d', strtotime($data->updated_at));
 //            $order_date_hour = date('H', strtotime($data->updated_at));
 //            $order_date_minute = date('i', strtotime($data->updated_at));
-            $order_date = translate_api($order_date_week).", ".$order_date_day." ".translate_api($order_date_month);
+            $order_date = translate_api($order_date_week, $language).", ".$order_date_day." ".translate_api($order_date_month, $language);
             $address_id = null;
             $region = null;
             $city = null;
@@ -1271,7 +1271,7 @@ class OrderController extends Controller
             $response[] = [
                 "id" => $data->id??null,
                 "price" => $data->price??null,
-                "status" => $this->getOrderStatus($data->status)??null,
+                "status" => $this->getOrderStatus($data->status, $language)??null,
                 "order_date"=>$order_date??null,
                 "delivery_date" => $order_delivery_date??null,
                 "delivery_price" => $data->delivery_price??null,
@@ -1292,28 +1292,28 @@ class OrderController extends Controller
         return $response;
     }
 
-    public function getOrderStatus($id){
+    public function getOrderStatus($id, $language){
         switch ($id){
             case Constants::BASKED:
-                $status = translate_api('Basked');
+                $status = translate_api('Basked', $language);
                 break;
             case Constants::ORDERED:
-                $status = translate_api('Ordered');
+                $status = translate_api('Ordered', $language);
                 break;
             case Constants::PERFORMED:
-                $status = translate_api('Performed');
+                $status = translate_api('Performed', $language);
                 break;
             case Constants::CANCELLED:
-                $status = translate_api('Cancelled');
+                $status = translate_api('Cancelled', $language);
                 break;
             case Constants::ORDER_DELIVERED:
-                $status = translate_api('Delivered');
+                $status = translate_api('Delivered', $language);
                 break;
             case Constants::READY_FOR_PICKUP:
-                $status = translate_api('Ready for pickup');
+                $status = translate_api('Ready for pickup', $language);
                 break;
             case Constants::ACCEPTED_BY_RECIPIENT:
-                $status = translate_api('Accepted by recipient');
+                $status = translate_api('Accepted by recipient', $language);
                 break;
             default:
                 $status = null;
