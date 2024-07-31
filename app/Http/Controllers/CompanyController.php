@@ -47,6 +47,8 @@ class CompanyController extends Controller
             $address->save();
             $model->address_id = $address->id;
         }
+        $file = $request->file('company_image');
+        $this->imageSave($file, $model, 'store');
         $model->name = $request->name;
         $model->delivery_price = $request->delivery_price;
         $model->save();
@@ -107,6 +109,9 @@ class CompanyController extends Controller
                 $company_translations->save();
             }
         }
+
+        $file = $request->file('company_image');
+        $this->imageSave($file, $model, 'update');
         $model->name = $request->name;
         $model->delivery_price = $request->delivery_price;
         $model->save();
@@ -135,5 +140,30 @@ class CompanyController extends Controller
         }
         return redirect()->route('company.index')->with('status', translate('Successfully deleted'));
     }
+
+    public function imageSave($file, $model, $text){
+        if (isset($file)) {
+            $letters = range('a', 'z');
+            $random_array = [$letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)], $letters[rand(0,25)]];
+            $random = implode("", $random_array);
+
+            if($text == 'update'){
+                if($model->image){
+                    $sms_avatar = storage_path('app/public/company/' . $model->image);
+                }else{
+                    $sms_avatar = storage_path('app/public/company/' . 'no');
+                }
+                if (file_exists($sms_avatar)) {
+                    unlink($sms_avatar);
+                }
+            }
+            $image_name = $random.''.date('Y-m-dh-i-s').'.'.$file->extension();
+            $file->storeAs('public/company/', $image_name);
+            $model->image = $image_name;
+
+            return $model;
+        }
+    }
+
 
 }

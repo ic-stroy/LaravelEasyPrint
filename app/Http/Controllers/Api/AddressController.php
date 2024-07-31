@@ -169,20 +169,16 @@ class AddressController extends Controller
         $response = [];
 
         if(($company) && $user){
-            $full_name = ($user->personalInfo) ? $user->personalInfo->last_name . ' ' . $user->personalInfo->first_name : '';
+//            $full_name = ($user->personalInfo) ? $user->personalInfo->last_name . ' ' . $user->personalInfo->first_name : '';
             $company_name = $company->name??'';
-            $user_image = null;
-            if($user->personalInfo) {
-                if ($user->personalInfo->avatar) {
-                    $sms_avatar = storage_path('app/public/user/' . $user->personalInfo->avatar);
-                } else {
-                    $sms_avatar = storage_path('app/public/user/' . 'no');
-                }
+            $company_image = null;
+            if($company_image->image) {
+                 $sms_avatar = storage_path('app/public/company/' . $company->image);
             }else{
-                    $sms_avatar = storage_path('app/public/user/' . 'no');
+                 $sms_avatar = storage_path('app/public/company/' . 'no');
             }
             if (file_exists($sms_avatar)) {
-                $user_image = asset('storage/user/'.$user->personalInfo->avatar);
+                $company_image = asset('storage/company/'.$company->image);
             }
 
             $total_prints = Warehouse::distinct('product_id')->where('company_id', $id)->count();
@@ -194,7 +190,7 @@ class AddressController extends Controller
                 'user_id' => $user->id,
                 'full_name' => $company_name,
                 'country' => translate_api('Uzbekistan',$language),
-                'avatar' => $user_image,
+                'avatar' => $company_image,
                 'total_prints' => $total_prints,
                 'total_solds' => $total_solds,
                 'registration_date' => date('d.m.Y', strtotime(date($company->created_at))),

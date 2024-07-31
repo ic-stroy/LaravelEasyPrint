@@ -25,7 +25,7 @@
             <p class="text-muted font-14">
                 {{translate('Company create')}}
             </p>
-            <form action="{{route('company.store')}}" class="parsley-examples" method="POST">
+            <form action="{{route('company.store')}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method("POST")
                 <div class="row">
@@ -53,13 +53,17 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="mb-3 col-6">
+                    <div class="mb-3 col-4">
                         <label class="form-label">{{translate('Street, house')}}</label>
                         <input class="form-control" type="text" name="address_name">
                     </div>
-                    <div class="mb-3 col-6">
+                    <div class="mb-3 col-4">
                         <label class="form-label">{{translate('Postcode')}}</label>
                         <input class="form-control" type="number" name="postcode">
+                    </div>
+                    <div class="mb-3 col-4">
+                        <label class="form-label">{{translate('Image')}}</label>
+                        <input type="file" name="company_image" class="form-control"/>
                     </div>
                 </div>
                 <div class="form-group google-map-lat-lng">

@@ -25,7 +25,7 @@
             <p class="text-muted font-14">
                 {{translate('Company update')}}
             </p>
-            <form action="{{route('company.update', $company->id)}}" class="parsley-examples" method="POST">
+            <form action="{{route('company.update', $company->id)}}" class="parsley-examples" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method("PUT")
                 <div class="row">
@@ -60,6 +60,34 @@
                     <div class="mb-3 col-6">
                         <label class="form-label">{{translate('Postcode')}}</label>
                         <input class="form-control" type="number" name="postcode" value="{{$company->address?$company->address->postcode:''}}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-6">
+                        <label class="form-label">{{translate('Image')}}</label>
+                        <input id="company_image" type="file" name="company_image" class="form-control"/>
+                    </div>
+                    <div class="mb-3 col-6">
+                        <div style="text-align: center">
+                            @if($company->image)
+                                @if($company->image)
+                                    @php
+                                        $avatar = storage_path('app/public/company/'.$company->image)
+                                    @endphp
+                                @else
+                                    @php
+                                        $avatar = 'no'
+                                    @endphp
+                                @endif
+                            @else
+                                @php
+                                    $avatar = 'no'
+                                @endphp
+                            @endif
+                            @if(file_exists($avatar))
+                                <img src="{{asset('storage/company/'.$company->image)}}" alt="" height="94px">
+                            @endif
+                        </div>
                     </div>
                 </div>
                 <div class="form-group google-map-lat-lng">

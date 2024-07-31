@@ -31,6 +31,29 @@
                         <td>{{$model->name??''}}</td>
                     </tr>
                     <tr>
+                        <th>{{translate('Image')}}</th>
+                        <td>
+                            @if($model->image)
+                                @if($model->image)
+                                    @php
+                                        $avatar = storage_path('app/public/company/'.$model->image)
+                                    @endphp
+                                @else
+                                    @php
+                                        $avatar = 'no'
+                                    @endphp
+                                @endif
+                            @else
+                                @php
+                                    $avatar = 'no'
+                                @endphp
+                            @endif
+                            @if(file_exists($avatar))
+                                <img src="{{asset('storage/company/'.$model->image)}}" alt="" height="144px">
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
                         <th>{{translate('Delivery price')}}</th>
                         <td>{{$model->delivery_price??''}}</td>
                     </tr>
