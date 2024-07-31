@@ -235,7 +235,7 @@ class AuthController extends Controller
             'email' => 'required|string',
             'password' => 'required|string'
         ]);
-        $user = User::where('email', $fields['email'])->first();
+        $user = User::where('email', (int)$fields['email'])->first();
         if(!$user || !Hash::check($fields['password'], $user->password)) {
             $message = translate_api('Password or phone number is incorrect', $language);
             return $this->error($message, 401, []);
