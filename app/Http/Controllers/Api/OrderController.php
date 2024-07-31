@@ -1226,13 +1226,13 @@ class OrderController extends Controller
 //            $order_delivery_date_minute = date('i', strtotime($data->delivery_date));
             $order_delivery_date = translate($order_delivery_date_week).", ".$order_delivery_date_day." ".translate($order_delivery_date_month);
 
-            $order_date_year = date('Y', strtotime($data->updated_at));
+//            $order_date_year = date('Y', strtotime($data->updated_at));
             $order_date_month = date('F', strtotime($data->updated_at));
             $order_date_week = date('l', strtotime($data->updated_at));
             $order_date_day = date('d', strtotime($data->updated_at));
-            $order_date_hour = date('H', strtotime($data->updated_at));
-            $order_date_minute = date('i', strtotime($data->updated_at));
-            $order_date = translate($order_date_week).", ".$order_date_day." ".translate($order_date_month)." ". $order_date_year.' '."$order_date_hour:$order_date_minute";
+//            $order_date_hour = date('H', strtotime($data->updated_at));
+//            $order_date_minute = date('i', strtotime($data->updated_at));
+            $order_date = translate($order_date_week).", ".$order_date_day." ".translate($order_date_month);
             $address_id = null;
             $region = null;
             $city = null;
