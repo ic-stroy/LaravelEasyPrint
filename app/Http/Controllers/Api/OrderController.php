@@ -1179,28 +1179,36 @@ class OrderController extends Controller
     public function orderToArray($modal){
         $response = [];
         foreach ($modal as $data){
+//            $order_delivery_date_year = date('Y', strtotime($data->delivery_date));
+            $order_delivery_date_month = date('F', strtotime($data->delivery_date));
+            $order_delivery_date_week = date('l', strtotime($data->delivery_date));
+            $order_delivery_date_day = date('d', strtotime($data->delivery_date));
+//            $order_delivery_date_hour = date('H', strtotime($data->delivery_date));
+//            $order_delivery_date_minute = date('i', strtotime($data->delivery_date));
+            $order_delivery_date = translate($order_delivery_date_week).", ".$order_delivery_date_day." ".translate($order_delivery_date_month);
+
             $order_date_year = date('Y', strtotime($data->updated_at));
             $order_date_month = date('F', strtotime($data->updated_at));
             $order_date_week = date('l', strtotime($data->updated_at));
             $order_date_day = date('d', strtotime($data->updated_at));
             $order_date_hour = date('H', strtotime($data->updated_at));
             $order_date_minute = date('i', strtotime($data->updated_at));
-            $order_date = translate($order_date_week).", ".$order_date_day." ".translate($order_date_month)." ". $order_date_year." ".translate('Year').' '.translate('at').' '."$order_date_hour:$order_date_minute";
-
-            $order_status_date_year = date('Y', strtotime($data->updated_at));
-            $order_status_date_month = date('F', strtotime($data->updated_at));
-            $order_status_date_week = date('l', strtotime($data->updated_at));
-            $order_status_date_day = date('d', strtotime($data->updated_at));
-            $order_status_date_hour = date('H', strtotime($data->updated_at));
-            $order_status_date_minute = date('i', strtotime($data->updated_at));
-            $order_status_date = translate($order_status_date_week).", ".$order_status_date_day." ".translate($order_status_date_month)." ". $order_status_date_year." ".translate('Year').' '.translate('at').' '."$order_status_date_hour:$order_status_date_minute";
+            $order_date = translate($order_date_week).", ".$order_date_day." ".translate($order_date_month)." ". $order_date_year.' '."$order_date_hour:$order_date_minute";
             $address_id = null;
             $region = null;
             $city = null;
             $street = null;
+            $address_type = null;
             if($data->address){
                 $address_id = $data->address->id;
                 $street = $data->address->name;
+                if($data->address->user){
+                    if($data->address->user->role_id && $data->address->user->role_id != 4){
+                        $address_type = 'pick_up';
+                    }else{
+                        $address_type = 'deliver';
+                    }
+                }
                 if($data->address->cities){
                     if($data->address->cities->region){
                         $region = $data->address->cities->region->name;
@@ -1209,6 +1217,7 @@ class OrderController extends Controller
                 }
             }
             if($address_id != null){
+
                 $address = [
                     'id'=>$address_id,
                     'street'=>$street,
@@ -1224,13 +1233,13 @@ class OrderController extends Controller
                 "id" => $data->id??null,
                 "price" => $data->price??null,
                 "status" => $this->getOrderStatus($data->status)??null,
-                "order_status_date"=>$order_status_date??null,
                 "order_date"=>$order_date??null,
-                "delivery_date" => $data->delivery_date?date('Y-m-d', strtotime($data->delivery_date)):null,
+                "delivery_date" => $order_delivery_date??null,
                 "delivery_price" => $data->delivery_price??null,
                 "all_price" => $data->all_price??null,
                 "coupon_id" => $data->coupon_id??null,
                 "address" => $address??null,
+                "address_type" => $address_type,
                 "receiver_name" => $data->receiver_name??null,
                 "phone_number" => $data->phone_number??null,
                 "payment_method" => $data->payment_method??null,
