@@ -243,12 +243,17 @@ class AuthController extends Controller
         $token = $user->createToken('myapptoken')->plainTextToken;
         $user->token = $token;
         $user->save();
+        $user_name = '';
+        if($user->personalInfo){
+            $user_name = $user->personalInfo->first_name??'';
+        }
         $is_admin = false;
         if(in_array($user->role_id, [2, 3])){
             $is_admin = true;
         }
         $data = [
             'user' => $user,
+            'name'=>$user_name,
             'token' => $token,
             'is_admin'=>$is_admin
         ];
