@@ -591,11 +591,10 @@ class CompanyOrderController extends Controller
                     }
                 }
             }
+            return redirect()->route('company_order.index')->with('performed', 'There is no address in order');
         }else{
             return redirect()->route('company_order.index')->with('error', 'Order not found');
         }
-
-        return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
     }
 
     public function cancellOrderDelivered($id){

@@ -716,6 +716,9 @@
                                                                             @case(\App\Constants::ORDER_DELIVERED)
                                                                             <span class="badge bg_danger order_status">{{translate('Delivered')}}</span>
                                                                             @break
+                                                                            @case(\App\Constants::READY_FOR_PICKUP)
+                                                                            <span class="badge bg_danger order_status">{{translate('Ready for pickup')}}</span>
+                                                                            @break
                                                                             @case(\App\Constants::ACCEPTED_BY_RECIPIENT)
                                                                             <span class="badge bg_success order_status">{{translate('Accepted by recipient')}}</span>
                                                                             @break
