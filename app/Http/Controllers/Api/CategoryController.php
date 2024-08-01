@@ -263,7 +263,7 @@ class CategoryController extends Controller
     public function profileInfo(Request $request){
         $language = $request->header('language');
         $token = $request->header('token');
-        $languages = Language::select('id', 'name', 'code')->where('name', '!=', 'en')->get();
+        $languages = Language::select('id', 'name', 'code')->where('code', '!=', 'en')->get();
         $options = [
             'headers'=>[
                 'Accept'        => 'application/json',
