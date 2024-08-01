@@ -23,6 +23,9 @@ use Illuminate\Support\Facades\Notification;
 class CompanyOrderController extends Controller
 {
     public function index(){
+        $send_message = translation_api('Easy Print - Sizni parol qayta tiklash uchun tasdiqlash kodingiz');
+        sleep(1);
+        $send_message = translation_api('Easy Print - Sizni bir martalik tasdiqlash kodingiz');
         $user = Auth::user();
         $orderedOrders_ = Order::where('status', Constants::ORDERED)->orderBy('updated_at', 'asc')->get();
         $performedOrders_ = Order::where('status', Constants::PERFORMED)->where('company_id', $user->company_id)->orderBy('updated_at', 'asc')->get();
@@ -571,13 +574,38 @@ class CompanyOrderController extends Controller
     }
 
     public function readyForPickup($id){
+        $phone_number = '';
+        $address = '';
         $order = Order::where('status', Constants::PERFORMED)->find($id);
         if(!$order){
             return redirect()->route('company_order.index')->with('error', 'Order not found');
+        }else{
+            $order->status = Constants::READY_FOR_PICKUP;
+            if($order->user){
+                if((int)$order->user->email > 1000000){
+                    $phone_number = $order->user->email;
+                }
+            }
+            if($order->address) {
+                if($order->address->user){
+                    if($order->address->user->role_id && $order->address->user->role_id != 4){
+                        if ($order->address->cities) {
+                            if ($order->address->cities->region) {
+                                $region_name = $order->address->cities->region->name ?? "";
+                            }
+                            $city_name = $order->address->cities->name ?? "";
+                        }
+                        $address_name = $order->address->name ?? '';
+                        $address = $region_name.' '.$city_name.' '.$address_name;
+                    }
+                }
+            }
+            $order_code = $order->code??'';
+            $this->sendMessage($phone_number, $order_code, $address);
+            $order->save();
+            return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
         }
-        $order->status = Constants::READY_FOR_PICKUP;
-        $order->save();
-        return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
+
     }
 
     public function cancellAcceptedByRecipient($id){
@@ -680,7 +708,7 @@ class CompanyOrderController extends Controller
         return view('company.order.order_history', ['order_data'=>$order_data]);
     }
 
-    public function sendMessage($user, $message){
+    public function sendMessage($phone_number, $message){
         date_default_timezone_set("Asia/Tashkent");
         $client = new Client();
         $eskiz_token = EskizToken::firstOrNew();

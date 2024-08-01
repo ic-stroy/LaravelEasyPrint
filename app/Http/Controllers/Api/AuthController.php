@@ -23,7 +23,8 @@ class AuthController extends Controller
         date_default_timezone_set("Asia/Tashkent");
         $language = $request->header('language');
         $fields = $request->validate([
-            'phone'=>'required|string'
+            'phone'=>'required|string',
+            'is_forgot'=>'nullable|integer'
         ]);
         $client = new Client();
         $eskiz_token = EskizToken::firstOrNew();
@@ -65,6 +66,15 @@ class AuthController extends Controller
         }
         $eskiz_token = '';
         $eskiz_token = EskizToken::first();
+        if(isset($fields['is_forgot'])){
+            if($fields['is_forgot'] == 1){
+                $send_message = 'Easy Print - Sizni parol qayta tiklash uchun tasdiqlash kodingiz';
+            }else{
+                $send_message = 'Easy Print - Sizni bir martalik tasdiqlash kodingiz';
+            }
+        }else{
+            $send_message = 'Easy Print - Sizni bir martalik tasdiqlash kodingiz';
+        }
         $options = [
             'headers' => [
                 'Accept'        => 'application/json',
@@ -77,7 +87,7 @@ class AuthController extends Controller
                 ],
                 [
                     'name' => 'message',
-                    'contents' => translate_api('Easy Print - Sizni bir martalik tasdiqlash kodingiz', $language).': '.$random
+                    'contents' => translate_api($send_message, $language).': '.$random
                 ],
                 [
                     'name' => 'from',
