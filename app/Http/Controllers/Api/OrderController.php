@@ -187,15 +187,15 @@ class OrderController extends Controller
             if($category_type){
                 switch($category_type->name){
                     case 'T-shirts':
-                        $t_shirts = Products::where('category_id', $request->category_id)->where('name', 'Футболка')->first();
+                        $t_shirts = Products::where('name', 'Футболка')->first();
                         $order_detail->product_id = $t_shirts->id;
                         break;
                     case 'Sweatshirts':
-                        $t_shirts = Products::where('category_id', $request->category_id)->where('name', 'Свитшот')->first();
+                        $t_shirts = Products::where('name', 'Свитшот')->first();
                         $order_detail->product_id = $t_shirts->id;
                         break;
                     case 'Hoodies':
-                        $t_shirts = Products::where('category_id', $request->category_id)->where('name', 'Худи')->first();
+                        $t_shirts = Products::where('name', 'Худи')->first();
                         $order_detail->product_id = $t_shirts->id;
                         break;
                     default:
