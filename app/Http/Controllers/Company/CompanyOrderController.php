@@ -23,9 +23,9 @@ use Illuminate\Support\Facades\Notification;
 class CompanyOrderController extends Controller
 {
     public function index(){
-        $send_message = translation_api('Easy Print - Sizni parol qayta tiklash uchun tasdiqlash kodingiz');
+        $send_message = translate_api('Easy Print - Sizni parol qayta tiklash uchun tasdiqlash kodingiz');
         sleep(1);
-        $send_message = translation_api('Easy Print - Sizni bir martalik tasdiqlash kodingiz');
+        $send_message = translate_api('Easy Print - Sizni bir martalik tasdiqlash kodingiz');
         $user = Auth::user();
         $orderedOrders_ = Order::where('status', Constants::ORDERED)->orderBy('updated_at', 'asc')->get();
         $performedOrders_ = Order::where('status', Constants::PERFORMED)->where('company_id', $user->company_id)->orderBy('updated_at', 'asc')->get();
