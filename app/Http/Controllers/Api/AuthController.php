@@ -191,13 +191,29 @@ class AuthController extends Controller
         $user->password = bcrypt($fields['password']);
         if($user->personalInfo){
             $personal_info = $user->personalInfo;
-            $personal_info->first_name = $fields['name'];
-            $personal_info->last_name = $fields['surname'];
+            if(isset($fields['name'])){
+                if($fields['name']){
+                    $personal_info->first_name = $fields['name'];
+                }
+            }
+            if(isset($fields['surname'])){
+                if($fields['surname']){
+                    $personal_info->first_name = $fields['surname'];
+                }
+            }
             $personal_info->save();
         }else{
             $personal_info = new PersonalInfo();
-            $personal_info->first_name = $fields['name'];
-            $personal_info->last_name = $fields['surname'];
+            if(isset($fields['name'])){
+                if($fields['name']){
+                    $personal_info->first_name = $fields['name'];
+                }
+            }
+            if(isset($fields['surname'])){
+                if($fields['surname']){
+                    $personal_info->first_name = $fields['surname'];
+                }
+            }
             $personal_info->save();
             $user->personal_info_id = $personal_info->id;
         }
