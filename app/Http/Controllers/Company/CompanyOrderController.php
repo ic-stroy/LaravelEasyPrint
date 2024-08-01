@@ -599,7 +599,7 @@ class CompanyOrderController extends Controller
                 }
             }
             $order_code = $order->code??'';
-            $this->sendMessage($phone_number, $order_code, $address);
+//            $this->sendMessage($phone_number, $order_code, $address);
             $order->save();
             return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
         }
