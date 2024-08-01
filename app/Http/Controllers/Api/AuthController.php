@@ -198,7 +198,7 @@ class AuthController extends Controller
             }
             if(isset($fields['surname'])){
                 if($fields['surname']){
-                    $personal_info->first_name = $fields['surname'];
+                    $personal_info->last_name = $fields['surname'];
                 }
             }
             $personal_info->save();
@@ -211,7 +211,7 @@ class AuthController extends Controller
             }
             if(isset($fields['surname'])){
                 if($fields['surname']){
-                    $personal_info->first_name = $fields['surname'];
+                    $personal_info->last_name = $fields['surname'];
                 }
             }
             $personal_info->save();
