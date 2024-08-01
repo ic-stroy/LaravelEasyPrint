@@ -302,7 +302,6 @@ class AddressController extends Controller
               'postcode'=>$address->postcode??null,
             ];
         }
-        return response()->json([$super_admins_id, $addresses, $data]);
 
         $message = translate_api('Success', $language);
         return $this->success($message, 200, $data);
