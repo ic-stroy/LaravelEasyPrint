@@ -23,7 +23,6 @@ use Illuminate\Support\Facades\Notification;
 class CompanyOrderController extends Controller
 {
     public function index(){
-        sleep(1);
         $user = Auth::user();
         $orderedOrders_ = Order::where('status', Constants::ORDERED)->orderBy('updated_at', 'asc')->get();
         $performedOrders_ = Order::where('status', Constants::PERFORMED)->where('company_id', $user->company_id)->orderBy('updated_at', 'asc')->get();
@@ -599,7 +598,7 @@ class CompanyOrderController extends Controller
                 }
             }
             $order_code = $order->code??'';
-//            $this->sendMessage($phone_number, $order_code, $address);
+            $this->sendMessage($phone_number, $order_code, $address);
             $order->save();
             return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
         }
@@ -706,10 +705,11 @@ class CompanyOrderController extends Controller
         return view('company.order.order_history', ['order_data'=>$order_data]);
     }
 
-    public function sendMessage($phone_number, $message){
+    public function sendMessage($phone_number, $order_code, $address){
         date_default_timezone_set("Asia/Tashkent");
         $client = new Client();
         $eskiz_token = EskizToken::firstOrNew();
+        $random = rand(100000, 999999);
         $token_options = [
             'multipart' => [
                 [
@@ -726,12 +726,11 @@ class CompanyOrderController extends Controller
             $guzzle_request = new GuzzleRequest('POST', 'https://notify.eskiz.uz/api/auth/login');
             $res = $client->sendAsync($guzzle_request, $token_options)->wait();
             $res_array = json_decode($res->getBody());
-            $eskizToken = EskizToken::firstOrNew();
-            $eskizToken->token = $res_array->data->token;
-            $eskizToken->expire_date = strtotime('+28 days');
-            $eskizToken->save();
+            $eskiz_token->token = $res_array->data->token;
+            $eskiz_token->status = 'order';
+            $eskiz_token->expire_date = strtotime('+28 days');
+            $eskiz_token->save();
         }
-        $eskiz_token = EskizToken::first();
         $options = [
             'headers' => [
                 'Accept'        => 'application/json',
@@ -740,11 +739,13 @@ class CompanyOrderController extends Controller
             'multipart' => [
                 [
                     'name' => 'mobile_phone',
-                    'contents' => $user->phone
+                    'contents' => (int)$phone_number
                 ],
                 [
                     'name' => 'message',
-                    'contents' => translate('Easy Print - Sizni bir martalik tasdiqlash kodingiz').': '.$user
+                    'contents' => "Ваш заказ № ($order_code) ожидает в пункте выдачи.
+                        При получении заказа назовите номер заказа: ($order_code).
+                        Пункт Выдачи ($address)".': '.$random
                 ],
                 [
                     'name' => 'from',
@@ -756,12 +757,8 @@ class CompanyOrderController extends Controller
         $res = $client->sendAsync($guzzle_request, $options)->wait();
         $result = $res->getBody();
         $result = json_decode($result);
-        if($result){
-//            $user_verify->verify_code = $random;
-//            $user_verify->save();
-            return $this->success("Success", 200);
-        }else{
-            return $this->error(translate_api("Fail message not sent. Try again", $language), 400);
+        if(!$result){
+            return redirect()->back()->with('status', translate("Fail message not sent. Try again"));
         }
     }
 

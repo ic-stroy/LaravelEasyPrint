@@ -19,12 +19,13 @@ use function bcrypt;
 
 class AuthController extends Controller
 {
-    public function PhoneRegister(Request $request){
+    public function PhoneRegister(Request $request)
+    {
         date_default_timezone_set("Asia/Tashkent");
         $language = $request->header('language');
         $fields = $request->validate([
-            'phone'=>'required|string',
-            'is_forgot'=>'nullable|integer'
+            'phone' => 'required|string',
+            'is_forgot' => 'nullable|integer'
         ]);
         $client = new Client();
         $eskiz_token = EskizToken::firstOrNew();
@@ -59,13 +60,12 @@ class AuthController extends Controller
             $guzzle_request = new GuzzleRequest('POST', 'https://notify.eskiz.uz/api/auth/login');
             $res = $client->sendAsync($guzzle_request, $token_options)->wait();
             $res_array = json_decode($res->getBody());
-            $eskizToken = EskizToken::firstOrNew();
-            $eskizToken->token = $res_array->data->token;
-            $eskizToken->expire_date = strtotime('+28 days');
-            $eskizToken->save();
+            $eskiz_token->token = $res_array->data->token;
+            $eskiz_token->lang = $language;
+            $eskiz_token->status = 'auth';
+            $eskiz_token->expire_date = strtotime('+28 days');
+            $eskiz_token->save();
         }
-        $eskiz_token = '';
-        $eskiz_token = EskizToken::first();
         if(isset($fields['is_forgot'])){
             if($fields['is_forgot'] == 1){
                 $send_message = 'Easy Print - Sizni parol qayta tiklash uchun tasdiqlash kodingiz';

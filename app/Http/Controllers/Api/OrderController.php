@@ -219,6 +219,11 @@ class OrderController extends Controller
             $order_detail->image_front = $this->saveImage($image_front, 'warehouse');
             $order_detail->image_back = $this->saveImage($image_back, 'warehouse');
             $order_detail->order_id = $order->id;
+            if(isset($request->type)){
+                if($request->type){
+                    $order_detail->product_type = $request->type;
+                }
+            }
             $order_detail->discount = $request->discount;
             $order_detail->discount_price = $request_order_discount_price;
             $order_detail->save();
@@ -486,7 +491,23 @@ class OrderController extends Controller
                                 $order_detail->discount = 0;
                             }
                             if ($order_detail->price != $product->price) {
-                                $order_detail->price = $product->price;
+                                if(isset($order_detail->product_type)){
+                                    switch($order_detail->product_type){
+                                        case 0:
+                                            $order_detail->price = $product->price;
+                                            $translate_name = translate_api('Стандарт', $language);
+                                            break;
+                                        case 1:
+                                            $translate_name = translate_api('С воротником', $language);
+                                            break;
+                                        case 2:
+                                            $translate_name = translate_api('Оверсайз', $language);
+                                            break;
+                                        default:
+                                    }
+                                }else{
+                                    $order_detail->price = $product->price;
+                                }
                                 $order_price = $order_price + $order_detail->price * $order_detail->quantity;
                                 if ($order_detail->discount && $order_detail->discount != 0) {
                                     $order_detail->discount_price = ($product->price * $order_detail->discount) / 100 * $order_detail->quantity;
@@ -657,7 +678,7 @@ class OrderController extends Controller
                             ->where('dt1.id' , $order_detail->id)
                             ->select('dt1.quantity as order_detail_quantity', 'dt1.price as order_detail_price',
                                 'dt1.image_front as order_detail_image_front', 'dt1.image_back as order_detail_image_back',
-                                'dt1.discount_price as order_detail_discount_price',
+                                'dt1.discount_price as order_detail_discount_price', 'dt1.product_type as order_detail_product_type',
                                 'dt2.name as product_name','dt2.images as images', 'dt2.description as description',
                                 'dt3.id as size_id','dt3.name as size_name','dt4.id as color_id', 'dt4.code as color_code',
                                 'dt4.name as color_name')
@@ -690,11 +711,29 @@ class OrderController extends Controller
                             }else{
                                 $images = [$order_detail_image_front, $order_detail_image_back];
                             }
+                            if(isset($product->order_detail_product_type)){
+                                switch($product->order_detail_product_type){
+                                    case 0:
+                                        $product_name = translate_api('Стандарт', $language);
+                                        break;
+                                    case 1:
+                                        $product_name = translate_api('С воротником', $language);
+                                        break;
+                                    case 2:
+                                        $product_name = translate_api('Оверсайз', $language);
+                                        break;
+                                    default:
+                                        $product_name = translate_api($product->product_name, $language);
+                                }
+                            }else{
+                                $product_name = translate_api($product->product_name, $language);
+                            }
+
                             $list=[
                                 "id"=>$order_detail->id,
                                 "relation_type"=>$relation_type,
                                 "relation_id"=>$relation_id,
-                                'name'=>$product->product_name,
+                                'name'=>$product_name,
                                 "price"=>$order_detail->price,
                                 "discount"=>$order_detail->discount,
                                 "all_price"=>(int)$order_detail->discount_price>0?(int)$order_detail->price - (int)$order_detail->discount_price:null,
@@ -1330,7 +1369,7 @@ class OrderController extends Controller
             $response = [];
             foreach ($order_details as $order_detail){
                 $warehouse = $this->getWarehouseByOrderDetail($order_detail->warehouse_id, $language);
-                $product = $this->getProductByOrderDetail($order_detail->product_id, $language);
+                $product = $this->getProductByOrderDetail($order_detail->product_type, $order_detail->product_id, $language);
                 if($order_detail->image_front){
                     $image_front = asset('storage/warehouse/'.$order_detail->image_front);
                 }else{
@@ -1443,12 +1482,31 @@ class OrderController extends Controller
     }
 
 
-    public function getProductByOrderDetail($product_id, $language){
+    public function getProductByOrderDetail($order_detail_product_type, $product_id, $language){
         $product = Products::find($product_id);
         if ($product) {
-            if($product->name){
-                $product_translate_name=table_translate($product,'product', $language);
+            if(isset($order_detail_product_type)){
+                switch($order_detail_product_type){
+                    case 0:
+                        $product_translate_name = translate_api('Стандарт', $language);
+                        break;
+                    case 1:
+                        $product_translate_name = translate_api('С воротником', $language);
+                        break;
+                    case 2:
+                        $product_translate_name = translate_api('Оверсайз', $language);
+                        break;
+                    default:
+                        if($product->name){
+                            $product_translate_name=table_translate($product,'product', $language);
+                        }
+                }
+            }else{
+                if($product->name){
+                    $product_translate_name=table_translate($product,'product', $language);
+                }
             }
+
             $images = $this->getImages($product, 'product');
             $list = [
                 "id" => $product->id,
