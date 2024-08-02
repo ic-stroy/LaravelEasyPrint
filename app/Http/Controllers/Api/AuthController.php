@@ -87,7 +87,7 @@ class AuthController extends Controller
                 ],
                 [
                     'name' => 'message',
-                    'contents' => translate_api($send_message, $language).': '.$random
+                    'contents' => $send_message.': '.$random
                 ],
                 [
                     'name' => 'from',

@@ -769,9 +769,7 @@ class CompanyOrderController extends Controller
                 ],
                 [
                     'name' => 'message',
-                    'contents' => "Ваш заказ № ($order_code) ожидает в пункте выдачи.
-                        При получении заказа назовите номер заказа: ($order_code).
-                        Пункт Выдачи ($address)".': '.$random
+                    'contents' => "Ваш заказ № ($order_code) ожидает в пункте выдачи. При получении заказа назовите номер заказа: ($order_code). Пункт Выдачи ($address)".': '.$random
                 ],
                 [
                     'name' => 'from',

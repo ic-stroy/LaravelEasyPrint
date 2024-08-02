@@ -1257,20 +1257,14 @@ class OrderController extends Controller
     public function orderToArray($modal, $language){
         $response = [];
         foreach ($modal as $data){
-//            $order_delivery_date_year = date('Y', strtotime($data->delivery_date));
             $order_delivery_date_month = date('F', strtotime($data->delivery_date));
             $order_delivery_date_week = date('l', strtotime($data->delivery_date));
             $order_delivery_date_day = date('d', strtotime($data->delivery_date));
-//            $order_delivery_date_hour = date('H', strtotime($data->delivery_date));
-//            $order_delivery_date_minute = date('i', strtotime($data->delivery_date));
             $order_delivery_date = translate_api($order_delivery_date_week, $language).", ".$order_delivery_date_day." ".translate_api($order_delivery_date_month, $language);
 
-//            $order_date_year = date('Y', strtotime($data->updated_at));
             $order_date_month = date('F', strtotime($data->updated_at));
             $order_date_week = date('l', strtotime($data->updated_at));
             $order_date_day = date('d', strtotime($data->updated_at));
-//            $order_date_hour = date('H', strtotime($data->updated_at));
-//            $order_date_minute = date('i', strtotime($data->updated_at));
             $order_date = translate_api($order_date_week, $language).", ".$order_date_day." ".translate_api($order_date_month, $language);
             $address_id = null;
             $region = null;
@@ -1380,11 +1374,17 @@ class OrderController extends Controller
                 }else{
                     $image_back = null;
                 }
+                if($order_detail->status == Constants::ORDER_DETAIL_CANCELLED){
+                    $order_detail_status = translate_api('Cancelled', $language);
+                }else{
+                    $order_detail_status = '';
+                }
                 $response[] = [
                     "id"=>$order_detail->id,
                     "order_id"=>$order_detail->order_id,
                     "quantity"=>$order_detail->quantity,
                     "price"=>$order_detail->price,
+                    "status"=>$order_detail_status,
                     "image_front"=>$image_front,
                     "image_back"=>$image_back,
                     "created_at"=>$order_detail->created_at,
@@ -1403,8 +1403,8 @@ class OrderController extends Controller
                     "total_price"=>$order_detail->total_price,
                     "discount"=>$order_detail->discount,
                     "all_price"=>(int)$order_detail->discount_price>0?(int)$order_detail->price - (int)$order_detail->discount_price:null,
-                    "warehouse"=>count($warehouse)>0?$warehouse:null,
-                    "product"=>count($product)>0?$product:null,
+                    "warehouse"=>!empty($warehouse)?$warehouse:null,
+                    "product"=>!empty($product)?$product:null,
                 ];
             }
             $message=translate_api('Success', $language);
