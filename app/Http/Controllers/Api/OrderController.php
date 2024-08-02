@@ -495,10 +495,10 @@ class OrderController extends Controller
                                     switch($order_detail->product_type){
                                         case 0:
                                             $order_detail->price = $product->price;
-                                            $translate_name = translate_api('Стандарт', $language);
+                                            $translate_name = translate_api('Футболка стандарт', $language);
                                             break;
                                         case 1:
-                                            $translate_name = translate_api('С воротником', $language);
+                                            $translate_name = translate_api('Футболка с воротником', $language);
                                             break;
                                         case 2:
                                             $translate_name = translate_api('Оверсайз', $language);
@@ -714,10 +714,10 @@ class OrderController extends Controller
                             if(isset($product->order_detail_product_type)){
                                 switch($product->order_detail_product_type){
                                     case 0:
-                                        $product_name = translate_api('Стандарт', $language);
+                                        $product_name = translate_api('Футболка стандарт', $language);
                                         break;
                                     case 1:
-                                        $product_name = translate_api('С воротником', $language);
+                                        $product_name = translate_api('Футболка с воротником', $language);
                                         break;
                                     case 2:
                                         $product_name = translate_api('Оверсайз', $language);
@@ -1488,10 +1488,10 @@ class OrderController extends Controller
             if(isset($order_detail_product_type)){
                 switch($order_detail_product_type){
                     case 0:
-                        $product_translate_name = translate_api('Стандарт', $language);
+                        $product_translate_name = translate_api('Футболка стандарт', $language);
                         break;
                     case 1:
-                        $product_translate_name = translate_api('С воротником', $language);
+                        $product_translate_name = translate_api('Футболка с воротником', $language);
                         break;
                     case 2:
                         $product_translate_name = translate_api('Оверсайз', $language);

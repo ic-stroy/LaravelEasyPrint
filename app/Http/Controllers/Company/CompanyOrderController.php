@@ -259,10 +259,10 @@ class CompanyOrderController extends Controller
                     if(isset($order_detail->product_type)){
                         switch($order_detail->product_type){
                             case 0:
-                                $product_translate_name = translate('Стандарт');
+                                $product_translate_name = translate('Футболка стандарт');
                                 break;
                             case 1:
-                                $product_translate_name = translate('С воротником');
+                                $product_translate_name = translate('Футболка с воротником');
                                 break;
                             case 2:
                                 $product_translate_name = translate('Оверсайз');
