@@ -256,7 +256,6 @@ class CompanyOrderController extends Controller
                         $performed_company_product_price = $performed_company_product_price + $order_detail->price * $order_detail->quantity - $order_detail->discount_price;
                         $performed_company_discount_price = $performed_company_discount_price + (int)$order_detail->discount_price;
                     }
-
                     if(isset($order_detail->product_type)){
                         switch($order_detail->product_type){
                             case 0:

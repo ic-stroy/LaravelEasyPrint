@@ -1027,7 +1027,7 @@
                                                                     @endforeach
                                                                     @foreach($order['products_with_anime'] as $products_with_anime)
                                                                         @php
-                                                                            $product_name = $products_with_anime->name??'';
+                                                                            $product_name = $products_with_anime['name']??'';
                                                                             $products_with_anime_costs = (int)$products_with_anime[0]->quantity*(int)$products_with_anime[0]->price;
                                                                         @endphp
                                                                         <div class="row products-content">
