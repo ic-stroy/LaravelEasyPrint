@@ -41,13 +41,15 @@ class BannerController extends Controller
                     $carouselImage[] = asset('storage/banner/carousel/'.$carousel_image);
                 }
             }
+            $banner_title = translate_api($banner->title, $language);
+            $banner_text = translate_api($banner->text, $language);
 
             $banners[] = [
               'id'=>$banner->id,
-              'title'=>$banner->title,
+              'title'=>$banner_title,
               'banner_image'=>$bannerImage,
               'carousel_image'=>$carouselImage,
-              'text'=>$banner->text,
+              'text'=>$banner_text,
               'is_active'=>$banner->is_active == 1 ? 'active':'no active',
             ];
         }
