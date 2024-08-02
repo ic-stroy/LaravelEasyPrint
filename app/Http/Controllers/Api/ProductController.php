@@ -81,7 +81,7 @@ class ProductController extends Controller
         $warehouse_products_ = Warehouse::whereIn('id', array_merge($warehouse_products_id, $warehouse_anime_products_id))->get();
 //        dd($warehouse_products_id, $warehouse_anime_products_id);
         foreach ($warehouse_products_ as $warehouse_product_) {
-            $category_name = '';
+            $translate_category_name = '';
             if($warehouse_product_->type == Constants::WAREHOUSE_TYPE){
                 if (count($this->getImages($warehouse_product_, 'warehouse'))>0) {
                     $warehouseProducts = $this->getImages($warehouse_product_, 'warehouse');
@@ -121,10 +121,10 @@ class ProductController extends Controller
                 if($warehouse_product_->product->getCategory){
                     $category__ = $warehouse_product_->product->getCategory;
                     if($category__->step == 0){
-                        $category_name = $category__->name??'';
+                        $translate_category_name = table_translate($category__, 'category', $language);
                     }elseif($category__->step == 1){
                         if($category__->category){
-                            $category_name = $category__->category->name??'';
+                            $translate_category_name = table_translate($category__->category, 'category', $language);
                         }
                     }
                 }
@@ -134,7 +134,7 @@ class ProductController extends Controller
                 // 'product_id' => $warehouse_product_->product_id,
                 'id' => $warehouse_product_->id,
                 'name' => $warehouse__name,
-                'category_name'=>$category_name,
+                'category_name'=>$translate_category_name,
                 'price' => $warehouse_product_->price,
                 'discount' => $warehouse_product_->product_discount ? $warehouse_product_->product_discount->percent : NULL,
                 'price_discount' => $warehouse_product_->product_discount ? $warehouse_product_->price - ($warehouse_product_->price / 100 * $warehouse_product_->product_discount->percent) : NULL,
@@ -143,22 +143,22 @@ class ProductController extends Controller
         }
         $product_ = Products::where('name', 'Футболка')->first();
         $product = [];
-        $product_category_name = '';
+        $translate_product_category_name = '';
         if($product_){
             if($warehouse_product_->getCategory){
                 $category___ = $warehouse_product_->getCategory;
                 if($category___->step == 0){
-                    $product_category_name = $category___->name??'';
+                    $translate_product_category_name = table_translate($category___, 'category', $language);
                 }elseif($category___->step == 1){
                     if($category___->category){
-                        $product_category_name = $category___->category->name??'';
+                        $translate_product_category_name = table_translate($category__->category, 'category', $language);
                     }
                 }
             }
             $product[] = [
                 'id' => $product_->id,
                 'name' => $product_->name,
-                'category_name'=>$product_category_name,
+                'category_name'=>$translate_product_category_name,
                 'price' => $product_->price,
                 'discount' => $product_->discount ? $product_->discount->percent : NULL,
                 'price_discount' => $product_->discount ? $product_->price - ($product_->price / 100 * $product_->discount->percent) : NULL,
