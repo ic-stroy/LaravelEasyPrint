@@ -246,6 +246,7 @@ class CompanyOrderController extends Controller
                         'discount_withouth_expire'=>$discount_withouth_expire, 'product_discount_withouth_expire'=>$product_discount_withouth_expire
                     ];
                 }elseif(!$order_detail->warehouse_id && $order_detail->product_id){
+                    $product_translate_name = '';
                     $product_types = $product_types + 1;
                     $products_quantity = $products_quantity + $order_detail->quantity;
                     $order_has = true;
@@ -254,6 +255,32 @@ class CompanyOrderController extends Controller
                         $performed_product_types = $performed_product_types + 1;
                         $performed_company_product_price = $performed_company_product_price + $order_detail->price * $order_detail->quantity - $order_detail->discount_price;
                         $performed_company_discount_price = $performed_company_discount_price + (int)$order_detail->discount_price;
+                    }
+
+                    if(isset($order_detail->product_type)){
+                        switch($order_detail->product_type){
+                            case 0:
+                                $product_translate_name = translate('Стандарт');
+                                break;
+                            case 1:
+                                $product_translate_name = translate('С воротником');
+                                break;
+                            case 2:
+                                $product_translate_name = translate('Оверсайз');
+                                break;
+                            default:
+                                if($order_detail->product){
+                                    $product_translate_name = $order_detail->product->name??'';
+                                }else{
+                                    $product_translate_name = '';
+                                }
+                        }
+                    }else{
+                        if($order_detail->product){
+                            $product_translate_name = $order_detail->product->name??'';
+                        }else{
+                            $product_translate_name = '';
+                        }
                     }
 
                     $company_product_price = $company_product_price + $order_detail->price * $order_detail->quantity - $order_detail->discount_price;
@@ -315,7 +342,7 @@ class CompanyOrderController extends Controller
                         $product_discount_withouth_expire = $order_detail->product->discount_whithout_expire?$order_detail->product->discount_whithout_expire->percent:0;
                     }
                     $products_with_anime[] = [$order_detail, $order_detail_all_price, $products_with_anime_uploads,
-                        'images'=>$images, 'product_discount_withouth_expire'=>$product_discount_withouth_expire];
+                        'images'=>$images, 'product_discount_withouth_expire'=>$product_discount_withouth_expire, 'name'=>$product_translate_name];
                 }
             }
             if((int)$order->coupon_price>0){
@@ -598,7 +625,7 @@ class CompanyOrderController extends Controller
                 }
             }
             $order_code = $order->code??'';
-            $this->sendMessage($phone_number, $order_code, $address);
+//            $this->sendMessage($phone_number, $order_code, $address);
             $order->save();
             return redirect()->route('company_order.index')->with('performed', 'Order is accepted by recipient');
         }
