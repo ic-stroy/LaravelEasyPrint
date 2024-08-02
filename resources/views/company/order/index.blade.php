@@ -550,7 +550,7 @@
                     <li class="nav-item">
                         <a href="#ordered" data-bs-toggle="tab" aria-expanded="true" class="nav-link active">
                             {{translate('Ordered')}}
-                            @if(count($all_orders['orderedOrders']) > 0)
+                            @if(!empty($all_orders['orderedOrders']))
                                 <span class="badge bg-danger"> {{translate('new')}} {{count($all_orders['orderedOrders'])}}</span>
                             @endif
                         </a>
@@ -558,7 +558,7 @@
                     <li class="nav-item">
                         <a href="#performed" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                             {{translate('Performed')}}
-                            @if(count($all_orders['performedOrders']) > 0)
+                            @if(!empty($all_orders['performedOrders']))
                                 <span class="badge bg-danger"> {{count($all_orders['performedOrders'])}}</span>
                             @endif
                         </a>
@@ -566,7 +566,7 @@
                     <li class="nav-item">
                         <a href="#order__delivered" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                             {{translate('Delivered')}}
-                            @if(count($all_orders['deliveredOrders']) > 0)
+                            @if(!empty($all_orders['deliveredOrders']))
                                 <span class="badge bg-danger"> {{count($all_orders['deliveredOrders'])}}</span>
                             @endif
                         </a>
@@ -574,7 +574,7 @@
                     <li class="nav-item">
                         <a href="#ready_for_pick" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                             {{translate('Ready for pickup')}}
-                            @if(count($all_orders['readyForPickup']) > 0)
+                            @if(!empty($all_orders['readyForPickup']))
                                 <span class="badge bg-danger"> {{count($all_orders['readyForPickup'])}}</span>
                             @endif
                         </a>
@@ -582,7 +582,7 @@
                     <li class="nav-item">
                         <a href="#accepted_by_recepient" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                             {{translate('Accepted by recepient')}}
-                            @if(count($all_orders['acceptedByRecipientOrders']) > 0)
+                            @if(!empty($all_orders['acceptedByRecipientOrders']))
                                 <span class="badge bg-danger"> {{count($all_orders['acceptedByRecipientOrders'])<26?count($all_orders['acceptedByRecipientOrders']):'+26'}}</span>
                             @endif
                         </a>
@@ -590,7 +590,7 @@
                     <li class="nav-item">
                         <a href="#cancelled" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                             {{translate('Cancelled')}}
-                            @if(count($all_orders['cancelledOrders']) > 0)
+                            @if(!empty($all_orders['cancelledOrders']))
                                 <span class="badge bg-danger"> {{count($all_orders['cancelledOrders'])<26?count($all_orders['cancelledOrders']):'+26'}}</span>
                             @endif
                         </a>

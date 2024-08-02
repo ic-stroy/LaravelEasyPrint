@@ -541,7 +541,7 @@
                     <li class="nav-item">
                         <a href="#accepted_by_recepient" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                             {{translate('Accepted by recepient')}}
-                            @if(count($all_orders['acceptedByRecipientOrders']) > 0)
+                            @if(!empty($all_orders['acceptedByRecipientOrders']))
                                 <span class="badge bg-danger"> {{count($all_orders['acceptedByRecipientOrders'])}}</span>
                             @endif
                         </a>
@@ -549,7 +549,7 @@
                     <li class="nav-item">
                         <a href="#cancelled" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                             {{translate('Cancelled')}}
-                            @if(count($all_orders['cancelledOrders']) > 0)
+                            @if(!empty($all_orders['cancelledOrders']))
                                 <span class="badge bg-danger"> {{count($all_orders['cancelledOrders'])}}</span>
                             @endif
                         </a>
@@ -820,9 +820,7 @@
                                                                     @endforeach
                                                                     @foreach($order['products_with_anime'] as $products_with_anime)
                                                                         @php
-                                                                            if(!empty($products_with_anime[0]->product)){
-                                                                                $product_name = $products_with_anime[0]->product->name??'';
-                                                                            }
+                                                                            $product_name = $products_with_anime['name']??'';
                                                                             $products_with_anime_costs = (int)$products_with_anime[0]->quantity*(int)$products_with_anime[0]->price;
                                                                         @endphp
                                                                         <div class="row products-content">
