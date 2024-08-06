@@ -453,6 +453,9 @@ class OrderController extends Controller
                                         "name" => $warehouse_product->size_name,
                                     ]
                                 ];
+
+                                if ($order_detail->for_mobile == 1)
+                                    $list = ["for_mobile" => 1];
                             }
                         }
                     } else {
@@ -556,6 +559,10 @@ class OrderController extends Controller
                                     "name" => $product->size_name,
                                 ]
                             ];
+
+                            if ($order_detail->for_mobile == 1)
+                                $list = ["for_mobile" => 1];
+
                         } else {
                             $list = [];
                         }
