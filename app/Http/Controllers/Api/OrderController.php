@@ -455,7 +455,7 @@ class OrderController extends Controller
                                 ];
 
                                 if ($order_detail->for_mobile == 1)
-                                    $list = ["for_mobile" => 1];
+                                    $list["for_mobile"] = 1;
                             }
                         }
                     } else {
@@ -561,7 +561,7 @@ class OrderController extends Controller
                             ];
 
                             if ($order_detail->for_mobile == 1)
-                                $list = ["for_mobile" => 1];
+                                $list["for_mobile"] = 1;
 
                         } else {
                             $list = [];
