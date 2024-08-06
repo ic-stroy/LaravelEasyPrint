@@ -226,6 +226,9 @@ class OrderController extends Controller
             }
             $order_detail->discount = $request->discount;
             $order_detail->discount_price = $request_order_discount_price;
+            if (isset($request->for_mobile) && $request->for_mobile == 1) {
+                $order_detail->for_mobile = 1;
+            }
             $order_detail->save();
             if ($images_print) {
                 foreach ($images_print as $image_print){

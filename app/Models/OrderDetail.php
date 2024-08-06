@@ -29,7 +29,8 @@ class OrderDetail extends Model
         'discount_price',
         'created_at',
         'updated_at',
-        'deleted_at'
+        'deleted_at',
+        'for_mobile' // 0 - desktop, 1 - mobile
     ];
 
     public function order(){
