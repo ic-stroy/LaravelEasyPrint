@@ -14,6 +14,7 @@ class EskizToken extends Model
 
     protected $fillable = [
         'token',
-        'expire_date'
+        'expire_date',
+        'lang'
     ];
 }
