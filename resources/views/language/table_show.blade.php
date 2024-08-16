@@ -86,7 +86,7 @@
                                         $translate_lang = \App\Models\ProductTranslations::where('lang', $language->code??'')->where('product_id', $translation->product_id??'')->first();
                                     @endphp
                                     <input type="text" class="checkboxDivPerewvod value" id="input"
-                                    style="width:100%" name="values[{{ $translation->option_id }}]"
+                                    style="width:100%" name="values[{{ $translation->product_id }}]"
                                     @if (($translate_lang) != null) value="{{ $translate_lang->name }}" @endif>
 
                                     @break

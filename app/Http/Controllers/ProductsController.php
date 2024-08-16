@@ -195,7 +195,7 @@ class ProductsController extends Controller
                 $product_translations->save();
             }
         }
-//        $model->name = $request->name;
+        $model->name = $request->name;
         $model->save();
         if(!empty($model->categoryDiscount)){
             if(empty($model->discount)){
